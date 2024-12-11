@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">TripTales</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tabTappe">Tappe</string>
+    <string name="tabSpese">Spese</string>
+    <string name="tabObiettivi">Obiettivi</string>
+    <string name="tabCheckList">CheckList</string>
+    <string name="page_title">TripTales</string>
+    <string name="action_home">Home</string>
+    <string name="action_logout">Logout</string>
+    <string name="fragment_tappe">fragment_tappe</string>
+    <string name="fragment_obiettivi">fragment_obiettivi</string>
+    <string name="fragment_expenses">fragment_expenses</string>
+    <string name="fragment_checklist">fragment_checklist</string>
+    <string name="checklist_fragment">checkList_fragment</string>
+    <string name="obiettivi_fragment">obiettivi_fragment</string>
+    <string name="spese_fragment">spese_fragment</string>
+    <string name="tappe_fragment">tappe_fragment</string>
+    <string name="budget">0</string>
+    <string name="buttonEditDescription">Modifica</string>
+    <string name="listaSpese">Tutte le spese</string>
+    <string name="buttonSpese">Filtro</string>
+    <string name="prova_spesa_descrizione">Mezzi di trasporto</string>
+    <string name="prova_data_spesa">05/06/2022</string>
+    <string name="spesa_amount">30€</string>
+    <string name="add_button_spese_description">add button per le spese</string>
+    <string name="percentualeSpesa">0 / 0 spent (0%)</string>
+    <string name="progress_text">%1$d / %2$d spent (%3$d%%)</string>
+    <string name="hintBudget">Quantità</string>
+    <string name="editBudgetTitle">Modifica budget</string>
+    <string name="saveButton">Salva</string>
+    <string name="stringaCosto">%1$d€</string>
+    <string name="titleBudgetCard">Budget</string>
+    <string name="spesaDescription">Abbonamento settimanale</string>
+    <string name="addSpesaCardTitle">Aggiungi spesa</string>
+    <string name="hintDescription">Descrizione</string>
+    <string name="hintCategoria">Categoria</string>
+    <string name="hintDate">Data</string>
+    <string name="triptales">TripTales</string>
+    <string name="page_1">Diari</string>
+    <string name="page_2">Mappa</string>
+    <string name="page_3">Calendario</string>
+    <string name="firstHomePageText">Non hai ancora creato nessun diario, comincia la tua avventura!</string>
+
+
+</resources>
