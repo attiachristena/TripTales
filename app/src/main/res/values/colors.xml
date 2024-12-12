@@ -8,4 +8,5 @@
     <color name="white_dark">#EEEEEE</color>
     <color name="light_gray">#D9D9D9</color>
     <color name="background_overlays">#F5F5F5</color>
+    <color name="error">#EE0000</color>
 </resources>

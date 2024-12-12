@@ -63,7 +63,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
                     android:layout_weight="1"
-                    android:background="@color/secondary"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="@color/secondary"
+                    app:tint="@color/white"
                     android:contentDescription="@string/buttonEditDescription"
                     android:src="@drawable/baseline_mode_edit_24" />
 
@@ -141,7 +143,8 @@
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp">
 
             <LinearLayout
                 android:id="@+id/spesaCardsContainer"
@@ -181,7 +184,8 @@
                 android:layout_height="24dp"
                 android:layout_weight="1"
                 android:layout_marginTop="36dp"
-                android:background="@color/background_overlays"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/background_overlays"
                 android:src="@drawable/baseline_arrow_back_ios_24" />
 
             <TextView

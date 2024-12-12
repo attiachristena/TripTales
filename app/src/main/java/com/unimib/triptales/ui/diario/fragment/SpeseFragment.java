@@ -28,7 +28,6 @@ public class SpeseFragment extends Fragment {
 
     int budget;
     int spent;
-    int spesa;
     Button saveButton;
     TextView progressText;
     ImageButton editBudget;
@@ -109,13 +108,7 @@ public class SpeseFragment extends Fragment {
                     numberEditText.setError(null);
                     budget = Integer.parseInt(inputText);
                     budgetText.setText(getString(R.string.stringaCosto, budget));
-                    // Calcola la percentuale spesa
-                    progressPercentage = (int) ((spent / (float) budget) * 100);
-                    // Imposta il progresso
-                    progressIndicator.setProgress(progressPercentage);
-                    // Imposta string info progresso
-                    formattedText = getString(R.string.progress_text, spent, budget, progressPercentage);
-                    progressText.setText(formattedText);
+                    updateProgressIndicator(spent, budget, 0);
                     hideKeyboard(numberEditText);
                     cardAddBudget.setVisibility(View.GONE);
                 }
@@ -166,33 +159,44 @@ public class SpeseFragment extends Fragment {
                 // Modifica il contenuto della card
                 TextView category = newCard.findViewById(R.id.categoryTextView);
                 inputCategoria = editTextCategoria.getText().toString().trim();
-                category.setText(inputCategoria);
+                if (inputCategoria.isEmpty()) {
+                    editTextCategoria.setError("Inserisci una categoria");
+                } else {
+                    editTextCategoria.setError(null);
+                    category.setText(inputCategoria);
+                }
 
                 TextView description = newCard.findViewById(R.id.descriptionTextView);
                 inputDescrizione = editTextDescrizione.getText().toString().trim();
-                description.setText(inputDescrizione);
+                if (inputDescrizione.isEmpty()) {
+                    editTextDescrizione.setError("Inserisci una descrizione");
+                } else {
+                    editTextDescrizione.setError(null);
+                    description.setText(inputDescrizione);
+                }
 
                 TextView dataSpesa = newCard.findViewById(R.id.dateTextView);
                 inputData = editTextData.getText().toString().trim();
-                dataSpesa.setText(inputData);
+                if (inputData.isEmpty()) {
+                    editTextData.setError("Inserisci una data");
+                } else {
+                    editTextData.setError(null);
+                    dataSpesa.setText(inputData);
+                }
 
                 TextView amount = newCard.findViewById(R.id.amountTextView);
                 inputQuantitaSpesa = editTextQuantitaSpesa.getText().toString().trim();
-                spesa = Integer.parseInt(inputQuantitaSpesa);
-                //codice ripetuto da qui
-                spent = spent+spesa;
-                progressPercentage = (int) ((spent / (float) budget) * 100);
-                progressIndicator.setProgress(progressPercentage);
-                formattedText = getString(R.string.progress_text, spent, budget, progressPercentage);
-                progressText.setText(formattedText);
-                //a qui
-                amount.setText(getString(R.string.stringaCosto, spesa));
-
+                if (inputQuantitaSpesa.isEmpty()) {
+                    editTextQuantitaSpesa.setError("Inserisci una data");
+                } else {
+                    editTextQuantitaSpesa.setError(null);
+                    int spesa = Integer.parseInt(inputQuantitaSpesa);
+                    updateProgressIndicator(spesa, budget, 1);
+                    amount.setText(getString(R.string.stringaCosto, spesa));
+                }
+                //manca non aggiungere la card quando i campi sono vuoti!!
                 // Aggiungi la nuova CardView al layout genitore
                 spesaCardLayout.addView(newCard);
-
-
-
                 //hideKeyboard(numberEditText);
                 cardAddSpesa.setVisibility(View.GONE);
             }
@@ -209,6 +213,22 @@ public class SpeseFragment extends Fragment {
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public void updateProgressIndicator(int spesa, int budget, int add){
+        if(add == 1)
+            spent = spent+spesa;
+        // calcola la percentuale spesa
+        progressPercentage = (int) ((spent / (float) budget) * 100);
+        if(progressPercentage > 100)
+            progressIndicator.setIndicatorColor(getResources().getColor(R.color.error));
+        else
+            progressIndicator.setIndicatorColor(getResources().getColor(R.color.secondary));
+        // imposta il progress indicator
+        progressIndicator.setProgress(progressPercentage);
+        // aggiorna la descrizione del progress indicator
+        formattedText = getString(R.string.progress_text, spent, budget, progressPercentage);
+        progressText.setText(formattedText);
     }
 
 
