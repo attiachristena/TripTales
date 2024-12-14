@@ -9,7 +9,6 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.unimib.triptales.R;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class SpeseFragment extends Fragment {
@@ -45,7 +45,7 @@ public class SpeseFragment extends Fragment {
     EditText numberEditText;
     String formattedText;
     ImageButton addSpesa;
-    LinearLayout spesaCardLayout;
+    LinearLayout spesaCardsContainer;
     ImageButton backButtonSpesa;
     CardView cardAddSpesa;
     Button saveSpesa;
@@ -62,6 +62,7 @@ public class SpeseFragment extends Fragment {
     FloatingActionButton eliminaSpesa;
     ArrayList<MaterialCardView> listSpesaCards = new ArrayList<>();
     int indice;
+    View overlay_add_spesa;
 
 
     @Override
@@ -130,8 +131,11 @@ public class SpeseFragment extends Fragment {
         //Card per aggiungere una nuova spesa
 
         addSpesa = view.findViewById(R.id.addButtonSpese);
-        cardAddSpesa = view.findViewById(R.id.cardAddSpesa);
         rootLayout = view.findViewById(R.id.rootLayout);
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        overlay_add_spesa = inflater.inflate(R.layout.overlay_add_spesa, rootLayout, false);
+        rootLayout.addView(overlay_add_spesa);
+        overlay_add_spesa.setVisibility(View.GONE);
 
         addSpesa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,10 +143,13 @@ public class SpeseFragment extends Fragment {
                 if(budget == 0){
                     Snackbar snackbar = Snackbar.make(rootLayout, R.string.snackbarErroreBudget, Snackbar.LENGTH_SHORT);
                     snackbar.show();
-
                 }else {
+                    if(listSpesaCards.isEmpty()) {
+                        rootLayout.removeView(overlay_add_spesa);
+                        overlay_add_spesa.setVisibility(View.VISIBLE);
+                    }
+                    rootLayout.addView(overlay_add_spesa);
                     addSpesa.setVisibility(View.GONE);
-                    cardAddSpesa.setVisibility(View.VISIBLE);
                     editTextQuantitaSpesa.setText("");
                     editTextCategoria.setText("");
                     editTextDescrizione.setText("");
@@ -156,13 +163,13 @@ public class SpeseFragment extends Fragment {
         backButtonSpesa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cardAddSpesa.setVisibility(View.GONE);
+                rootLayout.removeView(overlay_add_spesa);
                 hideKeyboard(editTextData);
                 addSpesa.setVisibility(View.VISIBLE);
             }
         });
 
-        spesaCardLayout = view.findViewById(R.id.spesaCardsContainer);
+        spesaCardsContainer = view.findViewById(R.id.spesaCardsContainer);
         saveSpesa = view.findViewById(R.id.salvaSpesa);
         editTextQuantitaSpesa = view.findViewById(R.id.inputQuantitaSpesa);
         editTextCategoria = view.findViewById(R.id.inputCategory);
@@ -178,7 +185,7 @@ public class SpeseFragment extends Fragment {
 
                 // Usa LayoutInflater per creare una nuova CardView
                 LayoutInflater inflater = LayoutInflater.from(view.getContext());
-                View newCard = inflater.inflate(R.layout.item_card_spesa, spesaCardLayout, false);
+                View newCard = inflater.inflate(R.layout.item_card_spesa, spesaCardsContainer, false);
 
                 // Modifica il contenuto della card
                 TextView category = newCard.findViewById(R.id.categoryTextView);
@@ -220,11 +227,11 @@ public class SpeseFragment extends Fragment {
                     updateProgressIndicator(spesa, budget, 1);
                     amount.setText(getString(R.string.stringaCosto, spesa));
                     // Aggiungi la nuova CardView al layout genitore
-                    spesaCardLayout.addView(newCard);
+                    spesaCardsContainer.addView(newCard);
                     hideKeyboard(editTextData);
-                    cardAddSpesa.setVisibility(View.GONE);
+                    rootLayout.removeView(overlay_add_spesa);
                     addSpesa.setVisibility(View.VISIBLE);
-                    MaterialCardView cardSpesaCorrente = (MaterialCardView) spesaCardLayout.getChildAt(indice);
+                    MaterialCardView cardSpesaCorrente = (MaterialCardView) spesaCardsContainer.getChildAt(indice);
                     listSpesaCards.add(cardSpesaCorrente);
                     indice++; //devi diminuire di uno quando elimini una card!!!
 
@@ -264,6 +271,48 @@ public class SpeseFragment extends Fragment {
             }
         });
 
+        eliminaSpesa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Iterator<MaterialCardView> iterator = listSpesaCards.iterator();
+                while (iterator.hasNext()) {
+                    MaterialCardView item = iterator.next();
+                    if (item.isSelected()) {
+                        TextView amountTextView = item.findViewById(R.id.amountTextView);
+                        String amountText = amountTextView.getText().toString();
+                        String amountSubstring = amountText.substring(0, amountText.length()-1);
+                        int amount = Integer.parseInt(amountSubstring);
+                        iterator.remove();
+                        spesaCardsContainer.removeView(item);
+                        spent = spent - amount;
+                        updateProgressIndicator(spent, budget, 0);
+                        indice--;
+                    }
+                }
+                modificaSpesa.setVisibility(View.GONE);
+                eliminaSpesa.setVisibility(View.GONE);
+                addSpesa.setEnabled(true);
+            }
+        });
+
+        modificaSpesa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rootLayout.addView(overlay_add_spesa);
+                addSpesa.setVisibility(View.GONE);
+
+                MaterialCardView card = findSelectedCard(listSpesaCards);
+                TextView cardSpesa = card.findViewById(R.id.amountTextView);
+                editTextQuantitaSpesa.setText(cardSpesa.getText().toString().trim());
+                TextView cardCategoria = card.findViewById(R.id.categoryTextView);
+                editTextCategoria.setText(cardCategoria.getText().toString().trim());
+                TextView cardDescrizione = card.findViewById(R.id.descriptionTextView);
+                editTextDescrizione.setText(cardDescrizione.getText().toString().trim());
+                TextView cardData = card.findViewById(R.id.dateTextView);
+                editTextData.setText(cardData.getText().toString().trim());
+            }
+        });
+
         ScrollView scrollView = view.findViewById(R.id.scrollView);
         scrollView.fullScroll(ScrollView.FOCUS_DOWN);
 
@@ -300,6 +349,15 @@ public class SpeseFragment extends Fragment {
                 selectedCount++;
         }
         return selectedCount;  // Restituisce il numero di card selezionate
+    }
+
+    public MaterialCardView findSelectedCard(ArrayList<MaterialCardView> cardList){
+        MaterialCardView selectedCard = cardList.get(0);
+        for (MaterialCardView card : cardList) {
+            if (card.isSelected())
+                selectedCard = card;
+        }
+        return selectedCard;
     }
 
 }
