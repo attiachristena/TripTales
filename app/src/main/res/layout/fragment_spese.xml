@@ -2,9 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/Base.Theme.TripTales"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/rootLayout"
     tools:context=".ui.diario.fragment.SpeseFragment">
 
     <LinearLayout
@@ -64,8 +66,8 @@
                     android:layout_gravity="bottom|end"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_button"
-                    android:backgroundTint="@color/secondary"
                     app:tint="@color/white"
+                    android:backgroundTint="@color/secondary"
                     android:contentDescription="@string/buttonEditDescription"
                     android:src="@drawable/baseline_mode_edit_24" />
 
@@ -99,10 +101,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
                 android:paddingHorizontal="16dp"
-                android:progress="0"
-                app:indicatorColor="@color/secondary"
-                app:indicatorTrackGapSize="0dp"
                 app:trackColor="@color/white"
+                app:indicatorColor="@color/secondary"
+                app:trackStopIndicatorSize="0dp"
+                android:progress="0"
+                app:indicatorTrackGapSize="0dp"
                 app:trackCornerRadius="20dp"
                 app:trackThickness="10dp" />
 
@@ -125,7 +128,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/buttonViewAll"
+                android:id="@+id/buttonFilter"
                 android:layout_width="85dp"
                 android:layout_height="30dp"
                 android:layout_gravity="end"
@@ -164,8 +167,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="140dp"
-        android:backgroundTint="@color/background_overlays"
         app:cardCornerRadius="20dp"
+        android:backgroundTint="@color/background_overlays"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -221,6 +224,11 @@
             android:layout_marginTop="80dp"
             android:hint="@string/hintBudget"
             android:padding="16dp"
+            app:boxStrokeColor="@color/background_dark"
+            app:hintTextColor="@color/background_dark"
+            app:cursorColor="@color/secondary"
+            style="?attr/textInputFilledStyle"
+            app:boxBackgroundColor="@color/background_overlays"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -233,9 +241,7 @@
                 android:id="@+id/inputBudget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHighlight="@color/secondary"
-                android:inputType="number"
-                />
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -244,7 +250,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardAddSpesa"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="400dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="18dp"
         android:backgroundTint="@color/background_overlays"
@@ -309,6 +315,11 @@
                 android:layout_marginTop="80dp"
                 android:hint="@string/hintBudget"
                 android:paddingHorizontal="16dp"
+                app:boxStrokeColor="@color/background_dark"
+                app:hintTextColor="@color/background_dark"
+                app:cursorColor="@color/secondary"
+                style="?attr/textInputFilledStyle"
+                app:boxBackgroundColor="@color/background_overlays"
                 app:errorEnabled="true"
                 app:helperTextEnabled="true"
                 app:startIconDrawable="@drawable/baseline_attach_money_24">
@@ -317,8 +328,7 @@
                     android:id="@+id/inputQuantitaSpesa"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:textColorHighlight="@color/secondary" />
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -327,15 +337,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
+                app:boxStrokeColor="@color/background_dark"
+                app:hintTextColor="@color/background_dark"
+                app:cursorColor="@color/secondary"
+                style="?attr/textInputFilledStyle"
+                app:boxBackgroundColor="@color/background_overlays"
                 android:hint="@string/hintCategoria"
                 app:errorEnabled="true"
-                app:helperTextEnabled="true">
+                app:helperTextEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="18">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputCategory"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHighlight="@color/secondary"/>
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -345,14 +361,20 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hintDescription"
                 android:paddingHorizontal="16dp"
+                app:boxStrokeColor="@color/background_dark"
+                app:hintTextColor="@color/background_dark"
+                app:cursorColor="@color/secondary"
+                style="?attr/textInputFilledStyle"
+                app:boxBackgroundColor="@color/background_overlays"
                 app:errorEnabled="true"
-                app:helperTextEnabled="true">
+                app:helperTextEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="18">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputDescription"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHighlight="@color/secondary"/>
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -362,14 +384,20 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hintDate"
                 android:paddingHorizontal="16dp"
+                app:boxStrokeColor="@color/background_dark"
+                app:hintTextColor="@color/background_dark"
+                app:cursorColor="@color/secondary"
+                style="?attr/textInputFilledStyle"
+                app:boxBackgroundColor="@color/background_overlays"
                 app:errorEnabled="true"
-                app:helperTextEnabled="true">
+                app:helperTextEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="10">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputDate"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHighlight="@color/secondary"/>
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -378,17 +406,18 @@
     </androidx.cardview.widget.CardView>
 
 
-    <ImageButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButtonSpese"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="35dp"
-        android:background="@drawable/rounded_button"
-        android:backgroundTint="@color/white_dark"
+        app:rippleColor="@color/light_gray"
         android:contentDescription="@string/add_button_spese_description"
         android:elevation="4dp"
         android:src="@drawable/round_add_24"
+        android:backgroundTint="@color/white_dark"
+        android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent" />
 

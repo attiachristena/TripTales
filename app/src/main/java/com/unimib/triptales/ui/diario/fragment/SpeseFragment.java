@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 import com.unimib.triptales.R;
 
 
@@ -51,6 +53,7 @@ public class SpeseFragment extends Fragment {
     EditText editTextCategoria;
     EditText editTextDescrizione;
     EditText editTextData;
+    ConstraintLayout rootLayout;
 
 
     @Override
@@ -87,6 +90,7 @@ public class SpeseFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 cardAddBudget.setVisibility(View.GONE);
+                hideKeyboard(numberEditText);
             }
         });
 
@@ -119,15 +123,22 @@ public class SpeseFragment extends Fragment {
 
         addSpesa = view.findViewById(R.id.addButtonSpese);
         cardAddSpesa = view.findViewById(R.id.cardAddSpesa);
+        rootLayout = view.findViewById(R.id.rootLayout);
 
         addSpesa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cardAddSpesa.setVisibility(View.VISIBLE);
-                editTextQuantitaSpesa.setText("");
-                editTextCategoria.setText("");
-                editTextDescrizione.setText("");
-                editTextData.setText("");
+                if(budget == 0){
+                    Snackbar snackbar = Snackbar.make(rootLayout, R.string.snackbarErroreBudget, Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+
+                }else {
+                    cardAddSpesa.setVisibility(View.VISIBLE);
+                    editTextQuantitaSpesa.setText("");
+                    editTextCategoria.setText("");
+                    editTextDescrizione.setText("");
+                    editTextData.setText("");
+                }
             }
         });
 
@@ -137,6 +148,7 @@ public class SpeseFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 cardAddSpesa.setVisibility(View.GONE);
+                hideKeyboard(editTextData);
             }
         });
 
@@ -159,46 +171,47 @@ public class SpeseFragment extends Fragment {
                 // Modifica il contenuto della card
                 TextView category = newCard.findViewById(R.id.categoryTextView);
                 inputCategoria = editTextCategoria.getText().toString().trim();
-                if (inputCategoria.isEmpty()) {
-                    editTextCategoria.setError("Inserisci una categoria");
-                } else {
-                    editTextCategoria.setError(null);
-                    category.setText(inputCategoria);
-                }
 
                 TextView description = newCard.findViewById(R.id.descriptionTextView);
                 inputDescrizione = editTextDescrizione.getText().toString().trim();
-                if (inputDescrizione.isEmpty()) {
-                    editTextDescrizione.setError("Inserisci una descrizione");
-                } else {
-                    editTextDescrizione.setError(null);
-                    description.setText(inputDescrizione);
-                }
 
                 TextView dataSpesa = newCard.findViewById(R.id.dateTextView);
                 inputData = editTextData.getText().toString().trim();
-                if (inputData.isEmpty()) {
-                    editTextData.setError("Inserisci una data");
-                } else {
-                    editTextData.setError(null);
-                    dataSpesa.setText(inputData);
-                }
 
                 TextView amount = newCard.findViewById(R.id.amountTextView);
                 inputQuantitaSpesa = editTextQuantitaSpesa.getText().toString().trim();
+
+
                 if (inputQuantitaSpesa.isEmpty()) {
                     editTextQuantitaSpesa.setError("Inserisci una data");
+                } else if (inputCategoria.isEmpty()) {
+                    editTextCategoria.setError("Inserisci una categoria");
+                } else if (inputCategoria.length() > 18){
+                    editTextCategoria.setError("La categoria supera il massimo di caratteri");
+                } else if (inputDescrizione.isEmpty()) {
+                    editTextDescrizione.setError("Inserisci una descrizione");
+                }else if (inputDescrizione.length() > 18){
+                    editTextCategoria.setError("La descrizione supera il massimo di caratteri");
+                } else if (inputData.isEmpty()) {
+                    editTextData.setError("Inserisci una data");
+                }else if (inputData.length() > 10){
+                    editTextCategoria.setError("La data supera il massimo di caratteri");
                 } else {
+                    editTextCategoria.setError(null);
+                    category.setText(inputCategoria);
+                    editTextDescrizione.setError(null);
+                    description.setText(inputDescrizione);
+                    editTextData.setError(null);
+                    dataSpesa.setText(inputData);
                     editTextQuantitaSpesa.setError(null);
                     int spesa = Integer.parseInt(inputQuantitaSpesa);
                     updateProgressIndicator(spesa, budget, 1);
                     amount.setText(getString(R.string.stringaCosto, spesa));
+                    // Aggiungi la nuova CardView al layout genitore
+                    spesaCardLayout.addView(newCard);
+                    hideKeyboard(editTextData);
+                    cardAddSpesa.setVisibility(View.GONE);
                 }
-                //manca non aggiungere la card quando i campi sono vuoti!!
-                // Aggiungi la nuova CardView al layout genitore
-                spesaCardLayout.addView(newCard);
-                //hideKeyboard(numberEditText);
-                cardAddSpesa.setVisibility(View.GONE);
             }
         });
 
