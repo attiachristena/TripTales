@@ -31,7 +31,7 @@
                 android:paddingBottom="10dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_weight="10"
@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            </LinearLayout>
+                </LinearLayout>
 
         </ScrollView>
 
@@ -405,7 +405,6 @@
 
     </androidx.cardview.widget.CardView>
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButtonSpese"
         android:layout_width="56dp"
@@ -416,9 +415,44 @@
         android:contentDescription="@string/add_button_spese_description"
         android:elevation="4dp"
         android:src="@drawable/round_add_24"
+        app:tint="@color/black"
         android:backgroundTint="@color/white_dark"
         android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/eliminaSpesa"
+        style="?attr/floatingActionButtonSmallStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="100dp"
+        app:rippleColor="@color/light_gray"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_delete_outline_24"
+        app:tint="@color/white"
+        android:backgroundTint="@color/background_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/modificaSpesa"
+        style="?attr/floatingActionButtonSmallStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="149dp"
+        app:rippleColor="@color/light_gray"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_mode_edit_24"
+        app:tint="@color/white"
+        android:backgroundTint="@color/background_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

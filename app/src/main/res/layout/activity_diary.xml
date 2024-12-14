@@ -31,7 +31,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:tabGravity="fill"
-            app:tabMode="fixed">
+            app:tabMode="fixed"
+            app:tabIndicatorColor="@color/background_dark">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tappeFragment"

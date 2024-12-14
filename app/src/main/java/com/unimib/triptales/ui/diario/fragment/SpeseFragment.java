@@ -21,9 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.unimib.triptales.R;
+
+import java.util.ArrayList;
 
 
 public class SpeseFragment extends Fragment {
@@ -54,6 +58,10 @@ public class SpeseFragment extends Fragment {
     EditText editTextDescrizione;
     EditText editTextData;
     ConstraintLayout rootLayout;
+    FloatingActionButton modificaSpesa;
+    FloatingActionButton eliminaSpesa;
+    ArrayList<MaterialCardView> listSpesaCards = new ArrayList<>();
+    int indice;
 
 
     @Override
@@ -105,8 +113,8 @@ public class SpeseFragment extends Fragment {
                 String inputText = numberEditText.getText().toString().trim();
                 if (inputText.isEmpty()) {
                     numberEditText.setError("Il campo non può essere vuoto");
-                } else if (!inputText.matches("\\d+")) {
-                    numberEditText.setError("Inserisci solo numeri");
+                } else if (inputText.length() > 8) {
+                    numberEditText.setError("Inserisci un numero più basso");
                 } else {
                     // Testo valido
                     numberEditText.setError(null);
@@ -133,6 +141,7 @@ public class SpeseFragment extends Fragment {
                     snackbar.show();
 
                 }else {
+                    addSpesa.setVisibility(View.GONE);
                     cardAddSpesa.setVisibility(View.VISIBLE);
                     editTextQuantitaSpesa.setText("");
                     editTextCategoria.setText("");
@@ -149,6 +158,7 @@ public class SpeseFragment extends Fragment {
             public void onClick(View view) {
                 cardAddSpesa.setVisibility(View.GONE);
                 hideKeyboard(editTextData);
+                addSpesa.setVisibility(View.VISIBLE);
             }
         });
 
@@ -158,7 +168,9 @@ public class SpeseFragment extends Fragment {
         editTextCategoria = view.findViewById(R.id.inputCategory);
         editTextDescrizione = view.findViewById(R.id.inputDescription);
         editTextData = view.findViewById(R.id.inputDate);
-
+        indice = 0;
+        modificaSpesa = view.findViewById(R.id.modificaSpesa);
+        eliminaSpesa = view.findViewById(R.id.eliminaSpesa);
 
         saveSpesa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,6 +223,43 @@ public class SpeseFragment extends Fragment {
                     spesaCardLayout.addView(newCard);
                     hideKeyboard(editTextData);
                     cardAddSpesa.setVisibility(View.GONE);
+                    addSpesa.setVisibility(View.VISIBLE);
+                    MaterialCardView cardSpesaCorrente = (MaterialCardView) spesaCardLayout.getChildAt(indice);
+                    listSpesaCards.add(cardSpesaCorrente);
+                    indice++; //devi diminuire di uno quando elimini una card!!!
+
+                    cardSpesaCorrente.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            addSpesa.setEnabled(false);
+                            if (cardSpesaCorrente.isSelected()){
+                                cardSpesaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary));
+                                cardSpesaCorrente.setStrokeColor(getResources().getColor(R.color.primary));
+                                cardSpesaCorrente.setSelected(false);
+                                boolean notSelectedAll = true;
+                                for (MaterialCardView m : listSpesaCards){
+                                    if(m.isSelected())
+                                        notSelectedAll = false;
+                                }
+                                if(notSelectedAll) {
+                                    modificaSpesa.setVisibility(View.GONE);
+                                    eliminaSpesa.setVisibility(View.GONE);
+                                    addSpesa.setEnabled(true);
+                                }
+                            } else {
+                                cardSpesaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary_light));
+                                cardSpesaCorrente.setStrokeColor(getResources().getColor(R.color.background_dark));
+                                cardSpesaCorrente.setSelected(true);
+                            }
+                            if (countSelectedCards(listSpesaCards) == 1) {
+                                modificaSpesa.setVisibility(View.VISIBLE);
+                                eliminaSpesa.setVisibility(View.VISIBLE);
+                            } else if (countSelectedCards(listSpesaCards) == 2){
+                                modificaSpesa.setVisibility(View.GONE);
+                            }
+                            return true;
+                        }
+                    });
                 }
             }
         });
@@ -244,9 +293,13 @@ public class SpeseFragment extends Fragment {
         progressText.setText(formattedText);
     }
 
+    public int countSelectedCards(ArrayList<MaterialCardView> cardList) {
+        int selectedCount = 0;
+        for (MaterialCardView card : cardList) {
+            if (card.isSelected())
+                selectedCount++;
+        }
+        return selectedCount;  // Restituisce il numero di card selezionate
+    }
 
 }
-
-
-
-
