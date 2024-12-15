@@ -122,7 +122,7 @@
         app:errorEnabled="true"
         app:helperTextEnabled="true"
         app:counterEnabled="true"
-        app:counterMaxLength="18">
+        app:counterMaxLength="24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputDescription"
