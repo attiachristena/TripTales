@@ -41,6 +41,23 @@
     <string name="page_2">Mappa</string>
     <string name="page_3">Calendario</string>
     <string name="firstHomePageText">Non hai ancora creato nessun diario, comincia la tua avventura!</string>
+    <string name="pronto">Pronto a raccontare\nil tuo viaggio?</string>
+    <string name="accedi">Accedi</string>
+    <string name="registrati">Registrati</string>
+    <string name="email">Email</string>
+    <string name="freccetta" />
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="password_dimenticata">Password dimenticata?</string>
+    <string name="oppure">oppure</string>
+    <string name="accedi_con_google">Accedi con Google</string>
+    <string name="nome">Nome</string>
+    <string name="cognome">Cognome</string>
+    <string name="inserisci_la_tua_email">Inserisci la tua email</string>
+    <string name="invia_email">Invia email</string>
+    <string name="error_email_login">Controlla la tua email</string>
+    <string name="error_password_login">La password deve essere lunga almeno 8 caratteri: almeno 1 lettera, 1 numero e 1 carattere speciale</string>
+    <string name="benvenuto_nella_home">Benvenuto nella home</string>
 
 
 </resources>

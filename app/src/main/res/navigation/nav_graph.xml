@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/selezione">
+
+    <fragment
+        android:id="@+id/selezione"
+        android:name="com.unimib.triptales.ui.login.fragment.Selezione"
+        android:label="fragment_selezione"
+        tools:layout="@layout/fragment_selezione" >
+        <action
+            android:id="@+id/action_selezione_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_selezione_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.unimib.triptales.ui.login.fragment.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_passwordDimenticataFragment"
+            app:destination="@id/passwordDimenticataFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_homepageActivity"
+            app:destination="@id/homepageActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.unimib.triptales.ui.login.fragment.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" >
+        <action
+            android:id="@+id/action_signInFragment_to_homepageActivity"
+            app:destination="@id/homepageActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/passwordDimenticataFragment"
+        android:name="com.unimib.triptales.ui.login.fragment.PasswordDimenticataFragment"
+        android:label="fragment_password_dimenticata"
+        tools:layout="@layout/fragment_password_dimenticata" />
+    <activity
+        android:id="@+id/homepageActivity"
+        android:name="com.unimib.triptales.ui.homepage.HomepageActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+</navigation>
