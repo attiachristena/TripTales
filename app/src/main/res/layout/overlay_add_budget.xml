@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="140dp"
+    android:layout_marginTop="125dp"
     app:cardCornerRadius="20dp"
     android:backgroundTint="@color/background_overlays"
     app:layout_constraintEnd_toEndOf="parent"
