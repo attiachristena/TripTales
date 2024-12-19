@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="20dp"
+    tools:context=".AddTappaFragment">
+
+   <androidx.cardview.widget.CardView
+       app:cardCornerRadius="20dp"
+       android:layout_width="match_parent"
+       android:layout_height="400dp"
+       android:backgroundTint="@color/background_overlays"
+       android:outlineSpotShadowColor="@color/white"
+      android:id="@+id/cardAddTappa">
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:backgroundTint="@color/background_overlays"
+          android:layout_height="match_parent">
+
+
+         <TextView
+             android:id="@+id/textView3"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentTop="true"
+             android:layout_marginTop="42dp"
+             android:layout_marginEnd="13dp"
+             android:layout_toStartOf="@+id/save_tappa_btn"
+             android:fontFamily="@font/poppins_bold"
+             android:gravity="center"
+             android:text="Aggiungi una tappa"
+             android:textColor="@color/black"
+             android:textSize="20sp" />
+
+         <ImageButton
+             android:id="@+id/save_tappa_btn"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentTop="true"
+             android:layout_alignParentEnd="true"
+             android:layout_marginTop="36dp"
+             android:layout_marginEnd="6dp"
+             android:backgroundTint="@color/background_overlays"
+             android:foregroundGravity="center"
+             android:src="@drawable/baseline_done" />
+
+         <ImageButton
+             android:id="@+id/backTappaBtn"
+             android:layout_width="43dp"
+             android:layout_height="wrap_content"
+             android:layout_alignParentStart="true"
+             android:layout_alignParentTop="true"
+             android:layout_marginStart="41dp"
+             android:layout_marginTop="39dp"
+             android:layout_marginEnd="5dp"
+             android:layout_toStartOf="@+id/textView3"
+             android:backgroundTint="@color/background_overlays"
+             android:foregroundGravity="center"
+             android:src="@drawable/baseline_arrow_back_ios_24" />
+
+         <EditText
+             android:id="@+id/editTextTappa"
+             android:layout_width="327dp"
+             android:layout_height="50dp"
+             android:layout_alignParentStart="true"
+             android:layout_alignParentEnd="true"
+             android:layout_alignParentBottom="true"
+             android:layout_marginStart="20dp"
+             android:layout_marginEnd="20dp"
+             android:layout_marginBottom="247dp"
+             android:fontFamily="@font/poppins_regular"
+             android:gravity="center"
+             android:hint="Nome tappa" />
+
+         <Button
+             android:id="@+id/inserisciImmagineTappa"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentStart="true"
+             android:layout_alignParentEnd="true"
+             android:layout_alignParentBottom="true"
+             android:layout_marginStart="67dp"
+             android:layout_marginEnd="70dp"
+             android:layout_marginBottom="65dp"
+             android:background="@drawable/edit_text_background"
+             android:backgroundTint="@color/primary"
+             android:fontFamily="@font/poppins_regular"
+             android:gravity="center"
+             android:text="Inserisci un'immagine" />
+
+         <EditText
+             android:id="@+id/dataTappa"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_above="@+id/inserisciImmagineTappa"
+             android:layout_alignParentStart="true"
+             android:layout_alignParentEnd="true"
+             android:layout_marginStart="71dp"
+             android:layout_marginEnd="74dp"
+             android:layout_marginBottom="54dp"
+             android:hint="Inserisci la data della tappa"
+             android:inputType="date" />
+      </RelativeLayout>
+
+
+   </androidx.cardview.widget.CardView>
+
+
+</FrameLayout>

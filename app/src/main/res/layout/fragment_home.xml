@@ -8,7 +8,7 @@
         android:id="@+id/text_empty_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/firstHomePageText"
+        android:text="Non hai ancora creato nessun diario, comincia la tua avventura!"
         android:textSize="16sp"
         android:layout_centerInParent="true"
         android:gravity="center" />
@@ -21,7 +21,7 @@
         app:rippleColor="@color/light_gray"
         android:contentDescription="Add Diary"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentBottom="true" 
         android:src="@drawable/round_add_24"
         android:elevation="4dp"
         android:background="@drawable/rounded_button"

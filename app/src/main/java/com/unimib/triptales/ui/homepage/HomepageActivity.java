@@ -1,3 +1,4 @@
+
 package com.unimib.triptales.ui.homepage;
 
 import androidx.appcompat.app.AppCompatActivity;

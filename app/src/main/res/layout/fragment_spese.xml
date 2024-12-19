@@ -67,7 +67,7 @@
                     app:tint="@color/white"
                     android:backgroundTint="@color/secondary"
                     android:contentDescription="@string/buttonEditDescription"
-                    android:src="@drawable/baseline_mode_edit_24" />
+                    android:src="@drawable/baseline_pen" />
 
             </LinearLayout>
 
