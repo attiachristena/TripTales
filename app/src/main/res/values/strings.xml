@@ -40,6 +40,7 @@
     <string name="page_1">Diari</string>
     <string name="page_2">Mappa</string>
     <string name="page_3">Calendario</string>
+    <string name="snackbarErroreBudget">Imposta il budget!</string>
     <string name="firstHomePageText">Non hai ancora creato nessun diario, comincia la tua avventura!</string>
 
 
