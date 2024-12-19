@@ -28,7 +28,7 @@
              android:layout_alignParentTop="true"
              android:layout_marginTop="42dp"
              android:layout_marginEnd="13dp"
-             android:layout_toStartOf="@+id/imageButton"
+             android:layout_toStartOf="@+id/save_tappa_btn"
              android:fontFamily="@font/poppins_bold"
              android:gravity="center"
              android:text="Aggiungi una tappa"
@@ -36,7 +36,7 @@
              android:textSize="20sp" />
 
          <ImageButton
-             android:id="@+id/imageButton"
+             android:id="@+id/save_tappa_btn"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_alignParentTop="true"
@@ -48,6 +48,7 @@
              android:src="@drawable/baseline_done" />
 
          <ImageButton
+             android:id="@+id/backTappaBtn"
              android:layout_width="43dp"
              android:layout_height="wrap_content"
              android:layout_alignParentStart="true"
@@ -75,7 +76,7 @@
              android:hint="Nome tappa" />
 
          <Button
-             android:id="@+id/button2"
+             android:id="@+id/inserisciImmagineTappa"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_alignParentStart="true"
@@ -90,21 +91,18 @@
              android:gravity="center"
              android:text="Inserisci un'immagine" />
 
-         <Button
-             android:id="@+id/btn_select_date"
-             android:layout_width="215dp"
+         <EditText
+             android:id="@+id/dataTappa"
+             android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_above="@+id/button2"
+             android:layout_above="@+id/inserisciImmagineTappa"
              android:layout_alignParentStart="true"
              android:layout_alignParentEnd="true"
-             android:layout_marginStart="78dp"
-             android:layout_marginEnd="78dp"
-             android:layout_marginBottom="46dp"
-             android:background="@drawable/edit_text_background"
-             android:backgroundTint="@color/primary"
-             android:fontFamily="@font/poppins_regular"
-             android:gravity="center"
-             android:text="Seleziona data" />
+             android:layout_marginStart="71dp"
+             android:layout_marginEnd="74dp"
+             android:layout_marginBottom="54dp"
+             android:hint="Inserisci la data della tappa"
+             android:inputType="date" />
       </RelativeLayout>
 
 
