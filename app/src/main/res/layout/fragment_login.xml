@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ui.login.fragment.LoginFragment"
-    android:background="@drawable/foto_mongolfiere__migliorata_">
+    android:background="@drawable/airplane_cabin_cartoon_scene">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -48,7 +48,7 @@
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background" />
+                android:background="@drawable/edit_text_background_login" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background"
+                android:background="@drawable/edit_text_background_login"
                 android:inputType="textPassword"/>
 
             <Button

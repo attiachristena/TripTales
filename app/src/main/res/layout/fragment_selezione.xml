@@ -4,23 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/foto_mongolfiere__migliorata_"
-    android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.login.fragment.Selezione">
+    tools:context=".ui.login.fragment.Selezione"
+    android:background="@drawable/airplane_cabin_cartoon_scene">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="210dp"
+        android:layout_marginTop="200dp"
         android:gravity="center"
         android:text="@string/pronto"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.PopupMenu.Header"
-        android:textSize="25sp"
+        android:fontFamily="@font/montserrat_bold"
+        android:textColor="@color/brown"
+        android:textSize="27sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <Button
         android:id="@+id/accedi"
@@ -30,15 +31,16 @@
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="270dp"
+        android:fontFamily="@font/montserrat_bold"
         android:text="@string/accedi"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        app:backgroundTint="#CDBAA9"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:backgroundTint="@color/light_brown2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
     <Button
         android:id="@+id/registrati"
@@ -49,14 +51,14 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="100dp"
         android:text="@string/registrati"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        app:backgroundTint="#CDBAA9"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:fontFamily="@font/montserrat_bold"
+        app:backgroundTint="@color/cream"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/accedi" />
-
+        app:layout_constraintTop_toBottomOf="@+id/accedi"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

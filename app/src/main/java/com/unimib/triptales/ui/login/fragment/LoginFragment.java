@@ -45,37 +45,14 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        //DA FINIRE
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
-
-        toolbar.setNavigationOnClickListener(v -> {
-            // Navigate back to the SelectionFragment
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_login, new Selezione())
-                    .addToBackStack(null)
-                    .commit();
-        });
-
-        toolbar.inflateMenu(R.menu.menu_register);
-        toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.action_register) {
-                navigateToSignInFragment();
-                return true;
-            }
-            return false;
-        });
-
         editTextEmail = view.findViewById(R.id.textInputEmail);
         editTextPassword = view.findViewById(R.id.textInputPassword);
 
         Button loginButton = view.findViewById(R.id.loginButton);
 
         loginButton.setOnClickListener(v -> {
-            if (editTextEmail.getText() != null && isEmailOk(editTextEmail.getText().toString())) {
-                if (editTextPassword.getText() != null && isPasswordOk(editTextPassword.getText().toString())) {
+            if (!TextUtils.isEmpty(editTextEmail.getText()) && isEmailOk(editTextEmail.getText().toString())) {
+                if (!TextUtils.isEmpty(editTextPassword.getText()) && isPasswordOk(editTextPassword.getText().toString())) {
                     Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_homepageActivity);
                 } else {
                     editTextPassword.setError(getString(R.string.error_password_login));
@@ -91,13 +68,6 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void navigateToSignInFragment() {
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.loginFragment, new SignInFragment())
-                .addToBackStack(null)
-                .commit();
-    }
-
     private boolean isPasswordOk(String password) {
         Pattern pattern;
         Matcher matcher;
@@ -109,6 +79,6 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean isEmailOk(String email) {
-        return (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches());
+        return (Patterns.EMAIL_ADDRESS.matcher(email).matches());
     }
 }

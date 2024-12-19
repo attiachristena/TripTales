@@ -9,4 +9,11 @@
     <color name="light_gray">#D9D9D9</color>
     <color name="background_overlays">#F5F5F5</color>
     <color name="error">#EE0000</color>
+    <color name="brown">#493628</color>
+    <color name="light_brown">#AB886D</color>
+    <color name="light_brown2">#B57F63</color>
+    <color name="cream">#CDBAA9</color>
+    <color name="maroon">#9A3B3B</color>
+    <color name="orange">#FFA62F</color>
+    <color name="light_orange">#FFC96F</color>
 </resources>

@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 public class SignInFragment extends Fragment {
 
-    private TextInputEditText editTextEmail, editTextPassword;
+    private TextInputEditText editTextNome, editTextCognome, editTextEmail, editTextPassword;
 
     public SignInFragment() {
     }
@@ -38,20 +38,30 @@ public class SignInFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        editTextNome = view.findViewById(R.id.textInputNome);
+        editTextCognome = view.findViewById(R.id.textInputCognome);
         editTextEmail = view.findViewById(R.id.textInputEmail);
         editTextPassword = view.findViewById(R.id.textInputPassword);
 
         Button signInButton = view.findViewById(R.id.signInButton);
 
         signInButton.setOnClickListener(v -> {
-            if (editTextEmail.getText() != null && isEmailOk(editTextEmail.getText().toString())) {
-                if (editTextPassword.getText() != null && isPasswordOk(editTextPassword.getText().toString())) {
-                    Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_homepageActivity);
+            if (!TextUtils.isEmpty(editTextNome.getText())) {
+                if (!TextUtils.isEmpty(editTextCognome.getText())) {
+                    if (!TextUtils.isEmpty(editTextEmail.getText()) && isEmailOk(editTextEmail.getText().toString())) {
+                        if (!TextUtils.isEmpty(editTextPassword.getText()) && isPasswordOk(editTextPassword.getText().toString())) {
+                            Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_homepageActivity);
+                        } else {
+                            editTextPassword.setError(getString(R.string.error_password_login));
+                        }
+                    } else {
+                        editTextEmail.setError(getString(R.string.error_email_login));
+                    }
                 } else {
-                    editTextPassword.setError(getString(R.string.error_password_login));
+                    editTextCognome.setError("Compila con il tuo cognome");
                 }
             } else {
-                editTextEmail.setError(getString(R.string.error_email_login));
+                editTextNome.setError("Compila con il tuo nome");
             }
         });
     }
@@ -67,6 +77,6 @@ public class SignInFragment extends Fragment {
     }
 
     private boolean isEmailOk(String email) {
-        return (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches());
+        return (Patterns.EMAIL_ADDRESS.matcher(email).matches());
     }
 }
