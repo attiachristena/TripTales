@@ -3,5 +3,5 @@
     <solid android:color="#FFFFFF"/> <!-- Colore di sfondo -->
     <stroke android:color="#D9D9D9" android:width="2dp"/>
     <padding android:left="10dp" android:top="10dp" android:right="10dp" android:bottom="10dp"/> <!-- Colore e larghezza del bordo -->
-    <corners android:radius="10dp"/> <!-- Raggio degli angoli -->
+    <corners android:radius="40dp"/> <!-- Raggio degli angoli -->
 </shape>
