@@ -22,7 +22,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@+id/salvaTappaButton"
+            android:layout_toStartOf="@+id/salvaModificaTappaButton"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
             android:text="Aggiungi una tappa"
@@ -31,7 +31,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/salvaTappaButton"
+            android:id="@+id/salvaModificaTappaButton"
             android:layout_width="83dp"
             android:layout_height="40dp"
             android:layout_alignParentTop="true"
@@ -48,7 +48,7 @@
             android:textColor="@color/white" />
 
         <ImageButton
-            android:id="@+id/backTappaButton"
+            android:id="@+id/backModificaTappaButton"
             android:layout_width="22dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -61,7 +61,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editNomeTappa"
+            android:id="@+id/editModificaNomeTappa"
             android:layout_width="327dp"
             android:layout_height="50dp"
             android:layout_below="@+id/textView3"
@@ -76,10 +76,10 @@
             android:hint="Nome tappa" />
 
         <Button
-            android:id="@+id/inserisciImmagineTappaButton"
+            android:id="@+id/inserisciImmagineModificaTappaButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editDataTappa"
+            android:layout_below="@+id/editModificaDataTappa"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="50dp"
@@ -92,10 +92,10 @@
             android:text="Inserisci un'immagine" />
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editDataTappa"
+            android:id="@+id/editModificaDataTappa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editNomeTappa"
+            android:layout_below="@+id/editModificaNomeTappa"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="40dp"
@@ -108,10 +108,10 @@
             android:inputType="date" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/immagineTappa"
+            android:id="@+id/immagineModificaTappa"
             android:layout_width="381dp"
             android:layout_height="181dp"
-            android:layout_below="@id/editDataTappa"
+            android:layout_below="@id/editModificaDataTappa"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="17dp"

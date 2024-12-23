@@ -42,6 +42,8 @@
     <string name="page_3">Calendario</string>
     <string name="snackbarErroreBudget">Imposta il budget!</string>
     <string name="firstHomePageText">Non hai ancora creato nessun diario, comincia la tua avventura!</string>
+    <string name="tappe">Tappe</string>
+    <string name="titolo_diario">Titolo Diario</string>
 
 
 </resources>
