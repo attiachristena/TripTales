@@ -25,7 +25,7 @@
             android:layout_toStartOf="@+id/salvaModificaTappaButton"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:text="Aggiungi una tappa"
+            android:text="@string/aggiungi_una_tappa_modificata"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -40,7 +40,6 @@
             android:layout_marginStart="26dp"
             android:layout_marginTop="26dp"
             android:layout_marginEnd="14dp"
-            android:layout_weight="1"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/secondary"
             android:text="@string/saveButton"
@@ -73,7 +72,7 @@
             android:fontFamily="@font/poppins_regular"
             android:background="@drawable/edit_text_background"
             android:gravity="center"
-            android:hint="Nome tappa" />
+            android:hint="@string/nome_tappa_modificata" />
 
         <Button
             android:id="@+id/inserisciImmagineModificaTappaButton"
@@ -89,7 +88,7 @@
             android:backgroundTint="@color/primary"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:text="Inserisci un'immagine" />
+            android:text="@string/inserisci_un_immagine_modifica" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editModificaDataTappa"
@@ -104,11 +103,11 @@
             android:fontFamily="@font/poppins_regular"
             android:background="@drawable/edit_text_background"
             android:gravity="center"
-            android:hint="Data tappa"
+            android:hint="@string/data_tappa_modificata"
             android:inputType="date" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/immagineModificaTappa"
+            android:id="@+id/anteprimaImmagineModificata"
             android:layout_width="381dp"
             android:layout_height="181dp"
             android:layout_below="@id/editModificaDataTappa"
@@ -119,19 +118,19 @@
             android:layout_marginEnd="13dp"
             android:scaleType="centerCrop"
             app:shapeAppearance="@style/roundedImage"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <TextView
-            android:id="@+id/anteprimaImmagine"
+            android:id="@+id/testoAnteprimaImmagineModificata"
             android:layout_width="match_parent"
             android:layout_height="31dp"
-            android:layout_below="@+id/inserisciImmagineTappaButton"
+            android:layout_below="@+id/inserisciImmagineModificaTappaButton"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="104dp"
             android:layout_marginBottom="101dp"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:text="Anteprima immagine"
+            android:text="@string/anteprima_immagine_modificata"
             android:textColor="@color/primary"
             android:textSize="20sp"
             android:textStyle="bold" />
