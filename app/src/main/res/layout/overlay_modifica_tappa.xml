@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:backgroundTint="@color/background_overlays"
     android:id="@+id/cardAddTappa"
+    android:theme="@style/Base.Theme.TripTales"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout

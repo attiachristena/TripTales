@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Base.Theme.TripTales"
     android:id="@+id/layoutTappe"
     android:padding="10dp">
 
@@ -36,11 +37,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/diary_title" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="170dp"
         tools:layout_editor_absoluteX="4dp"
+        app:shapeAppearance="@style/roundedImage"
         android:src="@drawable/ic_launcher_background"
         android:scaleType="fitXY"
         tools:layout_editor_absoluteY="8dp" />
@@ -120,13 +122,13 @@
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/background_dark"
         android:elevation="4dp"
         android:src="@drawable/baseline_delete_outline_24"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/modificaTappa"
+        app:layout_constraintBottom_toTopOf="@+id/addTappaButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.976"
         app:layout_constraintStart_toStartOf="parent"
@@ -138,13 +140,12 @@
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/background_dark"
         android:elevation="4dp"
         android:src="@drawable/baseline_pen"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/addTappaButton"
+        app:layout_constraintBottom_toTopOf="@+id/eliminaTappa"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.976"
         app:layout_constraintStart_toStartOf="parent"

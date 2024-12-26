@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:backgroundTint="@color/background_overlays"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.diario.TappaActivity">
+
+    <ImageButton
+        android:id="@+id/backToTappaFragment"
+        android:layout_width="27dp"
+        android:layout_height="43dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/background_overlays"
+        android:contentDescription="@string/pulsante_per_tornare_indietro"
+        android:src="@drawable/baseline_arrow_back_ios_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nomeTappa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="center"
+        android:text="@string/nome_tappa"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.053"
+        app:layout_constraintStart_toEndOf="@+id/backToTappaFragment"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/dataTappa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="center"
+        android:text="Data Tappa"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.904"
+        app:layout_constraintStart_toEndOf="@+id/nomeTappa"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/immagineTappaItem"
+        android:layout_width="411dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="16dp"
+        android:padding="5dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_launcher_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nomeTappa"
+        app:shapeAppearance="@style/roundedImage" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/descrizioneTappa"
+        android:layout_width="374dp"
+        android:layout_height="138dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edit_text_background"
+        android:backgroundTint="@color/background_overlays"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="start"
+        android:hint="Inserisici una breve descrizione della tappa!"
+        android:textColorHint="@color/primary"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/immagineTappaItem" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/carouselRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="24dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:scrollbars="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/descrizioneTappa"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
+        android:id="@+id/aggiungiImmagineCar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/secondary"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="center"
+        android:text="Aggiungi un'immagine"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
