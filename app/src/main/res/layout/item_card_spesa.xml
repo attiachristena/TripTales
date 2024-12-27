@@ -32,11 +32,11 @@
             android:focusable="false">
 
             <ImageView
+                android:id="@+id/cardSpesaIcon"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:scaleType="center"
-                android:src="@drawable/baseline_directions_bus_24"
                 android:clickable="false"
                 android:focusable="false"/>
 

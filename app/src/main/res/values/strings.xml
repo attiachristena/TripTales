@@ -25,7 +25,6 @@
     <string name="spesa_amount">30€</string>
     <string name="add_button_spese_description">add button per le spese</string>
     <string name="percentualeSpesa">0 / 0 spent (0%)</string>
-    <string name="progress_text">%1$d / %2$d spent (%3$d%%)</string>
     <string name="hintBudget">Quantità</string>
     <string name="editBudgetTitle">Modifica budget</string>
     <string name="saveButton">Salva</string>
@@ -35,7 +34,10 @@
     <string name="addSpesaCardTitle">Aggiungi spesa</string>
     <string name="hintDescription">Descrizione</string>
     <string name="hintCategoria">Categoria</string>
-    <string name="hintDate">Data</string>
+    <string name="hintDay">Giorno</string>
+    <string name="hintMonth">Mese</string>
+    <string name="hintYear">Anno</string>
+    <string name="dataCompleta">%1$d/%2$d/%3$d</string>
     <string name="triptales">TripTales</string>
     <string name="page_1">Diari</string>
     <string name="page_2">Mappa</string>
@@ -59,6 +61,7 @@
     <string name="error_email_login">Controlla la tua email</string>
     <string name="error_password_login">La password deve essere lunga almeno 8 caratteri: almeno 1 lettera, 1 numero e 1 carattere speciale</string>
     <string name="benvenuto_nella_home">Benvenuto nella home</string>
-
+    <string name="totalespesa">"Spesa totale: "</string>
+    <string name="SeparatoreData">/</string>
 
 </resources>

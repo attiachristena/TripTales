@@ -73,7 +73,7 @@
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:startIconDrawable="@drawable/baseline_attach_money_24"
+    app:startIconDrawable="@drawable/baseline_euro_24"
     app:errorEnabled="true"
     app:helperTextEnabled="true">
 
