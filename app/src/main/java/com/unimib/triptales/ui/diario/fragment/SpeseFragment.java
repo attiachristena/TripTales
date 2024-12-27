@@ -55,11 +55,15 @@ public class SpeseFragment extends Fragment {
     String inputQuantitaSpesa;
     String inputCategoria;
     String inputDescrizione;
-    String inputData;
+    Integer inputDay;
+    Integer inputMonth;
+    Integer inputYear;
     EditText editTextQuantitaSpesa;
     AutoCompleteTextView editTextCategoria;
     EditText editTextDescrizione;
-    EditText editTextData;
+    EditText editTextDay;
+    EditText editTextMonth;
+    EditText editTextYear;
     ConstraintLayout rootLayout;
     FloatingActionButton modificaSpesa;
     FloatingActionButton eliminaSpesa;
@@ -74,11 +78,15 @@ public class SpeseFragment extends Fragment {
     String inputModificaQuantitaSpesa;
     String inputModificaCategoria;
     String inputModificaDescrizione;
-    String inputModificaData;
+    Integer inputModifyDay;
+    Integer inputModifyMonth;
+    Integer inputModifyYear;
     EditText editTextModificaQuantitaSpesa;
     AutoCompleteTextView editTextModificaCategoria;
     EditText editTextModificaDescrizione;
-    EditText editTextModificaData;
+    EditText editTextModifyDay;
+    EditText editTextModifyMonth;
+    EditText editTextModifyYear;
     View overlay_modifica_spesa;
     Button filterButton;
     ImageButton closeFilter;
@@ -127,7 +135,7 @@ public class SpeseFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_add_budget.setVisibility(View.GONE);
-                hideKeyboard(numberEditText);
+                hideKeyboard(view);
                 addSpesa.setVisibility(View.VISIBLE);
             }
         });
@@ -144,14 +152,14 @@ public class SpeseFragment extends Fragment {
                 if (inputText.isEmpty()) {
                     numberEditText.setError("Il campo non può essere vuoto");
                 } else if (inputText.length() > 8) {
-                    numberEditText.setError("Il budget è troppo alto");
+                    numberEditText.setError("Inserisci un numero più basso");
                 } else {
                     // Testo valido
                     numberEditText.setError(null);
                     budget = Integer.parseInt(inputText);
                     budgetText.setText(getString(R.string.stringaCosto, budget));
                     updateProgressIndicator(spent, budget, 0);
-                    hideKeyboard(numberEditText);
+                    hideKeyboard(view);
                     overlay_add_budget.setVisibility(View.GONE);
                     addSpesa.setVisibility(View.VISIBLE);
                 }
@@ -177,7 +185,9 @@ public class SpeseFragment extends Fragment {
                     editTextQuantitaSpesa.setText("");
                     editTextCategoria.setText("");
                     editTextDescrizione.setText("");
-                    editTextData.setText("");
+                    editTextDay.setText("");
+                    editTextMonth.setText("");
+                    editTextYear.setText("");
                     nuovaSpesa = true;
                 }
             }
@@ -189,7 +199,7 @@ public class SpeseFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_add_spesa.setVisibility(View.GONE);
-                hideKeyboard(editTextData);
+                hideKeyboard(view);
                 addSpesa.setVisibility(View.VISIBLE);
             }
         });
@@ -199,7 +209,9 @@ public class SpeseFragment extends Fragment {
         editTextQuantitaSpesa = view.findViewById(R.id.inputQuantitaSpesa);
         editTextCategoria = view.findViewById(R.id.inputCategory);
         editTextDescrizione = view.findViewById(R.id.inputDescription);
-        editTextData = view.findViewById(R.id.inputDate);
+        editTextDay = view.findViewById(R.id.inputDay);
+        editTextMonth = view.findViewById(R.id.inputMonth);
+        editTextYear = view.findViewById(R.id.inputYear);
         indice = 0;
         modificaSpesa = view.findViewById(R.id.modificaSpesa);
         eliminaSpesa = view.findViewById(R.id.eliminaSpesa);
@@ -225,11 +237,12 @@ public class SpeseFragment extends Fragment {
                 inputDescrizione = editTextDescrizione.getText().toString().trim();
 
                 TextView dataSpesa = card.findViewById(R.id.dateTextView);
-                inputData = editTextData.getText().toString().trim();
+                inputDay = Integer.parseInt(editTextDay.getText().toString());
+                inputMonth = Integer.parseInt(editTextMonth.getText().toString());
+                inputYear = Integer.parseInt(editTextYear.getText().toString());
 
                 TextView amount = card.findViewById(R.id.amountTextView);
                 inputQuantitaSpesa = editTextQuantitaSpesa.getText().toString().trim();
-
 
                 if (inputQuantitaSpesa.isEmpty()) {
                     editTextQuantitaSpesa.setError("Inserisci una quantità");
@@ -239,24 +252,35 @@ public class SpeseFragment extends Fragment {
                     editTextDescrizione.setError("Inserisci una descrizione");
                 }else if (inputDescrizione.length() > 18){
                     editTextDescrizione.setError("La descrizione supera il massimo di caratteri");
-                } else if (inputData.isEmpty()) {
-                    editTextData.setError("Inserisci una data");
-                }else if (inputData.length() > 10){
-                    editTextData.setError("La data supera il massimo di caratteri");
+                } else if (inputDay == null) {
+                    editTextDay.setError("Inserisci un giorno");
+                } else if (inputDay < 1 || inputDay > 31) {
+                    editTextDay.setError("Inserisci un giorno valido");
+                } else if (inputMonth == null) {
+                    editTextMonth.setError("Inserisci un mese");
+                } else if (inputMonth < 1 || inputMonth > 12) {
+                    editTextMonth.setError("Inserisci un mese valido");
+                } else if (inputYear == null) {
+                    editTextYear.setError("Inserisci un anno");
+                } else if (inputYear < 2000 || inputYear > 2100) {
+                    editTextYear.setError("Inserisci un anno valido");
                 } else {
                     editTextCategoria.setError(null);
                     category.setText(inputCategoria);
                     editTextDescrizione.setError(null);
                     description.setText(inputDescrizione);
-                    editTextData.setError(null);
-                    dataSpesa.setText(inputData);
+                    editTextDay.setError(null);
+                    editTextMonth.setError(null);
+                    editTextYear.setError(null);
+                    String dataCompleta = getString(R.string.dataCompleta, inputDay, inputMonth, inputYear);
+                    dataSpesa.setText(dataCompleta);
                     editTextQuantitaSpesa.setError(null);
                     double spesa = Double.parseDouble(inputQuantitaSpesa);
                     updateProgressIndicator(spesa, budget, 1);
                     String s = spesa + "€";
                     amount.setText(s);
 
-                    ImageView icon = card.findViewById(R.id.cardSpesaIcon);
+                    ImageView icon = view.findViewById(R.id.cardSpesaIcon);
 
                     if(inputCategoria.equalsIgnoreCase("Shopping")){
                         icon.setImageResource(R.drawable.baseline_shopping_cart_24);
@@ -274,7 +298,7 @@ public class SpeseFragment extends Fragment {
 
                     // Aggiungi la nuova CardView al layout genitore
                     spesaCardsContainer.addView(card);
-                    hideKeyboard(editTextData);
+                    hideKeyboard(view);
                     overlay_add_spesa.setVisibility(View.GONE);
                     addSpesa.setVisibility(View.VISIBLE);
                     MaterialCardView cardSpesaCorrente = (MaterialCardView) spesaCardsContainer.getChildAt(indice);
@@ -363,8 +387,9 @@ public class SpeseFragment extends Fragment {
                 editTextModificaCategoria.setText(cardCategoria.getText().toString().trim());
                 TextView cardDescrizione = card.findViewById(R.id.descriptionTextView);
                 editTextModificaDescrizione.setText(cardDescrizione.getText().toString().trim());
-                TextView cardData = card.findViewById(R.id.dateTextView);
-                editTextModificaData.setText(cardData.getText().toString().trim());
+                editTextModifyDay.setText(inputDay);
+                editTextModifyMonth.setText(inputMonth);
+                editTextModifyYear.setText(inputYear);
 
                 addSpesa.setVisibility(View.GONE);
                 modificaSpesa.setVisibility(View.GONE);
@@ -378,7 +403,7 @@ public class SpeseFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_modifica_spesa.setVisibility(View.GONE);
-                hideKeyboard(editTextData);
+                hideKeyboard(view);
                 addSpesa.setVisibility(View.VISIBLE);
                 modificaSpesa.setVisibility(View.VISIBLE);
                 eliminaSpesa.setVisibility(View.VISIBLE);
@@ -389,7 +414,9 @@ public class SpeseFragment extends Fragment {
         editTextModificaQuantitaSpesa = view.findViewById(R.id.inputModificaQuantitaSpesa);
         editTextModificaCategoria = view.findViewById(R.id.inputModificaCategory);
         editTextModificaDescrizione = view.findViewById(R.id.inputModificaDescription);
-        editTextModificaData = view.findViewById(R.id.inputModificaDate);
+        editTextModifyDay = view.findViewById(R.id.inputModifyDay);
+        editTextModifyMonth = view.findViewById(R.id.inputModifyMonth);
+        editTextModifyYear = view.findViewById(R.id.inputModifyYear);
         editTextModificaCategoria.setAdapter(adapter);
 
         saveModificaSpesa.setOnClickListener(new View.OnClickListener() {
@@ -412,7 +439,9 @@ public class SpeseFragment extends Fragment {
                 inputModificaDescrizione = editTextModificaDescrizione.getText().toString().trim();
 
                 TextView dataSpesa = card.findViewById(R.id.dateTextView);
-                inputModificaData = editTextModificaData.getText().toString().trim();
+                inputModifyDay = Integer.parseInt(editTextModifyDay.getText().toString());
+                inputModifyMonth = Integer.parseInt(editTextModifyMonth.getText().toString());
+                inputModifyYear = Integer.parseInt(editTextModifyYear.getText().toString());
 
                 inputModificaQuantitaSpesa = editTextModificaQuantitaSpesa.getText().toString().trim();
 
@@ -424,18 +453,33 @@ public class SpeseFragment extends Fragment {
                     editTextModificaDescrizione.setError("Inserisci una descrizione");
                 }else if (inputModificaDescrizione.length() > 18){
                     editTextModificaDescrizione.setError("La descrizione supera il massimo di caratteri");
-                } else if (inputModificaData.isEmpty()) {
-                    editTextModificaData.setError("Inserisci una data");
-                }else if (inputModificaData.length() > 10){
-                    editTextModificaData.setError("La data supera il massimo di caratteri");
+                } else if (inputModifyDay == null) {
+                    editTextModifyDay.setError("Inserisci un giorno");
+                } else if (inputModifyDay < 1 || inputModifyDay > 31) {
+                    editTextModifyDay.setError("Inserisci un giorno valido");
+                } else if (inputModifyMonth == null) {
+                    editTextModifyMonth.setError("Inserisci un mese");
+                } else if (inputModifyMonth < 1 || inputModifyMonth > 12) {
+                    editTextModifyMonth.setError("Inserisci un mese valido");
+                } else if (inputModifyYear == null) {
+                    editTextModifyYear.setError("Inserisci un anno");
+                } else if (inputYear < 2000 || inputYear > 2100) {
+                    editTextModifyYear.setError("Inserisci un anno valido");
                 } else {
                     editTextModificaCategoria.setError(null);
                     category.setText(inputModificaCategoria);
                     editTextModificaDescrizione.setError(null);
                     description.setText(inputModificaDescrizione);
-                    editTextModificaData.setError(null);
-                    dataSpesa.setText(inputModificaData);
+                    editTextModifyDay.setError(null);
+                    editTextModifyMonth.setError(null);
+                    editTextModifyYear.setError(null);
+                    String dataCompleta = getString(R.string.dataCompleta, inputModifyDay, inputModifyMonth, inputModifyYear);
+                    dataSpesa.setText(dataCompleta);
                     editTextModificaQuantitaSpesa.setError(null);
+
+                    inputDay = inputModifyDay;
+                    inputMonth = inputModifyMonth;
+                    inputYear = inputModifyYear;
 
                     ImageView icon = card.findViewById(R.id.cardSpesaIcon);
 
@@ -458,7 +502,7 @@ public class SpeseFragment extends Fragment {
                     String s = spesa + "€";
                     amountTextView.setText(s);
 
-                    hideKeyboard(editTextModificaData);
+                    hideKeyboard(view);
                     overlay_modifica_spesa.setVisibility(View.GONE);
                     addSpesa.setVisibility(View.VISIBLE);
                     addSpesa.setEnabled(true);

@@ -34,15 +34,16 @@
     <string name="addSpesaCardTitle">Aggiungi spesa</string>
     <string name="hintDescription">Descrizione</string>
     <string name="hintCategoria">Categoria</string>
-    <string name="hintDate">Data</string>
+    <string name="hintDay">Giorno</string>
+    <string name="hintMonth">Mese</string>
+    <string name="hintYear">Anno</string>
+    <string name="dataCompleta">%1$d/%2$d/%3$d</string>
     <string name="triptales">TripTales</string>
     <string name="page_1">Diari</string>
     <string name="page_2">Mappa</string>
     <string name="page_3">Calendario</string>
     <string name="snackbarErroreBudget">Imposta il budget!</string>
     <string name="firstHomePageText">Non hai ancora creato nessun diario, comincia la tua avventura!</string>
-<<<<<<< Updated upstream
-=======
     <string name="pronto">Pronto a raccontare\nil tuo viaggio?</string>
     <string name="accedi">Accedi</string>
     <string name="registrati">Registrati</string>
@@ -61,7 +62,7 @@
     <string name="error_password_login">La password deve essere lunga almeno 8 caratteri: almeno 1 lettera, 1 numero e 1 carattere speciale</string>
     <string name="benvenuto_nella_home">Benvenuto nella home</string>
     <string name="totalespesa">"Spesa totale: "</string>
->>>>>>> Stashed changes
+    <string name="SeparatoreData">/</string>
 
 
 </resources>
