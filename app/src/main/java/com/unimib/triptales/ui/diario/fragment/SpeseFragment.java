@@ -91,6 +91,12 @@ public class SpeseFragment extends Fragment {
     Button filterButton;
     ImageButton closeFilter;
     TextView totSpesa;
+    TextView filterText;
+    View overlay_filter;
+    AutoCompleteTextView editTextCategoryFilter;
+    String inputCategoryFilter;
+    ImageButton backButtonFilter;
+    Button saveCategory;
 
 
     @Override
@@ -216,10 +222,9 @@ public class SpeseFragment extends Fragment {
         modificaSpesa = view.findViewById(R.id.modificaSpesa);
         eliminaSpesa = view.findViewById(R.id.eliminaSpesa);
 
-        String[] items = {"Shopping", "Cibo", "Mezzi di trasporto", "Alloggio", "Cultura", "Svago"};
+        String[] items = {"Shopping", "Cibo", "Trasporto", "Alloggio", "Cultura", "Svago"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, items);
         editTextCategoria.setAdapter(adapter);
-
 
         saveSpesa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -280,13 +285,13 @@ public class SpeseFragment extends Fragment {
                     String s = spesa + "€";
                     amount.setText(s);
 
-                    ImageView icon = view.findViewById(R.id.cardSpesaIcon);
+                    ImageView icon = card.findViewById(R.id.cardSpesaIcon);
 
                     if(inputCategoria.equalsIgnoreCase("Shopping")){
                         icon.setImageResource(R.drawable.baseline_shopping_cart_24);
                     }else if(inputCategoria.equalsIgnoreCase("Cibo")) {
                         icon.setImageResource(R.drawable.baseline_fastfood_24);
-                    }else if(inputCategoria.equalsIgnoreCase("Mezzi di trasporto")) {
+                    }else if(inputCategoria.equalsIgnoreCase("Trasporto")) {
                         icon.setImageResource(R.drawable.baseline_directions_bus_24);
                     }else if(inputCategoria.equalsIgnoreCase("Alloggio")) {
                         icon.setImageResource(R.drawable.baseline_hotel_24);
@@ -384,12 +389,34 @@ public class SpeseFragment extends Fragment {
                 String amountCardSpesa = cardSpesa.getText().toString();
                 editTextModificaQuantitaSpesa.setText(amountCardSpesa.substring(0, amountCardSpesa.length()-1));
                 TextView cardCategoria = card.findViewById(R.id.categoryTextView);
-                editTextModificaCategoria.setText(cardCategoria.getText().toString().trim());
+                editTextModificaCategoria.setText(cardCategoria.getText().toString().trim(), false);
+
                 TextView cardDescrizione = card.findViewById(R.id.descriptionTextView);
                 editTextModificaDescrizione.setText(cardDescrizione.getText().toString().trim());
-                editTextModifyDay.setText(inputDay);
-                editTextModifyMonth.setText(inputMonth);
-                editTextModifyYear.setText(inputYear);
+
+                TextView cardData = card.findViewById(R.id.dateTextView);
+                String data = cardData.getText().toString().trim();
+
+                if(data.charAt(1) == '/'){
+                    inputModifyDay = (int)(data.charAt(0)) - '0';
+                    data = data.substring(2);
+                }else{
+                    inputModifyDay = Integer.parseInt(data.substring(0, 2));
+                    data = data.substring(3);
+                }
+                editTextModifyDay.setText(String.valueOf(inputModifyDay));
+
+                if(data.charAt(1) == '/'){
+                    inputModifyMonth =(int)(data.charAt(0)) - '0';
+                    data = data.substring(2);
+                }else{
+                    inputModifyMonth = Integer.parseInt(data.substring(0, 2));
+                    data = data.substring(3);
+                }
+                editTextModifyMonth.setText(String.valueOf(inputModifyMonth));
+
+                inputModifyYear = Integer.parseInt(data);
+                editTextModifyYear.setText(String.valueOf(inputModifyYear));
 
                 addSpesa.setVisibility(View.GONE);
                 modificaSpesa.setVisibility(View.GONE);
@@ -487,7 +514,7 @@ public class SpeseFragment extends Fragment {
                         icon.setImageResource(R.drawable.baseline_shopping_cart_24);
                     }else if(inputModificaCategoria.equalsIgnoreCase("Cibo")) {
                         icon.setImageResource(R.drawable.baseline_fastfood_24);
-                    }else if(inputModificaCategoria.equalsIgnoreCase("Mezzi di trasporto")) {
+                    }else if(inputModificaCategoria.equalsIgnoreCase("Trasporto")) {
                         icon.setImageResource(R.drawable.baseline_directions_bus_24);
                     }else if(inputModificaCategoria.equalsIgnoreCase("Alloggio")) {
                         icon.setImageResource(R.drawable.baseline_hotel_24);
@@ -515,16 +542,72 @@ public class SpeseFragment extends Fragment {
         });
 
         // Filter button
+        overlay_filter = inflater.inflate(R.layout.overlay_filter, rootLayout, false);
+        rootLayout.addView(overlay_filter);
+        overlay_filter.setVisibility(View.GONE);
 
         filterButton = view.findViewById(R.id.buttonFilter);
+        backButtonFilter = view.findViewById(R.id.backButtonFilter);
+        saveCategory = view.findViewById(R.id.saveCategory);
         closeFilter = view.findViewById(R.id.closeFilter);
         totSpesa = view.findViewById(R.id.totSpesa);
+        filterText = view.findViewById(R.id.testoFiltro);
+        editTextCategoryFilter = view.findViewById(R.id.inputCategoryFilter);
+        editTextCategoryFilter.setAdapter(adapter);
+
+        backButtonFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                overlay_filter.setVisibility(View.GONE);
+                addSpesa.setVisibility(View.VISIBLE);
+            }
+        });
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeFilter.setVisibility(View.VISIBLE);
-                totSpesa.setVisibility(View.VISIBLE);
+                overlay_filter.setVisibility(View.VISIBLE);
+                editTextCategoryFilter.setText("", false);
+                addSpesa.setVisibility(View.GONE);
+            }
+        });
+
+        saveCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inputCategoryFilter = editTextCategoryFilter.getText().toString().trim();
+                if (inputCategoryFilter.isEmpty()) {
+                    editTextCategoryFilter.setError("Scegli una categoria");
+                } else {
+                    ArrayList<MaterialCardView> filteredCards = filterByCategory(listSpesaCards, inputCategoryFilter);
+                    spesaCardsContainer.removeAllViews();
+                    for (View card : filteredCards) {
+                        spesaCardsContainer.addView(card);
+                    }
+                    double countSpese = countAmountByCategory(filteredCards);
+                    String s = countSpese + "€";
+                    totSpesa.setText(s);
+                    overlay_filter.setVisibility(View.GONE);
+                    closeFilter.setVisibility(View.VISIBLE);
+                    filterText.setVisibility(View.VISIBLE);
+                    totSpesa.setVisibility(View.VISIBLE);
+                    addSpesa.setVisibility(View.VISIBLE);
+                    addSpesa.setEnabled(false);
+                }
+            }
+        });
+
+        closeFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                spesaCardsContainer.removeAllViews();
+                for (View card : listSpesaCards) {
+                    spesaCardsContainer.addView(card);
+                }
+                closeFilter.setVisibility(View.GONE);
+                filterText.setVisibility(View.GONE);
+                totSpesa.setVisibility(View.GONE);
+                addSpesa.setEnabled(true);
             }
         });
 
@@ -555,7 +638,7 @@ public class SpeseFragment extends Fragment {
         progressIndicator.setProgress(progressPercentage);
         // aggiorna la descrizione del progress indicator
 
-        formattedText = spent + " / " + budget + " spent " + " (" + progressPercentage + "%)";
+        formattedText = spent + " / " + budget + " spesi " + " (" + progressPercentage + "%)";
         progressText.setText(formattedText);
 
     }
@@ -576,6 +659,32 @@ public class SpeseFragment extends Fragment {
                 selectedCard = card;
         }
         return selectedCard;
+    }
+
+    public ArrayList<MaterialCardView> filterByCategory(ArrayList<MaterialCardView> cardList, String category){
+        ArrayList<MaterialCardView> filteredCards = new ArrayList<>();
+
+        for (MaterialCardView card : cardList) {
+            TextView categoryTextView = card.findViewById(R.id.categoryTextView);
+            if (categoryTextView != null && categoryTextView.getText().toString().equalsIgnoreCase(category)) {
+                filteredCards.add(card);
+            }
+        }
+
+        return filteredCards;
+    }
+
+    public double countAmountByCategory(ArrayList<MaterialCardView> cardList){
+        double spesaTot = 0;
+        for (MaterialCardView card : cardList) {
+            TextView amountTextView = card.findViewById(R.id.amountTextView);
+            String amount = amountTextView.getText().toString().trim();
+            String realAmount = amount.substring(0, amount.length()-1);
+            double spesa = Double.parseDouble(realAmount);
+            spesaTot += spesa;
+        }
+
+        return spesaTot;
     }
 
 }

@@ -24,7 +24,7 @@
     <string name="prova_data_spesa">05/06/2022</string>
     <string name="spesa_amount">30€</string>
     <string name="add_button_spese_description">add button per le spese</string>
-    <string name="percentualeSpesa">0 / 0 spent (0%)</string>
+    <string name="percentualeSpesa">0 / 0 spesi (0%)</string>
     <string name="hintBudget">Quantità</string>
     <string name="editBudgetTitle">Modifica budget</string>
     <string name="saveButton">Salva</string>
@@ -34,9 +34,9 @@
     <string name="addSpesaCardTitle">Aggiungi spesa</string>
     <string name="hintDescription">Descrizione</string>
     <string name="hintCategoria">Categoria</string>
-    <string name="hintDay">Giorno</string>
-    <string name="hintMonth">Mese</string>
-    <string name="hintYear">Anno</string>
+    <string name="hintDay">GG</string>
+    <string name="hintMonth">MM</string>
+    <string name="hintYear">AAAA</string>
     <string name="dataCompleta">%1$d/%2$d/%3$d</string>
     <string name="triptales">TripTales</string>
     <string name="page_1">Diari</string>
@@ -61,7 +61,9 @@
     <string name="error_email_login">Controlla la tua email</string>
     <string name="error_password_login">La password deve essere lunga almeno 8 caratteri: almeno 1 lettera, 1 numero e 1 carattere speciale</string>
     <string name="benvenuto_nella_home">Benvenuto nella home</string>
-    <string name="totalespesa">"Spesa totale: "</string>
+    <string name="totalespesa">"Tot spesa della categoria: "</string>
     <string name="SeparatoreData">/</string>
+    <string name="titleFilter">Filtro categoria</string>
+    <string name="saveFilter">Filtra</string>
 
 </resources>
