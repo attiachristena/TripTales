@@ -5,5 +5,10 @@
         <item name="colorOnBackground">@color/white</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:statusBarColor">@color/primary</item>
+        <item name="colorControlActivated">@color/primary</item>
+        <item name="colorControlHighlight">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="popupMenuBackground">@color/white_dark</item>
+
     </style>
 </resources>

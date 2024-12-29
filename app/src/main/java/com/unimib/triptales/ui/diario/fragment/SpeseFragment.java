@@ -5,11 +5,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,19 +26,20 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.unimib.triptales.R;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Objects;
 
 
 public class SpeseFragment extends Fragment {
 
     int budget;
     double spent;
-    Button saveButton;
+    Button saveBudget;
     TextView progressText;
+    String inputBudget;
     ImageButton editBudget;
     ImageButton backButton;
     int progressPercentage;
@@ -72,7 +71,6 @@ public class SpeseFragment extends Fragment {
     View overlay_add_spesa;
     LayoutInflater inflater;
     View overlay_add_budget;
-    Boolean nuovaSpesa;
     ImageButton backButtonModificaSpesa;
     Button saveModificaSpesa;
     String inputModificaQuantitaSpesa;
@@ -96,7 +94,11 @@ public class SpeseFragment extends Fragment {
     AutoCompleteTextView editTextCategoryFilter;
     String inputCategoryFilter;
     ImageButton backButtonFilter;
+    ArrayList<MaterialCardView> filteredCards;
     Button saveCategory;
+    String inputCurrency;
+    String inputOldCurrency;
+    AutoCompleteTextView editTextCurrency;
 
 
     @Override
@@ -125,9 +127,9 @@ public class SpeseFragment extends Fragment {
         rootLayout.addView(overlay_add_budget);
         overlay_add_budget.setVisibility(View.GONE);
 
-        saveButton = view.findViewById(R.id.salvaBudget);
+        saveBudget = view.findViewById(R.id.salvaBudget);
         editBudget = view.findViewById(R.id.editBudget);
-        backButton = view.findViewById(R.id.backBudgetButton);
+        backButton = view.findViewById(R.id.backButtonBudget);
 
         editBudget.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,26 +150,42 @@ public class SpeseFragment extends Fragment {
 
         progressText = view.findViewById(R.id.progressText);
         numberEditText = view.findViewById(R.id.inputBudget);
+        editTextCurrency = view.findViewById(R.id.inputCurrency);
         budgetText = view.findViewById(R.id.totBudget);
         progressIndicator = view.findViewById(R.id.budgetProgressIndicator);
+        inputOldCurrency = editTextCurrency.getText().toString().trim();
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        String[] itemsCurrency = {"€", "$", "£", "¥"};
+        ArrayAdapter<String> adapterBudget = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, itemsCurrency);
+        editTextCurrency.setAdapter(adapterBudget);
+
+        saveBudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String inputText = numberEditText.getText().toString().trim();
-                if (inputText.isEmpty()) {
-                    numberEditText.setError("Il campo non può essere vuoto");
-                } else if (inputText.length() > 8) {
+                inputBudget = numberEditText.getText().toString().trim();
+                inputCurrency = editTextCurrency.getText().toString().trim();
+                if (inputBudget.isEmpty()) {
+                    numberEditText.setError("Inserisci una quantità");
+                } else if (inputCurrency.isEmpty()) {
+                    editTextCurrency.setError("Scegli una valuta");
+                } else if (inputBudget.length() > 8) {
                     numberEditText.setError("Inserisci un numero più basso");
                 } else {
-                    // Testo valido
                     numberEditText.setError(null);
-                    budget = Integer.parseInt(inputText);
-                    budgetText.setText(getString(R.string.stringaCosto, budget));
+                    budget = Integer.parseInt(inputBudget);
+                    String tmp;
+                    if(inputCurrency.equalsIgnoreCase("€"))
+                        tmp = budget+inputCurrency;
+                    else
+                        tmp = inputCurrency+budget;
+                    budgetText.setText(tmp);
                     updateProgressIndicator(spent, budget, 0);
                     hideKeyboard(view);
                     overlay_add_budget.setVisibility(View.GONE);
                     addSpesa.setVisibility(View.VISIBLE);
+                    updateCurrency();
+                    updateCurrencyIcon();
+                    inputOldCurrency = inputCurrency;
                 }
             }
         });
@@ -194,7 +212,6 @@ public class SpeseFragment extends Fragment {
                     editTextDay.setText("");
                     editTextMonth.setText("");
                     editTextYear.setText("");
-                    nuovaSpesa = true;
                 }
             }
         });
@@ -222,9 +239,9 @@ public class SpeseFragment extends Fragment {
         modificaSpesa = view.findViewById(R.id.modificaSpesa);
         eliminaSpesa = view.findViewById(R.id.eliminaSpesa);
 
-        String[] items = {"Shopping", "Cibo", "Trasporto", "Alloggio", "Cultura", "Svago"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, items);
-        editTextCategoria.setAdapter(adapter);
+        String[] itemsCategory = {"Shopping", "Cibo", "Trasporto", "Alloggio", "Cultura", "Svago"};
+        ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, itemsCategory);
+        editTextCategoria.setAdapter(adapterCategory);
 
         saveSpesa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,7 +249,6 @@ public class SpeseFragment extends Fragment {
 
                 // Usa LayoutInflater per creare una nuova CardView
                 View card = inflater.inflate(R.layout.item_card_spesa, spesaCardsContainer, false);
-
 
                 // Modifica il contenuto della card
                 TextView category = card.findViewById(R.id.categoryTextView);
@@ -282,8 +298,12 @@ public class SpeseFragment extends Fragment {
                     editTextQuantitaSpesa.setError(null);
                     double spesa = Double.parseDouble(inputQuantitaSpesa);
                     updateProgressIndicator(spesa, budget, 1);
-                    String s = spesa + "€";
-                    amount.setText(s);
+                    String tmp;
+                    if(inputCurrency.equalsIgnoreCase("€"))
+                        tmp = spesa+inputCurrency;
+                    else
+                        tmp = inputCurrency+spesa;
+                    amount.setText(tmp);
 
                     ImageView icon = card.findViewById(R.id.cardSpesaIcon);
 
@@ -333,10 +353,10 @@ public class SpeseFragment extends Fragment {
                                 cardSpesaCorrente.setStrokeColor(getResources().getColor(R.color.background_dark));
                                 cardSpesaCorrente.setSelected(true);
                             }
-                            if (countSelectedCards(listSpesaCards) == 1) {
+                            if (countSelectedCards() == 1) {
                                 modificaSpesa.setVisibility(View.VISIBLE);
                                 eliminaSpesa.setVisibility(View.VISIBLE);
-                            } else if (countSelectedCards(listSpesaCards) == 2){
+                            } else if (countSelectedCards() == 2){
                                 modificaSpesa.setVisibility(View.GONE);
                             }
                             return true;
@@ -383,11 +403,16 @@ public class SpeseFragment extends Fragment {
             public void onClick(View view) {
                 overlay_modifica_spesa.setVisibility(View.VISIBLE);
 
-                MaterialCardView card = findSelectedCard(listSpesaCards);
+                MaterialCardView card = findSelectedCard();
 
                 TextView cardSpesa = card.findViewById(R.id.amountTextView);
                 String amountCardSpesa = cardSpesa.getText().toString();
-                editTextModificaQuantitaSpesa.setText(amountCardSpesa.substring(0, amountCardSpesa.length()-1));
+                String tmp;
+                if(inputCurrency.equalsIgnoreCase("€"))
+                    tmp = amountCardSpesa.substring(0, amountCardSpesa.length()-1);
+                else
+                    tmp = amountCardSpesa.substring(1);
+                editTextModificaQuantitaSpesa.setText(tmp);
                 TextView cardCategoria = card.findViewById(R.id.categoryTextView);
                 editTextModificaCategoria.setText(cardCategoria.getText().toString().trim(), false);
 
@@ -444,17 +469,20 @@ public class SpeseFragment extends Fragment {
         editTextModifyDay = view.findViewById(R.id.inputModifyDay);
         editTextModifyMonth = view.findViewById(R.id.inputModifyMonth);
         editTextModifyYear = view.findViewById(R.id.inputModifyYear);
-        editTextModificaCategoria.setAdapter(adapter);
+        editTextModificaCategoria.setAdapter(adapterCategory);
 
         saveModificaSpesa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                MaterialCardView card = findSelectedCard(listSpesaCards);
+                MaterialCardView card = findSelectedCard();
 
                 TextView amountTextView = card.findViewById(R.id.amountTextView);
                 String amountText = amountTextView.getText().toString();
-                String amountSubstring = amountText.substring(0, amountText.length()-1);
+                String amountSubstring;
+                if(inputCurrency.equalsIgnoreCase("€"))
+                    amountSubstring = amountText.substring(0, amountText.length()-1);
+                else
+                    amountSubstring = amountText.substring(1);
                 double amount = Double.parseDouble(amountSubstring);
                 spent = spent - amount;
 
@@ -526,8 +554,12 @@ public class SpeseFragment extends Fragment {
 
                     double spesa = Double.parseDouble(inputModificaQuantitaSpesa);
                     updateProgressIndicator(spesa, budget, 1);
-                    String s = spesa + "€";
-                    amountTextView.setText(s);
+                    String tmp;
+                    if(inputCurrency.equalsIgnoreCase("€"))
+                        tmp = spesa+inputCurrency;
+                    else
+                        tmp = inputCurrency+spesa;
+                    amountTextView.setText(tmp);
 
                     hideKeyboard(view);
                     overlay_modifica_spesa.setVisibility(View.GONE);
@@ -553,7 +585,7 @@ public class SpeseFragment extends Fragment {
         totSpesa = view.findViewById(R.id.totSpesa);
         filterText = view.findViewById(R.id.testoFiltro);
         editTextCategoryFilter = view.findViewById(R.id.inputCategoryFilter);
-        editTextCategoryFilter.setAdapter(adapter);
+        editTextCategoryFilter.setAdapter(adapterCategory);
 
         backButtonFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -579,14 +611,18 @@ public class SpeseFragment extends Fragment {
                 if (inputCategoryFilter.isEmpty()) {
                     editTextCategoryFilter.setError("Scegli una categoria");
                 } else {
-                    ArrayList<MaterialCardView> filteredCards = filterByCategory(listSpesaCards, inputCategoryFilter);
+                    filteredCards = filterByCategory(inputCategoryFilter);
                     spesaCardsContainer.removeAllViews();
                     for (View card : filteredCards) {
                         spesaCardsContainer.addView(card);
                     }
-                    double countSpese = countAmountByCategory(filteredCards);
-                    String s = countSpese + "€";
-                    totSpesa.setText(s);
+                    double countSpese = countAmountByCategory();
+                    String tmp;
+                    if(inputCurrency.equalsIgnoreCase("€"))
+                        tmp = countSpese+inputCurrency;
+                    else
+                        tmp = inputCurrency+countSpese;
+                    totSpesa.setText(tmp);
                     overlay_filter.setVisibility(View.GONE);
                     closeFilter.setVisibility(View.VISIBLE);
                     filterText.setVisibility(View.VISIBLE);
@@ -638,45 +674,46 @@ public class SpeseFragment extends Fragment {
         progressIndicator.setProgress(progressPercentage);
         // aggiorna la descrizione del progress indicator
 
-        formattedText = spent + " / " + budget + " spesi " + " (" + progressPercentage + "%)";
+        formattedText = spent + " / " + budget + " spesi" + " (" + progressPercentage + "%)";
         progressText.setText(formattedText);
-
     }
 
-    public int countSelectedCards(ArrayList<MaterialCardView> cardList) {
+    //conta le spese selezionate
+    public int countSelectedCards() {
         int selectedCount = 0;
-        for (MaterialCardView card : cardList) {
+        for (MaterialCardView card : listSpesaCards) {
             if (card.isSelected())
                 selectedCount++;
         }
         return selectedCount;  // Restituisce il numero di card selezionate
     }
 
-    public MaterialCardView findSelectedCard(ArrayList<MaterialCardView> cardList){
-        MaterialCardView selectedCard = cardList.get(0);
-        for (MaterialCardView card : cardList) {
+    //trova la spesa selezionata nella lista di spese inserite
+    public MaterialCardView findSelectedCard(){
+        MaterialCardView selectedCard = listSpesaCards.get(0);
+        for (MaterialCardView card : listSpesaCards) {
             if (card.isSelected())
                 selectedCard = card;
         }
         return selectedCard;
     }
 
-    public ArrayList<MaterialCardView> filterByCategory(ArrayList<MaterialCardView> cardList, String category){
+    //filtra le carte per una determinata categoria
+    public ArrayList<MaterialCardView> filterByCategory(String category){
         ArrayList<MaterialCardView> filteredCards = new ArrayList<>();
-
-        for (MaterialCardView card : cardList) {
+        for (MaterialCardView card : listSpesaCards) {
             TextView categoryTextView = card.findViewById(R.id.categoryTextView);
             if (categoryTextView != null && categoryTextView.getText().toString().equalsIgnoreCase(category)) {
                 filteredCards.add(card);
             }
         }
-
         return filteredCards;
     }
 
-    public double countAmountByCategory(ArrayList<MaterialCardView> cardList){
+    //calcola la spesa totale per una determinata categoria
+    public double countAmountByCategory(){
         double spesaTot = 0;
-        for (MaterialCardView card : cardList) {
+        for (MaterialCardView card : filteredCards) {
             TextView amountTextView = card.findViewById(R.id.amountTextView);
             String amount = amountTextView.getText().toString().trim();
             String realAmount = amount.substring(0, amount.length()-1);
@@ -686,5 +723,49 @@ public class SpeseFragment extends Fragment {
 
         return spesaTot;
     }
+
+    //aggiorna la valuta se ci sono spese già inserite
+    public void updateCurrency(){
+        for (MaterialCardView card : listSpesaCards) {
+            TextView amountTextCard = card.findViewById(R.id.amountTextView);
+            String amountCard = amountTextCard.getText().toString().trim();
+            TextView amountTextFilter = rootLayout.findViewById(R.id.totSpesa);
+            String amountFilter = amountTextFilter.getText().toString().trim();
+            if(!inputCurrency.equalsIgnoreCase(inputOldCurrency)){
+                if(inputCurrency.equalsIgnoreCase("€") && !inputOldCurrency.equalsIgnoreCase("€")){
+                    amountCard = amountCard.substring(1)+inputCurrency;
+                    amountFilter = amountFilter.substring(1)+inputCurrency;
+                }else if(inputOldCurrency.equalsIgnoreCase("€") && !inputCurrency.equalsIgnoreCase("€")){
+                    amountCard = inputCurrency+ amountCard.substring(0, amountCard.length()-1);
+                    amountFilter = inputCurrency+ amountFilter.substring(0, amountFilter.length()-1);
+                }else if(!inputOldCurrency.equalsIgnoreCase("€") && !inputCurrency.equalsIgnoreCase("€")){
+                    amountCard = inputCurrency+ amountCard.substring(1);
+                    amountFilter = inputCurrency+ amountFilter.substring(1);
+                }
+                amountTextCard.setText(amountCard);
+                amountTextFilter.setText(amountFilter);
+            }
+        }
+    }
+
+    //modifica la valuta nell'overlay_add_spesa e nell'overlay_modifica_spesa
+    public void updateCurrencyIcon(){
+        TextInputLayout textQuantity = overlay_add_spesa.findViewById(R.id.textFieldQuantita);
+        TextInputLayout textModifyQuantity = overlay_modifica_spesa.findViewById(R.id.textFieldModificaQuantita);
+        if(inputCurrency.equalsIgnoreCase("€")){
+            textQuantity.setStartIconDrawable(R.drawable.baseline_euro_24);
+            textModifyQuantity.setStartIconDrawable(R.drawable.baseline_euro_24);
+        }else if(inputCurrency.equalsIgnoreCase("$")){
+            textQuantity.setStartIconDrawable(R.drawable.baseline_attach_money_24);
+            textModifyQuantity.setStartIconDrawable(R.drawable.baseline_attach_money_24);
+        }else if(inputCurrency.equalsIgnoreCase("£")){
+            textQuantity.setStartIconDrawable(R.drawable.baseline_currency_pound_24);
+            textModifyQuantity.setStartIconDrawable(R.drawable.baseline_currency_pound_24);
+        }else if(inputCurrency.equalsIgnoreCase("¥")){
+            textQuantity.setStartIconDrawable(R.drawable.baseline_currency_yen_24);
+            textModifyQuantity.setStartIconDrawable(R.drawable.baseline_currency_yen_24);
+        }
+    }
+
 
 }

@@ -28,7 +28,6 @@
     <string name="hintBudget">Quantità</string>
     <string name="editBudgetTitle">Modifica budget</string>
     <string name="saveButton">Salva</string>
-    <string name="stringaCosto">%1$d€</string>
     <string name="titleBudgetCard">Budget</string>
     <string name="spesaDescription">Abbonamento settimanale</string>
     <string name="addSpesaCardTitle">Aggiungi spesa</string>
@@ -65,5 +64,11 @@
     <string name="SeparatoreData">/</string>
     <string name="titleFilter">Filtro categoria</string>
     <string name="saveFilter">Filtra</string>
+    <string name="obiettiviRaggiunti">Obiettivi raggiunti:</string>
+    <string name="numObiettivi">%1$d/%2$d raggiunti</string>
+    <string name="addButtonGoalsDescription">aggiungi un obiettivo</string>
+    <string name="prova_goal_descrizione">Visitare il Louvre</string>
+    <string name="aggiungi_obiettivo">Nuovo obiettivo</string>
+    <string name="addItemButtonDescription">aggiungi un elemento alla lista</string>
 
 </resources>
