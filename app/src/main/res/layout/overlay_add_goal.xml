@@ -72,8 +72,6 @@
             app:boxCornerRadiusBottomStart="20dp"
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="25"
             android:backgroundTint="@color/background_overlays"
             android:hint="@string/nome">
 
@@ -95,8 +93,6 @@
             app:boxCornerRadiusBottomStart="20dp"
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="25"
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/background_overlays"
             android:hint="@string/hintDescription">

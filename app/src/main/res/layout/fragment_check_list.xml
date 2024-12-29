@@ -5,7 +5,7 @@
     android:theme="@style/Base.Theme.TripTales"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rootLayoutSpese"
+    android:id="@+id/rootLayoutCheckList"
     tools:context=".ui.diario.fragment.SpeseFragment">
 
     <LinearLayout
@@ -17,57 +17,46 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="19dp">
 
-        <CheckBox
+        <TextView
+            android:id="@+id/checkListTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="item1"/>
+            android:text="@string/checklistTitle"
+            android:textSize="18sp"
+            android:textColor="@color/background_dark"
+            android:textStyle="bold"/>
 
-        <CheckBox
-            android:id="@+id/checkbox_parent"
+        <ScrollView
+            android:id="@+id/scrollViewTask"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:checkedState="indeterminate"
-            android:text="item parent"/>
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
 
-        <LinearLayout
-            android:id="@+id/checkbox_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:orientation="vertical">
-
-            <CheckBox
-                android:id="@+id/checkbox_child_1"
+            <LinearLayout
+                android:id="@+id/taskCardsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="item"/>
+                android:orientation="vertical">
 
-            <CheckBox
-                android:id="@+id/checkbox_child_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="item"/>
+            </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/checkbox_child_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="item"/>
-
-
-            <CheckBox
-                android:id="@+id/checkbox_child_4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="item"/>
-
-        </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/noTasksString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/noTasksString"
+        android:textColor="@color/dark_gray"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayoutCheckList" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addItemButton"
+        android:id="@+id/addTaskButton"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginEnd="15dp"
@@ -81,6 +70,40 @@
         android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCheckList"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/deleteTask"
+        style="?attr/floatingActionButtonSmallStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="100dp"
+        app:rippleColor="@color/light_gray"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_delete_outline_24"
+        app:tint="@color/white"
+        android:backgroundTint="@color/background_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCheckList"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/modifyTask"
+        style="?attr/floatingActionButtonSmallStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="149dp"
+        app:rippleColor="@color/light_gray"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_mode_edit_24"
+        app:tint="@color/white"
+        android:backgroundTint="@color/background_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCheckList"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

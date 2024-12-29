@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardModificaSpesa"
     android:layout_width="match_parent"
-    android:layout_height="400dp"
+    android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginTop="10dp"
     android:backgroundTint="@color/background_overlays"
@@ -121,9 +121,7 @@
             style="?attr/textInputFilledStyle"
             app:boxBackgroundColor="@color/background_overlays"
             app:errorEnabled="true"
-            app:helperTextEnabled="true"
-            app:counterEnabled="true"
-            app:counterMaxLength="18">
+            app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputModificaDescription"
@@ -135,6 +133,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout

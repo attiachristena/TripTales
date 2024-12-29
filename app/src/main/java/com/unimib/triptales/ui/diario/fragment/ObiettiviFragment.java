@@ -63,6 +63,7 @@ public class ObiettiviFragment extends Fragment {
     View overlay_modify_goal;
     TextView progressText;
     CheckBox cardGoalCheckBox;
+    TextView noGoalsString;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,7 @@ public class ObiettiviFragment extends Fragment {
         goalsCards = new ArrayList<MaterialCardView>();
         checkedGoalsCards = new ArrayList<MaterialCardView>();
         progressText.setText(getString(R.string.numObiettivi, checkedGoalsCards.size(), goalsCards.size()));
+        noGoalsString = view.findViewById(R.id.noGoalsString);
 
         backButtonGoal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,10 +140,6 @@ public class ObiettiviFragment extends Fragment {
 
                 if (inputGoalName.isEmpty()) {
                     editTextGoalName.setError("Inserisci un nome");
-                } else if(inputGoalName.length() > 25){
-                    editTextGoalName.setError("Il nome supera il massimo di caratteri");
-                } else if(inputGoalDescription.length() > 25){
-                    editTextGoalName.setError("La descrizione supera il massimo di caratteri");
                 } else {
                     editTextGoalName.setError(null);
                     name.setText(inputGoalName);
@@ -157,6 +155,9 @@ public class ObiettiviFragment extends Fragment {
                     goalsCards.add(cardCurrentGoal);
                     updateProgressIndicator();
                     indice++;
+                    noGoalsString.setVisibility(View.GONE);
+
+                    cardGoalCheckBox = cardCurrentGoal.findViewById(R.id.cardGoalCheckBox);
 
                     cardCurrentGoal.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
@@ -166,6 +167,7 @@ public class ObiettiviFragment extends Fragment {
                                 cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
                                 cardCurrentGoal.setStrokeColor(getResources().getColor(R.color.light_gray));
                                 cardCurrentGoal.setSelected(false);
+                                cardGoalCheckBox.setEnabled(true);
                                 boolean notSelectedAll = true;
                                 for (MaterialCardView m : goalsCards){
                                     if(m.isSelected())
@@ -180,6 +182,7 @@ public class ObiettiviFragment extends Fragment {
                                 cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.white));
                                 cardCurrentGoal.setStrokeColor(getResources().getColor(R.color.background_dark));
                                 cardCurrentGoal.setSelected(true);
+                                cardGoalCheckBox.setEnabled(false);
                             }
                             if (countSelectedCards() == 1) {
                                 modifyGoal.setVisibility(View.VISIBLE);
@@ -192,8 +195,6 @@ public class ObiettiviFragment extends Fragment {
                     });
 
                     cardCurrentGoal.setCheckable(true);
-
-                    cardGoalCheckBox = cardCurrentGoal.findViewById(R.id.cardGoalCheckBox);
 
                     cardGoalCheckBox.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -268,10 +269,6 @@ public class ObiettiviFragment extends Fragment {
 
                 if (inputModifiedGoalName.isEmpty()) {
                     editTextModifiedGoalName.setError("Inserisci il nome dell'obiettivo");
-                } else if(inputModifiedGoalName.length() > 25){
-                    editTextModifiedGoalName.setError("Il nome supera il massimo di caratteri");
-                } else if(inputModifiedGoalDescription.length() > 25){
-                    editTextModifiedGoalName.setError("La descrizione supera il massimo di caratteri");
                 } else {
                     editTextModifiedGoalName.setError(null);
                     name.setText(inputModifiedGoalName);
@@ -283,8 +280,13 @@ public class ObiettiviFragment extends Fragment {
                     overlay_modify_goal.setVisibility(View.GONE);
                     addButtonGoals.setVisibility(View.VISIBLE);
                     addButtonGoals.setEnabled(true);
-                    card.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
-                    card.setStrokeColor(getResources().getColor(R.color.light_gray));
+                    if(checkedGoalsCards.contains(card)) {
+                        card.setCardBackgroundColor(getResources().getColor(R.color.dark_gray));
+                        card.setStrokeColor(getResources().getColor(R.color.light_gray));
+                    } else {
+                        card.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
+                        card.setStrokeColor(getResources().getColor(R.color.light_gray));
+                    }
                     card.setSelected(false);
 
                 }
@@ -308,6 +310,9 @@ public class ObiettiviFragment extends Fragment {
                 modifyGoal.setVisibility(View.GONE);
                 deleteGoal.setVisibility(View.GONE);
                 addButtonGoals.setEnabled(true);
+                if(goalsCards.isEmpty()){
+                    noGoalsString.setVisibility(View.VISIBLE);
+                }
             }
         });
 

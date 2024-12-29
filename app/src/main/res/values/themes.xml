@@ -9,6 +9,7 @@
         <item name="colorControlHighlight">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
         <item name="popupMenuBackground">@color/white_dark</item>
+        <item name="popupMenuStyle">@style/PopupMenuStyle</item>
 
     </style>
 </resources>

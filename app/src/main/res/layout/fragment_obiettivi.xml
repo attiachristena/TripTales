@@ -94,6 +94,17 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/noGoalsString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/noGoalsString"
+        android:textColor="@color/dark_gray"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButtonGoals"
         android:layout_width="56dp"
@@ -143,7 +154,5 @@
         app:layout_constraintBottom_toBottomOf="@+id/linearLayoutGoals"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"/>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

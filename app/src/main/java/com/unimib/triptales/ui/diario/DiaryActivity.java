@@ -3,6 +3,7 @@ package com.unimib.triptales.ui.diario;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -96,14 +98,31 @@ public class DiaryActivity extends AppCompatActivity {
             return true;
         }
 
-        // Controlla se è stato selezionato il pulsante Logout
-        if (id == R.id.action_logout) {
-            Intent intent = new Intent(DiaryActivity.this, LoginActivity.class);
-            // Aggiungi flag per gestire la pila delle attività
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish(); // Termina la DiaryActivity
-            return true;
+        View buttonAccount = toolbar.findViewById(R.id.action_account);
+
+        if (id == R.id.action_account){
+            // Crea un PopupMenu ancorato al bottone
+            PopupMenu popupMenu = new PopupMenu(DiaryActivity.this, buttonAccount);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
+
+            // Gestisci i click sugli elementi del menu
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (item.getItemId() == R.id.action_logout) {
+                        Intent intent = new Intent(DiaryActivity.this, LoginActivity.class);
+                        // Aggiungi flag per gestire la pila delle attività
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish(); // Termina la DiaryActivity
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            // Mostra il menu
+            popupMenu.show();
         }
 
         if (id == android.R.id.home){

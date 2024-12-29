@@ -20,7 +20,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardBudget"
             android:layout_width="match_parent"
-            android:layout_height="105dp"
+            android:layout_height="wrap_content"
             android:backgroundTint="@color/secondary"
             app:cardCornerRadius="20dp"
             app:cardElevation="4dp">
@@ -29,15 +29,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="10dp"
+                android:paddingVertical="10dp"
                 android:paddingBottom="10dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_weight="10"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="10dp">
+                    android:layout_weight="50">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -60,15 +61,14 @@
 
                 <ImageButton
                     android:id="@+id/editBudget"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="bottom|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_button"
-                    app:tint="@color/white"
                     android:backgroundTint="@color/secondary"
                     android:contentDescription="@string/buttonEditDescription"
-                    android:src="@drawable/baseline_pen" />
+                    android:src="@drawable/baseline_mode_edit_24" />
 
             </LinearLayout>
 
@@ -189,6 +189,18 @@
         </ScrollView>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/noSpeseString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/noSpeseString"
+        android:textColor="@color/dark_gray"
+        android:textSize="17sp"
+        android:paddingHorizontal="19dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButtonSpese"
