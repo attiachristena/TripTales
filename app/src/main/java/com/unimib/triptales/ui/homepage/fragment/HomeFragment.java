@@ -17,6 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.Diary;
 import com.unimib.triptales.adapters.DiaryAdapter;
+import com.unimib.triptales.ui.homepage.fragment.AddDiaryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,22 +35,20 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Inizializza i riferimenti agli elementi della vista
         recyclerView = view.findViewById(R.id.recycler_view_diaries);
         emptyMessage = view.findViewById(R.id.text_empty_message);
         fabAddDiary = view.findViewById(R.id.fab_add_diary);
 
-        // Configura il RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         diaryAdapter = new DiaryAdapter(getContext(), diaryList);
         recyclerView.setAdapter(diaryAdapter);
 
-        // Aggiorna il messaggio vuoto in base al contenuto della lista
+        // Logica per visualizzare il messaggio vuoto o la lista
         updateEmptyMessage();
 
-        // Naviga al fragment per aggiungere un diario quando si preme il pulsante FAB
+        // Naviga al fragment di aggiunta diario
         fabAddDiary.setOnClickListener(v -> {
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, new AddDiaryFragment());
             transaction.addToBackStack(null);
             transaction.commit();
