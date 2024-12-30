@@ -4,18 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
-import com.unimib.triptales.ui.diario.fragment.TappeFragment;
+import com.unimib.triptales.ui.homepage.fragment.AddDiaryFragment;
 
 public class HomeFragment extends Fragment {
 
@@ -28,48 +24,13 @@ public class HomeFragment extends Fragment {
 
         // Azioni quando si preme il pulsante "+"
         fab.setOnClickListener(v -> {
-            // Visualizza l'alert dialog personalizzato
-            View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.activity_dialog_add_diary, null);
+            // Sostituisci il fragment corrente con AddDiaryFragment
+            AddDiaryFragment addDiaryFragment = new AddDiaryFragment();
 
-            // Trova gli elementi del layout personalizzato
-            EditText editDiaryName = dialogView.findViewById(R.id.diary_name);
-            Button btnAdd = dialogView.findViewById(R.id.btn_add);
-            Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
-
-            // Crea il dialog
-            AlertDialog dialog = new AlertDialog.Builder(getContext())
-                    .setView(dialogView)
-                    .setCancelable(true)
-                    .create();
-
-            // Imposta il comportamento del pulsante "Aggiungi"
-            btnAdd.setOnClickListener(v1 -> {
-                String diaryName = editDiaryName.getText().toString().trim();
-                if (!diaryName.isEmpty()) {
-
-                    // Passa il nome del diario al TappeFragment con un Bundle
-                    TappeFragment tappeFragment = new TappeFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("diary_name", diaryName);
-                    tappeFragment.setArguments(bundle);
-
-                    // Sostituisci il Fragment corrente con il TappeFragment
-                    getParentFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, tappeFragment) // Assicurati che 'fragment_container' sia corretto
-                            .addToBackStack(null)
-                            .commit();
-
-                    dialog.dismiss(); // Chiudi il dialog
-                } else {
-                    Toast.makeText(getContext(), "Inserisci un nome per il diario!", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            // Imposta il comportamento del pulsante "Annulla"
-            btnCancel.setOnClickListener(v1 -> dialog.dismiss());
-
-            // Mostra il dialog
-            dialog.show();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, addDiaryFragment) // Assicurati che 'fragment_container' sia corretto
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;

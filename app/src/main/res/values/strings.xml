@@ -59,6 +59,10 @@
     <string name="error_email_login">Controlla la tua email</string>
     <string name="error_password_login">La password deve essere lunga almeno 8 caratteri: almeno 1 lettera, 1 numero e 1 carattere speciale</string>
     <string name="benvenuto_nella_home">Benvenuto nella home</string>
+    <string name="nome_diario">Nome diario</string>
+    <string name="hintDay">GG</string>
+    <string name="hintMonth">MM</string>
+    <string name="hintYear">AAAA</string>
 
 
 </resources>
