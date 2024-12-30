@@ -41,6 +41,9 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.androidx.cardview)
     implementation (libs.google.material.v190)
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

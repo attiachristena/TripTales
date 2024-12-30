@@ -12,9 +12,12 @@ constraintlayout = "2.1.4"
 materialVersion = "1.9.0"
 navigationFragment = "2.8.4"
 navigationUi = "2.8.4"
+roomRuntime = "2.6.1"
 
 [libraries]
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardviewVersion" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 empty-material = { module = "com..google.android.material:material", version.ref = "materialVersion" }
 google-material-v190 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

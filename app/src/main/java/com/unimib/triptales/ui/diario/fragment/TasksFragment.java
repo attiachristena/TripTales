@@ -1,5 +1,8 @@
 package com.unimib.triptales.ui.diario.fragment;
 
+import static com.unimib.triptales.util.Constants.countSelectedCards;
+import static com.unimib.triptales.util.Constants.findSelectedCard;
+
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -23,13 +26,12 @@ import android.widget.TextView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
-
-import org.w3c.dom.Text;
+import com.unimib.triptales.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class CheckListFragment extends Fragment {
+public class TasksFragment extends Fragment {
 
     ArrayList<MaterialCardView> allTasks;
     ArrayList<MaterialCardView> completedTasks;
@@ -87,7 +89,7 @@ public class CheckListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_add_task.setVisibility(View.GONE);
-                hideKeyboard(view);
+                Constants.hideKeyboard(view, requireActivity());
                 addTaskButton.setVisibility(View.VISIBLE);
             }
         });
@@ -127,7 +129,7 @@ public class CheckListFragment extends Fragment {
 
                     // Aggiungi la nuova CardView al layout genitore
                     taskCardsContainer.addView(card);
-                    hideKeyboard(view);
+                    Constants.hideKeyboard(view, requireActivity());
                     overlay_add_task.setVisibility(View.GONE);
                     addTaskButton.setVisibility(View.VISIBLE);
                     MaterialCardView cardCurrentGoal = (MaterialCardView) taskCardsContainer.getChildAt(indice);
@@ -162,12 +164,12 @@ public class CheckListFragment extends Fragment {
                                 cardCurrentGoal.setSelected(true);
                                 cardListCheckBox.setEnabled(false);
                             }
-                            if (countSelectedCards() == 1) {
+                            /*if (countSelectedCards(allTasks) == 1) {
                                 modifyTask.setVisibility(View.VISIBLE);
                                 deleteTask.setVisibility(View.VISIBLE);
-                            } else if (countSelectedCards() == 2){
+                            } else if (countSelectedCards(allTasks) == 2){
                                 modifyTask.setVisibility(View.GONE);
-                            }
+                            }*/
                             return true;
                         }
                     });
@@ -207,7 +209,7 @@ public class CheckListFragment extends Fragment {
             public void onClick(View view) {
                 overlay_modify_task.setVisibility(View.VISIBLE);
 
-                MaterialCardView card = findSelectedCard();
+                MaterialCardView card = findSelectedCard(allTasks);
 
                 TextView cardName = card.findViewById(R.id.listItemNameTextView);
                 editTextModifiedTaskName.setText(cardName.getText().toString().trim());
@@ -222,7 +224,7 @@ public class CheckListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_modify_task.setVisibility(View.GONE);
-                hideKeyboard(view);
+                Constants.hideKeyboard(view, requireActivity());
                 addTaskButton.setVisibility(View.VISIBLE);
                 modifyTask.setVisibility(View.VISIBLE);
                 deleteTask.setVisibility(View.VISIBLE);
@@ -232,7 +234,7 @@ public class CheckListFragment extends Fragment {
         saveModifiedTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MaterialCardView card = findSelectedCard();
+                MaterialCardView card = findSelectedCard(allTasks);
 
                 // Modifica il contenuto della card
                 TextView name = card.findViewById(R.id.listItemNameTextView);
@@ -243,7 +245,7 @@ public class CheckListFragment extends Fragment {
                 } else {
                     editTextModifiedTaskName.setError(null);
                     name.setText(inputModifiedTaskName);
-                    hideKeyboard(view);
+                    Constants.hideKeyboard(view, requireActivity());
                     overlay_modify_task.setVisibility(View.GONE);
                     addTaskButton.setVisibility(View.VISIBLE);
                     addTaskButton.setEnabled(true);
@@ -281,31 +283,6 @@ public class CheckListFragment extends Fragment {
             }
         });
 
-    }
-
-    public void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    public int countSelectedCards() {
-        int selectedCount = 0;
-        for (MaterialCardView card : allTasks) {
-            if (card.isSelected())
-                selectedCount++;
-        }
-        return selectedCount;
-    }
-
-    public MaterialCardView findSelectedCard(){
-        MaterialCardView selectedCard = allTasks.get(0);
-        for (MaterialCardView card : allTasks) {
-            if (card.isSelected())
-                selectedCard = card;
-        }
-        return selectedCard;
     }
 
 }

@@ -96,6 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingEnd="16dp"
+                android:paddingStart="0dp"
                 android:gravity="center"
                 android:layout_weight="1"
                 app:boxStrokeColor="@color/background_dark"
@@ -103,7 +104,6 @@
                 app:cursorColor="@color/secondary"
                 style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 app:boxBackgroundColor="@color/background_overlays"
-                android:hint="Valuta"
                 app:errorEnabled="true"
                 app:helperTextEnabled="true">
 
@@ -111,12 +111,21 @@
                     android:id="@+id/inputCurrency"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:hint="@string/hintCurrency"
                     android:inputType="none"
                     android:popupBackground="@color/background_overlays" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/warningCurrency"
+            android:textColor="@color/dark_gray"/>
 
     </LinearLayout>
 

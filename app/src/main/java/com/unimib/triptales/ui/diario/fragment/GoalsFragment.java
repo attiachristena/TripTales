@@ -1,18 +1,17 @@
 package com.unimib.triptales.ui.diario.fragment;
 
 import static com.google.android.material.internal.ViewUtils.hideKeyboard;
+import static com.unimib.triptales.util.Constants.countSelectedCards;
+import static com.unimib.triptales.util.Constants.findSelectedCard;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,20 +20,19 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.google.android.material.snackbar.Snackbar;
 import com.unimib.triptales.R;
+import com.unimib.triptales.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ObiettiviFragment extends Fragment {
+public class GoalsFragment extends Fragment {
 
     ArrayList<MaterialCardView> goalsCards;
     ArrayList<MaterialCardView> checkedGoalsCards;
@@ -100,7 +98,7 @@ public class ObiettiviFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_add_goal.setVisibility(View.GONE);
-                hideKeyboard(view);
+                Constants.hideKeyboard(view, requireActivity());
                 addButtonGoals.setVisibility(View.VISIBLE);
             }
         });
@@ -148,7 +146,7 @@ public class ObiettiviFragment extends Fragment {
 
                     // Aggiungi la nuova CardView al layout genitore
                     goalCardsContainer.addView(card);
-                    hideKeyboard(view);
+                    Constants.hideKeyboard(view, requireActivity());
                     overlay_add_goal.setVisibility(View.GONE);
                     addButtonGoals.setVisibility(View.VISIBLE);
                     MaterialCardView cardCurrentGoal = (MaterialCardView) goalCardsContainer.getChildAt(indice);
@@ -184,12 +182,12 @@ public class ObiettiviFragment extends Fragment {
                                 cardCurrentGoal.setSelected(true);
                                 cardGoalCheckBox.setEnabled(false);
                             }
-                            if (countSelectedCards() == 1) {
+                            /*if (countSelectedCards(goalsCards) == 1) {
                                 modifyGoal.setVisibility(View.VISIBLE);
                                 deleteGoal.setVisibility(View.VISIBLE);
-                            } else if (countSelectedCards() == 2){
+                            } else if (countSelectedCards(goalsCards) == 2){
                                 modifyGoal.setVisibility(View.GONE);
-                            }
+                            }*/
                             return true;
                         }
                     });
@@ -229,7 +227,7 @@ public class ObiettiviFragment extends Fragment {
             public void onClick(View view) {
                 overlay_modify_goal.setVisibility(View.VISIBLE);
 
-                MaterialCardView card = findSelectedCard();
+                MaterialCardView card = findSelectedCard(goalsCards);
 
                 TextView cardName = card.findViewById(R.id.goalNameTextView);
                 editTextModifiedGoalName.setText(cardName.getText().toString().trim());
@@ -247,7 +245,7 @@ public class ObiettiviFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_modify_goal.setVisibility(View.GONE);
-                hideKeyboard(view);
+                Constants.hideKeyboard(view, requireActivity());
                 addButtonGoals.setVisibility(View.VISIBLE);
                 modifyGoal.setVisibility(View.VISIBLE);
                 deleteGoal.setVisibility(View.VISIBLE);
@@ -258,7 +256,7 @@ public class ObiettiviFragment extends Fragment {
         saveModifiedGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MaterialCardView card = findSelectedCard();
+                MaterialCardView card = findSelectedCard(goalsCards);
 
                 // Modifica il contenuto della card
                 TextView name = card.findViewById(R.id.goalNameTextView);
@@ -276,7 +274,7 @@ public class ObiettiviFragment extends Fragment {
                     description.setText(inputModifiedGoalDescription);
                     updateProgressIndicator();
 
-                    hideKeyboard(view);
+                    Constants.hideKeyboard(view, requireActivity());
                     overlay_modify_goal.setVisibility(View.GONE);
                     addButtonGoals.setVisibility(View.VISIBLE);
                     addButtonGoals.setEnabled(true);
@@ -331,32 +329,6 @@ public class ObiettiviFragment extends Fragment {
             String tmp = getString(R.string.numObiettivi, checkedGoalsCards.size(), goalsCards.size());
             progressText.setText(tmp);
         }
-    }
-
-    public void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    public int countSelectedCards() {
-        int selectedCount = 0;
-        for (MaterialCardView card : goalsCards) {
-            if (card.isSelected())
-                selectedCount++;
-        }
-        return selectedCount;
-    }
-
-    //trova l'obiettivo selezionato nella lista di obiettivi inseriti
-    public MaterialCardView findSelectedCard(){
-        MaterialCardView selectedCard = goalsCards.get(0);
-        for (MaterialCardView card : goalsCards) {
-            if (card.isSelected())
-                selectedCard = card;
-        }
-        return selectedCard;
     }
 
 

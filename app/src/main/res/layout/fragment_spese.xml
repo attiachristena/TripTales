@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rootLayoutSpese"
-    tools:context=".ui.diario.fragment.SpeseFragment">
+    tools:context=".ui.diario.fragment.ExpensesFragment">
 
     <LinearLayout
         android:id="@+id/linearLayoutSpese"
@@ -172,21 +172,21 @@
 
         </LinearLayout>
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewExpenses"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp">
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/spesaCardsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            </LinearLayout>
+            </LinearLayout>-->
 
-        </ScrollView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 
