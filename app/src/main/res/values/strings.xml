@@ -58,6 +58,9 @@
     <string name="anteprima_immagine_modificata">Anteprima immagine</string>
     <string name="nome_tappa_card">Nome Tappa</string>
     <string name="nome_tappa">Nome Tappa</string>
+    <string name="title_activity_fullscreen_image">FullscreenImageActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
 </resources>

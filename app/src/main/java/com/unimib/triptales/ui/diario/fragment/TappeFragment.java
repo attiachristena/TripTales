@@ -43,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class TappeFragment extends Fragment {
 
@@ -80,7 +81,7 @@ public class TappeFragment extends Fragment {
      ActivityResultLauncher<Intent> imagePickerLauncherModifica;
      TextView testoAnteprimaImmagineModificata;
      Uri selectedImageUriModifica;
-     EditText editDataModifica;
+     EditText editModificaData;
 
 
 
@@ -201,7 +202,7 @@ public class TappeFragment extends Fragment {
                 inputNome = editNome.getText().toString();
                 inputData = editData.getText().toString();
 
-                if (inputNome.isEmpty() || inputData.isEmpty()) {
+            /*    if (inputNome.isEmpty() || inputData.isEmpty()) {
                     if (inputNome.isEmpty()) editNome.setError("Inserisci il nome della tappa");
                     if (inputData.isEmpty()) editData.setError("Inserisci la data della tappa");
 
@@ -213,7 +214,7 @@ public class TappeFragment extends Fragment {
                     if (inputNome.matches(".*\\d.*"))
                         editNome.setError("Inserisci un nome valido per la tappa. La tappa non può contenere numeri");
 
-                } else {
+                } else { */
                     cardView = inflater.inflate(R.layout.item_card_tappa, tappeCardContainer, false);
                     nomeTappaCard = cardView.findViewById(R.id.nomeTappaCard);
                     immagineTappaCard = cardView.findViewById(R.id.anteprimaImmagine);
@@ -223,7 +224,7 @@ public class TappeFragment extends Fragment {
                     if (selectedImageUri != null) {
                         immagineTappaCard.setImageURI(selectedImageUri);
                     } else {
-                        immagineTappaCard.setImageResource(R.drawable.roma); // Immagine di default
+                        immagineTappaCard.setImageResource(getRandomImage()); // Immagine di default
                     }
 
                     tappeCardContainer.addView(cardView);
@@ -238,6 +239,8 @@ public class TappeFragment extends Fragment {
                     MaterialCardView tappaCorrente = (MaterialCardView) tappeCardContainer.getChildAt(indice);
                     listTappeCards.add(tappaCorrente);
                     indice++;
+
+
                     tappaCorrente.setOnLongClickListener(v1 -> {
                         if (!tappaCorrente.isSelected()) {
                             // Seleziona la card
@@ -270,8 +273,8 @@ public class TappeFragment extends Fragment {
                         return true;
                     });
 
-                    tappaCorrente.setOnClickListener(v1 -> {
 
+                    tappaCorrente.setOnClickListener(v1 -> {
                         int selectedCount = 0;
                         for (MaterialCardView card : listTappeCards) {
                             if (card.isSelected()) {
@@ -279,70 +282,65 @@ public class TappeFragment extends Fragment {
                             }
                         }
 
+                    // Apri la nuova activity solo se nessuna card è selezionata
                         if (selectedCount == 0) {
-                            return; // Esci senza fare nulla
-                        }
+                            TextView nomeTappaCard = tappaCorrente.findViewById(R.id.nomeTappaCard);
+                            String nomeTappa = nomeTappaCard.getText().toString();
+                            String dataTappa = inputData;
 
-                        if (tappaCorrente.isSelected()) {
-                            // Deseleziona la card
-                            tappaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary));
-                            tappaCorrente.setStrokeColor(getResources().getColor(R.color.primary));
-                            tappaCorrente.setSelected(false);
+                            ImageView immagineTappaCard = tappaCorrente.findViewById(R.id.anteprimaImmagine);
+                            Uri imageUri = null;
+
+                            Drawable drawable = immagineTappaCard.getDrawable();
+                            if (drawable != null && drawable instanceof BitmapDrawable) {
+                                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                                imageUri = saveImageToCache(bitmap); // Salva l'immagine e ottieni il suo URI
+                            }
+
+                            Intent intent = new Intent(getContext(), TappaActivity.class);
+                            intent.putExtra("nomeTappa", nomeTappa);
+                            intent.putExtra("dataTappa", dataTappa);
+                            if (imageUri != null) {
+                                intent.putExtra("immagineTappaUri", imageUri.toString());
+                            }
+
+                            startActivity(intent);
+
                         } else {
-                            // Seleziona la card
-                            tappaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary_light));
-                            tappaCorrente.setStrokeColor(getResources().getColor(R.color.background_dark));
-                            tappaCorrente.setSelected(true);
-                        }
 
-                        // Riconto le card selezionate per aggiornare lo stato dei bottoni
-                        selectedCount = 0;
-                        for (MaterialCardView card : listTappeCards) {
-                            if (card.isSelected()) {
-                                selectedCount++;
+                            if (tappaCorrente.isSelected()) {
+                                tappaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary));
+                                tappaCorrente.setStrokeColor(getResources().getColor(R.color.primary));
+                                tappaCorrente.setSelected(false);
+                            } else {
+                                tappaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary_light));
+                                tappaCorrente.setStrokeColor(getResources().getColor(R.color.background_dark));
+                                tappaCorrente.setSelected(true);
+                            }
+
+                            // Riconto le card selezionate per aggiornare lo stato dei bottoni
+                            selectedCount = 0;
+                            for (MaterialCardView card : listTappeCards) {
+                                if (card.isSelected()) {
+                                    selectedCount++;
+                                }
+                            }
+
+                            if (selectedCount == 0) {
+                                modificaTappaButton.setVisibility(View.GONE);
+                                eliminaTappaButton.setVisibility(View.GONE);
+                                addTappaBtn.setEnabled(true);
+                            } else if (selectedCount == 1) {
+                                modificaTappaButton.setVisibility(View.VISIBLE);
+                                eliminaTappaButton.setVisibility(View.VISIBLE);
+                                addTappaBtn.setEnabled(false);
+                            } else {
+                                modificaTappaButton.setVisibility(View.GONE);
+                                eliminaTappaButton.setVisibility(View.VISIBLE);
+                                addTappaBtn.setEnabled(false);
                             }
                         }
-
-                        if (selectedCount == 0) {
-                            modificaTappaButton.setVisibility(View.GONE);
-                            eliminaTappaButton.setVisibility(View.GONE);
-                            addTappaBtn.setEnabled(true);
-                        } else if (selectedCount == 1) {
-                            modificaTappaButton.setVisibility(View.VISIBLE);
-                            eliminaTappaButton.setVisibility(View.VISIBLE);
-                            addTappaBtn.setEnabled(false);
-                        } else {
-                            modificaTappaButton.setVisibility(View.GONE);
-                            eliminaTappaButton.setVisibility(View.VISIBLE);
-                            addTappaBtn.setEnabled(false);
-                        }
                     });
-
-                    tappaCorrente.setOnClickListener(v1 -> {
-                        TextView nomeTappaCard = tappaCorrente.findViewById(R.id.nomeTappaCard);
-                        String nomeTappa = nomeTappaCard.getText().toString();
-                        String dataTappa = inputData;
-
-                        ImageView immagineTappaCard = tappaCorrente.findViewById(R.id.anteprimaImmagine);
-                        Uri imageUri = null;
-
-                        Drawable drawable = immagineTappaCard.getDrawable();
-                        if (drawable != null && drawable instanceof BitmapDrawable) {
-                            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                            imageUri = saveImageToCache(bitmap); // Salva l'immagine e ottieni il suo URI
-                        }
-
-                        Intent intent = new Intent(getContext(), TappaActivity.class);
-                        intent.putExtra("nomeTappa", nomeTappa);
-                        intent.putExtra("dataTappa", dataTappa);
-                        if (imageUri != null) {
-                            intent.putExtra("immagineTappaUri", imageUri.toString());
-                        }
-
-                        startActivity(intent);
-                    });
-
-                }
             });
 
 
@@ -355,10 +353,10 @@ public class TappeFragment extends Fragment {
             salvaModificaTappa = view.findViewById(R.id.salvaModificaTappaButton);
             backModificaTappa = view.findViewById(R.id.backModificaTappaButton);
             editModificaNome = view.findViewById(R.id.editModificaNomeTappa);
-            editDataModifica = view.findViewById(R.id.editModificaDataTappa);
             inputModificaImmagine = view.findViewById(R.id.inserisciImmagineModificaTappaButton);
             anteprimaImmagineModificata = overlay_modifica_tappa.findViewById(R.id.anteprimaImmagineModificata);
             testoAnteprimaImmagineModificata = view.findViewById(R.id.testoAnteprimaImmagineModificata);
+            editModificaData = view.findViewById(R.id.editModificaDataTappa);
 
             inputModificaImmagine.setOnClickListener(v -> {
                 Intent pickImageIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -374,6 +372,9 @@ public class TappeFragment extends Fragment {
                 TextView nomeTappaCard = card.findViewById(R.id.nomeTappaCard);
                 editModificaNome.setText(nomeTappaCard.getText().toString());
 
+                // TextView dataTappaCard = card.findViewById(R.id.dataTappa);
+                // editModificaData.setText(dataTappaCard.getText().toString());
+
                 ImageView immagineTappaCard = card.findViewById(R.id.anteprimaImmagine);
                 if (immagineTappaCard.getDrawable() != null) {
                     Bitmap bitmap = ((BitmapDrawable) immagineTappaCard.getDrawable()).getBitmap();
@@ -383,6 +384,7 @@ public class TappeFragment extends Fragment {
                     anteprimaImmagineModificata.setImageDrawable(null);
                     testoAnteprimaImmagineModificata.setVisibility(View.VISIBLE);
                 }
+
             });
 
 
@@ -394,6 +396,13 @@ public class TappeFragment extends Fragment {
                 inputModificaNome = editModificaNome.getText().toString();
                 nomeTappaCard.setText(inputModificaNome);
 
+                // String inputModificaData = editModificaData.getText().toString();
+                // TextView dataTappaCard = card.findViewById(R.id.dataTappa);
+                // dataTappaCard.setText(inputModificaData);
+
+
+
+
                 ImageView immagineTappaCard = card.findViewById(R.id.anteprimaImmagine);
                 if (selectedImageUriModifica != null) {
                     immagineTappaCard.setImageURI(selectedImageUriModifica);
@@ -401,8 +410,9 @@ public class TappeFragment extends Fragment {
                     Bitmap bitmap = ((BitmapDrawable) anteprimaImmagineModificata.getDrawable()).getBitmap();
                     immagineTappaCard.setImageBitmap(bitmap);
                 } else {
-                    immagineTappaCard.setImageResource(R.drawable.roma); // Immagine di default
+                    immagineTappaCard.setImageResource(getRandomImage()); // Immagine di default
                 }
+
 
                 overlay_modifica_tappa.setVisibility(View.GONE);
                 card.setCardBackgroundColor(getResources().getColor(R.color.primary));
@@ -466,6 +476,35 @@ public class TappeFragment extends Fragment {
         return selectedCard;
     }
 
+    private int getRandomImage() {
+        int[] defaultImages = {
+                R.drawable.a1,
+                R.drawable.a2,
+                R.drawable.a3,
+                R.drawable.a4,
+                R.drawable.a5,
+                R.drawable.a6,
+                R.drawable.a7,
+                R.drawable.a8,
+                R.drawable.a9,
+                R.drawable.a10,
+                R.drawable.a11,
+                R.drawable.a12,
+                R.drawable.a13,
+                R.drawable.a14,
+                R.drawable.a15,
+                R.drawable.a16
+        };
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(defaultImages.length);
+
+        return defaultImages[randomIndex];
+    }
+
+
+
+
     private Uri saveImageToCache(Bitmap bitmap) {
         File cachePath = new File(getContext().getCacheDir(), "images");
         cachePath.mkdirs(); // Assicurati che la directory esista
@@ -482,7 +521,5 @@ public class TappeFragment extends Fragment {
 
         return FileProvider.getUriForFile(getContext(), "com.unimib.triptales.fileprovider", file);
     }
-
-
 
 }

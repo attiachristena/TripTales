@@ -29,6 +29,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -42,6 +45,10 @@ dependencies {
     implementation(libs.androidx.cardview)
     implementation (libs.google.material.v190)
     implementation(libs.play.services.maps)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
+    implementation(libs.google.material.v190)
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
