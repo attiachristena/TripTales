@@ -17,4 +17,8 @@
     <color name="maroon">#9A3B3B</color>
     <color name="orange">#FFA62F</color>
     <color name="light_orange">#FFC96F</color>
+
+    <color name="light_brown3">#E8C4B1</color>
+    <color name="magenta">#B65066</color>
+    <color name="orange2">#FFAA67</color>
 </resources>
