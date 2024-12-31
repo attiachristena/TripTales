@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:id="@+id/text_empty_message"
@@ -21,10 +22,19 @@
         app:rippleColor="@color/light_gray"
         android:contentDescription="Add Diary"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true" 
+        android:layout_alignParentBottom="true"
         android:src="@drawable/round_add_24"
         android:elevation="4dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/primary" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_diaries"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/item_card_diary" />
 
 </RelativeLayout>

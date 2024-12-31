@@ -236,7 +236,7 @@
         android:layout_marginBottom="149dp"
         app:rippleColor="@color/light_gray"
         android:elevation="4dp"
-        android:src="@drawable/baseline_mode_edit_24"
+        android:src="@drawable/baseline_pen"
         app:tint="@color/white"
         android:backgroundTint="@color/background_dark"
         android:background="@drawable/rounded_button"

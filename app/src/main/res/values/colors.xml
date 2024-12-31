@@ -11,6 +11,12 @@
     <color name="dark_gray">#B6B1B1</color>
     <color name="background_overlays">#F5F5F5</color>
     <color name="error">#EE0000</color>
+
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
     <color name="brown">#493628</color>
     <color name="light_brown">#AB886D</color>
     <color name="light_brown2">#B57F63</color>
@@ -18,4 +24,9 @@
     <color name="maroon">#9A3B3B</color>
     <color name="orange">#FFA62F</color>
     <color name="light_orange">#FFC96F</color>
+
+
+    <color name="light_brown3">#E8C4B1</color>
+    <color name="magenta">#B65066</color>
+    <color name="orange2">#FFAA67</color>
 </resources>

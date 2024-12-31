@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="20dp"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:backgroundTint="@color/background_overlays"
+    android:id="@+id/cardAddTappa"
+    android:theme="@style/Base.Theme.TripTales"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:backgroundTint="@color/background_overlays"
+        android:layout_height="600dp">
+
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="216dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/salvaModificaTappaButton"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center"
+            android:text="@string/aggiungi_una_tappa_modificata"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/salvaModificaTappaButton"
+            android:layout_width="83dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/secondary"
+            android:text="@string/saveButton"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+        <ImageButton
+            android:id="@+id/backModificaTappaButton"
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="-1dp"
+            android:layout_toStartOf="@+id/textView3"
+            android:backgroundTint="@color/background_overlays"
+            android:src="@drawable/baseline_arrow_back_ios_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editModificaNomeTappa"
+            android:layout_width="327dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/textView3"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="43dp"
+            android:layout_marginEnd="40dp"
+            android:fontFamily="@font/poppins_regular"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:hint="@string/nome_tappa_modificata" />
+
+        <Button
+            android:id="@+id/inserisciImmagineModificaTappaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editModificaDataTappa"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="59dp"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/edit_text_background"
+            android:backgroundTint="@color/primary"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center"
+            android:text="@string/inserisci_un_immagine_modifica" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editModificaDataTappa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editModificaNomeTappa"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="40dp"
+            android:fontFamily="@font/poppins_regular"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:hint="@string/data_tappa_modificata"
+            android:inputType="date" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/anteprimaImmagineModificata"
+            android:layout_width="381dp"
+            android:layout_height="181dp"
+            android:layout_below="@id/editModificaDataTappa"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="135dp"
+            android:layout_marginEnd="13dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/roundedImage"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/testoAnteprimaImmagineModificata"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:layout_below="@+id/inserisciImmagineModificaTappaButton"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="104dp"
+            android:layout_marginBottom="101dp"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center"
+            android:text="@string/anteprima_immagine_modificata"
+            android:textColor="@color/primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+
+
+
+</com.google.android.material.card.MaterialCardView>

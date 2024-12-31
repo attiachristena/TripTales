@@ -43,6 +43,25 @@
     <string name="page_3">Calendario</string>
     <string name="snackbarErroreBudget">Imposta il budget!</string>
     <string name="firstHomePageText">Non hai ancora creato nessun diario, comincia la tua avventura!</string>
+    <string name="tappe">Tappe</string>
+    <string name="titolo_diario">Titolo Diario</string>
+    <string name="aggiungi_una_tappa">Aggiungi una tappa</string>
+    <string name="nome_tappa_hint">Nome tappa</string>
+    <string name="inserisci_un_immagine">Inserisci un\'immagine</string>
+    <string name="data_tappa_hint">Data tappa</string>
+    <string name="anteprima_immagine">Anteprima immagine</string>
+    <string name="pulsante_per_tornare_indietro">Pulsante per tornare indietro</string>
+    <string name="pulsante_per_salvare_la_tappa">Pulsante per salvare la tappa</string>
+    <string name="aggiungi_una_tappa_modificata">Aggiungi una tappa</string>
+    <string name="nome_tappa_modificata">Nome tappa</string>
+    <string name="inserisci_un_immagine_modifica">Inserisci un\'immagine</string>
+    <string name="data_tappa_modificata">Data tappa</string>
+    <string name="anteprima_immagine_modificata">Anteprima immagine</string>
+    <string name="nome_tappa_card">Nome Tappa</string>
+    <string name="nome_tappa">Nome Tappa</string>
+    <string name="title_activity_fullscreen_image">FullscreenImageActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="pronto">Pronto a raccontare\nil tuo viaggio?</string>
     <string name="accedi">Accedi</string>
     <string name="registrati">Registrati</string>
@@ -80,5 +99,20 @@
     <string name="checklistTitle">CheckList delle attività da svolgere</string>
     <string name="warningCurrency">*Ricorda: puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
     <string name="hintCurrency">Valuta*</string>
+    <string name="nome_diario">Nome diario</string>
+    <string name="hintDay">GG</string>
+    <string name="hintMonth">MM</string>
+    <string name="hintYear">AAAA</string>
+    <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
+    <string name="intro1_title">Benvenuto su TripTales. Il tuo diario di viaggio personale</string>
+    <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>
+    <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni tappa</string>
+    <string name="intro2_body">Qui potrai pianificare le tue avventure, annotare ogni scoperta e rivivere ogni momento</string>
+    <string name="intro3_title">Esplora senza connessione, pianifica senza stress</string>
+    <string name="intro3_body">Scarica mappe e crea il tuo itinerario senza bisogno di essere online</string>
+    <string name="intro4_title">Viaggia sereno: noi ti aiutiamo a ricordare ogni dettaglio</string>
+    <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="inizia">INIZIA</string>
 
 </resources>
