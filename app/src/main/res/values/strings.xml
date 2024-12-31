@@ -59,6 +59,11 @@
     <string name="error_email_login">Controlla la tua email</string>
     <string name="error_password_login">La password deve essere lunga almeno 8 caratteri: almeno 1 lettera, 1 numero e 1 carattere speciale</string>
     <string name="benvenuto_nella_home">Benvenuto nella home</string>
+    <string name="nome_diario">Nome diario</string>
+    <string name="hintDay">GG</string>
+    <string name="hintMonth">MM</string>
+    <string name="hintYear">AAAA</string>
+    <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
 
     <string name="intro1_title">Benvenuto su TripTales. Il tuo diario di viaggio personale</string>
     <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>

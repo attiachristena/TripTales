@@ -15,6 +15,6 @@ public class DialogAddDiaryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dialog_add_diary);
+        setContentView(R.layout.fragment_add_diary);
     }
 }
