@@ -45,4 +45,7 @@ public interface DiaryDao {
     @Query("SELECT * FROM Diary WHERE id = :diaryId")
     LiveData<CompleteDiary> getCompleteDiary(int diaryId);
 
+    @Query("UPDATE Diary SET diary_budget = :newBudget WHERE id = :diaryId")
+    void updateBudget(int diaryId, String newBudget);
+
 }

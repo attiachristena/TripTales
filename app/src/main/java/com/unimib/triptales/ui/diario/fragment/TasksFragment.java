@@ -1,6 +1,5 @@
 package com.unimib.triptales.ui.diario.fragment;
 
-import static com.unimib.triptales.util.Constants.countSelectedCards;
 import static com.unimib.triptales.util.Constants.findSelectedCard;
 
 import android.content.Context;

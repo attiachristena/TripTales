@@ -76,20 +76,13 @@
 
         </androidx.cardview.widget.CardView>
 
-        <ScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewGoals"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="25dp">
 
-            <LinearLayout
-                android:id="@+id/goalCardsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-        </ScrollView>
+        </androidx.recyclerview.widget.RecyclerView>
 
 
     </LinearLayout>

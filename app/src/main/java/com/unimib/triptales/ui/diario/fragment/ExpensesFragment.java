@@ -2,10 +2,13 @@ package com.unimib.triptales.ui.diario.fragment;
 
 import static com.google.android.material.internal.ViewUtils.hideKeyboard;
 import static com.unimib.triptales.util.Constants.CATEGORIES;
-import static com.unimib.triptales.util.Constants.countSelectedCards;
-import static com.unimib.triptales.util.Constants.findSelectedCard;
+import static com.unimib.triptales.util.Constants.CURRENCIES;
+import static com.unimib.triptales.util.Constants.CURRENCY_EUR;
+import static com.unimib.triptales.util.Constants.CURRENCY_GBP;
+import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
+import static com.unimib.triptales.util.Constants.CURRENCY_USD;
+import static com.unimib.triptales.util.Constants.countAmount;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,19 +18,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -45,7 +43,6 @@ import com.unimib.triptales.util.Constants;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 
 public class ExpensesFragment extends Fragment {
@@ -81,7 +78,6 @@ public class ExpensesFragment extends Fragment {
     FloatingActionButton modifyExpense;
     FloatingActionButton deleteExpense;
     ArrayList<MaterialCardView> listExpenseCards;
-    int index;
     View overlay_add_expense;
     LayoutInflater inflater;
     View overlay_add_budget;
@@ -137,13 +133,25 @@ public class ExpensesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         inflater = LayoutInflater.from(view.getContext());
-        listExpenseCards = new ArrayList<>();
+        //listExpenseCards = new ArrayList<>();
         rootLayout = view.findViewById(R.id.rootLayoutSpese);
         noExpensesString = view.findViewById(R.id.noSpeseString);
         if(expenseList.isEmpty()){
             noExpensesString.setVisibility(View.VISIBLE);
         } else {
             noExpensesString.setVisibility(View.GONE);
+
+            /*double totExpense = 0;
+            for(Expense e: expenseList){
+                String amountText = e.amount;
+                String amountSubstring;
+                if(inputCurrency.equalsIgnoreCase("€"))
+                    amountSubstring = amountText.substring(0, amountText.length()-1);
+                else
+                    amountSubstring = amountText.substring(1);
+                totExpense += Double.parseDouble(amountSubstring);
+                updateProgressIndicator(totExpense, budget, 1);
+            }*/
         }
 
         // Card per modificare il budget
@@ -190,8 +198,7 @@ public class ExpensesFragment extends Fragment {
         textFieldCurrency = view.findViewById(R.id.textFieldCurrency);
         totExpense = view.findViewById(R.id.totSpesa);
 
-        String[] itemsCurrency = {"€", "$", "£", "¥"};
-        ArrayAdapter<String> adapterBudget = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, itemsCurrency);
+        ArrayAdapter<String> adapterBudget = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, CURRENCIES);
         editTextCurrency.setAdapter(adapterBudget);
 
         saveBudget.setOnClickListener(new View.OnClickListener() {
@@ -209,11 +216,12 @@ public class ExpensesFragment extends Fragment {
                     numberEditText.setError(null);
                     budget = Integer.parseInt(inputBudget);
                     String tmp;
-                    if(inputCurrency.equalsIgnoreCase("€"))
+                    if(inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
                         tmp = budget+inputCurrency;
                     else
                         tmp = inputCurrency+budget;
                     budgetText.setText(tmp);
+
                     updateProgressIndicator(spent, budget, 0);
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_add_budget.setVisibility(View.GONE);
@@ -222,7 +230,7 @@ public class ExpensesFragment extends Fragment {
                     if(totExpense.getVisibility() == View.VISIBLE) {
                         double countSpese = countAmountByCategory();
                         String tmp2;
-                        if (inputCurrency.equalsIgnoreCase("€"))
+                        if (inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
                             tmp2 = countSpese + inputCurrency;
                         else
                             tmp2 = inputCurrency + countSpese;
@@ -289,7 +297,6 @@ public class ExpensesFragment extends Fragment {
         editTextDay = view.findViewById(R.id.inputDay);
         editTextMonth = view.findViewById(R.id.inputMonth);
         editTextYear = view.findViewById(R.id.inputYear);
-        //index = 0;
 
         ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_dropdown_item_1line, CATEGORIES);
@@ -366,7 +373,7 @@ public class ExpensesFragment extends Fragment {
                     double spesa = Double.parseDouble(inputAmountSpent);
                     updateProgressIndicator(spesa, budget, 1);
                     String tmp;
-                    if(inputCurrency.equalsIgnoreCase("€"))
+                    if(inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
                         tmp = spesa+inputCurrency;
                     else
                         tmp = inputCurrency+spesa;
@@ -398,10 +405,10 @@ public class ExpensesFragment extends Fragment {
                 Iterator<Expense> iterator = expenseList.iterator();
                 while (iterator.hasNext()) {
                     Expense e = iterator.next();
-                    if (e.isSelected) {
-                        amountText = e.amount;
+                    if (e.isExpense_isSelected()) {
+                        amountText = e.getAmount();
                         String amountSubstring;
-                        if (inputCurrency.equalsIgnoreCase("€")){
+                        if (inputCurrency.equalsIgnoreCase(CURRENCY_EUR)){
                             amountSubstring = amountText.substring(0, amountText.length() - 1);
                         } else {
                             amountSubstring = amountText.substring(1);
@@ -443,18 +450,18 @@ public class ExpensesFragment extends Fragment {
                 List<Expense> selectedExpenses = expenseDao.getSelectedExpenses();
                 Expense currentExpense = selectedExpenses.get(0);
 
-                String amount = currentExpense.amount;
+                String amount = currentExpense.getAmount();
                 String tmp;
-                if(inputCurrency.equalsIgnoreCase("€"))
+                if(inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
                     tmp = amount.substring(0, amount.length()-1);
                 else
                     tmp = amount.substring(1);
                 editTextModifiedAmountSpent.setText(tmp);
 
-                editTextModifiedCategory.setText(currentExpense.category);
-                editTextModifiedDescription.setText(currentExpense.descprition);
+                editTextModifiedCategory.setText(currentExpense.getCategory(), false);
+                editTextModifiedDescription.setText(currentExpense.getDescription());
 
-                String date = currentExpense.date;
+                String date = currentExpense.getDate();
                 if(date.charAt(1) == '/'){
                     inputModifiedDay = (int)(date.charAt(0)) - '0';
                     date = date.substring(2);
@@ -516,9 +523,9 @@ public class ExpensesFragment extends Fragment {
                 List<Expense> selectedExpenses = expenseDao.getSelectedExpenses();
                 Expense currentExpense = selectedExpenses.get(0);
 
-                String amountText = currentExpense.amount;
+                String amountText = currentExpense.getAmount();
                 String amountSubstring;
-                if(inputCurrency.equalsIgnoreCase("€"))
+                if(inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
                     amountSubstring = amountText.substring(0, amountText.length()-1);
                 else
                     amountSubstring = amountText.substring(1);
@@ -526,13 +533,10 @@ public class ExpensesFragment extends Fragment {
                 spent = spent - amount;
 
                 // Modifica il contenuto della card
-                //TextView category = card.findViewById(R.id.categoryTextView);
                 inputModifiedCategory = editTextModifiedCategory.getText().toString().trim();
 
-                //TextView description = card.findViewById(R.id.descriptionTextView);
                 inputModifiedDescription = editTextModifiedDescription.getText().toString().trim();
 
-                //TextView dataSpesa = card.findViewById(R.id.dateTextView);
                 inputModifiedDay = Integer.parseInt(editTextModifiedDay.getText().toString());
                 inputModifiedMonth = Integer.parseInt(editTextModifiedMonth.getText().toString());
                 inputModifiedYear = Integer.parseInt(editTextModifiedYear.getText().toString());
@@ -559,40 +563,37 @@ public class ExpensesFragment extends Fragment {
                     editTextModifiedYear.setError("Inserisci un anno valido");
                 } else {
                     editTextModifiedCategory.setError(null);
-                    //category.setText(inputModifiedCategory);
                     currentExpense.setCategory(inputModifiedCategory);
-                    expenseDao.updateCategory(currentExpense.id, inputModifiedCategory);
+                    expenseDao.updateCategory(currentExpense.getId(), inputModifiedCategory);
                     editTextModifiedDescription.setError(null);
-                    //description.setText(inputModifiedDescription);
-                    currentExpense.setDescprition(inputModifiedDescription);
-                    expenseDao.updateDescription(currentExpense.id, inputModifiedDescription);
+                    currentExpense.setDescription(inputModifiedDescription);
+                    expenseDao.updateDescription(currentExpense.getId(), inputModifiedDescription);
                     editTextModifiedDay.setError(null);
                     editTextModifiedMonth.setError(null);
                     editTextModifiedYear.setError(null);
                     String dataCompleta = getString(R.string.dataCompleta, inputModifiedDay, inputModifiedMonth, inputModifiedYear);
-                    //dataSpesa.setText(dataCompleta);
                     currentExpense.setDate(dataCompleta);
-                    expenseDao.updateDate(currentExpense.id, dataCompleta);
+                    expenseDao.updateDate(currentExpense.getId(), dataCompleta);
                     editTextModifiedAmountSpent.setError(null);
-
-                    /*inputDay = inputModifiedDay;
-                    inputMonth = inputModifiedMonth;
-                    inputYear = inputModifiedYear;*/
 
                     double spesa = Double.parseDouble(inputModifiedAmountSpent);
                     updateProgressIndicator(spesa, budget, 1);
                     String tmp;
-                    if(inputCurrency.equalsIgnoreCase("€"))
+                    if(inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
                         tmp = spesa+inputCurrency;
                     else
                         tmp = inputCurrency+spesa;
-                    //amountTextView.setText(tmp);
                     currentExpense.setAmount(tmp);
-                    expenseDao.updateAmount(currentExpense.id, tmp);
+                    expenseDao.updateAmount(currentExpense.getId(), tmp);
 
-                    currentExpense.setSelected(false);
-                    expenseDao.updateIsSelected(currentExpense.id, "0");
-                    recyclerAdapter.notifyItemChanged(expenseList.indexOf(currentExpense));
+                    currentExpense.setExpense_isSelected(false);
+                    expenseDao.updateIsSelected(currentExpense.getId(), false);
+
+                    int position = expenseList.indexOf(currentExpense);
+                    if (position != -1) {
+                        expenseList.set(position, currentExpense); // Aggiorna l'oggetto nella lista
+                        recyclerAdapter.notifyItemChanged(position);
+                    }
 
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_modify_expense.setVisibility(View.GONE);
@@ -600,11 +601,6 @@ public class ExpensesFragment extends Fragment {
                     addExpense.setEnabled(true);
                     editBudget.setEnabled(true);
                     filterButton.setEnabled(true);
-
-                    /*MaterialCardView card = findSelectedCard(listExpenseCards);
-                    card.setCardBackgroundColor(getResources().getColor(R.color.primary));
-                    card.setStrokeColor(getResources().getColor(R.color.primary));
-                    card.setSelected(false);*/
 
                 }
             }
@@ -651,17 +647,14 @@ public class ExpensesFragment extends Fragment {
                 if (inputCategoryFilter.isEmpty()) {
                     editTextCategoryFilter.setError("Scegli una categoria");
                 } else {
-                    filteredCards = filterByCategory(inputCategoryFilter);
-                    //expenseCardsContainer.removeAllViews();
-                    for (View card : filteredCards) {
-                        //expenseCardsContainer.addView(card);
-                    }
-                    double countSpese = countAmountByCategory();
-                    String tmp;
-                    if(inputCurrency.equalsIgnoreCase("€"))
-                        tmp = countSpese+inputCurrency;
-                    else
-                        tmp = inputCurrency+countSpese;
+                    List<Expense> filteredExpenses =
+                            AppRoomDatabase.getDatabase(getContext()).expenseDao().getFilteredExpenses(inputCategoryFilter);
+
+                    expenseList.clear();
+                    expenseList.addAll(filteredExpenses);
+                    recyclerAdapter.notifyDataSetChanged();
+
+                    String tmp = countAmount(filteredExpenses, inputCurrency);
                     totExpense.setText(tmp);
                     overlay_filter.setVisibility(View.GONE);
                     closeFilter.setVisibility(View.VISIBLE);
@@ -678,21 +671,16 @@ public class ExpensesFragment extends Fragment {
         closeFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //expenseCardsContainer.removeAllViews();
-                for (View card : listExpenseCards) {
-                    //expenseCardsContainer.addView(card);
-                }
+                List<Expense> allExpenses = AppRoomDatabase.getDatabase(getContext()).expenseDao().getAll();
+                expenseList.clear();
+                expenseList.addAll(allExpenses);
+                recyclerAdapter.notifyDataSetChanged();
                 closeFilter.setVisibility(View.GONE);
                 filterText.setVisibility(View.GONE);
                 totExpense.setVisibility(View.GONE);
                 addExpense.setEnabled(true);
             }
         });
-
-
-        /*ScrollView scrollView = view.findViewById(R.id.scrollView);
-        scrollView.fullScroll(ScrollView.FOCUS_DOWN);*/
-
     }
 
     //aggiorna il progress indicator delle spese
@@ -743,16 +731,16 @@ public class ExpensesFragment extends Fragment {
     public void updateCurrencyIcon(){
         TextInputLayout textQuantity = overlay_add_expense.findViewById(R.id.textFieldQuantita);
         TextInputLayout textModifyQuantity = overlay_modify_expense.findViewById(R.id.textFieldModificaQuantita);
-        if(inputCurrency.equalsIgnoreCase("€")){
+        if(inputCurrency.equalsIgnoreCase(CURRENCY_EUR)){
             textQuantity.setStartIconDrawable(R.drawable.baseline_euro_24);
             textModifyQuantity.setStartIconDrawable(R.drawable.baseline_euro_24);
-        }else if(inputCurrency.equalsIgnoreCase("$")){
+        }else if(inputCurrency.equalsIgnoreCase(CURRENCY_USD)){
             textQuantity.setStartIconDrawable(R.drawable.baseline_attach_money_24);
             textModifyQuantity.setStartIconDrawable(R.drawable.baseline_attach_money_24);
-        }else if(inputCurrency.equalsIgnoreCase("£")){
+        }else if(inputCurrency.equalsIgnoreCase(CURRENCY_GBP)){
             textQuantity.setStartIconDrawable(R.drawable.baseline_currency_pound_24);
             textModifyQuantity.setStartIconDrawable(R.drawable.baseline_currency_pound_24);
-        }else if(inputCurrency.equalsIgnoreCase("¥")){
+        }else if(inputCurrency.equalsIgnoreCase(CURRENCY_JPY)){
             textQuantity.setStartIconDrawable(R.drawable.baseline_currency_yen_24);
             textModifyQuantity.setStartIconDrawable(R.drawable.baseline_currency_yen_24);
         }

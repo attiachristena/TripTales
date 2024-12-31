@@ -1,7 +1,5 @@
 package com.unimib.triptales.adapters;
 
-import static com.unimib.triptales.util.Constants.countSelectedCards;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,6 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
-import com.unimib.triptales.ui.diario.fragment.ExpensesFragment;
 
 import java.util.List;
 
@@ -37,7 +34,7 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
     public FloatingActionButton getModifyExpense() { return modifyExpense; }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-       TextView amountTextView, categoryTextView, descriptionTextView, dateTextView;
+        TextView amountTextView, categoryTextView, descriptionTextView, dateTextView;
         ImageView icon;
 
         public ViewHolder(View view) {
@@ -77,15 +74,15 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         Expense expense = expenseList.get(position);
 
-        viewHolder.amountTextView.setText(expense.amount);
-        viewHolder.categoryTextView.setText(expense.category);
-        viewHolder.descriptionTextView.setText(expense.descprition);
-        viewHolder.dateTextView.setText(expense.date);
-        viewHolder.icon.setImageResource(expense.iconId);
+        viewHolder.amountTextView.setText(expense.getAmount());
+        viewHolder.categoryTextView.setText(expense.getCategory());
+        viewHolder.descriptionTextView.setText(expense.getDescription());
+        viewHolder.dateTextView.setText(expense.getDate());
+        viewHolder.icon.setImageResource(expense.getIconId());
 
         MaterialCardView card = (MaterialCardView) viewHolder.itemView;
 
-        if (expense.isSelected()) {
+        if (expense.isExpense_isSelected()) {
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
             card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
         } else {
@@ -104,15 +101,15 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
 
                 addExpense.setEnabled(false);
 
-                if (expense.isSelected()) {
+                if (expense.isExpense_isSelected()) {
                     //Deseleziona la spesa
                     card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary));
                     card.setStrokeColor(ContextCompat.getColor(context, R.color.primary));
-                    expense.setSelected(false);
-                    expenseDao.updateIsSelected(expense.id, "0");
+                    expense.setExpense_isSelected(false);
+                    expenseDao.updateIsSelected(expense.getId(), false);
                     boolean notSelectedAll = true;
                     for (Expense e : expenseList) {
-                        if (e.isSelected()) {
+                        if (e.isExpense_isSelected()) {
                             notSelectedAll = false;
                             break;
                         }
@@ -125,24 +122,25 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
                 } else {
                     card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
                     card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
-                    expense.setSelected(true);
-                    expenseDao.updateIsSelected(expense.id, "1");
+                    expense.setExpense_isSelected(true);
+                    expenseDao.updateIsSelected(expense.getId(), true);
                 }
 
-                if (countSelectedCards(expenseList) == 1) {
+                List<Expense> selectedExpenses = expenseDao.getSelectedExpenses();
+
+                if (selectedExpenses.size() == 1) {
                     modifyExpense.setVisibility(View.VISIBLE);
                     deleteExpense.setVisibility(View.VISIBLE);
-                } else if (countSelectedCards(expenseList) == 2) {
+                } else if (selectedExpenses.size() == 2) {
                     modifyExpense.setVisibility(View.GONE);
                 }
 
-                expenseDao.update(expense);
                 return false;
             }
         });
 
-
     }
+
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override

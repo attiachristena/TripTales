@@ -6,11 +6,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.unimib.triptales.R;
+import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Expense;
+import com.unimib.triptales.model.Goal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,21 +36,19 @@ public class Constants {
     public static final List<String> CATEGORIES = Arrays.asList(SHOPPING,
             FOOD, TRANSPORT, ACCOMMODATION, CULTURE, RECREATION);
 
+    public static final String CURRENCY_EUR = "€";
+    public static final String CURRENCY_USD = "$";
+    public static final String CURRENCY_GBP = "£";
+    public static final String CURRENCY_JPY = "¥";
+
+    public static final List<String> CURRENCIES = Arrays.asList(CURRENCY_EUR,
+            CURRENCY_USD, CURRENCY_GBP, CURRENCY_JPY);
+
     public static void hideKeyboard(View view, FragmentActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    //conta le spese selezionate
-    public static int countSelectedCards(List<Expense> expenseList) {
-        int selectedCount = 0;
-        for (Expense e : expenseList) {
-            if (e.isSelected())
-                selectedCount++;
-        }
-        return selectedCount;  // Restituisce il numero di card selezionate
     }
 
     //ritorna la card selezionata
@@ -56,6 +59,28 @@ public class Constants {
                 selectedCard = card;
         }
         return selectedCard;
+    }
+
+    public static String countAmount(List<Expense> expenseList, String currency){
+        double totExpense = 0;
+        for(Expense e: expenseList){
+            String amount = e.getAmount();
+            String realAmount;
+            if(currency.equalsIgnoreCase(CURRENCY_EUR)){
+                realAmount = amount.substring(0, amount.length()-1);
+            } else {
+                realAmount = amount.substring(1);
+            }
+            totExpense += Double.parseDouble(realAmount);
+        }
+
+        String tmp;
+        if(currency.equalsIgnoreCase(CURRENCY_EUR))
+            tmp = totExpense+currency;
+        else
+            tmp = currency+totExpense;
+
+        return tmp;
     }
 
 }

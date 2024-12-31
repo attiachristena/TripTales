@@ -33,8 +33,8 @@ public interface ExpenseDao {
     @Query("UPDATE Expense SET expense_date = :newDate WHERE id = :expenseId")
     void updateDate(int expenseId, String newDate);
 
-    @Query("UPDATE Expense SET isSelected = :newIsSelected WHERE id = :expenseId")
-    void updateIsSelected(int expenseId, String newIsSelected);
+    @Query("UPDATE Expense SET expense_isSelected = :newIsSelected WHERE id = :expenseId")
+    void updateIsSelected(int expenseId, boolean newIsSelected);
 
     @Delete
     void delete(Expense expense);
@@ -50,8 +50,11 @@ public interface ExpenseDao {
     @Query("SELECT * FROM Expense")
     List<Expense> getAll();
 
-    @Query("SELECT * FROM Expense WHERE isSelected = 1")
+    @Query("SELECT * FROM Expense WHERE expense_isSelected = 1")
     List<Expense> getSelectedExpenses();
+
+    @Query("SELECT * FROM Expense WHERE expense_category = :category")
+    List<Expense> getFilteredExpenses(String category);
 
     /*//Recupero delle spese di un determinato diario
     @Query("SELECT * FROM Expense WHERE diaryId = :diaryId")

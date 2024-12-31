@@ -35,6 +35,6 @@ public interface TaskDao {
     List<Task> getAll();
 
     //Recupero delle spese di un determinato diario
-    @Query("SELECT * FROM Task WHERE diaryId = :diaryId")
-    List<Task> getAllByDiaryId(int diaryId);
+    /*@Query("SELECT * FROM Task WHERE diaryId = :diaryId")
+    List<Task> getAllByDiaryId(int diaryId);*/
 }

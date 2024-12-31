@@ -1,21 +1,19 @@
 package com.unimib.triptales.ui.diario.fragment;
 
 import static com.google.android.material.internal.ViewUtils.hideKeyboard;
-import static com.unimib.triptales.util.Constants.countSelectedCards;
-import static com.unimib.triptales.util.Constants.findSelectedCard;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -27,10 +25,14 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.unimib.triptales.R;
+import com.unimib.triptales.adapters.GoalsRecyclerAdapter;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.GoalDao;
+import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.util.Constants;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 public class GoalsFragment extends Fragment {
 
@@ -62,6 +64,10 @@ public class GoalsFragment extends Fragment {
     TextView progressText;
     CheckBox cardGoalCheckBox;
     TextView noGoalsString;
+    RecyclerView recyclerViewGoals;
+    private List<Goal> goalsList = new ArrayList<>();
+    private List<Goal> checkedGoals;
+    private List<Goal> selectedGoals;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,8 @@ public class GoalsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        GoalDao goalDao = AppRoomDatabase.getDatabase(getContext()).goalDao();
+        goalsList = goalDao.getAll();
         return inflater.inflate(R.layout.fragment_obiettivi, container, false);
     }
 
@@ -83,16 +91,33 @@ public class GoalsFragment extends Fragment {
         progressText = view.findViewById(R.id.numObiettivi);
         inflater = LayoutInflater.from(view.getContext());
 
+        addButtonGoals = view.findViewById(R.id.addButtonGoals);
+        modifyGoal = view.findViewById(R.id.modifyGoal);
+        deleteGoal = view.findViewById(R.id.deleteGoal);
+        progressIndicator = view.findViewById(R.id.goalsProgressIndicator);
+
+        GoalDao goalDao = AppRoomDatabase.getDatabase(getContext()).goalDao();
+
+        recyclerViewGoals = view.findViewById(R.id.recyclerViewGoals);
+        GoalsRecyclerAdapter recyclerAdapter = new GoalsRecyclerAdapter(goalsList,  getContext(),
+                addButtonGoals, modifyGoal, deleteGoal, progressIndicator, progressText);
+        recyclerViewGoals.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewGoals.setAdapter(recyclerAdapter);
+
         overlay_add_goal = inflater.inflate(R.layout.overlay_add_goal, rootLayoutGoals, false);
         rootLayoutGoals.addView(overlay_add_goal);
         overlay_add_goal.setVisibility(View.GONE);
-        addButtonGoals = view.findViewById(R.id.addButtonGoals);
         backButtonGoal = view.findViewById(R.id.backButtonGoal);
         saveGoal = view.findViewById(R.id.saveGoal);
-        goalsCards = new ArrayList<MaterialCardView>();
-        checkedGoalsCards = new ArrayList<MaterialCardView>();
-        progressText.setText(getString(R.string.numObiettivi, checkedGoalsCards.size(), goalsCards.size()));
+        checkedGoals = goalDao.getCheckedGoals();
+
+        updateProgressIndicator();
         noGoalsString = view.findViewById(R.id.noGoalsString);
+        if(goalsList.isEmpty()){
+            noGoalsString.setVisibility(View.VISIBLE);
+        } else {
+            noGoalsString.setVisibility(View.GONE);
+        }
 
         backButtonGoal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,99 +141,37 @@ public class GoalsFragment extends Fragment {
             }
         });
 
-        goalCardsContainer = view.findViewById(R.id.goalCardsContainer);
-        indice = 0;
-        modifyGoal = view.findViewById(R.id.modifyGoal);
-        deleteGoal = view.findViewById(R.id.deleteGoal);
-        progressIndicator = view.findViewById(R.id.goalsProgressIndicator);
-
         saveGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // Usa LayoutInflater per creare una nuova CardView
-                View card = inflater.inflate(R.layout.item_card_goal, goalCardsContainer, false);
+                Goal currentGoal;
+                GoalDao goalDao = AppRoomDatabase.getDatabase(getContext()).goalDao();
 
-                // Modifica il contenuto della card
-                TextView name = card.findViewById(R.id.goalNameTextView);
                 inputGoalName = editTextGoalName.getText().toString().trim();
-
-                TextView description = card.findViewById(R.id.goalDescriptionTextView);
                 inputGoalDescription = editTextGoalDescription.getText().toString().trim();
 
                 if (inputGoalName.isEmpty()) {
                     editTextGoalName.setError("Inserisci un nome");
                 } else {
                     editTextGoalName.setError(null);
-                    name.setText(inputGoalName);
                     editTextGoalDescription.setError(null);
-                    description.setText(inputGoalDescription);
 
-                    // Aggiungi la nuova CardView al layout genitore
-                    goalCardsContainer.addView(card);
+                    if(inputGoalDescription.isEmpty()){
+                        currentGoal = new Goal(inputGoalName, null,false, false);
+                    } else {
+                        currentGoal = new Goal(inputGoalName, inputGoalDescription, false, false);
+                    }
+
+                    goalsList.add(currentGoal);
+                    recyclerAdapter.notifyItemInserted(goalsList.size()-1);
+                    goalDao.insert(currentGoal);
+
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_add_goal.setVisibility(View.GONE);
                     addButtonGoals.setVisibility(View.VISIBLE);
-                    MaterialCardView cardCurrentGoal = (MaterialCardView) goalCardsContainer.getChildAt(indice);
-                    goalsCards.add(cardCurrentGoal);
                     updateProgressIndicator();
-                    indice++;
                     noGoalsString.setVisibility(View.GONE);
-
-                    cardGoalCheckBox = cardCurrentGoal.findViewById(R.id.cardGoalCheckBox);
-
-                    cardCurrentGoal.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            addButtonGoals.setEnabled(false);
-                            if (cardCurrentGoal.isSelected()){
-                                cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
-                                cardCurrentGoal.setStrokeColor(getResources().getColor(R.color.light_gray));
-                                cardCurrentGoal.setSelected(false);
-                                cardGoalCheckBox.setEnabled(true);
-                                boolean notSelectedAll = true;
-                                for (MaterialCardView m : goalsCards){
-                                    if(m.isSelected())
-                                        notSelectedAll = false;
-                                }
-                                if(notSelectedAll) {
-                                    modifyGoal.setVisibility(View.GONE);
-                                    deleteGoal.setVisibility(View.GONE);
-                                    addButtonGoals.setEnabled(true);
-                                }
-                            } else {
-                                cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                cardCurrentGoal.setStrokeColor(getResources().getColor(R.color.background_dark));
-                                cardCurrentGoal.setSelected(true);
-                                cardGoalCheckBox.setEnabled(false);
-                            }
-                            /*if (countSelectedCards(goalsCards) == 1) {
-                                modifyGoal.setVisibility(View.VISIBLE);
-                                deleteGoal.setVisibility(View.VISIBLE);
-                            } else if (countSelectedCards(goalsCards) == 2){
-                                modifyGoal.setVisibility(View.GONE);
-                            }*/
-                            return true;
-                        }
-                    });
-
-                    cardCurrentGoal.setCheckable(true);
-
-                    cardGoalCheckBox.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (!cardCurrentGoal.isChecked()){
-                                checkedGoalsCards.add(cardCurrentGoal);
-                                cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.dark_gray));
-                                cardCurrentGoal.setChecked(true);
-                            } else {
-                                checkedGoalsCards.remove(cardCurrentGoal);
-                                cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
-                                cardCurrentGoal.setChecked(false);
-                            }
-                            updateProgressIndicator();
-                        }
-                    });
                 }
             }
         });
@@ -227,13 +190,12 @@ public class GoalsFragment extends Fragment {
             public void onClick(View view) {
                 overlay_modify_goal.setVisibility(View.VISIBLE);
 
-                MaterialCardView card = findSelectedCard(goalsCards);
+                GoalDao goalDao = AppRoomDatabase.getDatabase(getContext()).goalDao();
+                selectedGoals = goalDao.getSelectedGoals();
+                Goal currentGoal = selectedGoals.get(0);
 
-                TextView cardName = card.findViewById(R.id.goalNameTextView);
-                editTextModifiedGoalName.setText(cardName.getText().toString().trim());
-
-                TextView cardDescrizione = card.findViewById(R.id.goalDescriptionTextView);
-                editTextModifiedGoalDescription.setText(cardDescrizione.getText().toString().trim());
+                editTextModifiedGoalName.setText(currentGoal.getName());
+                editTextModifiedGoalDescription.setText(currentGoal.getDescription());
 
                 addButtonGoals.setVisibility(View.GONE);
                 modifyGoal.setVisibility(View.GONE);
@@ -256,37 +218,46 @@ public class GoalsFragment extends Fragment {
         saveModifiedGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MaterialCardView card = findSelectedCard(goalsCards);
+                //MaterialCardView card = findSelectedCard(goalsCards);
+
+                GoalDao goalDao = AppRoomDatabase.getDatabase(getContext()).goalDao();
+                selectedGoals = goalDao.getSelectedGoals();
+                Goal currentGoal = selectedGoals.get(0);
 
                 // Modifica il contenuto della card
-                TextView name = card.findViewById(R.id.goalNameTextView);
+                //TextView name = card.findViewById(R.id.goalNameTextView);
                 inputModifiedGoalName = editTextModifiedGoalName.getText().toString().trim();
 
-                TextView description = card.findViewById(R.id.goalDescriptionTextView);
+                //TextView description = card.findViewById(R.id.goalDescriptionTextView);
                 inputModifiedGoalDescription = editTextModifiedGoalDescription.getText().toString().trim();
 
                 if (inputModifiedGoalName.isEmpty()) {
                     editTextModifiedGoalName.setError("Inserisci il nome dell'obiettivo");
                 } else {
                     editTextModifiedGoalName.setError(null);
-                    name.setText(inputModifiedGoalName);
+                    //name.setText(inputModifiedGoalName);
+                    currentGoal.setName(inputModifiedGoalName);
+                    goalDao.updateName(currentGoal.getId(), inputModifiedGoalName);
                     editTextModifiedGoalDescription.setError(null);
-                    description.setText(inputModifiedGoalDescription);
+                    //description.setText(inputModifiedGoalDescription);
+                    currentGoal.setDescription(inputModifiedGoalDescription);
+                    goalDao.updateDescription(currentGoal.getId(), inputModifiedGoalDescription);
+
+                    currentGoal.setGoal_isSelected(false);
+                    goalDao.updateIsSelected(currentGoal.getId(), false);
+
+                    int position = goalsList.indexOf(currentGoal);
+                    if (position != -1) {
+                        goalsList.set(position, currentGoal); // Aggiorna l'oggetto nella lista
+                        recyclerAdapter.notifyItemChanged(position);
+                    }
+
                     updateProgressIndicator();
 
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_modify_goal.setVisibility(View.GONE);
                     addButtonGoals.setVisibility(View.VISIBLE);
                     addButtonGoals.setEnabled(true);
-                    if(checkedGoalsCards.contains(card)) {
-                        card.setCardBackgroundColor(getResources().getColor(R.color.dark_gray));
-                        card.setStrokeColor(getResources().getColor(R.color.light_gray));
-                    } else {
-                        card.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
-                        card.setStrokeColor(getResources().getColor(R.color.light_gray));
-                    }
-                    card.setSelected(false);
-
                 }
             }
         });
@@ -295,10 +266,10 @@ public class GoalsFragment extends Fragment {
         deleteGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Iterator<MaterialCardView> iterator = goalsCards.iterator();
+                /*Iterator<MaterialCardView> iterator = goalsCards.iterator();
                 while (iterator.hasNext()) {
                     MaterialCardView item = iterator.next();
-                    if (item.isSelected()) {
+                    if (item.expense_isSelected()) {
                         iterator.remove();
                         goalCardsContainer.removeView(item);
                         updateProgressIndicator();
@@ -310,7 +281,7 @@ public class GoalsFragment extends Fragment {
                 addButtonGoals.setEnabled(true);
                 if(goalsCards.isEmpty()){
                     noGoalsString.setVisibility(View.VISIBLE);
-                }
+                }*/
             }
         });
 
@@ -319,14 +290,14 @@ public class GoalsFragment extends Fragment {
     }
 
     public void updateProgressIndicator(){
-        double numAllCards = goalsCards.size();
-        double numCheckedCards = checkedGoalsCards.size();
-        if(goalsCards.isEmpty()){
+        double numAllCards = goalsList.size();
+        double numCheckedCards = checkedGoals.size();
+        if(goalsList.isEmpty()){
             progressPercentage = 0;
         } else {
             progressPercentage = (int) ((numCheckedCards / numAllCards) * 100);
             progressIndicator.setProgress(progressPercentage);
-            String tmp = getString(R.string.numObiettivi, checkedGoalsCards.size(), goalsCards.size());
+            String tmp = getString(R.string.numObiettivi, checkedGoals.size(), goalsList.size());
             progressText.setText(tmp);
         }
     }
