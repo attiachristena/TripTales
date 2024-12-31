@@ -62,6 +62,8 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.play.services.location)
+    implementation("com.google.firebase:firebase-bom:31.2.3") // Usa la versione più recente
+    implementation("com.google.firebase:firebase-analytics")
 
 
 

@@ -12,12 +12,23 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
-
 @Entity
 public class User implements Parcelable {
+    @ColumnInfo(name = "user_name")
     private String name;
+    @ColumnInfo(name = "user_email")
     private String email;
     private String idToken;
+
+    @PrimaryKey
+    public int id;
+
+    @ColumnInfo(name = "user_surname")
+    public String surname;
+
+
+    @ColumnInfo(name = "user_passowrd")
+    public String password;
  
 
     public User(String name, String email, String idToken){
@@ -88,6 +99,6 @@ public class User implements Parcelable {
         public User[] newArray(int i) {
             return new User[i];
         }
-    }
+    };
 }
 
