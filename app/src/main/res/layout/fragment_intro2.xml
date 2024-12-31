@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFD5E1"
+    tools:context=".ui.intro.fragment.Intro2Fragment">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="380dp"
+        android:orientation="vertical"
+        android:elevation="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/intro2_title"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:text="@string/intro2_body"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="487dp"
+        android:layout_marginTop="250dp"
+        android:layout_marginBottom="0dp"
+        app:srcCompat="@drawable/img_intro2" />
+
+    <ImageButton
+        android:id="@+id/nextButtonIntro2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="340dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/custom_button_intro"
+        android:backgroundTint="@color/magenta"
+        android:src="@drawable/baseline_arrow_forward_ios_24" />
+
+    <ImageButton
+        android:id="@+id/backButtonIntro2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/custom_button_intro"
+        android:backgroundTint="@color/magenta"
+        android:src="@drawable/baseline_arrow_back_ios_24_small" />
+
+</FrameLayout>

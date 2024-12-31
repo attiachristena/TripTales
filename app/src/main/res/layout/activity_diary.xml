@@ -30,6 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:backgroundTint="@color/white"
+            app:tabIndicatorFullWidth="true"
             app:tabGravity="fill"
             app:tabMode="fixed"
             app:tabIndicatorColor="@color/background_dark">

@@ -14,7 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="19dp">
+        android:paddingHorizontal="19dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="19dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardBudget"
@@ -59,8 +61,8 @@
 
                 <ImageButton
                     android:id="@+id/editBudget"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="bottom|end"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_button"
@@ -128,10 +130,9 @@
             <Button
                 android:id="@+id/buttonFilter"
                 android:layout_width="85dp"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_gravity="end"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
                 android:backgroundTint="@color/background_dark"
                 android:text="@string/buttonSpese"
                 android:textAllCaps="false"
