@@ -1,14 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/Base.Theme.TripTales"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.diario.fragment.CheckListFragment">
+    android:id="@+id/rootLayoutCheckList"
+    tools:context=".ui.diario.fragment.ExpensesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/linearLayoutCheckList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/checklist_fragment" />
+        android:orientation="vertical"
+        android:paddingHorizontal="19dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="19dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/checkListTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/checklistTitle"
+            android:textSize="18sp"
+            android:textColor="@color/background_dark"
+            android:textStyle="bold"/>
+
+        <ScrollView
+            android:id="@+id/scrollViewTask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:id="@+id/taskCardsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/noTasksString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/noTasksString"
+        android:textColor="@color/dark_gray"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayoutCheckList" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addTaskButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="35dp"
+        app:rippleColor="@color/light_gray"
+        android:contentDescription="@string/addItemButtonDescription"
+        android:elevation="4dp"
+        android:src="@drawable/round_add_24"
+        app:tint="@color/black"
+        android:backgroundTint="@color/white_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCheckList"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/deleteTask"
+        style="?attr/floatingActionButtonSmallStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="100dp"
+        app:rippleColor="@color/light_gray"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_delete_outline_24"
+        app:tint="@color/white"
+        android:backgroundTint="@color/background_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCheckList"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/modifyTask"
+        style="?attr/floatingActionButtonSmallStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="149dp"
+        app:rippleColor="@color/light_gray"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_mode_edit_24"
+        app:tint="@color/white"
+        android:backgroundTint="@color/background_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCheckList"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

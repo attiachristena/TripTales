@@ -44,6 +44,8 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.androidx.cardview)
     implementation (libs.google.material.v190)
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.play.services.maps)
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
