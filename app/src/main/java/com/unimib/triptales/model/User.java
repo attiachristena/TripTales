@@ -3,12 +3,22 @@ package com.unimib.triptales.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.Relation;
+
+import java.util.List;
+
 import androidx.annotation.NonNull;
 
+
+@Entity
 public class User implements Parcelable {
     private String name;
     private String email;
     private String idToken;
+ 
 
     public User(String name, String email, String idToken){
         this.name = name;
@@ -78,5 +88,6 @@ public class User implements Parcelable {
         public User[] newArray(int i) {
             return new User[i];
         }
-    };
+    }
 }
+
