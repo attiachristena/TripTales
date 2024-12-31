@@ -65,5 +65,15 @@
     <string name="hintYear">AAAA</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
 
+    <string name="intro1_title">Benvenuto su TripTales. Il tuo diario di viaggio personale</string>
+    <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>
+    <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni tappa</string>
+    <string name="intro2_body">Qui potrai pianificare le tue avventure, annotare ogni scoperta e rivivere ogni momento</string>
+    <string name="intro3_title">Esplora senza connessione, pianifica senza stress</string>
+    <string name="intro3_body">Scarica mappe e crea il tuo itinerario senza bisogno di essere online</string>
+    <string name="intro4_title">Viaggia sereno: noi ti aiutiamo a ricordare ogni dettaglio</string>
+    <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="inizia">INIZIA</string>
 
 </resources>
