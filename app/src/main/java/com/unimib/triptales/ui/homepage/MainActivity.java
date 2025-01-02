@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.unimib.triptales.R;
 import com.unimib.triptales.ui.homepage.fragment.CalendarFragment;
-import com.unimib.triptales.ui.homepage.fragment.HomeFragment;
 import com.unimib.triptales.ui.homepage.fragment.MapFragment;
 
 public class MainActivity extends AppCompatActivity {

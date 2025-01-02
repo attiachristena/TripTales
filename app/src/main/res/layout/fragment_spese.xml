@@ -2,22 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/Base.Theme.TripTales"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.diario.fragment.SpeseFragment">
+    android:id="@+id/rootLayoutSpese"
+    tools:context=".ui.diario.fragment.ExpensesFragment">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/linearLayoutSpese"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="19dp">
+        android:paddingHorizontal="19dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="19dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardBudget"
             android:layout_width="match_parent"
-            android:layout_height="110dp"
+            android:layout_height="wrap_content"
             android:backgroundTint="@color/secondary"
             app:cardCornerRadius="20dp"
             app:cardElevation="4dp">
@@ -26,20 +29,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="10dp"
+                android:paddingVertical="10dp"
                 android:paddingBottom="10dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_weight="10"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="10dp">
+                    android:layout_weight="50">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:text="@string/titleBudgetCard"
                         android:textColor="@color/white"
                         android:textSize="20sp"
@@ -49,7 +52,6 @@
                         android:id="@+id/totBudget"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:text="@string/budget"
                         android:textColor="@color/white"
                         android:textSize="45sp"
@@ -61,11 +63,10 @@
                     android:id="@+id/editBudget"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
+                    android:layout_gravity="end|bottom"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_button"
                     android:backgroundTint="@color/secondary"
-                    app:tint="@color/white"
                     android:contentDescription="@string/buttonEditDescription"
                     android:src="@drawable/baseline_mode_edit_24" />
 
@@ -77,7 +78,7 @@
             android:id="@+id/cardProgressBudget"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="@color/light_gray"
             app:cardCornerRadius="20dp"
             app:cardElevation="4dp">
@@ -99,10 +100,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
                 android:paddingHorizontal="16dp"
-                android:progress="0"
-                app:indicatorColor="@color/secondary"
-                app:indicatorTrackGapSize="0dp"
                 app:trackColor="@color/white"
+                app:indicatorColor="@color/secondary"
+                app:trackStopIndicatorSize="0dp"
+                android:progress="0"
+                app:indicatorTrackGapSize="0dp"
                 app:trackCornerRadius="20dp"
                 app:trackThickness="10dp" />
 
@@ -115,7 +117,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="10"
@@ -124,13 +126,19 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
+            <ImageButton
+                android:id="@+id/closeFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:src="@drawable/baseline_close_24"
+                android:backgroundTint="@color/white"
+                android:visibility="gone"/>
+
             <Button
-                android:id="@+id/buttonViewAll"
+                android:id="@+id/buttonFilter"
                 android:layout_width="85dp"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_gravity="end"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button"
                 android:backgroundTint="@color/background_dark"
                 android:text="@string/buttonSpese"
                 android:textAllCaps="false"
@@ -140,256 +148,100 @@
 
         </LinearLayout>
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/testoFiltro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/totalespesa"
+                android:textSize="15sp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/totSpesa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:text="@string/spesa_amount"
+                android:textSize="15sp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewExpenses"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="10dp">
 
-            <LinearLayout
-                android:id="@+id/spesaCardsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-        </ScrollView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardAddBudget"
+    <TextView
+        android:id="@+id/noSpeseString"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="140dp"
-        android:backgroundTint="@color/background_overlays"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone">
+        android:gravity="center"
+        android:text="@string/noSpeseString"
+        android:textColor="@color/dark_gray"
+        android:textSize="17sp"
+        android:paddingHorizontal="19dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp">
-
-            <ImageButton
-                android:id="@+id/backBudgetButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_weight="1"
-                android:layout_marginTop="36dp"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/background_overlays"
-                android:src="@drawable/baseline_arrow_back_ios_24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="31dp"
-                android:text="@string/editBudgetTitle"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/salvaBudget"
-                android:layout_width="83dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginStart="26dp"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/secondary"
-                android:text="@string/saveButton"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
-
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldBudget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:hint="@string/hintBudget"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/baseline_attach_money_24"
-            app:errorEnabled="true"
-            app:helperTextEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputBudget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHighlight="@color/secondary"
-                android:inputType="number"
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardAddSpesa"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="18dp"
-        android:backgroundTint="@color/background_overlays"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp">
-
-            <ImageButton
-                android:id="@+id/backSpesaButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginTop="2dp"
-                android:background="@color/background_overlays"
-                android:src="@drawable/baseline_arrow_back_ios_24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:layout_gravity="center"
-                android:text="@string/addSpesaCardTitle"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/salvaSpesa"
-                android:layout_width="83dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginStart="26dp"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/secondary"
-                android:text="@string/saveButton"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textFieldQuantita"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
-                android:hint="@string/hintBudget"
-                android:paddingHorizontal="16dp"
-                app:errorEnabled="true"
-                app:helperTextEnabled="true"
-                app:startIconDrawable="@drawable/baseline_attach_money_24">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputQuantitaSpesa"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:textColorHighlight="@color/secondary" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textFieldCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:hint="@string/hintCategoria"
-                app:errorEnabled="true"
-                app:helperTextEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputCategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHighlight="@color/secondary"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textFieldDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hintDescription"
-                android:paddingHorizontal="16dp"
-                app:errorEnabled="true"
-                app:helperTextEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHighlight="@color/secondary"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textFieldDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hintDate"
-                android:paddingHorizontal="16dp"
-                app:errorEnabled="true"
-                app:helperTextEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHighlight="@color/secondary"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-
-    <ImageButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButtonSpese"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="35dp"
-        android:background="@drawable/rounded_button"
-        android:backgroundTint="@color/white_dark"
+        app:rippleColor="@color/light_gray"
         android:contentDescription="@string/add_button_spese_description"
         android:elevation="4dp"
         android:src="@drawable/round_add_24"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:tint="@color/black"
+        android:backgroundTint="@color/white_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSpese"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/eliminaSpesa"
+        style="?attr/floatingActionButtonSmallStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="100dp"
+        app:rippleColor="@color/light_gray"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_delete_outline_24"
+        app:tint="@color/white"
+        android:backgroundTint="@color/background_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSpese"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/modificaSpesa"
+        style="?attr/floatingActionButtonSmallStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="149dp"
+        app:rippleColor="@color/light_gray"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_pen"
+        app:tint="@color/white"
+        android:backgroundTint="@color/background_dark"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSpese"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

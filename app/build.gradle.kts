@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -29,6 +30,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -41,8 +45,26 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.androidx.cardview)
     implementation (libs.google.material.v190)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation("com.google.android.gms:play-services-auth:20.3.0")
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    implementation(libs.play.services.maps)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    implementation(libs.play.services.location)
+    implementation("com.google.firebase:firebase-bom:31.2.3") // Usa la versione più recente
+    implementation("com.google.firebase:firebase-analytics")
+
+
 
 }
