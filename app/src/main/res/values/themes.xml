@@ -10,6 +10,7 @@
         <item name="colorAccent">@color/primary</item>
         <item name="popupMenuBackground">@color/white_dark</item>
         <item name="popupMenuStyle">@style/PopupMenuStyle</item>
+        <item name="colorSecondaryContainer">@color/primary_light</item>
 
     </style>
 

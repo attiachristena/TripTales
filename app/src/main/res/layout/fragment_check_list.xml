@@ -26,21 +26,13 @@
             android:textColor="@color/background_dark"
             android:textStyle="bold"/>
 
-        <ScrollView
-            android:id="@+id/scrollViewTask"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewTasks"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp">
 
-            <LinearLayout
-                android:id="@+id/taskCardsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-        </ScrollView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 
