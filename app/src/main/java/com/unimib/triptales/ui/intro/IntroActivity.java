@@ -1,5 +1,4 @@
 package com.unimib.triptales.ui.intro;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -75,10 +74,10 @@ public class IntroActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                if(getItem(0)<2){
+                if(getItem(0)<3){
                     slideViewPager.setCurrentItem(getItem(1), true);
                 }else{
-                    Intent intent = new Intent(IntroActivity.this, IntroFinishActivity.class);
+                    Intent intent = new Intent(IntroActivity.this, GetStartedActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -98,17 +97,29 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     public void setDotIndicator(int position){
-        dots = new TextView[3];
+        dots = new TextView[4];
         dotIndicator.removeAllViews();
 
         for(int i=0; i < dots.length; i++ ){
             dots[i] = new TextView(this);
             dots[i].setText(Html.fromHtml("&#8226", Html.FROM_HTML_MODE_LEGACY));
             dots[i].setTextSize(35);
-            dots[i].setTextColor(getResources().getColor(R.color.background_dark, getApplicationContext().getTheme()));
+            dots[i].setTextColor(getResources().getColor(R.color.light_brown3, getApplicationContext().getTheme()));
             dotIndicator.addView(dots[i]);
         }
-        dots[position].setTextColor(getResources().getColor(R.color.error,getApplicationContext().getTheme()));
+        dots[position].setTextColor(getResources().getColor(R.color.light_brown2,getApplicationContext().getTheme()));
+
+        if(position==1){
+            for(int i=0; i < dots.length; i++ ){
+                dots[i].setTextColor(getResources().getColor(R.color.pink2, getApplicationContext().getTheme()));
+            }
+            dots[1].setTextColor(getResources().getColor(R.color.magenta,getApplicationContext().getTheme()));
+        } else if (position==3) {
+            for(int i=0; i < dots.length; i++ ){
+                dots[i].setTextColor(getResources().getColor(R.color.light_orange3, getApplicationContext().getTheme()));
+            }
+            dots[3].setTextColor(getResources().getColor(R.color.orange,getApplicationContext().getTheme()));
+        }
     }
 
     private int getItem(int i){

@@ -61,10 +61,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="@id/nextButton"
         app:layout_constraintEnd_toEndOf="@id/nextButton"
         app:layout_constraintTop_toTopOf="@id/backButton"
         app:layout_constraintStart_toStartOf="@id/backButton"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

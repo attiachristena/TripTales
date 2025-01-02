@@ -4,11 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardModificaSpesa"
     android:layout_width="match_parent"
-    android:layout_height="400dp"
+    android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginTop="10dp"
     android:backgroundTint="@color/background_overlays"
     app:cardCornerRadius="20dp"
+    android:elevation="100dp"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +76,7 @@
             app:boxBackgroundColor="@color/background_overlays"
             app:errorEnabled="true"
             app:helperTextEnabled="true"
-            app:startIconDrawable="@drawable/baseline_attach_money_24">
+            app:startIconDrawable="@drawable/baseline_euro_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputModificaQuantitaSpesa"
@@ -93,18 +94,18 @@
             app:boxStrokeColor="@color/background_dark"
             app:hintTextColor="@color/background_dark"
             app:cursorColor="@color/secondary"
-            style="?attr/textInputFilledStyle"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
             app:boxBackgroundColor="@color/background_overlays"
             android:hint="@string/hintCategoria"
             app:errorEnabled="true"
-            app:helperTextEnabled="true"
-            app:counterEnabled="true"
-            app:counterMaxLength="18">
+            app:helperTextEnabled="true">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
                 android:id="@+id/inputModificaCategory"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:popupBackground="@color/background_overlays" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -120,9 +121,7 @@
             style="?attr/textInputFilledStyle"
             app:boxBackgroundColor="@color/background_overlays"
             app:errorEnabled="true"
-            app:helperTextEnabled="true"
-            app:counterEnabled="true"
-            app:counterMaxLength="24">
+            app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputModificaDescription"
@@ -131,28 +130,101 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldModificaDate"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hintDate"
-            android:paddingHorizontal="16dp"
-            app:boxStrokeColor="@color/background_dark"
-            app:hintTextColor="@color/background_dark"
-            app:cursorColor="@color/secondary"
-            style="?attr/textInputFilledStyle"
-            app:boxBackgroundColor="@color/background_overlays"
-            app:errorEnabled="true"
-            app:helperTextEnabled="true"
-            app:counterEnabled="true"
-            app:counterMaxLength="10">
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputModificaDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textFieldModifyDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hintDay"
+                android:paddingHorizontal="16dp"
+                app:boxStrokeColor="@color/background_dark"
+                app:hintTextColor="@color/background_dark"
+                app:cursorColor="@color/secondary"
+                style="?attr/textInputFilledStyle"
+                app:boxBackgroundColor="@color/background_overlays"
+                app:errorEnabled="true"
+                app:helperTextEnabled="true">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputModifyDay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/SeparatoreData"
+                android:textSize="20sp"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textFieldModifyMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hintMonth"
+                android:paddingHorizontal="16dp"
+                app:boxStrokeColor="@color/background_dark"
+                app:hintTextColor="@color/background_dark"
+                app:cursorColor="@color/secondary"
+                style="?attr/textInputFilledStyle"
+                app:boxBackgroundColor="@color/background_overlays"
+                app:errorEnabled="true"
+                app:helperTextEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputModifyMonth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/SeparatoreData"
+                android:textSize="20sp"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textFieldModifyYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:hint="@string/hintYear"
+                android:paddingHorizontal="16dp"
+                app:boxStrokeColor="@color/background_dark"
+                app:hintTextColor="@color/background_dark"
+                app:cursorColor="@color/secondary"
+                style="?attr/textInputFilledStyle"
+                app:boxBackgroundColor="@color/background_overlays"
+                app:errorEnabled="true"
+                app:helperTextEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputModifyYear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

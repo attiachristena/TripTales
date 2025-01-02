@@ -6,8 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_color2"
+<<<<<<<< HEAD:app/src/main/res/layout/activity_intro_finish.xml
     tools:context=".ui.intro.IntroFinishActivity">
 
+========
+    tools:context=".ui.intro.GetStartedActivity">
+>>>>>>>> master:app/src/main/res/layout/activity_get_started.xml
 
     <LinearLayout
         android:layout_width="wrap_content"

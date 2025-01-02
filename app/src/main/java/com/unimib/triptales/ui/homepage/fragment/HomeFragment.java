@@ -4,74 +4,74 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
-import com.unimib.triptales.ui.diario.fragment.TappeFragment;
+import com.unimib.triptales.adapters.Diary;
+import com.unimib.triptales.adapters.DiaryAdapter;
+import com.unimib.triptales.ui.homepage.fragment.AddDiaryFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
+    private RecyclerView recyclerView;
+    private DiaryAdapter diaryAdapter;
+    private List<Diary> diaryList = new ArrayList<>();
+    private TextView emptyMessage;
+    private FloatingActionButton fabAddDiary;
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        FloatingActionButton fab = view.findViewById(R.id.fab_add_diary);
+        recyclerView = view.findViewById(R.id.recycler_view_diaries);
+        emptyMessage = view.findViewById(R.id.text_empty_message);
+        fabAddDiary = view.findViewById(R.id.fab_add_diary);
 
-        // Azioni quando si preme il pulsante "+"
-        fab.setOnClickListener(v -> {
-            // Visualizza l'alert dialog personalizzato
-            View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.activity_dialog_add_diary, null);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        diaryAdapter = new DiaryAdapter(getContext(), diaryList);
+        recyclerView.setAdapter(diaryAdapter);
 
-            // Trova gli elementi del layout personalizzato
-            EditText editDiaryName = dialogView.findViewById(R.id.diary_name);
-            Button btnAdd = dialogView.findViewById(R.id.btn_add);
-            Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        // Logica per visualizzare il messaggio vuoto o la lista
+        updateEmptyMessage();
 
-            // Crea il dialog
-            AlertDialog dialog = new AlertDialog.Builder(getContext())
-                    .setView(dialogView)
-                    .setCancelable(true)
-                    .create();
-
-            // Imposta il comportamento del pulsante "Aggiungi"
-            btnAdd.setOnClickListener(v1 -> {
-                String diaryName = editDiaryName.getText().toString().trim();
-                if (!diaryName.isEmpty()) {
-
-                    // Passa il nome del diario al TappeFragment con un Bundle
-                    TappeFragment tappeFragment = new TappeFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("diary_name", diaryName);
-                    tappeFragment.setArguments(bundle);
-
-                    // Sostituisci il Fragment corrente con il TappeFragment
-                    getParentFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, tappeFragment) // Assicurati che 'fragment_container' sia corretto
-                            .addToBackStack(null)
-                            .commit();
-
-                    dialog.dismiss(); // Chiudi il dialog
-                } else {
-                    Toast.makeText(getContext(), "Inserisci un nome per il diario!", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            // Imposta il comportamento del pulsante "Annulla"
-            btnCancel.setOnClickListener(v1 -> dialog.dismiss());
-
-            // Mostra il dialog
-            dialog.show();
+        // Naviga al fragment di aggiunta diario
+        fabAddDiary.setOnClickListener(v -> {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new AddDiaryFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         return view;
+    }
+
+    // Metodo per aggiornare il messaggio vuoto
+    private void updateEmptyMessage() {
+        if (diaryList.isEmpty()) {
+            emptyMessage.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            emptyMessage.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    // Metodo per aggiungere un diario alla lista
+    public void addDiary(Diary diary) {
+        diaryList.add(diary);
+        diaryAdapter.notifyDataSetChanged();
+        updateEmptyMessage();
     }
 }

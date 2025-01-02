@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.unimib.triptales.ui.diario.fragment.CheckListFragment;
-import com.unimib.triptales.ui.diario.fragment.ObiettiviFragment;
-import com.unimib.triptales.ui.diario.fragment.SpeseFragment;
+import com.unimib.triptales.ui.diario.fragment.TasksFragment;
+import com.unimib.triptales.ui.diario.fragment.GoalsFragment;
+import com.unimib.triptales.ui.diario.fragment.ExpensesFragment;
 import com.unimib.triptales.ui.diario.fragment.TappeFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
@@ -23,11 +23,11 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return new TappeFragment();
             case 1:
-                return new SpeseFragment();
+                return new ExpensesFragment();
             case 2:
-                return new ObiettiviFragment();
+                return new GoalsFragment();
             case 3:
-                return new CheckListFragment();
+                return new TasksFragment();
             default:
                 return new TappeFragment();
         }
