@@ -77,6 +77,7 @@ public class HomeFragment extends Fragment {
         inputYearStartDate = overlayAddDiary.findViewById(R.id.inputYearDeparture);
 
 
+
         inputDayEndDate = overlayAddDiary.findViewById(R.id.inputReturnDay);
         inputMonthEndDate = overlayAddDiary.findViewById(R.id.inputReturnMonth);
         inputYearEndDate = overlayAddDiary.findViewById(R.id.inputReturnYear);
@@ -156,7 +157,6 @@ public class HomeFragment extends Fragment {
         String yearEndDate = inputYearEndDate.getText().toString().trim();
         String diaryName = inputDiaryName.getText().toString().trim();
 
-
         if (TextUtils.isEmpty(dayStartDate) || TextUtils.isEmpty(monthStartDate) || TextUtils.isEmpty(yearStartDate) ||
                 TextUtils.isEmpty(dayEndDate) || TextUtils.isEmpty(monthEndDate) || TextUtils.isEmpty(yearEndDate)) {
             Toast.makeText(getContext(), "Le date non possono essere vuote!", Toast.LENGTH_SHORT).show();
@@ -189,13 +189,14 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-
-        diaryList.add(new Diary(diaryName,startDate, selectedImageUri));
+        // Create the Diary object with both start and end dates
+        diaryList.add(new Diary(diaryName, startDate, endDate, selectedImageUri));
         diaryAdapter.notifyDataSetChanged();
         overlayAddDiary.setVisibility(View.GONE);
         updateEmptyMessage();
         Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
     }
+
 
     private boolean isValidDay(String day) {
         try {

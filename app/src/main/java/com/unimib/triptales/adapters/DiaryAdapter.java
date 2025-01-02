@@ -36,18 +36,29 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
     public void onBindViewHolder(@NonNull DiaryViewHolder holder, int position) {
         Diary diary = diaries.get(position);
 
-        // Set the diary data to the views in the item card
+        // Set the diary name to the TextView
         holder.textViewDiaryName.setText(diary.getName());
-        holder.textViewDates.setText(diary.getStartDate());
 
+        // Use the getStartMonthAbbreviation method to get the abbreviated month
+        String startMonthAbbreviation = diary.getStartMonthAbbreviation();
 
+        // Extract the year from the start date (use the last 4 characters of the start date)
+        String startYear = diary.getStartDate().substring(diary.getStartDate().length() - 4);
 
-        // Set image URI to the ImageView (use Glide or Picasso if needed)
+        // Combine the month abbreviation and year and set it in the TextView
+        String startMonthAndYear = startMonthAbbreviation + " " + startYear;
+        holder.textViewDates.setText(startMonthAndYear); // Display the month abbreviation and year
+
+        // Set the cover image (if available) or fallback to default cover
+        holder.imageViewDiary.setImageResource(R.drawable.default_cover); // Fallback image
         if (diary.getCoverImageUri() != null) {
             holder.imageViewDiary.setImageURI(diary.getCoverImageUri());
-        } else {
-            holder.imageViewDiary.setImageResource(R.drawable.default_cover); // fallback image
         }
+
+        // Calculate the travel duration and display it
+        int duration = diary.getTravelDuration();
+        String durationText = duration + " giorni";
+        holder.textViewDuration.setText(durationText);
     }
 
     @Override
@@ -58,14 +69,14 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
     public static class DiaryViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageViewDiary;
-        TextView textViewDiaryName, textViewDates;
+        TextView textViewDiaryName, textViewDates, textViewDuration;
 
         public DiaryViewHolder(View itemView) {
             super(itemView);
             imageViewDiary = itemView.findViewById(R.id.imageViewDiary);
-             textViewDiaryName = itemView.findViewById(R.id.textViewDiaryName);
-            textViewDates = itemView.findViewById(R.id.textViewStartDate); // Correct id
+            textViewDiaryName = itemView.findViewById(R.id.textViewDiaryName);
+            textViewDates = itemView.findViewById(R.id.textViewStartDate);  // This is where we will display the month abbreviation and year
+            textViewDuration = itemView.findViewById(R.id.textViewDuration);
         }
-
     }
 }
