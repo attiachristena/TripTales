@@ -37,8 +37,10 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         Diary diary = diaries.get(position);
 
         // Set the diary data to the views in the item card
-        holder.textViewDiaryName.setText("Diario: " + diary.getStartDate() + " - " + diary.getEndDate());
-        holder.textViewDates.setText(diary.getStartDate() + " - " + diary.getEndDate());
+        holder.textViewDiaryName.setText(diary.getName());
+        holder.textViewDates.setText(diary.getStartDate());
+
+
 
         // Set image URI to the ImageView (use Glide or Picasso if needed)
         if (diary.getCoverImageUri() != null) {
@@ -61,8 +63,9 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         public DiaryViewHolder(View itemView) {
             super(itemView);
             imageViewDiary = itemView.findViewById(R.id.imageViewDiary);
-            textViewDiaryName = itemView.findViewById(R.id.textViewDiaryName);
-            textViewDates = itemView.findViewById(R.id.textViewDates);
+             textViewDiaryName = itemView.findViewById(R.id.textViewDiaryName);
+            textViewDates = itemView.findViewById(R.id.textViewStartDate); // Correct id
         }
+
     }
 }
