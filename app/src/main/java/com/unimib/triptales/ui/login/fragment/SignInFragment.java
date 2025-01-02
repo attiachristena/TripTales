@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Firebase;
 import com.unimib.triptales.R;
 
 import java.util.regex.Matcher;
@@ -46,22 +47,38 @@ public class SignInFragment extends Fragment {
         Button signInButton = view.findViewById(R.id.signInButton);
 
         signInButton.setOnClickListener(v -> {
-            if (!TextUtils.isEmpty(editTextNome.getText())) {
-                if (!TextUtils.isEmpty(editTextCognome.getText())) {
-                    if (!TextUtils.isEmpty(editTextEmail.getText()) && isEmailOk(editTextEmail.getText().toString())) {
-                        if (!TextUtils.isEmpty(editTextPassword.getText()) && isPasswordOk(editTextPassword.getText().toString())) {
-                            Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_homepageActivity);
-                        } else {
-                            editTextPassword.setError(getString(R.string.error_password_login));
-                        }
-                    } else {
-                        editTextEmail.setError(getString(R.string.error_email_login));
-                    }
-                } else {
-                    editTextCognome.setError("Compila con il tuo cognome");
-                }
-            } else {
+            boolean isValid = true;
+
+            // Check if each field is filled and valid
+            if (TextUtils.isEmpty(editTextNome.getText())) {
                 editTextNome.setError("Compila con il tuo nome");
+                isValid = false;
+            }
+
+            if (TextUtils.isEmpty(editTextCognome.getText())) {
+                editTextCognome.setError("Compila con il tuo cognome");
+                isValid = false;
+            }
+
+            if (TextUtils.isEmpty(editTextEmail.getText())) {
+                editTextEmail.setError("Compila con la tua email");
+                isValid = false;
+            } else if (!isEmailOk(editTextEmail.getText().toString())) {
+                editTextEmail.setError(getString(R.string.error_email_login));
+                isValid = false;
+            }
+
+            if (TextUtils.isEmpty(editTextPassword.getText())) {
+                editTextPassword.setError("Compila con la tua password");
+                isValid = false;
+            } else if (!isPasswordOk(editTextPassword.getText().toString())) {
+                editTextPassword.setError(getString(R.string.error_password_login));
+                isValid = false;
+            }
+
+            // Proceed only if all fields are valid
+            if (isValid) {
+                Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_homepageActivity);
             }
         });
     }

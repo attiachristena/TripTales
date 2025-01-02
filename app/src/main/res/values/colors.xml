@@ -26,7 +26,13 @@
     <color name="light_orange">#FFC96F</color>
 
 
+    <color name="light_orange2">#FFE7CD</color>
+    <color name="pink">#FFD5E1</color>
+    <color name="pink2">#E396AC</color>
+    <color name="light_color1">#FFF2E9</color>
+    <color name="light_color2">#FFF2F2</color>
     <color name="light_brown3">#E8C4B1</color>
     <color name="magenta">#B65066</color>
     <color name="orange2">#FFAA67</color>
+    <color name="light_orange3">#FFD3B1</color>
 </resources>
