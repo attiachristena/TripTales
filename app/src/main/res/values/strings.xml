@@ -111,5 +111,12 @@
     <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
-
+    <string name="nome_user_momentaneo">Nome Cognome</string>
+    <string name="modalita_scura">Modalità scura</string>
+    <string name="notiche">Notifiche</string>
+    <string name="privacy">Privacy</string>
+    <string name="lingua">Lingua</string>
+    <string name="account">Account</string>
+    <string name="about_us">About us</string>
+    <string name="impostazioni">Impostazioni</string>
 </resources>
