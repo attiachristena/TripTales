@@ -95,4 +95,6 @@
                 textViewDuration = itemView.findViewById(R.id.textViewDuration);
             }
         }
+        
+
     }
