@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.unimib.triptales.R;
 
+
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
@@ -97,4 +98,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     }
+
 }

@@ -51,7 +51,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
-    implementation ("com.applandeo:material-calendar-view:1.9.0")
+    implementation (libs.material.calendar.view)
     implementation("com.google.android.gms:play-services-auth:20.3.0")
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)

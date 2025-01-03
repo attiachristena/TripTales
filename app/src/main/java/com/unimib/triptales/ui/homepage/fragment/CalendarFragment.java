@@ -1,23 +1,31 @@
 package com.unimib.triptales.ui.homepage.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.applandeo.materialcalendarview.CalendarDay;
+import com.applandeo.materialcalendarview.CalendarView;
+import com.applandeo.materialcalendarview.EventDay;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
 import android.widget.Toast;
 
+import com.google.android.material.datepicker.DayViewDecorator;
 import com.unimib.triptales.R;
-import com.unimib.triptales.ui.homepage.HomepageActivity;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class CalendarFragment extends Fragment {
 
     CalendarView calendarView;
+    Calendar startDate, endDate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,19 +43,55 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Inizializza il calendario
         calendarView = view.findViewById(R.id.calendarView);
 
-        calendarView.setDate(System.currentTimeMillis());
+        // Variabili per la data di partenza e ritorno
+        startDate = Calendar.getInstance();
+        endDate = Calendar.getInstance();
 
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
+        // Seleziona la data di partenza e ritorno quando l'utente clicca su una data
+        calendarView.setOnDayClickListener(eventDay -> {
+            Calendar selectedDate = eventDay.getCalendar();
 
-
-                // Aggiungi logica per salvare o visualizzare eventi
+            if (startDate == null || endDate != null) {
+                // Se non è stata ancora selezionata la data di partenza o se la data di ritorno è già stata impostata
+                startDate = selectedDate;
+                endDate = null;
+                Toast.makeText(requireActivity(), "Data di partenza selezionata: " + selectedDate.getTime(), Toast.LENGTH_SHORT).show();
+            } else {
+                // Se la data di ritorno viene selezionata
+                if (selectedDate.after(startDate)) {
+                    endDate = selectedDate;
+                    Toast.makeText(requireActivity(), "Data di ritorno selezionata: " + selectedDate.getTime(), Toast.LENGTH_SHORT).show();
+                }
             }
+
+            // Ricarica gli eventi (per applicare i cambiamenti)
+            loadEvents();
         });
+
+        // Aggiungi eventi alle date selezionate
+        loadEvents();
+    }
+
+    private void loadEvents() {
+        // Lista di eventi da aggiungere
+        List<EventDay> events = new ArrayList<>();
+
+        // Se la data di partenza è stata selezionata, aggiungi l'evento con l'icona dell'aereo in partenza
+        if (startDate != null) {
+            events.add(new EventDay(startDate, R.drawable.baseline_flight_takeoff_24)); // Aereo che parte
+        }
+
+        // Se la data di ritorno è stata selezionata, aggiungi l'evento con l'icona dell'aereo in arrivo
+        if (endDate != null) {
+            events.add(new EventDay(endDate, R.drawable.baseline_flight_land_24)); // Aereo che atterra
+        }
+
+        // Aggiungi gli eventi al calendario
+        calendarView.setEvents(events);
 
     }
 }
