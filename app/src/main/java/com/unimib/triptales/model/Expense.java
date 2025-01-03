@@ -121,13 +121,11 @@ public class Expense {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Expense expense = (Expense) obj;
-        return id == expense.id; // Confronta l'ID della spesa
+        return id == expense.id;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
-
-
 }
