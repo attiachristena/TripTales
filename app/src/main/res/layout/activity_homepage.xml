@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="0dp"
+            android:elevation="10dp"
             android:background="@color/primary"
             app:menu="@menu/top_app_bar"
             app:navigationIcon="@drawable/baseline_menu_24"

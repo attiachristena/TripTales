@@ -3,6 +3,7 @@ package com.unimib.triptales.ui.homepage.fragment;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.unimib.triptales.R;
+import com.unimib.triptales.util.GeoJSONParser;
+
+import java.util.List;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -64,6 +69,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // Permessi concessi: abilita la posizione dell'utente
         enableUserLocation();
+
+        //colora i confini
+        String userCountry = "Italy";
+
+        GeoJSONParser parser = new GeoJSONParser(getContext(), "world_countries");
+        List<List<LatLng>> countryBorders = parser.getCountryBorders(userCountry);
+
+        for (List<LatLng> polygon : countryBorders) {
+            PolygonOptions polygonOptions = new PolygonOptions()
+                    .addAll(polygon)
+                    .strokeColor(R.color.secondary)
+                    .fillColor(R.color.primary);
+            mMap.addPolygon(polygonOptions);
+        }
+
+        /*// Rimuovi un poligono specifico
+        Polygon polygonToRemove = countryPolygons.get("Italy");
+        if (polygonToRemove != null) {
+            polygonToRemove.remove(); // Rimuovi il poligono dalla mappa
+            countryPolygons.remove("Italy"); // Rimuovi dalla mappa
+        }*/
+        
     }
 
     private void enableUserLocation() {
