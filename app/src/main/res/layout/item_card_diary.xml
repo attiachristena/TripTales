@@ -28,36 +28,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="Immagine Diario"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:alpha="0.8"/>
 
             <!-- TextView per il nome del diario al centro -->
             <TextView
                 android:id="@+id/textViewDiaryName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Paese"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:shadowColor="#A6000000"
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="5"
-                app:layout_constraintTop_toTopOf="@id/imageViewDiary"
+                android:text="Paese"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/imageViewDiary"
+                app:layout_constraintEnd_toEndOf="@id/imageViewDiary"
                 app:layout_constraintStart_toStartOf="@id/imageViewDiary"
-                app:layout_constraintEnd_toEndOf="@id/imageViewDiary" />
+                app:layout_constraintTop_toTopOf="@id/imageViewDiary" />
 
             <!-- LinearLayout sopra l'immagine per dettagli aggiuntivi -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
                 android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <!-- TextView per la data di inizio -->
                 <TextView
@@ -77,14 +77,14 @@
                     android:layout_marginStart="8dp"
                     android:drawableLeft="@drawable/baseline_calendar_today_24"
                     android:drawablePadding="8dp"
-                    android:text="Numero giorni"
-                    android:textStyle="bold"
                     android:shadowColor="#A6000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
                     android:shadowRadius="5"
+                    android:text="Numero giorni"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

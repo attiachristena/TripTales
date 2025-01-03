@@ -55,11 +55,11 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
             holder.imageViewDiary.setImageURI(diary.getCoverImageUri());
         }
 
-        // Calculate the travel duration and display it
+        // Calculate the travel duration and display only the number of days
         int duration = diary.getTravelDuration();
-        String durationText = duration + " giorni";
-        holder.textViewDuration.setText(durationText);
+        holder.textViewDuration.setText(String.valueOf(duration)); // Display only the number of days
     }
+
 
     @Override
     public int getItemCount() {
