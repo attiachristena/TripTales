@@ -4,7 +4,7 @@
     <string name="tabTappe">Tappe</string>
     <string name="tabSpese">Spese</string>
     <string name="tabObiettivi">Obiettivi</string>
-    <string name="tabCheckList">CheckList</string>
+    <string name="tabCheckList">Attività</string>
     <string name="page_title">TripTales</string>
     <string name="action_home">Home</string>
     <string name="action_logout">Logout</string>
@@ -96,7 +96,7 @@
     <string name="noTasksString">Aggiungi la prima attività!</string>
     <string name="noGoalsString">Aggiungi il primo obiettivo del viaggio!</string>
     <string name="noSpeseString">Imposta il budget e aggiungi la prima spesa!</string>
-    <string name="checklistTitle">CheckList delle attività da svolgere</string>
+    <string name="checklistTitle">Lista delle attività da svolgere</string>
     <string name="warningCurrency">*Ricorda: puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
     <string name="hintCurrency">Valuta*</string>
     <string name="nome_diario">Nome diario</string>
@@ -111,6 +111,7 @@
     <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
+
     <string name="nome_user_momentaneo">Nome Cognome</string>
     <string name="modalita_scura">Modalità scura</string>
     <string name="notiche">Notifiche</string>
@@ -119,4 +120,32 @@
     <string name="account">Account</string>
     <string name="about_us">About us</string>
     <string name="impostazioni">Impostazioni</string>
+
+    <string name="material_calendar_monday">L</string>
+    <string name="material_calendar_tuesday">M</string>
+    <string name="material_calendar_wednesday">M</string>
+    <string name="material_calendar_thursday">G</string>
+    <string name="material_calendar_friday">V</string>
+    <string name="material_calendar_saturday">S</string>
+    <string name="material_calendar_sunday">D</string>
+
+    <array name="material_calendar_months_array">
+        <item>Gennaio</item>
+        <item>Febbraio</item>
+        <item>Marzo</item>
+        <item>Aprile</item>
+        <item>Maggio</item>
+        <item>Giugno</item>
+        <item>Luglio</item>
+        <item>Agosto</item>
+        <item>Settembre</item>
+        <item>Ottobre</item>
+        <item>Novembre</item>
+        <item>Dicembre</item>
+    </array>
+
+    <string name="material_calendar_today_button">Oggi</string>
+    <string name="material_calendar_positive_button">OK</string>
+    <string name="material_calendar_negative_button">Cancella</string>
+
 </resources>

@@ -25,7 +25,7 @@ public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract DiaryDao diaryDao();
     public abstract StageDao stageDao();
     public abstract GoalDao goalDao();
-    public abstract TaskDao activityDao();
+    public abstract TaskDao taskDao();
     public abstract ExpenseDao expenseDao();
 
     public static volatile AppRoomDatabase INSTANCE;

@@ -61,7 +61,6 @@ public class Constants {
         }
     }
 
-    //ritorna la card selezionata
     public static MaterialCardView findSelectedCard(ArrayList<MaterialCardView> cardList){
         MaterialCardView selectedCard = cardList.get(0);
         for (MaterialCardView card : cardList) {
@@ -83,7 +82,6 @@ public class Constants {
             }
             totExpense += Double.parseDouble(realAmount);
         }
-
         String tmp;
         if(currency.equalsIgnoreCase(CURRENCY_EUR))
             tmp = totExpense+currency;
