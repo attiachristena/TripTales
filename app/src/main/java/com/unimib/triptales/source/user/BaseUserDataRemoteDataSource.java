@@ -1,6 +1,6 @@
 package com.unimib.triptales.source.user;
 
-import com.unimib.triptales.model.User;
+import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.repository.user.UserResponseCallback;
 
 public abstract class BaseUserDataRemoteDataSource {
@@ -10,9 +10,10 @@ public abstract class BaseUserDataRemoteDataSource {
         this.userResponseCallback = userResponseCallback;
     }
 
-    public abstract void saveUserData(User user);
+    public abstract void saveDiary(String userId, Diary diary);
 
-    // public abstract void getUserPreferences(String idToken);
+    public abstract void getUserDiaries(String userId);
 
-    // public abstract void saveUserDiary(String diary, ....
+    public void deleteUserDiary(String userId, String diaryId) {
+    }
 }

@@ -12,14 +12,19 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.unimib.triptales.model.User;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserAuthenticationFirebaseDataSource extends BaseUserAuthenticationRemoteDataSource{
 
     private final FirebaseAuth firebaseAuth;
+    private final FirebaseFirestore firestore;
 
     public UserAuthenticationFirebaseDataSource(){
         firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -27,8 +32,23 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser == null)
             return null;
-        else
-            return new User(firebaseUser.getDisplayName(), firebaseUser.getEmail(), firebaseUser.getUid());
+        else{
+            DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
+            docRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        User user = document.toObject(User.class);
+                        userResponseCallback.onSuccessGetLoggedUser(user);
+                    } else {
+                        userResponseCallback.onFailureGetLoggedUser(UNEXPECTED_ERROR);
+                    }
+                } else {
+                    userResponseCallback.onFailureGetLoggedUser(UNEXPECTED_ERROR);
+                }
+            });
+            return null;
+        }
     }
 
     @Override
@@ -42,18 +62,25 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
                 }
             }
         };
-
         firebaseAuth.addAuthStateListener(authStateListener);
         firebaseAuth.signOut();
     }
 
     @Override
-    public void signUp(String email, String password) {
+    public void signUp(String name, String surname, String email, String password) {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null){
-                    userResponseCallback.onSuccessFromAuthentication(new User(firebaseUser.getDisplayName(), email, firebaseUser.getUid()));
+                    User user = new User(name, surname, email, firebaseUser.getUid());
+                    DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
+                    docRef.set(user).addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            userResponseCallback.onSuccessFromAuthentication(user);
+                        } else {
+                            userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                        }
+                    });
                 } else {
                     userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                 }
@@ -81,7 +108,20 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
             if(task.isSuccessful()){
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null){
-                    userResponseCallback.onSuccessFromAuthentication(new User(firebaseUser.getDisplayName(), email, firebaseUser.getUid()));
+                    DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
+                    docRef.get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            DocumentSnapshot document = task1.getResult();
+                            if (document.exists()) {
+                                User user = document.toObject(User.class);
+                                userResponseCallback.onSuccessFromAuthentication(user);
+                            } else {
+                                userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                            }
+                        } else {
+                            userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                        }
+                    });
                 } else {
                     userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                 }
@@ -100,7 +140,20 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
                 if(task.isSuccessful()){
                     FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                     if(firebaseUser != null){
-                        userResponseCallback.onSuccessFromAuthentication(new User(firebaseUser.getDisplayName(), firebaseUser.getEmail(), firebaseUser.getUid()));
+                        DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
+                        docRef.get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                DocumentSnapshot document = task1.getResult();
+                                if (document.exists()) {
+                                    User user = document.toObject(User.class);
+                                    userResponseCallback.onSuccessFromAuthentication(user);
+                                } else {
+                                    userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                                }
+                            } else {
+                                userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                            }
+                        });
                     } else {
                         userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                     }

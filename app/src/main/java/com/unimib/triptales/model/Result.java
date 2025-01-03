@@ -7,6 +7,15 @@ public abstract class Result {
         return !(this instanceof Error);
     }
 
+    public static final class DiarySuccess extends Result{
+        private final Diary diary;
+        public DiarySuccess(Diary diary){
+            this.diary = diary;
+        }
+        public Diary getData() {
+            return diary;
+        }
+    }
     public static final class UserSuccess extends Result{
         private final User user;
         public UserSuccess(User user){

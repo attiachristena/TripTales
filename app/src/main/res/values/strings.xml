@@ -111,5 +111,6 @@
     <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
+    <string name="error_unexpected">Unexpected error</string>
 
 </resources>

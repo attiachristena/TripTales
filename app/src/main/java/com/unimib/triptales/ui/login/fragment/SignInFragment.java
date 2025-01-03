@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
@@ -17,21 +18,33 @@ import android.widget.Button;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Firebase;
 import com.unimib.triptales.R;
+import com.unimib.triptales.repository.user.IUserRepository;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
+import com.unimib.triptales.util.ServiceLocator;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignInFragment extends Fragment {
 
+    private UserViewModel userViewModel;
     private TextInputEditText editTextNome, editTextCognome, editTextEmail, editTextPassword;
 
     public SignInFragment() {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        IUserRepository userRepository = ServiceLocator.getINSTANCE().getUserRepository();
+        userViewModel = new ViewModelProvider(requireActivity(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_sign_in, container, false);
     }
 
