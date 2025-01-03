@@ -5,12 +5,11 @@
     android:theme="@style/Base.Theme.TripTales"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/rootLayout"
-    tools:context=".ui.diario.fragment.SpeseFragment">
+    android:id="@+id/rootLayoutSpese"
+    tools:context=".ui.diario.fragment.ExpensesFragment">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/linearLayoutSpese"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -21,7 +20,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardBudget"
             android:layout_width="match_parent"
-            android:layout_height="105dp"
+            android:layout_height="wrap_content"
             android:backgroundTint="@color/secondary"
             app:cardCornerRadius="20dp"
             app:cardElevation="4dp">
@@ -30,15 +29,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="10dp"
+                android:paddingVertical="10dp"
                 android:paddingBottom="10dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_weight="10"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="10dp">
+                    android:layout_weight="50">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -61,15 +61,14 @@
 
                 <ImageButton
                     android:id="@+id/editBudget"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="bottom|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_button"
-                    app:tint="@color/white"
                     android:backgroundTint="@color/secondary"
                     android:contentDescription="@string/buttonEditDescription"
-                    android:src="@drawable/baseline_pen" />
+                    android:src="@drawable/baseline_mode_edit_24" />
 
             </LinearLayout>
 
@@ -118,7 +117,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="10"
@@ -127,12 +126,19 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
+            <ImageButton
+                android:id="@+id/closeFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:src="@drawable/baseline_close_24"
+                android:backgroundTint="@color/white"
+                android:visibility="gone"/>
+
             <Button
                 android:id="@+id/buttonFilter"
                 android:layout_width="85dp"
                 android:layout_height="40dp"
                 android:layout_gravity="end"
-                android:layout_weight="1"
                 android:backgroundTint="@color/background_dark"
                 android:text="@string/buttonSpese"
                 android:textAllCaps="false"
@@ -142,23 +148,51 @@
 
         </LinearLayout>
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/testoFiltro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/totalespesa"
+                android:textSize="15sp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/totSpesa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:text="@string/spesa_amount"
+                android:textSize="15sp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewExpenses"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp">
 
-            <LinearLayout
-                android:id="@+id/spesaCardsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                </LinearLayout>
-
-        </ScrollView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/noSpeseString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/noSpeseString"
+        android:textColor="@color/dark_gray"
+        android:textSize="17sp"
+        android:paddingHorizontal="19dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButtonSpese"
@@ -173,7 +207,7 @@
         app:tint="@color/black"
         android:backgroundTint="@color/white_dark"
         android:background="@drawable/rounded_button"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSpese"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -189,7 +223,7 @@
         app:tint="@color/white"
         android:backgroundTint="@color/background_dark"
         android:background="@drawable/rounded_button"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSpese"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"/>
 
@@ -206,7 +240,7 @@
         app:tint="@color/white"
         android:backgroundTint="@color/background_dark"
         android:background="@drawable/rounded_button"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSpese"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"/>
 
