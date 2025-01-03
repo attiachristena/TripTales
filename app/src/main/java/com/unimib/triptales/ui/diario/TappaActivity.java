@@ -1,5 +1,6 @@
 package com.unimib.triptales.ui.diario;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -153,4 +154,6 @@ public class TappaActivity extends AppCompatActivity {
             }
         }
     }
+
 }
+

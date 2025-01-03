@@ -30,8 +30,6 @@ public class IntroActivity extends AppCompatActivity {
         });
 
         //da qui NON cancellare
-        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container,new Fragment());
-        fragmentTransaction.commit();
+
     }
 }
