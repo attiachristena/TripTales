@@ -5,8 +5,6 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-
-import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
 
 import java.util.List;
@@ -14,7 +12,7 @@ import java.util.List;
 @Dao
 public interface GoalDao {
     @Insert
-    void insert(Goal goal);
+    long insert(Goal goal);
 
     @Insert
     void insertAll(List<Goal> goals);

@@ -10,13 +10,45 @@ import androidx.room.PrimaryKey;
 @Entity(foreignKeys = @ForeignKey(entity = Diary.class, parentColumns = "id", childColumns = "diaryId", onDelete = CASCADE))
 public class Stage {
     @PrimaryKey
-    public int id;
+    private int id;
 
-    public int diaryId;
+    private int diaryId;
 
     @ColumnInfo(name = "stage_name")
-    public int name;
+    private int name;
 
     @ColumnInfo(name = "stage_photo_path")
-    public String photoPath;
+    private String photoPath;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getDiaryId() {
+        return diaryId;
+    }
+
+    public void setDiaryId(int diaryId) {
+        this.diaryId = diaryId;
+    }
+
+    public int getName() {
+        return name;
+    }
+
+    public void setName(int name) {
+        this.name = name;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
 }

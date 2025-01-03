@@ -3,6 +3,7 @@ package com.unimib.triptales.ui.diario;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +16,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.google.android.material.tabs.TabLayout;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.ViewPagerAdapter;
@@ -75,8 +75,8 @@ import com.unimib.triptales.ui.login.LoginActivity;
                 public void onTabUnselected(TabLayout.Tab tab) {
                     // No need to implement
                 }
-
-                @Override
+              
+              @Override
                 public void onTabReselected(TabLayout.Tab tab) {
                     // No need to implement
                 }
@@ -92,47 +92,55 @@ import com.unimib.triptales.ui.login.LoginActivity;
             });
         }
 
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            getMenuInflater().inflate(R.menu.top_app_bar, menu);
-            toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
+    public void setViewPagerSwipeEnabled(boolean enabled) {
+        viewPager2.setUserInputEnabled(enabled);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_app_bar, menu);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_home) {
+            Intent intent = new Intent(DiaryActivity.this, HomepageActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
             return true;
         }
 
-        @Override
-        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-            int id = item.getItemId();
+        View buttonAccount = toolbar.findViewById(R.id.action_account);
 
-            if (id == R.id.action_home) {
-                Intent intent = new Intent(DiaryActivity.this, HomepageActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish(); // Finish DiaryActivity
-                return true;
-            }
+        if (id == R.id.action_account) {
+            // Create a PopupMenu for account actions
+            PopupMenu popupMenu = new PopupMenu(DiaryActivity.this, buttonAccount);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
 
-            View buttonAccount = toolbar.findViewById(R.id.action_account);
-
-            if (id == R.id.action_account) {
-                // Create a PopupMenu for account actions
-                PopupMenu popupMenu = new PopupMenu(DiaryActivity.this, buttonAccount);
-                popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
-
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.action_logout) {
-                            Intent intent = new Intent(DiaryActivity.this, LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish(); // Finish DiaryActivity
-                            return true;
-                        }
-                        return false;
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (item.getItemId() == R.id.action_logout) {
+                        Intent intent = new Intent(DiaryActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish(); // Finish DiaryActivity
+                        return true;
                     }
-                });
+                    return false;
+                }
+            });
 
-                popupMenu.show(); // Show the menu
+            popupMenu.show();
+        }
+      
+            if (id == android.R.id.home){
+            //inserire intent per andare alla SetingsActivity
             }
 
             return super.onOptionsItemSelected(item);

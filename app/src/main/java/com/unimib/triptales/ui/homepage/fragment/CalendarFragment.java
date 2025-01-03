@@ -1,60 +1,36 @@
 package com.unimib.triptales.ui.homepage.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.applandeo.materialcalendarview.CalendarDay;
+import com.applandeo.materialcalendarview.CalendarView;
+import com.applandeo.materialcalendarview.EventDay;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.material.datepicker.DayViewDecorator;
 import com.unimib.triptales.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CalendarFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 public class CalendarFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public CalendarFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CalendarFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CalendarFragment newInstance(String param1, String param2) {
-        CalendarFragment fragment = new CalendarFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    CalendarView calendarView;
+    Calendar startDate, endDate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
@@ -62,5 +38,60 @@ public class CalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Inizializza il calendario
+        calendarView = view.findViewById(R.id.calendarView);
+
+        // Variabili per la data di partenza e ritorno
+        startDate = Calendar.getInstance();
+        endDate = Calendar.getInstance();
+
+        // Seleziona la data di partenza e ritorno quando l'utente clicca su una data
+        calendarView.setOnDayClickListener(eventDay -> {
+            Calendar selectedDate = eventDay.getCalendar();
+
+            if (startDate == null || endDate != null) {
+                // Se non è stata ancora selezionata la data di partenza o se la data di ritorno è già stata impostata
+                startDate = selectedDate;
+                endDate = null;
+                Toast.makeText(requireActivity(), "Data di partenza selezionata: " + selectedDate.getTime(), Toast.LENGTH_SHORT).show();
+            } else {
+                // Se la data di ritorno viene selezionata
+                if (selectedDate.after(startDate)) {
+                    endDate = selectedDate;
+                    Toast.makeText(requireActivity(), "Data di ritorno selezionata: " + selectedDate.getTime(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            // Ricarica gli eventi (per applicare i cambiamenti)
+            loadEvents();
+        });
+
+        // Aggiungi eventi alle date selezionate
+        loadEvents();
+    }
+
+    private void loadEvents() {
+        // Lista di eventi da aggiungere
+        List<EventDay> events = new ArrayList<>();
+
+        // Se la data di partenza è stata selezionata, aggiungi l'evento con l'icona dell'aereo in partenza
+        if (startDate != null) {
+            events.add(new EventDay(startDate, R.drawable.baseline_flight_takeoff_24)); // Aereo che parte
+        }
+
+        // Se la data di ritorno è stata selezionata, aggiungi l'evento con l'icona dell'aereo in arrivo
+        if (endDate != null) {
+            events.add(new EventDay(endDate, R.drawable.baseline_flight_land_24)); // Aereo che atterra
+        }
+
+        // Aggiungi gli eventi al calendario
+        calendarView.setEvents(events);
+
     }
 }

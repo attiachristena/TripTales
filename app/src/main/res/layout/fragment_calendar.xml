@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.homepage.fragment.CalendarFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:padding="19dp"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <com.applandeo.materialcalendarview.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:headerColor="@color/white"
+            app:todayLabelColor="@color/secondary"
+            app:headerLabelColor="@color/background_dark"
+            app:selectionColor="@color/secondary"
+            app:forwardButtonSrc="@drawable/baseline_arrow_forward_ios_24"
+            app:previousButtonSrc="@drawable/baseline_arrow_back_ios_24_small"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+<!--
+340-->

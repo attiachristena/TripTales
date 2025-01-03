@@ -1,6 +1,5 @@
 package com.unimib.triptales.ui.diario.fragment;
 
-import static com.google.android.material.internal.ViewUtils.hideKeyboard;
 import static com.unimib.triptales.util.Constants.CATEGORIES;
 import static com.unimib.triptales.util.Constants.CURRENCIES;
 import static com.unimib.triptales.util.Constants.CURRENCY_EUR;
@@ -28,7 +27,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,11 +36,12 @@ import com.unimib.triptales.adapters.ExpensesRecyclerAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
+import com.unimib.triptales.ui.diario.DiaryActivity;
 import com.unimib.triptales.util.Constants;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ExpensesFragment extends Fragment {
@@ -77,7 +76,6 @@ public class ExpensesFragment extends Fragment {
     ConstraintLayout rootLayout;
     FloatingActionButton modifyExpense;
     FloatingActionButton deleteExpense;
-    ArrayList<MaterialCardView> listExpenseCards;
     View overlay_add_expense;
     LayoutInflater inflater;
     View overlay_add_budget;
@@ -104,7 +102,6 @@ public class ExpensesFragment extends Fragment {
     AutoCompleteTextView editTextCategoryFilter;
     String inputCategoryFilter;
     ImageButton backButtonFilter;
-    ArrayList<MaterialCardView> filteredCards;
     Button saveCategory;
     String inputCurrency;
     String inputOldCurrency;
@@ -112,8 +109,9 @@ public class ExpensesFragment extends Fragment {
     TextInputLayout textFieldCurrency;
     TextView noExpensesString;
     RecyclerView recyclerViewExpenses;
-    private List<Expense> expenseList = new ArrayList<>();
-
+    private List<Expense> expenseList;
+    private List<Expense> filteredExpensesList;
+    ExpenseDao expenseDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,8 +121,8 @@ public class ExpensesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        expenseList = AppRoomDatabase.getDatabase(getContext()).expenseDao().getAll();
+        expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
+        expenseList = expenseDao.getAll();
         return inflater.inflate(R.layout.fragment_spese, container, false);
     }
 
@@ -133,17 +131,18 @@ public class ExpensesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         inflater = LayoutInflater.from(view.getContext());
-        //listExpenseCards = new ArrayList<>();
         rootLayout = view.findViewById(R.id.rootLayoutSpese);
         noExpensesString = view.findViewById(R.id.noSpeseString);
+        expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
+
         if(expenseList.isEmpty()){
             noExpensesString.setVisibility(View.VISIBLE);
         } else {
             noExpensesString.setVisibility(View.GONE);
-
-            /*double totExpense = 0;
+            /*  da inserire quando il budget viene aggiunto al database
+            double totExpense = 0;
             for(Expense e: expenseList){
-                String amountText = e.amount;
+                String amountText = e.getAmount();
                 String amountSubstring;
                 if(inputCurrency.equalsIgnoreCase("€"))
                     amountSubstring = amountText.substring(0, amountText.length()-1);
@@ -151,10 +150,9 @@ public class ExpensesFragment extends Fragment {
                     amountSubstring = amountText.substring(1);
                 totExpense += Double.parseDouble(amountSubstring);
                 updateProgressIndicator(totExpense, budget, 1);
-            }*/
+            }
+             */
         }
-
-        // Card per modificare il budget
 
         overlay_add_budget = inflater.inflate(R.layout.overlay_add_budget, rootLayout, false);
         rootLayout.addView(overlay_add_budget);
@@ -168,6 +166,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_add_budget.setVisibility(View.VISIBLE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
                 addExpense.setVisibility(View.GONE);
                 filterButton.setEnabled(false);
                 /*if(expenseList.isEmpty()){
@@ -183,6 +182,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_add_budget.setVisibility(View.GONE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                 Constants.hideKeyboard(view, requireActivity());
                 addExpense.setVisibility(View.VISIBLE);
                 filterButton.setEnabled(true);
@@ -225,15 +225,12 @@ public class ExpensesFragment extends Fragment {
                     updateProgressIndicator(spent, budget, 0);
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_add_budget.setVisibility(View.GONE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                     addExpense.setVisibility(View.VISIBLE);
                     filterButton.setEnabled(true);
                     if(totExpense.getVisibility() == View.VISIBLE) {
-                        double countSpese = countAmountByCategory();
-                        String tmp2;
-                        if (inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
-                            tmp2 = countSpese + inputCurrency;
-                        else
-                            tmp2 = inputCurrency + countSpese;
+                        filteredExpensesList = expenseDao.getFilteredExpenses(inputCategoryFilter);
+                        String tmp2 = countAmount(filteredExpensesList, inputCurrency);
                         totExpense.setText(tmp2);
                     }
                     updateCurrencyIcon();
@@ -241,8 +238,6 @@ public class ExpensesFragment extends Fragment {
                 }
             }
         });
-
-        //Card per aggiungere una nuova spesa
 
         addExpense = view.findViewById(R.id.addButtonSpese);
         overlay_add_expense = inflater.inflate(R.layout.overlay_add_spesa, rootLayout, false);
@@ -264,6 +259,7 @@ public class ExpensesFragment extends Fragment {
                     snackbar.show();
                 }else {
                     overlay_add_expense.setVisibility(View.VISIBLE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
                     addExpense.setVisibility(View.GONE);
                     editBudget.setEnabled(false);
                     filterButton.setEnabled(false);
@@ -283,6 +279,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_add_expense.setVisibility(View.GONE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                 Constants.hideKeyboard(view, requireActivity());
                 addExpense.setVisibility(View.VISIBLE);
                 editBudget.setEnabled(true);
@@ -305,6 +302,8 @@ public class ExpensesFragment extends Fragment {
         saveExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                ExpenseDao expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
 
                 Expense currentExpense;
                 inputCategory = editTextCategory.getText().toString().trim();;
@@ -380,12 +379,15 @@ public class ExpensesFragment extends Fragment {
 
                     currentExpense = new Expense(tmp, inputCategory, inputDescription,
                             dataCompleta, false);
+                    long id = expenseDao.insert(currentExpense);
+                    currentExpense.setId((int) id);
                     expenseList.add(currentExpense);
                     recyclerAdapter.notifyItemInserted(expenseList.size()-1);
-                    AppRoomDatabase.getDatabase(view.getContext()).expenseDao().insert(currentExpense);
+
 
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_add_expense.setVisibility(View.GONE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                     addExpense.setVisibility(View.VISIBLE);
                     editBudget.setEnabled(true);
                     filterButton.setEnabled(true);
@@ -393,8 +395,6 @@ public class ExpensesFragment extends Fragment {
                 }
             }
         });
-
-        // per eliminare una spesa
 
         deleteExpense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -434,7 +434,6 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        // per modificare una spesa
 
         overlay_modify_expense = inflater.inflate(R.layout.overlay_modifica_spesa, rootLayout, false);
         rootLayout.addView(overlay_modify_expense);
@@ -444,6 +443,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_modify_expense.setVisibility(View.VISIBLE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
 
                 ExpenseDao expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
 
@@ -497,6 +497,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_modify_expense.setVisibility(View.GONE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                 Constants.hideKeyboard(view, requireActivity());
                 addExpense.setVisibility(View.VISIBLE);
                 modifyExpense.setVisibility(View.VISIBLE);
@@ -532,7 +533,6 @@ public class ExpensesFragment extends Fragment {
                 double amount = Double.parseDouble(amountSubstring);
                 spent = spent - amount;
 
-                // Modifica il contenuto della card
                 inputModifiedCategory = editTextModifiedCategory.getText().toString().trim();
 
                 inputModifiedDescription = editTextModifiedDescription.getText().toString().trim();
@@ -597,16 +597,15 @@ public class ExpensesFragment extends Fragment {
 
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_modify_expense.setVisibility(View.GONE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                     addExpense.setVisibility(View.VISIBLE);
                     addExpense.setEnabled(true);
                     editBudget.setEnabled(true);
                     filterButton.setEnabled(true);
-
                 }
             }
         });
 
-        // Filter button
         overlay_filter = inflater.inflate(R.layout.overlay_filter, rootLayout, false);
         rootLayout.addView(overlay_filter);
         overlay_filter.setVisibility(View.GONE);
@@ -623,6 +622,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_filter.setVisibility(View.GONE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                 addExpense.setVisibility(View.VISIBLE);
                 editBudget.setEnabled(true);
                 filterButton.setEnabled(true);
@@ -633,6 +633,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_filter.setVisibility(View.VISIBLE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
                 editTextCategoryFilter.setText("", false);
                 addExpense.setVisibility(View.GONE);
                 editBudget.setEnabled(false);
@@ -657,6 +658,7 @@ public class ExpensesFragment extends Fragment {
                     String tmp = countAmount(filteredExpenses, inputCurrency);
                     totExpense.setText(tmp);
                     overlay_filter.setVisibility(View.GONE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                     closeFilter.setVisibility(View.VISIBLE);
                     filterText.setVisibility(View.VISIBLE);
                     totExpense.setVisibility(View.VISIBLE);
@@ -683,51 +685,19 @@ public class ExpensesFragment extends Fragment {
         });
     }
 
-    //aggiorna il progress indicator delle spese
     public void updateProgressIndicator(double spesa, int budget, int add){
         if(add == 1)
             spent = spent+spesa;
-        // calcola la percentuale spesa
         progressPercentage = (int) ((spent / (float) budget) * 100);
         if(progressPercentage > 100)
             progressIndicator.setIndicatorColor(getResources().getColor(R.color.error));
         else
             progressIndicator.setIndicatorColor(getResources().getColor(R.color.secondary));
-        // imposta il progress indicator
         progressIndicator.setProgress(progressPercentage);
-        // aggiorna la descrizione del progress indicator
-
         formattedText = spent + " / " + budget + " spesi" + " (" + progressPercentage + "%)";
         progressText.setText(formattedText);
     }
 
-    //filtra le carte per una determinata categoria
-    public ArrayList<MaterialCardView> filterByCategory(String category){
-        ArrayList<MaterialCardView> filteredCards = new ArrayList<>();
-        for (MaterialCardView card : listExpenseCards) {
-            TextView categoryTextView = card.findViewById(R.id.categoryTextView);
-            if (categoryTextView != null && categoryTextView.getText().toString().equalsIgnoreCase(category)) {
-                filteredCards.add(card);
-            }
-        }
-        return filteredCards;
-    }
-
-    //calcola la spesa totale per una determinata categoria
-    public double countAmountByCategory(){
-        double spesaTot = 0;
-        for (MaterialCardView card : filteredCards) {
-            TextView amountTextView = card.findViewById(R.id.amountTextView);
-            String amount = amountTextView.getText().toString().trim();
-            String realAmount = amount.substring(0, amount.length()-1);
-            double spesa = Double.parseDouble(realAmount);
-            spesaTot += spesa;
-        }
-
-        return spesaTot;
-    }
-
-    //modifica la valuta nell'overlay_add_expense e nell'overlay_modify_expense
     public void updateCurrencyIcon(){
         TextInputLayout textQuantity = overlay_add_expense.findViewById(R.id.textFieldQuantita);
         TextInputLayout textModifyQuantity = overlay_modify_expense.findViewById(R.id.textFieldModificaQuantita);

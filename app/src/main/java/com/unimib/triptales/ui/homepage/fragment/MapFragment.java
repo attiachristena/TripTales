@@ -1,54 +1,61 @@
-    package com.unimib.triptales.ui.homepage.fragment;
+package com.unimib.triptales.ui.homepage.fragment;
 
-    import android.Manifest;
-    import android.content.pm.PackageManager;
-    import android.os.Bundle;
-    import android.view.LayoutInflater;
-    import android.view.View;
-    import android.view.ViewGroup;
-    import android.widget.Toast;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
-    import androidx.annotation.NonNull;
-    import androidx.annotation.Nullable;
-    import androidx.core.app.ActivityCompat;
-    import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
-    import com.google.android.gms.location.FusedLocationProviderClient;
-    import com.google.android.gms.location.LocationServices;
-    import com.google.android.gms.maps.CameraUpdateFactory;
-    import com.google.android.gms.maps.GoogleMap;
-    import com.google.android.gms.maps.OnMapReadyCallback;
-    import com.google.android.gms.maps.SupportMapFragment;
-    import com.google.android.gms.maps.model.CameraPosition;
-    import com.google.android.gms.maps.model.LatLng;
-    import com.google.android.gms.maps.model.MarkerOptions;
-    import com.unimib.triptales.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.unimib.triptales.R;
+import com.unimib.triptales.util.GeoJSONParser;
 
-    public class MapFragment extends Fragment implements OnMapReadyCallback {
+import java.util.List;
 
-        private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
 
-        private GoogleMap mMap;
-        private FusedLocationProviderClient fusedLocationClient;
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
 
-            // Inizializza il provider della posizione
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+    private GoogleMap mMap;
+    private FusedLocationProviderClient fusedLocationClient;
 
-            // Inizializza la mappa
-            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-            if (mapFragment != null) {
-                mapFragment.getMapAsync(this);
-            }
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-            return rootView;
+        // Inizializza il provider della posizione
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+
+        // Inizializza la mappa
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
         }
 
-        @Override
+        return rootView;
+    }
+
+
+       @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
 
@@ -63,6 +70,27 @@
 
             // Permessi concessi: abilita la posizione dell'utente
             enableUserLocation();
+  
+            //colora i confini
+            String userCountry = "Italy";
+
+            GeoJSONParser parser = new GeoJSONParser(getContext(), "world_countries");
+            List<List<LatLng>> countryBorders = parser.getCountryBorders(userCountry);
+
+            for (List<LatLng> polygon : countryBorders) {
+                PolygonOptions polygonOptions = new PolygonOptions()
+                        .addAll(polygon)
+                        .strokeColor(R.color.secondary)
+                        .fillColor(R.color.primary);
+                mMap.addPolygon(polygonOptions);
+            }
+
+            /*// Rimuovi un poligono specifico
+            Polygon polygonToRemove = countryPolygons.get("Italy");
+            if (polygonToRemove != null) {
+                polygonToRemove.remove(); // Rimuovi il poligono dalla mappa
+                countryPolygons.remove("Italy"); // Rimuovi dalla mappa
+            }*/
         }
 
         private void enableUserLocation() {
