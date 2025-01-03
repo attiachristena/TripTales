@@ -13,7 +13,7 @@ import java.util.List;
 @Dao
 public interface ExpenseDao {
     @Insert
-    void insert(Expense expense);
+    long insert(Expense expense);
 
     @Insert
     void insertAll(List<Expense> expenses);
