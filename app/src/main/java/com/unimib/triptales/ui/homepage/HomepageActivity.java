@@ -8,6 +8,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import com.unimib.triptales.ui.login.LoginActivity;
 public class HomepageActivity extends AppCompatActivity {
 
     Toolbar toolbar;
+    Fragment currentFragment;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -65,6 +67,7 @@ public class HomepageActivity extends AppCompatActivity {
                         .commit();
             }
             return true;
+
         });
 
     }
