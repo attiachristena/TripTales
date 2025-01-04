@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sliderLayoutSettings"
+    android:id="@+id/sliderLayoutSettings1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -143,6 +143,18 @@
                 android:layout_centerVertical="true"
                 android:text="@string/privacy"
                 android:layout_toEndOf="@+id/privacyIcon"/>
+            <ImageButton
+                android:id="@+id/PrivacyButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/white"
+                android:src="@drawable/baseline_arrow_forward_ios_24" />
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -164,6 +176,17 @@
                 android:layout_centerVertical="true"
                 android:text="@string/lingua"
                 android:layout_toEndOf="@+id/linguaIcon"/>
+            <ImageButton
+                android:id="@+id/LinguaButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/white"
+                android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -195,6 +218,17 @@
                 android:layout_centerVertical="true"
                 android:text="@string/account"
                 android:layout_toEndOf="@+id/accountIcon"/>
+            <ImageButton
+                android:id="@+id/AccountButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/white"
+                android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -216,6 +250,17 @@
                 android:layout_centerVertical="true"
                 android:text="@string/about_us"
                 android:layout_toEndOf="@+id/aboutUsIcon"/>
+            <ImageButton
+                android:id="@+id/AboutUsButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/white"
+                android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
     </LinearLayout>
 

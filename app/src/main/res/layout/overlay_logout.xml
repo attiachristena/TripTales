@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardLogOut"
+    android:layout_width="200dp"
+    android:layout_height="64dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="10dp"
+    android:backgroundTint="@color/white_dark"
+    app:cardCornerRadius="20dp"
+    android:elevation="100dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/white_dark"
+                android:text="@string/action_logout"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textAlignment="textStart"
+                android:textSize="20dp"/>
+        </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>
