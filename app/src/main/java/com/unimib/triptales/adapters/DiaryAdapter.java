@@ -2,7 +2,6 @@
 
     import android.content.Context;
     import android.content.Intent;
-    import android.os.Bundle;
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
@@ -14,18 +13,21 @@
 
     import com.unimib.triptales.R;
     import com.unimib.triptales.ui.diario.DiaryActivity;
-    import com.unimib.triptales.ui.diario.fragment.TappeFragment;
 
     import java.util.List;
+
 
     public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder> {
 
         private Context context;
         private List<Diary> diaries;
+        private OnDiaryItemLongClickListener listener;
 
-        public DiaryAdapter(Context context, List<Diary> diaries) {
+        // Constructor accepts the listener as an additional argument
+        public DiaryAdapter(Context context, List<Diary> diaries, OnDiaryItemLongClickListener listener) {
             this.context = context;
             this.diaries = diaries;
+            this.listener = listener;
         }
 
         @NonNull
@@ -39,6 +41,7 @@
         @Override
         public void onBindViewHolder(@NonNull DiaryViewHolder holder, int position) {
             Diary diary = diaries.get(position);
+
 
             // Set the diary name to the TextView
             holder.textViewDiaryName.setText(diary.getName());
@@ -75,11 +78,24 @@
                 context.startActivity(intent);
             });
 
+            holder.textViewDiaryName.setText(diary.getName());
+
+            // Click prolungato per mostrare i bottoni
+            // Set the diary reference to the holder (so it can be accessed on long-click)
+            holder.itemView.setOnLongClickListener(v -> {
+                listener.onDiaryItemLongClicked(diary);  // Pass the current diary to the listener
+                return true;
+            });
         }
 
         @Override
         public int getItemCount() {
             return diaries.size();
+        }
+
+        // Interface to notify fragment when an item is long-clicked
+        public interface OnDiaryItemLongClickListener {
+            void onDiaryItemLongClicked(Diary diary);
         }
 
         public static class DiaryViewHolder extends RecyclerView.ViewHolder {
@@ -91,10 +107,8 @@
                 super(itemView);
                 imageViewDiary = itemView.findViewById(R.id.imageViewDiary);
                 textViewDiaryName = itemView.findViewById(R.id.textViewDiaryName);
-                textViewDates = itemView.findViewById(R.id.textViewStartDate);  // This is where we will display the month abbreviation and year
+                textViewDates = itemView.findViewById(R.id.textViewStartDate); // Month and Year
                 textViewDuration = itemView.findViewById(R.id.textViewDuration);
             }
         }
-        
-
     }
