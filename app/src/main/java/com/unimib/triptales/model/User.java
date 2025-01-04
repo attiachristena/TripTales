@@ -29,8 +29,13 @@ public class User implements Parcelable {
     @ColumnInfo(name = "user_passowrd")
     private String password;
 
-    public User(String name, String email, String idToken){
+    public User(){
+
+    }
+
+    public User(String name, String surname, String email, String idToken){
         this.name = name;
+        this.surname = surname;
         this.email = email;
         this.idToken = idToken;
     }
@@ -63,6 +68,10 @@ public class User implements Parcelable {
         return name;
     }
 
+    public String getSurname(){return surname;}
+
+    public void setSurname(String surname){ this.surname = surname;}
+
     public void setName(String name) {
         this.name = name;
     }
@@ -88,6 +97,7 @@ public class User implements Parcelable {
     public String toString() {
         return "User{" +
                 "name='" + name + '\'' +
+                "surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", idToken='" + idToken + '\'' +
                 '}';
@@ -101,12 +111,14 @@ public class User implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeString(this.name);
+        parcel.writeString(this.surname);
         parcel.writeString(this.email);
         parcel.writeString(this.idToken);
     }
 
     protected User(Parcel in){
         this.name = in.readString();
+        this.surname = in.readString();
         this.email = in.readString();
         this.idToken = in.readString();
     }
