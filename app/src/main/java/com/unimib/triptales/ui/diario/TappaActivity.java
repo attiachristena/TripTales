@@ -45,6 +45,9 @@ public class TappaActivity extends AppCompatActivity {
         String dataTappaString = getIntent().getStringExtra("dataTappa");
         imageUris = new ArrayList<>();
 
+
+
+
         // Configura il launcher per selezionare immagini
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),

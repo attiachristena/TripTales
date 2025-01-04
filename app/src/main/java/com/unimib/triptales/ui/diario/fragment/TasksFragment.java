@@ -1,39 +1,35 @@
 package com.unimib.triptales.ui.diario.fragment;
 
-import static com.unimib.triptales.util.Constants.findSelectedCard;
-
-import android.content.Context;
-import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
+import com.unimib.triptales.adapters.TasksRecyclerAdapter;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.TaskDao;
+import com.unimib.triptales.model.Task;
+import com.unimib.triptales.ui.diario.DiaryActivity;
 import com.unimib.triptales.util.Constants;
-
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class TasksFragment extends Fragment {
 
-    ArrayList<MaterialCardView> allTasks;
-    ArrayList<MaterialCardView> completedTasks;
     FloatingActionButton addTaskButton;
     View overlay_add_task;
     ConstraintLayout rootLayoutCheckList;
@@ -42,8 +38,6 @@ public class TasksFragment extends Fragment {
     Button saveTask;
     EditText editTextTaskName;
     String inputTaskName;
-    LinearLayout taskCardsContainer;
-    int indice;
     FloatingActionButton modifyTask;
     FloatingActionButton deleteTask;
     CheckBox cardListCheckBox;
@@ -53,6 +47,10 @@ public class TasksFragment extends Fragment {
     ImageButton backButtonModifyTask;
     Button saveModifiedTask;
     TextView noTasksString;
+    TaskDao taskDao;
+    private List<Task> tasksList;
+    private List<Task> selectedTasks;
+    RecyclerView recyclerViewTasks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +60,12 @@ public class TasksFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
+        tasksList = taskDao.getAll();
+        for(Task t : tasksList){
+            t.setSelected(false);
+            taskDao.updateIsSelected(t.getId(), false);
+        }
         return inflater.inflate(R.layout.fragment_check_list, container, false);
     }
 
@@ -70,24 +73,39 @@ public class TasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        allTasks = new ArrayList<MaterialCardView>();
-        completedTasks = new ArrayList<MaterialCardView>();
         rootLayoutCheckList = view.findViewById(R.id.rootLayoutCheckList);
         inflater = LayoutInflater.from(view.getContext());
+        taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
+
+        addTaskButton = view.findViewById(R.id.addTaskButton);
+        modifyTask = view.findViewById(R.id.modifyTask);
+        deleteTask = view.findViewById(R.id.deleteTask);
+
+        recyclerViewTasks = view.findViewById(R.id.recyclerViewTasks);
+        TasksRecyclerAdapter recyclerAdapter = new TasksRecyclerAdapter(tasksList,  getContext(),
+                addTaskButton, modifyTask, deleteTask);
+        recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewTasks.setAdapter(recyclerAdapter);
 
         overlay_add_task = inflater.inflate(R.layout.overlay_add_task, rootLayoutCheckList, false);
         rootLayoutCheckList.addView(overlay_add_task);
         overlay_add_task.setVisibility(View.GONE);
 
-        addTaskButton = view.findViewById(R.id.addTaskButton);
         backButtonTask = view.findViewById(R.id.backButtonTask);
         saveTask = view.findViewById(R.id.saveTask);
         noTasksString = view.findViewById(R.id.noTasksString);
+
+        if(tasksList.isEmpty()){
+            noTasksString.setVisibility(View.VISIBLE);
+        } else {
+            noTasksString.setVisibility(View.GONE);
+        }
 
         backButtonTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 overlay_add_task.setVisibility(View.GONE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                 Constants.hideKeyboard(view, requireActivity());
                 addTaskButton.setVisibility(View.VISIBLE);
             }
@@ -99,98 +117,35 @@ public class TasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_add_task.setVisibility(View.VISIBLE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
                 addTaskButton.setVisibility(View.GONE);
                 editTextTaskName.setText("");
             }
         });
 
-        taskCardsContainer = view.findViewById(R.id.taskCardsContainer);
-        indice = 0;
-        modifyTask = view.findViewById(R.id.modifyTask);
-        deleteTask = view.findViewById(R.id.deleteTask);
-
         saveTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // Usa LayoutInflater per creare una nuova CardView
-                View card = inflater.inflate(R.layout.item_card_list, taskCardsContainer, false);
-
-                // Modifica il contenuto della card
-                TextView name = card.findViewById(R.id.listItemNameTextView);
+                Task currentTask;
                 inputTaskName = editTextTaskName.getText().toString().trim();
 
                 if (inputTaskName.isEmpty()) {
                     editTextTaskName.setError("Inserisci un nome");
                 } else {
                     editTextTaskName.setError(null);
-                    name.setText(inputTaskName);
+                    currentTask = new Task(inputTaskName, false, false);
 
-                    // Aggiungi la nuova CardView al layout genitore
-                    taskCardsContainer.addView(card);
+                    long id = taskDao.insert(currentTask);
+                    currentTask.setId((int) id);
+                    tasksList.add(currentTask);
+                    recyclerAdapter.notifyItemInserted(tasksList.size() - 1);
+
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_add_task.setVisibility(View.GONE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                     addTaskButton.setVisibility(View.VISIBLE);
-                    MaterialCardView cardCurrentGoal = (MaterialCardView) taskCardsContainer.getChildAt(indice);
-                    allTasks.add(cardCurrentGoal);
-                    indice++;
                     noTasksString.setVisibility(View.GONE);
-
-                    cardListCheckBox = cardCurrentGoal.findViewById(R.id.cardListCheckBox);
-
-                    cardCurrentGoal.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            addTaskButton.setEnabled(false);
-                            if (cardCurrentGoal.isSelected()){
-                                cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
-                                cardCurrentGoal.setStrokeColor(getResources().getColor(R.color.light_gray));
-                                cardCurrentGoal.setSelected(false);
-                                cardListCheckBox.setEnabled(true);
-                                boolean notSelectedAll = true;
-                                for (MaterialCardView m : allTasks){
-                                    if(m.isSelected())
-                                        notSelectedAll = false;
-                                }
-                                if(notSelectedAll) {
-                                    modifyTask.setVisibility(View.GONE);
-                                    deleteTask.setVisibility(View.GONE);
-                                    addTaskButton.setEnabled(true);
-                                }
-                            } else {
-                                cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                cardCurrentGoal.setStrokeColor(getResources().getColor(R.color.background_dark));
-                                cardCurrentGoal.setSelected(true);
-                                cardListCheckBox.setEnabled(false);
-                            }
-                            /*if (countSelectedCards(allTasks) == 1) {
-                                modifyTask.setVisibility(View.VISIBLE);
-                                deleteTask.setVisibility(View.VISIBLE);
-                            } else if (countSelectedCards(allTasks) == 2){
-                                modifyTask.setVisibility(View.GONE);
-                            }*/
-                            return true;
-                        }
-                    });
-
-                    cardCurrentGoal.setCheckable(true);
-
-                    cardListCheckBox.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (!cardCurrentGoal.isChecked()){
-                                completedTasks.add(cardCurrentGoal);
-                                cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.dark_gray));
-                                cardCurrentGoal.setChecked(true);
-                                name.setPaintFlags(name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                            } else {
-                                completedTasks.remove(cardCurrentGoal);
-                                cardCurrentGoal.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
-                                cardCurrentGoal.setChecked(false);
-                                name.setPaintFlags(name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-                            }
-                        }
-                    });
                 }
             }
         });
@@ -207,11 +162,11 @@ public class TasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_modify_task.setVisibility(View.VISIBLE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
 
-                MaterialCardView card = findSelectedCard(allTasks);
-
-                TextView cardName = card.findViewById(R.id.listItemNameTextView);
-                editTextModifiedTaskName.setText(cardName.getText().toString().trim());
+                selectedTasks = taskDao.getSelectedTasks();
+                Task currentTask = selectedTasks.get(0);
+                editTextModifiedTaskName.setText(currentTask.getName());
 
                 addTaskButton.setVisibility(View.GONE);
                 modifyTask.setVisibility(View.GONE);
@@ -223,6 +178,7 @@ public class TasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 overlay_modify_task.setVisibility(View.GONE);
+                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                 Constants.hideKeyboard(view, requireActivity());
                 addTaskButton.setVisibility(View.VISIBLE);
                 modifyTask.setVisibility(View.VISIBLE);
@@ -233,30 +189,32 @@ public class TasksFragment extends Fragment {
         saveModifiedTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MaterialCardView card = findSelectedCard(allTasks);
 
-                // Modifica il contenuto della card
-                TextView name = card.findViewById(R.id.listItemNameTextView);
+                selectedTasks = taskDao.getSelectedTasks();
+                Task currentTask = selectedTasks.get(0);
+
                 inputModifiedTaskName = editTextModifiedTaskName.getText().toString().trim();
 
                 if (inputModifiedTaskName.isEmpty()) {
                     editTextModifiedTaskName.setError("Inserisci il nome dell'attività");
                 } else {
                     editTextModifiedTaskName.setError(null);
-                    name.setText(inputModifiedTaskName);
+                    currentTask.setName(inputTaskName);
+                    taskDao.updateName(currentTask.getId(), inputTaskName);
+
+                    currentTask.setSelected(false);
+                    taskDao.updateIsSelected(currentTask.getId(), false);
+
+                    int position = tasksList.indexOf(currentTask);
+                    if (position != -1) {
+                        tasksList.set(position, currentTask);
+                        recyclerAdapter.notifyItemChanged(position);
+                    }
+
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_modify_task.setVisibility(View.GONE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                     addTaskButton.setVisibility(View.VISIBLE);
-                    addTaskButton.setEnabled(true);
-                    if(completedTasks.contains(card)) {
-                        card.setCardBackgroundColor(getResources().getColor(R.color.dark_gray));
-                        card.setStrokeColor(getResources().getColor(R.color.light_gray));
-                    } else {
-                        card.setCardBackgroundColor(getResources().getColor(R.color.light_gray));
-                        card.setStrokeColor(getResources().getColor(R.color.light_gray));
-                    }
-                    card.setSelected(false);
-                    cardListCheckBox.setEnabled(true);
                 }
             }
         });
@@ -264,19 +222,22 @@ public class TasksFragment extends Fragment {
         deleteTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Iterator<MaterialCardView> iterator = allTasks.iterator();
+                int index = 0;
+                Iterator<Task> iterator = tasksList.iterator();
                 while (iterator.hasNext()) {
-                    MaterialCardView item = iterator.next();
-                    if (item.isSelected()) {
+                    Task t = iterator.next();
+                    if (t.isSelected()) {
                         iterator.remove();
-                        taskCardsContainer.removeView(item);
-                        indice--;
+                        recyclerAdapter.notifyItemRemoved(index);
+                        taskDao.delete(t);
+                    } else {
+                        index++;
                     }
                 }
                 modifyTask.setVisibility(View.GONE);
                 deleteTask.setVisibility(View.GONE);
                 addTaskButton.setEnabled(true);
-                if(allTasks.isEmpty()){
+                if(tasksList.isEmpty()){
                     noTasksString.setVisibility(View.VISIBLE);
                 }
             }

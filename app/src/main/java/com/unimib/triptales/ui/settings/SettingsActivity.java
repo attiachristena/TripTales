@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.homepage;
+package com.unimib.triptales.ui.settings;
 
 import android.os.Bundle;
 
@@ -10,11 +10,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.unimib.triptales.R;
 
-public class DialogAddDiaryActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_add_diary);
+        setContentView(R.layout.activity_settings);
+
+
     }
 }
