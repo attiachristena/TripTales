@@ -13,21 +13,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Switch;
+import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
@@ -36,7 +33,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Result;
-import com.unimib.triptales.model.User;
 import com.unimib.triptales.repository.user.IUserRepository;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
@@ -132,6 +128,12 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ImageButton backButton = view.findViewById(R.id.backarrow);
+        backButton.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_selezione));
+
+        Button signUpButton = view.findViewById(R.id.signInButton);
+        signUpButton.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_signInFragment));
+
         editTextEmail = view.findViewById(R.id.textInputEmail);
         editTextPassword = view.findViewById(R.id.textInputPassword);
 
@@ -160,7 +162,10 @@ public class LoginFragment extends Fragment {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
 
+                loginButton.setEnabled(false);
+
                 userViewModel.getUserMutableLiveData(email, password, true).observe(getViewLifecycleOwner(), result -> {
+                    loginButton.setEnabled(true);
                     if (result.isSuccess()) {
                         startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
@@ -177,7 +182,23 @@ public class LoginFragment extends Fragment {
 
         passwordDimenticata.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_passwordDimenticataFragment));
 
-
+        Button googleLoginButton = view.findViewById(R.id.googleLoginButton);
+        googleLoginButton.setOnClickListener(v -> { oneTapClient.beginSignIn(signInRequest)
+                .addOnSuccessListener(requireActivity(), result -> {
+                    try {
+                        activityResultLauncher.launch(new IntentSenderRequest.Builder(result.getPendingIntent()).build());
+                    } catch (Exception e) {
+                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                getString(R.string.error_unexpected),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(requireActivity(), e -> {
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                            getString(R.string.error_google_login),
+                            Snackbar.LENGTH_SHORT).show();
+                });
+        });
     }
 
     private boolean isPasswordOk(String password) {

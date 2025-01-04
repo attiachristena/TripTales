@@ -66,13 +66,13 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                         diaries.add(diary);
                     }
                 }
-                userResponseCallback.onSuccessFromRemoteDatabase(diaries);
+                userResponseCallback.onSuccessGetDiaries(diaries);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e(TAG, "Failed to fetch diaries", error.toException());
-                userResponseCallback.onFailureFromAuthentication(error.getMessage());
+                userResponseCallback.onFailureDiaryOperation(error.getMessage());
             }
         });
     }

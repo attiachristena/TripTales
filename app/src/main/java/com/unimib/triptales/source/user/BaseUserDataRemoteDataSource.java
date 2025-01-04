@@ -9,11 +9,8 @@ public abstract class BaseUserDataRemoteDataSource {
     public void setUserResponseCallback(UserResponseCallback userResponseCallback) {
         this.userResponseCallback = userResponseCallback;
     }
-
     public abstract void saveDiary(String userId, Diary diary);
-
     public abstract void getUserDiaries(String userId);
-
     public void deleteUserDiary(String userId, String diaryId) {
     }
 }

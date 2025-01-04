@@ -7,7 +7,6 @@ import com.unimib.triptales.model.Result;
 import com.unimib.triptales.model.User;
 import com.unimib.triptales.repository.user.IUserRepository;
 
-
 public class UserViewModel extends ViewModel{
 
     private final IUserRepository userRepository;
@@ -19,15 +18,14 @@ public class UserViewModel extends ViewModel{
         authenticationError = false;
     }
 
-
     public MutableLiveData<Result> getUserMutableLiveData(String email, String password, boolean isUserRegistered) {
         if(userMutableLiveData == null){
-            getUserData(email, password, isUserRegistered);
+            fetchUserData(email, password, isUserRegistered);
         }
         return userMutableLiveData;
     }
 
-    public void getUserData(String email, String password, boolean isUserRegistered){
+    public void fetchUserData(String email, String password, boolean isUserRegistered){
         userMutableLiveData = userRepository.getUser(null, null, email, password, isUserRegistered);
     }
 
@@ -39,8 +37,12 @@ public class UserViewModel extends ViewModel{
     }
 
     public MutableLiveData<Result> getGoogleUserMutableLiveData(String token){
-        if(userMutableLiveData == null){
-            getUserData(token);
+        return userRepository.signInWithGoogle(token);
+    }
+
+    public MutableLiveData<Result> signUpWithGoogle(String idToken) {
+        if (userMutableLiveData == null) {
+            userMutableLiveData = userRepository.signUpWithGoogle(idToken);
         }
         return userMutableLiveData;
     }
@@ -66,7 +68,7 @@ public class UserViewModel extends ViewModel{
         this.authenticationError = authenticationError;
     }
 
-    private void getUserData(String token){
-        userMutableLiveData = userRepository.getGoogleUser(token);
+    public MutableLiveData<Result> resetPassword(String email){
+        return userRepository.resetPassword(email);
     }
 }

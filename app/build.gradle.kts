@@ -66,6 +66,4 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore:24.2.1")
 
-
-
 }

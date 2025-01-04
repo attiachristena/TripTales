@@ -3,6 +3,7 @@ package com.unimib.triptales.source.user;
 import static com.unimib.triptales.util.Constants.*;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.unimib.triptales.model.Result;
 import com.unimib.triptales.model.User;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -30,9 +32,9 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
     @Override
     public User getLoggedUser() {
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser == null)
+        if (firebaseUser == null) {
             return null;
-        else{
+        } else {
             DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
             docRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -103,6 +105,57 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
     }
 
     @Override
+    public void signUpWithGoogle(String idToken) {
+        if (idToken != null) {
+            AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+            firebaseAuth.signInWithCredential(firebaseCredential)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                String name = firebaseUser.getDisplayName();
+                                String email = firebaseUser.getEmail();
+                                String surname = "";
+
+                                User user = new User(name, surname, email, firebaseUser.getUid());
+                                DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
+                                docRef.set(user).addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        userResponseCallback.onSuccessFromAuthentication(user);
+                                    } else {
+                                        userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                                    }
+                                });
+                            } else {
+                                userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                            }
+                        } else {
+                            userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        userResponseCallback.onFailureFromAuthentication(getErrorMessage(e));
+                    });
+        } else {
+            userResponseCallback.onFailureFromAuthentication(INVALID_ID_TOKEN);
+        }
+    }
+
+    @Override
+    public MutableLiveData<Result> resetPassword(String email) {
+        MutableLiveData<Result> resultLiveData = new MutableLiveData<>();
+        firebaseAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        resultLiveData.postValue(new Result.GenericSuccess());
+                    } else {
+                        resultLiveData.postValue(new Result.Error(task.getException().getMessage()));
+                    }
+                });
+        return resultLiveData;
+    }
+
+    @Override
     public void signIn(String email, String password) {
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
@@ -148,7 +201,14 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
                                     User user = document.toObject(User.class);
                                     userResponseCallback.onSuccessFromAuthentication(user);
                                 } else {
-                                    userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                                    User user = new User(firebaseUser.getDisplayName(), "", firebaseUser.getEmail(), firebaseUser.getUid());
+                                    docRef.set(user).addOnCompleteListener(task2 -> {
+                                        if (task2.isSuccessful()) {
+                                            userResponseCallback.onSuccessFromAuthentication(user);
+                                        } else {
+                                            userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                                        }
+                                    });
                                 }
                             } else {
                                 userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
@@ -162,5 +222,7 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
                 }
             });
         }
+
+
     }
 }

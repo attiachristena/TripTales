@@ -28,6 +28,12 @@
         <action
             android:id="@+id/action_loginFragment_to_homepageActivity"
             app:destination="@id/homepageActivity" />
+        <action
+            android:id="@+id/action_loginFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_selezione"
+            app:destination="@id/selezione" />
     </fragment>
     <fragment
         android:id="@+id/signInFragment"
@@ -37,12 +43,19 @@
         <action
             android:id="@+id/action_signInFragment_to_homepageActivity"
             app:destination="@id/homepageActivity" />
+        <action
+            android:id="@+id/action_signInFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_selezione"
+            app:destination="@id/selezione" />
     </fragment>
     <fragment
         android:id="@+id/passwordDimenticataFragment"
         android:name="com.unimib.triptales.ui.login.fragment.PasswordDimenticataFragment"
         android:label="fragment_password_dimenticata"
-        tools:layout="@layout/fragment_password_dimenticata" />
+        tools:layout="@layout/fragment_password_dimenticata" >
+    </fragment>
     <activity
         android:id="@+id/homepageActivity"
         android:name="com.unimib.triptales.ui.homepage.HomepageActivity"

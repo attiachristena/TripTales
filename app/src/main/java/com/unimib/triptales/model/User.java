@@ -29,7 +29,10 @@ public class User implements Parcelable {
 
     @ColumnInfo(name = "user_passowrd")
     public String password;
- 
+
+    public User(){
+
+    }
 
     public User(String name, String surname, String email, String idToken){
         this.name = name;
