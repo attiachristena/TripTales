@@ -53,6 +53,7 @@ public class Constants {
 
     public static final List<String> CURRENCIES = Arrays.asList(CURRENCY_EUR,
             CURRENCY_USD, CURRENCY_GBP, CURRENCY_JPY);
+    public static final String INVALID_ID_TOKEN = "invalidIdToken";
 
     public static void hideKeyboard(View view, FragmentActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);

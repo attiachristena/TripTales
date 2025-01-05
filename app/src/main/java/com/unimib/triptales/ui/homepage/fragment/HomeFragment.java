@@ -8,6 +8,7 @@
     import android.os.Bundle;
     import android.provider.MediaStore;
     import android.text.TextUtils;
+    import android.util.Log;
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
@@ -21,6 +22,7 @@
     import androidx.annotation.NonNull;
     import androidx.annotation.Nullable;
     import androidx.fragment.app.Fragment;
+    import androidx.lifecycle.ViewModelProvider;
     import androidx.recyclerview.widget.GridLayoutManager;
     import androidx.recyclerview.widget.LinearLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +32,7 @@
     import com.unimib.triptales.R;
     import com.unimib.triptales.adapters.Diary;
     import com.unimib.triptales.adapters.DiaryAdapter;
+    import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
     import java.io.InputStream;
     import java.text.SimpleDateFormat;
@@ -47,12 +50,13 @@
         private EditText inputDayStartDate, inputMonthStartDate, inputYearStartDate;
         private EditText inputDayEndDate, inputMonthEndDate, inputYearEndDate;
         private Button buttonChooseImage, buttonSave;
-        private  TextView inputDiaryName;
+        public TextView inputDiaryName;
         private ImageView imageViewCover;
         private Uri selectedImageUri;
         private RelativeLayout rootLayoutHome;
         private View overlayAddDiary;
         private final Calendar calendar = Calendar.getInstance();
+        private SharedViewModel sharedViewModel;
 
         @Nullable
         @Override
@@ -66,7 +70,7 @@
             rootLayoutHome.addView(overlayAddDiary);
             overlayAddDiary.setVisibility(View.GONE);
 
-
+            sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
             recyclerView = view.findViewById(R.id.recycler_view_diaries);
             emptyMessage = view.findViewById(R.id.text_empty_message);
@@ -157,6 +161,7 @@
             String monthEndDate = inputMonthEndDate.getText().toString().trim();
             String yearEndDate = inputYearEndDate.getText().toString().trim();
             String diaryName = inputDiaryName.getText().toString().trim();
+            sharedViewModel.setDiaryName(diaryName);
 
             if (TextUtils.isEmpty(dayStartDate) || TextUtils.isEmpty(monthStartDate) || TextUtils.isEmpty(yearStartDate) ||
                     TextUtils.isEmpty(dayEndDate) || TextUtils.isEmpty(monthEndDate) || TextUtils.isEmpty(yearEndDate)) {
@@ -172,7 +177,9 @@
             }
 
             String startDate = dayStartDate + "/" + monthStartDate + "/" + yearStartDate;
+            sharedViewModel.setStartDate(startDate);
             String endDate = dayEndDate + "/" + monthEndDate + "/" + yearEndDate;
+            sharedViewModel.setEndDate(endDate);
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
