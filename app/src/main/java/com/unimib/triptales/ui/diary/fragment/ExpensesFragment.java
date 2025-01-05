@@ -8,7 +8,6 @@ import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
 import static com.unimib.triptales.util.Constants.CURRENCY_USD;
 import static com.unimib.triptales.util.Constants.countAmount;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,29 +26,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.ExpensesRecyclerAdapter;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
-import com.unimib.triptales.repository.expense.ExpenseRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
-import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
-import com.unimib.triptales.source.expense.BaseExpenseRemoteDataSource;
 import com.unimib.triptales.ui.diary.DiaryActivity;
 import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
-import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModelFactory;
+import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.Constants;
 import com.unimib.triptales.util.ServiceLocator;
-
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 
 public class ExpensesFragment extends Fragment {
@@ -119,7 +109,7 @@ public class ExpensesFragment extends Fragment {
 
         IExpenseRepository expenseRepository = ServiceLocator.getINSTANCE().getExpenseRepository(getContext());
         expenseViewModel = new ViewModelProvider(requireActivity(),
-                new ExpenseViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
+                new ViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
 
         expenseList = expenseViewModel.getAllExpenses();
 
@@ -376,6 +366,10 @@ public class ExpensesFragment extends Fragment {
                     currentExpense.setId((int) id);
                     expenseList.add(currentExpense);
                     recyclerAdapter.notifyItemInserted(expenseList.size()-1);
+
+
+
+
 
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_add_expense.setVisibility(View.GONE);

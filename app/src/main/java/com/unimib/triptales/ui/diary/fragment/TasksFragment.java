@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,8 +23,15 @@ import com.unimib.triptales.adapters.TasksRecyclerAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.TaskDao;
 import com.unimib.triptales.model.Task;
+import com.unimib.triptales.repository.goal.IGoalRepository;
+import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.ui.diary.DiaryActivity;
+import com.unimib.triptales.ui.diary.viewmodel.GoalViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.Constants;
+import com.unimib.triptales.util.ServiceLocator;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,9 +47,10 @@ public class TasksFragment extends Fragment {
     private EditText editTextModifiedTaskName;
     private String inputModifiedTaskName;
     private TextView noTasksString;
-    private TaskDao taskDao;
+    //private TaskDao taskDao;
     private List<Task> tasksList;
     private List<Task> selectedTasks;
+    private TaskViewModel taskViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,11 +60,17 @@ public class TasksFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
-        tasksList = taskDao.getAll();
+
+        ITaskRepository taskRepository = ServiceLocator.getINSTANCE().getTaskRepository(getContext());
+        taskViewModel = new ViewModelProvider(requireActivity(),
+                new ViewModelFactory(taskRepository)).get(TaskViewModel.class);
+
+        //taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
+        tasksList = taskViewModel.getAllTasks();
+        //tasksList = taskDao.getAll();
         for(Task t : tasksList){
             t.setSelected(false);
-            taskDao.updateIsSelected(t.getId(), false);
+            taskViewModel.updateTaskIsSelected(t.getId(), false);
         }
         return inflater.inflate(R.layout.fragment_check_list, container, false);
     }
@@ -66,7 +81,7 @@ public class TasksFragment extends Fragment {
 
         ConstraintLayout rootLayoutCheckList = view.findViewById(R.id.rootLayoutCheckList);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
+        //taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
 
         addTaskButton = view.findViewById(R.id.addTaskButton);
         modifyTask = view.findViewById(R.id.modifyTask);
@@ -127,7 +142,7 @@ public class TasksFragment extends Fragment {
                     editTextTaskName.setError(null);
                     currentTask = new Task(inputTaskName, false, false);
 
-                    long id = taskDao.insert(currentTask);
+                    long id = taskViewModel.insertTask(currentTask);
                     currentTask.setId((int) id);
                     tasksList.add(currentTask);
                     recyclerAdapter.notifyItemInserted(tasksList.size() - 1);
@@ -155,7 +170,7 @@ public class TasksFragment extends Fragment {
                 overlay_modify_task.setVisibility(View.VISIBLE);
                 ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
 
-                selectedTasks = taskDao.getSelectedTasks();
+                selectedTasks = taskViewModel.getSelectedTasks();
                 Task currentTask = selectedTasks.get(0);
                 editTextModifiedTaskName.setText(currentTask.getName());
 
@@ -181,7 +196,7 @@ public class TasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                selectedTasks = taskDao.getSelectedTasks();
+                selectedTasks = taskViewModel.getSelectedTasks();
                 Task currentTask = selectedTasks.get(0);
 
                 inputModifiedTaskName = editTextModifiedTaskName.getText().toString().trim();
@@ -190,11 +205,11 @@ public class TasksFragment extends Fragment {
                     editTextModifiedTaskName.setError("Inserisci il nome dell'attività");
                 } else {
                     editTextModifiedTaskName.setError(null);
-                    currentTask.setName(inputTaskName);
-                    taskDao.updateName(currentTask.getId(), inputTaskName);
+                    currentTask.setName(inputModifiedTaskName);
+                    taskViewModel.updateTaskName(currentTask.getId(), inputModifiedTaskName);
 
                     currentTask.setSelected(false);
-                    taskDao.updateIsSelected(currentTask.getId(), false);
+                    taskViewModel.updateTaskIsSelected(currentTask.getId(), false);
 
                     int position = tasksList.indexOf(currentTask);
                     if (position != -1) {
@@ -206,6 +221,7 @@ public class TasksFragment extends Fragment {
                     overlay_modify_task.setVisibility(View.GONE);
                     ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                     addTaskButton.setVisibility(View.VISIBLE);
+                    addTaskButton.setEnabled(true);
                 }
             }
         });
@@ -220,7 +236,7 @@ public class TasksFragment extends Fragment {
                     if (t.isSelected()) {
                         iterator.remove();
                         recyclerAdapter.notifyItemRemoved(index);
-                        taskDao.delete(t);
+                        taskViewModel.deleteTask(t);
                     } else {
                         index++;
                     }

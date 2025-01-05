@@ -62,15 +62,6 @@ public class Constants {
         }
     }
 
-    public static MaterialCardView findSelectedCard(ArrayList<MaterialCardView> cardList){
-        MaterialCardView selectedCard = cardList.get(0);
-        for (MaterialCardView card : cardList) {
-            if (card.isSelected())
-                selectedCard = card;
-        }
-        return selectedCard;
-    }
-
     public static String countAmount(List<Expense> expenseList, String currency){
         double totExpense = 0;
         for(Expense e: expenseList){

@@ -21,7 +21,6 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
         this.expenseRemoteDataSource = expenseRemoteDataSource;
     }
 
-
     public long insertExpense(Expense expense) {
         return expenseLocalDataSource.insertExpense(expense);
     }

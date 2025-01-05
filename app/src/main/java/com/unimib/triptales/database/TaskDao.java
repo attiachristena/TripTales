@@ -27,7 +27,6 @@ public interface TaskDao {
     @Delete
     void deleteAll(List<Task> tasks);
 
-    //Recupero di una lista di elementi
     @Query("SELECT * FROM Task")
     List<Task> getAll();
 
