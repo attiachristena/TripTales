@@ -1,5 +1,6 @@
 package com.unimib.triptales.ui.intro;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -135,6 +136,19 @@ public class IntroActivity extends AppCompatActivity {
         slideViewPager.addOnPageChangeListener(viewPagerListener);
 
 
+        //to show intro only once after installing the application
+        /*SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
+        String FirstTime = preferences.getString("FirstTimeInstall","");
+
+        if(FirstTime.equals("Yes")){
+            Intent intent = new Intent (IntroActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }else{
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("FirstTimeInstall","Yes");
+            editor.apply();
+        }*/
+
     }
 
     public void setDotIndicator(int position){
@@ -161,6 +175,8 @@ public class IntroActivity extends AppCompatActivity {
             }
             dots[3].setTextColor(getResources().getColor(R.color.orange,getApplicationContext().getTheme()));
         }
+
+
     }
 
     private int getItem(int i){
