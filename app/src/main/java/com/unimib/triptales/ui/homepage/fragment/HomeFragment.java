@@ -35,149 +35,138 @@
     import java.util.List;
     import java.util.Locale;
 
-    public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLongClickListener{
+    public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLongClickListener {
 
         private RecyclerView recyclerView;
         private DiaryAdapter diaryAdapter;
         private List<Diary> diaryList = new ArrayList<>();
         private TextView emptyMessage;
+        private FloatingActionButton addDiaryButton, deleteDiaryButton, modifyDiaryButton;
+
+        private ConstraintLayout rootLayoutHome;
+        private View overlayAddDiary, overlayModifyDiary;
         private EditText inputDayStartDate, inputMonthStartDate, inputYearStartDate;
         private EditText inputDayEndDate, inputMonthEndDate, inputYearEndDate;
-        private Button buttonChooseImage, buttonSave;
-        private TextView inputDiaryName;
-        private ImageView imageViewCover;
-        private Uri selectedImageUri;
-        private ConstraintLayout rootLayoutHome;
-        private View overlayAddDiary;
-        private final Calendar calendar = Calendar.getInstance();
-        private FloatingActionButton deleteDiaryButton, modifyDiaryButton;
-        private RecyclerView recyclerViewDiaries;
-        private Diary selectedDiary;
-        private Diary diary;
-        private ArrayList<Diary> selectedDiaries = new ArrayList<>();
-        private MaterialCardView cardView;
+        private EditText modifyDayStartDate, modifyMonthStartDate, modifyYearStartDate;
+        private EditText modifyDayEndDate, modifyMonthEndDate, modifyYearEndDate;
 
+        private EditText inputDiaryName, modifyDiaryName;
+        private ImageView imageViewCover, modifyCoverImage;
+        private Button buttonChooseImage, buttonSave, buttonSaveModify, buttonChooseImageChanges;
+        private ImageButton closeAddOverlayButton, closeModifyOverlayButton;
+        private Uri selectedImageUri;
+        private Diary selectedDiary;
+        private final Calendar calendar = Calendar.getInstance();
+
+        private ArrayList<Diary> selectedDiaries = new ArrayList<>();
+        private View imageViewSelectedChanges;
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
-            // Inflazione del layout principale del fragment
             View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-            // Inizializzazione dei componenti del layout
+            initializeViews(view, inflater);
+            setupRecyclerView();
+            setupButtonListeners();
+            setupDatePicker(inputDayStartDate, inputMonthStartDate, inputYearStartDate);
+            setupDatePicker(inputDayEndDate, inputMonthEndDate, inputYearEndDate);
+            setupDatePicker(modifyDayStartDate, modifyMonthStartDate, modifyYearStartDate);
+            setupDatePicker(modifyDayEndDate, modifyMonthEndDate, modifyYearEndDate);
+
+            return view;
+        }
+
+        private void initializeViews(View view, LayoutInflater inflater) {
             rootLayoutHome = view.findViewById(R.id.root_layout_home);
             overlayAddDiary = inflater.inflate(R.layout.overlay_add_diary, rootLayoutHome, false);
+            overlayModifyDiary = inflater.inflate(R.layout.overlay_modify_diary, rootLayoutHome, false);
+
             rootLayoutHome.addView(overlayAddDiary);
+            rootLayoutHome.addView(overlayModifyDiary);
+
             overlayAddDiary.setVisibility(View.GONE);
+            overlayModifyDiary.setVisibility(View.GONE);
 
             recyclerView = view.findViewById(R.id.recycler_view_diaries);
             emptyMessage = view.findViewById(R.id.text_empty_message);
-            FloatingActionButton buttonAddDiary = view.findViewById(R.id.fab_add_diary);
+
+            addDiaryButton = view.findViewById(R.id.fab_add_diary);
+            deleteDiaryButton = view.findViewById(R.id.deleteDiaryButton);
+            modifyDiaryButton = view.findViewById(R.id.modifyDiaryButton);
 
             inputDiaryName = overlayAddDiary.findViewById(R.id.inputDiaryName);
             inputDayStartDate = overlayAddDiary.findViewById(R.id.inputDayDeparture);
             inputMonthStartDate = overlayAddDiary.findViewById(R.id.inputMonthDeparture);
             inputYearStartDate = overlayAddDiary.findViewById(R.id.inputYearDeparture);
-
             inputDayEndDate = overlayAddDiary.findViewById(R.id.inputReturnDay);
             inputMonthEndDate = overlayAddDiary.findViewById(R.id.inputReturnMonth);
             inputYearEndDate = overlayAddDiary.findViewById(R.id.inputReturnYear);
-
+            imageViewCover = overlayAddDiary.findViewById(R.id.imageViewSelected);
             buttonSave = overlayAddDiary.findViewById(R.id.buttonSaveDiary);
             buttonChooseImage = overlayAddDiary.findViewById(R.id.buttonChooseImage);
-            imageViewCover = overlayAddDiary.findViewById(R.id.imageViewSelected);
-            ImageButton closeOverlayButton = overlayAddDiary.findViewById(R.id.backaddDiaryButton);
+            buttonChooseImageChanges = overlayModifyDiary.findViewById(R.id.buttonChooseImageChanges);
+            closeAddOverlayButton = overlayAddDiary.findViewById(R.id.backaddDiaryButton);
+            imageViewSelectedChanges = overlayModifyDiary.findViewById(R.id.imageViewSelectedChanges);
 
-            // Nascondere i bottoni di delete e modify quando si apre l'overlay
-            deleteDiaryButton = view.findViewById(R.id.deleteDiaryButton);
-            modifyDiaryButton = view.findViewById(R.id.modifyDiaryButton);
-            deleteDiaryButton.setVisibility(View.GONE);  // Nascondi il bottone di eliminazione
-            modifyDiaryButton.setVisibility(View.GONE);  // Nascondi il bottone di modifica
+            modifyDiaryName = overlayModifyDiary.findViewById(R.id.inputDiaryNameChanges);
+            modifyDayStartDate = overlayModifyDiary.findViewById(R.id.inputDayDepartureChanges);
+            modifyMonthStartDate = overlayModifyDiary.findViewById(R.id.inputMonthDepartureChanges);
+            modifyYearStartDate = overlayModifyDiary.findViewById(R.id.inputYearDepartureChanges);
+            modifyDayEndDate = overlayModifyDiary.findViewById(R.id.inputReturnDayChanges);
+            modifyMonthEndDate = overlayModifyDiary.findViewById(R.id.inputReturnMonthChanges);
+            modifyYearEndDate = overlayModifyDiary.findViewById(R.id.inputReturnYearChanges);
+            modifyCoverImage = overlayModifyDiary.findViewById(R.id.imageViewSelectedChanges);
+            buttonSaveModify = overlayModifyDiary.findViewById(R.id.buttonSaveDiaryChanges);
+            closeModifyOverlayButton = overlayModifyDiary.findViewById(R.id.backModifyDiaryButton);
+        }
 
-
-            // Impostazione del RecyclerView
+        private void setupRecyclerView() {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-            diaryAdapter = new DiaryAdapter(getContext(), diaryList, this);  // Pass listener here
+            diaryAdapter = new DiaryAdapter(getContext(), diaryList, this);
             recyclerView.setAdapter(diaryAdapter);
+            updateEmptyMessage();
+        }
 
-            // Listener per l'aggiunta di un nuovo diario
-            buttonAddDiary.setOnClickListener(v -> {
-                overlayAddDiary.setVisibility(View.VISIBLE);
+        private void setupButtonListeners() {
+            addDiaryButton.setOnClickListener(v -> showOverlay(overlayAddDiary));
+            closeAddOverlayButton.setOnClickListener(v -> hideOverlay(overlayAddDiary));
+            closeModifyOverlayButton.setOnClickListener(v -> hideOverlay(overlayModifyDiary));
 
-                // Nascondi il bottone "Aggiungi diario" quando l'overlay è visibile
-                buttonAddDiary.setVisibility(View.GONE);
-
-                // Nascondi anche gli altri bottoni
-                deleteDiaryButton.setVisibility(View.GONE);
-                modifyDiaryButton.setVisibility(View.GONE);
-            });
-
-            closeOverlayButton.setOnClickListener(v -> {
-                overlayAddDiary.setVisibility(View.GONE);
-
-                // Deseleziona tutti i diari selezionati
-                diaryAdapter.clearSelections();
-                diaryAdapter.notifyDataSetChanged();
-
-                // Svuota la lista dei diari selezionati
-                selectedDiaries.clear();
-
-                // Nascondi i bottoni "Modifica" e "Elimina"
-                deleteDiaryButton.setVisibility(View.GONE);
-                modifyDiaryButton.setVisibility(View.GONE);
-
-                // Mostra il bottone "Aggiungi diario" quando l'overlay è chiuso
-                buttonAddDiary.setVisibility(View.VISIBLE);
-            });
-
-
-            // Listener per i bottoni di salvataggio e scelta immagine
             buttonSave.setOnClickListener(v -> saveDiary());
+            buttonSaveModify.setOnClickListener(v -> modifyDiary());
+
             buttonChooseImage.setOnClickListener(v -> openImagePicker());
+            buttonChooseImageChanges.setOnClickListener(v -> openImagePicker());
 
-            // Impostazione dei date picker
-            setupDatePicker(inputDayStartDate, inputMonthStartDate, inputYearStartDate);
-            setupDatePicker(inputDayEndDate, inputMonthEndDate, inputYearEndDate);
-
-            // Imposta il listener per il bottone di eliminazione
             deleteDiaryButton.setOnClickListener(v -> {
-                deleteDiary();  // Chiama il metodo per eliminare il diario
+                deleteSelectedDiaries();
                 updateEmptyMessage();
-
             });
 
             modifyDiaryButton.setOnClickListener(v -> {
-                if (!selectedDiaries.isEmpty() && selectedDiaries.size() == 1) {
-                    selectedDiary = selectedDiaries.get(0); // Assegna il diario selezionato per la modifica
-
-                    inputDiaryName.setText(selectedDiary.getName());
-
-                    String[] startDateParts = selectedDiary.getStartDate().split("/");
-                    inputDayStartDate.setText(startDateParts[0]);
-                    inputMonthStartDate.setText(startDateParts[1]);
-                    inputYearStartDate.setText(startDateParts[2]);
-
-                    String[] endDateParts = selectedDiary.getEndDate().split("/");
-                    inputDayEndDate.setText(endDateParts[0]);
-                    inputMonthEndDate.setText(endDateParts[1]);
-                    inputYearEndDate.setText(endDateParts[2]);
-
-                    imageViewCover.setImageURI(selectedDiary.getCoverImageUri());
-                    imageViewCover.setVisibility(View.VISIBLE);
-
-                    overlayAddDiary.setVisibility(View.VISIBLE);
-
-                    FloatingActionButton floatingActionButton = getView().findViewById(R.id.fab_add_diary);
-                    buttonAddDiary.setVisibility(View.GONE);
-
-                    deleteDiaryButton.setVisibility(View.GONE);
-                    modifyDiaryButton.setVisibility(View.GONE);
+                if (selectedDiaries.size() == 1) {
+                    selectedDiary = selectedDiaries.get(0);
+                    populateModifyOverlay(selectedDiary);
+                    showOverlay(overlayModifyDiary);
+                } else {
+                    Toast.makeText(getContext(), "Seleziona un solo diario per modificarlo.", Toast.LENGTH_SHORT).show();
                 }
             });
+        }
 
+        private void showOverlay(View overlay) {
+            overlay.setVisibility(View.VISIBLE);
+            addDiaryButton.setVisibility(View.GONE);
+            deleteDiaryButton.setVisibility(View.GONE);
+            modifyDiaryButton.setVisibility(View.GONE);
+        }
 
-
-            return view;
+        private void hideOverlay(View overlay) {
+            overlay.setVisibility(View.GONE);
+            addDiaryButton.setVisibility(View.VISIBLE);
+            resetDiaryFields();
+            selectedDiary = null;
         }
 
         private void setupDatePicker(EditText dayField, EditText monthField, EditText yearField) {
@@ -195,6 +184,7 @@
                 );
                 datePickerDialog.show();
             };
+
             dayField.setOnClickListener(listener);
             monthField.setOnClickListener(listener);
             yearField.setOnClickListener(listener);
@@ -205,94 +195,105 @@
             startActivityForResult(intent, 1);
         }
 
-
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == 1 && resultCode == getActivity().RESULT_OK && data != null) {
                 selectedImageUri = data.getData();
                 imageViewCover.setImageURI(selectedImageUri);
-                imageViewCover.setVisibility(View.VISIBLE);  // Rendere visibile l'immagine selezionata
+                imageViewCover.setVisibility(View.VISIBLE);
             }
         }
-
 
         private void saveDiary() {
-            String dayStartDate = inputDayStartDate.getText().toString().trim();
-            String monthStartDate = inputMonthStartDate.getText().toString().trim();
-            String yearStartDate = inputYearStartDate.getText().toString().trim();
-            String dayEndDate = inputDayEndDate.getText().toString().trim();
-            String monthEndDate = inputMonthEndDate.getText().toString().trim();
-            String yearEndDate = inputYearEndDate.getText().toString().trim();
-            String diaryName = inputDiaryName.getText().toString().trim();
+            String diaryName = inputDiaryName.getText().toString();
+            String startDate = inputDayStartDate.getText().toString() + "/" + inputMonthStartDate.getText().toString() + "/" + inputYearStartDate.getText().toString();
+            String endDate = inputDayEndDate.getText().toString() + "/" + inputMonthEndDate.getText().toString() + "/" + inputYearEndDate.getText().toString();
 
-            if (TextUtils.isEmpty(dayStartDate) || TextUtils.isEmpty(monthStartDate) || TextUtils.isEmpty(yearStartDate) ||
-                    TextUtils.isEmpty(dayEndDate) || TextUtils.isEmpty(monthEndDate) || TextUtils.isEmpty(yearEndDate)) {
-                Toast.makeText(getContext(), "Le date non possono essere vuote!", Toast.LENGTH_SHORT).show();
+            if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty()) {
+                Toast.makeText(getContext(), "Compila tutti i campi e scegli un'immagine!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!isValidDay(dayStartDate) || !isValidDay(dayEndDate) ||
-                    !isValidMonth(monthStartDate) || !isValidMonth(monthEndDate) ||
-                    !isValidYear(yearStartDate) || !isValidYear(yearEndDate)) {
-                Toast.makeText(getContext(), "Date non valide!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            String startDate = dayStartDate + "/" + monthStartDate + "/" + yearStartDate;
-            String endDate = dayEndDate + "/" + monthEndDate + "/" + yearEndDate;
-
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            try {
-                if (sdf.parse(startDate).after(sdf.parse(endDate))) {
-                    Toast.makeText(getContext(), "La data di partenza deve precedere quella di ritorno!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Errore nel formato delle date!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (selectedImageUri == null) {
-                Toast.makeText(getContext(), "Seleziona un'immagine per la copertina!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // If we are editing an existing diary, update it; else create a new diary.
-            if (selectedDiary != null) {
-                // Modify the existing diary
-                selectedDiary.setName(diaryName);
-                selectedDiary.setStartDate(startDate);
-                selectedDiary.setEndDate(endDate);
-                selectedDiary.setCoverImageUri(selectedImageUri);
-                Toast.makeText(getContext(), "Diario modificato con successo!", Toast.LENGTH_SHORT).show();
-                selectedDiary = null; // Reset the selected diary after modification
-            } else {
-                // Create a new diary
-                diaryList.add(new Diary(diaryName, startDate, endDate, selectedImageUri));
-                Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
-            }
-
-            // Notify the adapter that the data has changed and update the view
+            Diary newDiary = new Diary(diaryName, startDate, endDate, selectedImageUri);
+            diaryList.add(newDiary);
             diaryAdapter.notifyDataSetChanged();
-            diaryAdapter.clearSelections();
-
-            // Reset the selection state and update buttons
-            selectedDiaries.clear();
-            deleteDiaryButton.setVisibility(View.GONE);
-            modifyDiaryButton.setVisibility(View.GONE);
-
-            // Hide the overlay and reset the form fields
-            overlayAddDiary.setVisibility(View.GONE);
-            resetDiaryFields();
+            hideOverlay(overlayAddDiary);
             updateEmptyMessage();
+            Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
+        }
 
-            // Show the "Add Diary" button again
-            FloatingActionButton buttonAddDiary = getView().findViewById(R.id.fab_add_diary);
-            buttonAddDiary.setVisibility(View.VISIBLE);
+        private void modifyDiary() {
+            if (selectedDiary == null) return;
+
+            String diaryName = modifyDiaryName.getText().toString();
+            String startDate = modifyDayStartDate.getText().toString() + "/" + modifyMonthStartDate.getText().toString() + "/" + modifyYearStartDate.getText().toString();
+            String endDate = modifyDayEndDate.getText().toString() + "/" + modifyMonthEndDate.getText().toString() + "/" + modifyYearEndDate.getText().toString();
+
+            if (diaryName.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
+                Toast.makeText(getContext(), "Compila tutti i campi!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            selectedDiary.setName(diaryName);
+            selectedDiary.setStartDate(startDate);
+            selectedDiary.setEndDate(endDate);
+            if (selectedImageUri != null) {
+                selectedDiary.setCoverImageUri(selectedImageUri);
+            }
+
+            // Deseleziona il diario dopo averlo modificato
+            selectedDiaries.remove(selectedDiary);
+
+            // Notifica all'adapter che la lista è cambiata
+            diaryAdapter.notifyDataSetChanged();
+
+            // Aggiungi questa riga per deselezionare tutti i diari
+            diaryAdapter.clearSelections(); // Deseleziona tutti i diari
+
+            // Nascondi l'overlay di modifica e aggiorna i bottoni
+            hideOverlay(overlayModifyDiary);
+
+            // Aggiorna la visibilità dei pulsanti
+            modifyDiaryButton.setVisibility(View.GONE); // Rendi visibile il bottone "Modifica"
+            deleteDiaryButton.setVisibility(selectedDiaries.isEmpty() ? View.GONE : View.VISIBLE); // Nascondi "Elimina" se nessun diario è selezionato
+
+            Toast.makeText(getContext(), "Diario modificato con successo!", Toast.LENGTH_SHORT).show();
         }
 
 
+
+        private void deleteSelectedDiaries() {
+            diaryList.removeAll(selectedDiaries);
+            diaryAdapter.notifyDataSetChanged();
+            Toast.makeText(getContext(), "Diari eliminati con successo!", Toast.LENGTH_SHORT).show();
+            selectedDiaries.clear();
+        }
+
+        private void populateModifyOverlay(Diary diary) {
+            modifyDiaryName.setText(diary.getName());
+
+            // Ripristina la data di inizio
+            String[] startDate = diary.getStartDate().split("/");
+            modifyDayStartDate.setText(startDate[0]);
+            modifyMonthStartDate.setText(startDate[1]);
+            modifyYearStartDate.setText(startDate[2]);
+
+            // Ripristina la data di fine
+            String[] endDate = diary.getEndDate().split("/");
+            modifyDayEndDate.setText(endDate[0]);
+            modifyMonthEndDate.setText(endDate[1]);
+            modifyYearEndDate.setText(endDate[2]);
+
+            // Ripristina l'immagine
+            Uri coverImageUri = diary.getCoverImageUri();
+            if (coverImageUri != null) {
+                modifyCoverImage.setImageURI(coverImageUri);
+                modifyCoverImage.setVisibility(View.VISIBLE);  // Assicurati che l'immagine sia visibile
+            } else {
+                modifyCoverImage.setVisibility(View.GONE);  // Se non c'è un'immagine, nascondila
+            }
+        }
 
 
         private void resetDiaryFields() {
@@ -303,35 +304,17 @@
             inputDayEndDate.setText("");
             inputMonthEndDate.setText("");
             inputYearEndDate.setText("");
-            imageViewCover.setVisibility(View.GONE);  // Nascondi l'immagine selezionata
-        }
+            imageViewCover.setImageURI(null);
+            imageViewCover.setVisibility(View.GONE);
 
-
-        private boolean isValidDay(String day) {
-            try {
-                int dayInt = Integer.parseInt(day);
-                return dayInt >= 1 && dayInt <= 31;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
-
-        private boolean isValidMonth(String month) {
-            try {
-                int monthInt = Integer.parseInt(month);
-                return monthInt >= 1 && monthInt <= 12;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
-
-        private boolean isValidYear(String year) {
-            try {
-                int yearInt = Integer.parseInt(year);
-                return yearInt >= 1985;
-            } catch (NumberFormatException e) {
-                return false;
-            }
+            modifyDiaryName.setText("");
+            modifyDayStartDate.setText("");
+            modifyMonthStartDate.setText("");
+            modifyYearStartDate.setText("");
+            modifyDayEndDate.setText("");
+            modifyMonthEndDate.setText("");
+            modifyYearEndDate.setText("");
+            modifyCoverImage.setImageURI(null);
         }
 
         private void updateEmptyMessage() {
@@ -344,50 +327,6 @@
             }
         }
 
-        private void deleteDiary() {
-            // Ottieni la lista dei diari selezionati dal DiaryAdapter
-            List<Diary> selectedDiaries = diaryAdapter.getSelectedDiaries();
-
-            // Verifica se ci sono diari selezionati
-            if (!selectedDiaries.isEmpty()) {
-                // Rimuovi i diari selezionati dalla lista
-                diaryList.removeAll(selectedDiaries);
-
-                // Notifica l'adapter per aggiornare la visualizzazione
-                diaryAdapter.notifyDataSetChanged();
-
-                // Nascondi i bottoni di eliminazione e modifica
-                deleteDiaryButton.setVisibility(View.GONE);
-                modifyDiaryButton.setVisibility(View.GONE);
-
-                // Mostra un messaggio di successo
-                Toast.makeText(getContext(), "Diari eliminati con successo!", Toast.LENGTH_SHORT).show();
-
-                // Aggiorna il messaggio per caso di lista vuota
-                updateEmptyMessage();
-            } else {
-                Toast.makeText(getContext(), "Nessun diario selezionato!", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-
-        private void modifyDiary() {
-            // Handle the modification of the diary (e.g., show an edit form)
-            if (selectedDiary != null) {
-                Toast.makeText(getContext(), "Modifica il diario", Toast.LENGTH_SHORT).show();
-            }
-        }
-        public void onDiaryDeletedOrModified() {
-            // Deseleziona tutti i diari
-            diaryAdapter.clearSelections();
-
-            // Notifica l'adapter per aggiornare la lista
-            diaryAdapter.notifyDataSetChanged();
-
-            // Nascondi il bottone "Modifica" e aggiorna la visibilità del bottone "Elimina"
-            modifyDiaryButton.setVisibility(View.VISIBLE); // Rendi visibile "Modifica"
-            deleteDiaryButton.setVisibility(View.GONE); // Nascondi "Elimina" se nessun diario è selezionato
-        }
 
 
         public void onDiaryItemLongClicked(Diary diary) {
