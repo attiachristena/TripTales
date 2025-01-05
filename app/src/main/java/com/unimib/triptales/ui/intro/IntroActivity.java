@@ -137,7 +137,7 @@ public class IntroActivity extends AppCompatActivity {
 
 
         //to show intro only once after installing the application
-        /*SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
         String FirstTime = preferences.getString("FirstTimeInstall","");
 
         if(FirstTime.equals("Yes")){
@@ -147,7 +147,7 @@ public class IntroActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("FirstTimeInstall","Yes");
             editor.apply();
-        }*/
+        }
 
     }
 

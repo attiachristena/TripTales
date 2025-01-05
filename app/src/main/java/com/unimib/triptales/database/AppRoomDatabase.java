@@ -22,7 +22,7 @@ import com.unimib.triptales.util.Constants;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Diary.class, Tappa.class, Goal.class, Task.class, Expense.class}, version = DATABASE_VERSION)
+@Database(entities = {User.class, Diary.class, Tappa.class, Goal.class, Task.class, Expense.class, CountryPolygon.class}, version = DATABASE_VERSION)
 @TypeConverters({UriConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract UserDao userDao();
