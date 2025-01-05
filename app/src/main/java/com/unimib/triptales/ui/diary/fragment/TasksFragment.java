@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.diario.fragment;
+package com.unimib.triptales.ui.diary.fragment;
 
 import android.os.Bundle;
 
@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,34 +22,26 @@ import com.unimib.triptales.adapters.TasksRecyclerAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.TaskDao;
 import com.unimib.triptales.model.Task;
-import com.unimib.triptales.ui.diario.DiaryActivity;
+import com.unimib.triptales.ui.diary.DiaryActivity;
 import com.unimib.triptales.util.Constants;
 import java.util.Iterator;
 import java.util.List;
 
 public class TasksFragment extends Fragment {
 
-    FloatingActionButton addTaskButton;
-    View overlay_add_task;
-    ConstraintLayout rootLayoutCheckList;
-    LayoutInflater inflater;
-    ImageButton backButtonTask;
-    Button saveTask;
-    EditText editTextTaskName;
-    String inputTaskName;
-    FloatingActionButton modifyTask;
-    FloatingActionButton deleteTask;
-    CheckBox cardListCheckBox;
-    View overlay_modify_task;
-    EditText editTextModifiedTaskName;
-    String inputModifiedTaskName;
-    ImageButton backButtonModifyTask;
-    Button saveModifiedTask;
-    TextView noTasksString;
-    TaskDao taskDao;
+    private FloatingActionButton addTaskButton;
+    private View overlay_add_task;
+    private EditText editTextTaskName;
+    private String inputTaskName;
+    private FloatingActionButton modifyTask;
+    private FloatingActionButton deleteTask;
+    private View overlay_modify_task;
+    private EditText editTextModifiedTaskName;
+    private String inputModifiedTaskName;
+    private TextView noTasksString;
+    private TaskDao taskDao;
     private List<Task> tasksList;
     private List<Task> selectedTasks;
-    RecyclerView recyclerViewTasks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +49,7 @@ public class TasksFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
         tasksList = taskDao.getAll();
@@ -73,15 +64,15 @@ public class TasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rootLayoutCheckList = view.findViewById(R.id.rootLayoutCheckList);
-        inflater = LayoutInflater.from(view.getContext());
+        ConstraintLayout rootLayoutCheckList = view.findViewById(R.id.rootLayoutCheckList);
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
         taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
 
         addTaskButton = view.findViewById(R.id.addTaskButton);
         modifyTask = view.findViewById(R.id.modifyTask);
         deleteTask = view.findViewById(R.id.deleteTask);
 
-        recyclerViewTasks = view.findViewById(R.id.recyclerViewTasks);
+        RecyclerView recyclerViewTasks = view.findViewById(R.id.recyclerViewTasks);
         TasksRecyclerAdapter recyclerAdapter = new TasksRecyclerAdapter(tasksList,  getContext(),
                 addTaskButton, modifyTask, deleteTask);
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -91,8 +82,8 @@ public class TasksFragment extends Fragment {
         rootLayoutCheckList.addView(overlay_add_task);
         overlay_add_task.setVisibility(View.GONE);
 
-        backButtonTask = view.findViewById(R.id.backButtonTask);
-        saveTask = view.findViewById(R.id.saveTask);
+        ImageButton backButtonTask = view.findViewById(R.id.backButtonTask);
+        Button saveTask = view.findViewById(R.id.saveTask);
         noTasksString = view.findViewById(R.id.noTasksString);
 
         if(tasksList.isEmpty()){
@@ -154,8 +145,8 @@ public class TasksFragment extends Fragment {
         rootLayoutCheckList.addView(overlay_modify_task);
         overlay_modify_task.setVisibility(View.GONE);
 
-        backButtonModifyTask = view.findViewById(R.id.backButtonModifyTask);
-        saveModifiedTask = view.findViewById(R.id.saveModifiedTask);
+        ImageButton backButtonModifyTask = view.findViewById(R.id.backButtonModifyTask);
+        Button saveModifiedTask = view.findViewById(R.id.saveModifiedTask);
         editTextModifiedTaskName = view.findViewById(R.id.inputModifiedTaskName);
 
         modifyTask.setOnClickListener(new View.OnClickListener() {

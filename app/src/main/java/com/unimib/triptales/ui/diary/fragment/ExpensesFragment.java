@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.diario.fragment;
+package com.unimib.triptales.ui.diary.fragment;
 
 import static com.unimib.triptales.util.Constants.CATEGORIES;
 import static com.unimib.triptales.util.Constants.CURRENCIES;
@@ -8,12 +8,14 @@ import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
 import static com.unimib.triptales.util.Constants.CURRENCY_USD;
 import static com.unimib.triptales.util.Constants.countAmount;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,8 +38,15 @@ import com.unimib.triptales.adapters.ExpensesRecyclerAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
-import com.unimib.triptales.ui.diario.DiaryActivity;
+import com.unimib.triptales.repository.expense.ExpenseRepository;
+import com.unimib.triptales.repository.expense.IExpenseRepository;
+import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
+import com.unimib.triptales.source.expense.BaseExpenseRemoteDataSource;
+import com.unimib.triptales.ui.diary.DiaryActivity;
+import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModelFactory;
 import com.unimib.triptales.util.Constants;
+import com.unimib.triptales.util.ServiceLocator;
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,72 +55,58 @@ import java.util.Objects;
 
 public class ExpensesFragment extends Fragment {
 
-    int budget;
-    double spent;
-    Button saveBudget;
-    TextView progressText;
-    String inputBudget;
-    ImageButton editBudget;
-    ImageButton backButtonBudget;
-    int progressPercentage;
-    LinearProgressIndicator progressIndicator;
-    TextView budgetText;
-    EditText numberEditText;
-    String formattedText;
-    FloatingActionButton addExpense;
-    ImageButton backButtonExpense;
-    Button saveExpense;
-    String inputAmountSpent;
-    String inputCategory;
-    String inputDescription;
-    Integer inputDay;
-    Integer inputMonth;
-    Integer inputYear;
-    EditText editTextAmountSpent;
-    AutoCompleteTextView editTextCategory;
-    EditText editTextDescription;
-    EditText editTextDay;
-    EditText editTextMonth;
-    EditText editTextYear;
-    ConstraintLayout rootLayout;
-    FloatingActionButton modifyExpense;
-    FloatingActionButton deleteExpense;
-    View overlay_add_expense;
-    LayoutInflater inflater;
-    View overlay_add_budget;
-    ImageButton backButtonModifyExpense;
-    Button saveModifiedExpense;
-    String inputModifiedAmountSpent;
-    String inputModifiedCategory;
-    String inputModifiedDescription;
-    Integer inputModifiedDay;
-    Integer inputModifiedMonth;
-    Integer inputModifiedYear;
-    EditText editTextModifiedAmountSpent;
-    AutoCompleteTextView editTextModifiedCategory;
-    EditText editTextModifiedDescription;
-    EditText editTextModifiedDay;
-    EditText editTextModifiedMonth;
-    EditText editTextModifiedYear;
-    View overlay_modify_expense;
-    Button filterButton;
-    ImageButton closeFilter;
-    TextView totExpense;
-    TextView filterText;
-    View overlay_filter;
-    AutoCompleteTextView editTextCategoryFilter;
-    String inputCategoryFilter;
-    ImageButton backButtonFilter;
-    Button saveCategory;
-    String inputCurrency;
-    String inputOldCurrency;
-    AutoCompleteTextView editTextCurrency;
-    TextInputLayout textFieldCurrency;
-    TextView noExpensesString;
-    RecyclerView recyclerViewExpenses;
+    private int budget;
+    private double spent;
+    private TextView progressText;
+    private String inputBudget;
+    private ImageButton editBudget;
+    private LinearProgressIndicator progressIndicator;
+    private TextView budgetText;
+    private EditText numberEditText;
+    private FloatingActionButton addExpense;
+    private String inputAmountSpent;
+    private String inputCategory;
+    private String inputDescription;
+    private Integer inputDay;
+    private Integer inputMonth;
+    private Integer inputYear;
+    private EditText editTextAmountSpent;
+    private AutoCompleteTextView editTextCategory;
+    private EditText editTextDescription;
+    private EditText editTextDay;
+    private EditText editTextMonth;
+    private EditText editTextYear;
+    private ConstraintLayout rootLayout;
+    private FloatingActionButton modifyExpense;
+    private FloatingActionButton deleteExpense;
+    private View overlay_add_expense;
+    private View overlay_add_budget;
+    private String inputModifiedAmountSpent;
+    private String inputModifiedCategory;
+    private String inputModifiedDescription;
+    private Integer inputModifiedDay;
+    private Integer inputModifiedMonth;
+    private Integer inputModifiedYear;
+    private EditText editTextModifiedAmountSpent;
+    private AutoCompleteTextView editTextModifiedCategory;
+    private EditText editTextModifiedDescription;
+    private EditText editTextModifiedDay;
+    private EditText editTextModifiedMonth;
+    private EditText editTextModifiedYear;
+    private View overlay_modify_expense;
+    private Button filterButton;
+    private ImageButton closeFilter;
+    private TextView totExpense;
+    private TextView filterText;
+    private View overlay_filter;
+    private AutoCompleteTextView editTextCategoryFilter;
+    private String inputCategoryFilter;
+    private String inputCurrency;
+    private AutoCompleteTextView editTextCurrency;
+    private TextView noExpensesString;
     private List<Expense> expenseList;
     private List<Expense> filteredExpensesList;
-    ExpenseDao expenseDao;
+    private ExpenseViewModel expenseViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,8 +116,13 @@ public class ExpensesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
-        expenseList = expenseDao.getAll();
+
+        IExpenseRepository expenseRepository = ServiceLocator.getINSTANCE().getExpenseRepository(getContext());
+        expenseViewModel = new ViewModelProvider(requireActivity(),
+                new ExpenseViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
+
+        expenseList = expenseViewModel.getAllExpenses();
+
         return inflater.inflate(R.layout.fragment_spese, container, false);
     }
 
@@ -130,10 +130,9 @@ public class ExpensesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        inflater = LayoutInflater.from(view.getContext());
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
         rootLayout = view.findViewById(R.id.rootLayoutSpese);
         noExpensesString = view.findViewById(R.id.noSpeseString);
-        expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
 
         if(expenseList.isEmpty()){
             noExpensesString.setVisibility(View.VISIBLE);
@@ -158,9 +157,9 @@ public class ExpensesFragment extends Fragment {
         rootLayout.addView(overlay_add_budget);
         overlay_add_budget.setVisibility(View.GONE);
 
-        saveBudget = view.findViewById(R.id.salvaBudget);
+        Button saveBudget = view.findViewById(R.id.salvaBudget);
         editBudget = view.findViewById(R.id.editBudget);
-        backButtonBudget = view.findViewById(R.id.backButtonBudget);
+        ImageButton backButtonBudget = view.findViewById(R.id.backButtonBudget);
 
         editBudget.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,8 +193,6 @@ public class ExpensesFragment extends Fragment {
         editTextCurrency = view.findViewById(R.id.inputCurrency);
         budgetText = view.findViewById(R.id.totBudget);
         progressIndicator = view.findViewById(R.id.budgetProgressIndicator);
-        inputOldCurrency = editTextCurrency.getText().toString().trim();
-        textFieldCurrency = view.findViewById(R.id.textFieldCurrency);
         totExpense = view.findViewById(R.id.totSpesa);
 
         ArrayAdapter<String> adapterBudget = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, CURRENCIES);
@@ -229,23 +226,22 @@ public class ExpensesFragment extends Fragment {
                     addExpense.setVisibility(View.VISIBLE);
                     filterButton.setEnabled(true);
                     if(totExpense.getVisibility() == View.VISIBLE) {
-                        filteredExpensesList = expenseDao.getFilteredExpenses(inputCategoryFilter);
+                        filteredExpensesList = expenseViewModel.getFilteredExpenses(inputCategoryFilter);
                         String tmp2 = countAmount(filteredExpensesList, inputCurrency);
                         totExpense.setText(tmp2);
                     }
                     updateCurrencyIcon();
-                    inputOldCurrency = inputCurrency;
                 }
             }
         });
 
         addExpense = view.findViewById(R.id.addButtonSpese);
-        overlay_add_expense = inflater.inflate(R.layout.overlay_add_spesa, rootLayout, false);
+        overlay_add_expense = inflater.inflate(R.layout.overlay_add_expense, rootLayout, false);
         rootLayout.addView(overlay_add_expense);
         overlay_add_expense.setVisibility(View.GONE);
         modifyExpense = view.findViewById(R.id.modificaSpesa);
         deleteExpense = view.findViewById(R.id.eliminaSpesa);
-        recyclerViewExpenses = view.findViewById(R.id.recyclerViewExpenses);
+        RecyclerView recyclerViewExpenses = view.findViewById(R.id.recyclerViewExpenses);
         ExpensesRecyclerAdapter recyclerAdapter = new ExpensesRecyclerAdapter(expenseList,  getContext(),
                 addExpense, modifyExpense, deleteExpense);
         recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -273,7 +269,7 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        backButtonExpense = view.findViewById(R.id.backSpesaButton);
+        ImageButton backButtonExpense = view.findViewById(R.id.backSpesaButton);
 
         backButtonExpense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,7 +283,7 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        saveExpense = view.findViewById(R.id.salvaSpesa);
+        Button saveExpense = view.findViewById(R.id.salvaSpesa);
         editTextAmountSpent = view.findViewById(R.id.inputQuantitaSpesa);
         editTextCategory = view.findViewById(R.id.inputCategory);
         editTextDescription = view.findViewById(R.id.inputDescription);
@@ -302,9 +298,6 @@ public class ExpensesFragment extends Fragment {
         saveExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ExpenseDao expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
-
                 Expense currentExpense;
                 inputCategory = editTextCategory.getText().toString().trim();;
                 inputDescription = editTextDescription.getText().toString().trim();
@@ -379,11 +372,10 @@ public class ExpensesFragment extends Fragment {
 
                     currentExpense = new Expense(tmp, inputCategory, inputDescription,
                             dataCompleta, false);
-                    long id = expenseDao.insert(currentExpense);
+                    long id = expenseViewModel.insertExpense(currentExpense);
                     currentExpense.setId((int) id);
                     expenseList.add(currentExpense);
                     recyclerAdapter.notifyItemInserted(expenseList.size()-1);
-
 
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_add_expense.setVisibility(View.GONE);
@@ -416,7 +408,7 @@ public class ExpensesFragment extends Fragment {
                         totExpense += Double.parseDouble(amountSubstring);
                         iterator.remove();
                         recyclerAdapter.notifyItemRemoved(index);
-                        AppRoomDatabase.getDatabase(getContext()).expenseDao().delete(e);
+                        expenseViewModel.deleteExpense(e);
                     } else {
                         index++;
                     }
@@ -435,7 +427,7 @@ public class ExpensesFragment extends Fragment {
         });
 
 
-        overlay_modify_expense = inflater.inflate(R.layout.overlay_modifica_spesa, rootLayout, false);
+        overlay_modify_expense = inflater.inflate(R.layout.overlay_modify_expense, rootLayout, false);
         rootLayout.addView(overlay_modify_expense);
         overlay_modify_expense.setVisibility(View.GONE);
 
@@ -445,9 +437,7 @@ public class ExpensesFragment extends Fragment {
                 overlay_modify_expense.setVisibility(View.VISIBLE);
                 ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
 
-                ExpenseDao expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
-
-                List<Expense> selectedExpenses = expenseDao.getSelectedExpenses();
+                List<Expense> selectedExpenses = expenseViewModel.getSelectedExpenses();
                 Expense currentExpense = selectedExpenses.get(0);
 
                 String amount = currentExpense.getAmount();
@@ -491,7 +481,7 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        backButtonModifyExpense = view.findViewById(R.id.backModificaSpesaButton);
+        ImageButton backButtonModifyExpense = view.findViewById(R.id.backModificaSpesaButton);
 
         backButtonModifyExpense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -507,7 +497,7 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        saveModifiedExpense = view.findViewById(R.id.salvaModificaSpesa);
+        Button saveModifiedExpense = view.findViewById(R.id.salvaModificaSpesa);
         editTextModifiedAmountSpent = view.findViewById(R.id.inputModificaQuantitaSpesa);
         editTextModifiedCategory = view.findViewById(R.id.inputModificaCategory);
         editTextModifiedDescription = view.findViewById(R.id.inputModificaDescription);
@@ -519,9 +509,7 @@ public class ExpensesFragment extends Fragment {
         saveModifiedExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ExpenseDao expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
-
-                List<Expense> selectedExpenses = expenseDao.getSelectedExpenses();
+                List<Expense> selectedExpenses = expenseViewModel.getSelectedExpenses();
                 Expense currentExpense = selectedExpenses.get(0);
 
                 String amountText = currentExpense.getAmount();
@@ -564,16 +552,16 @@ public class ExpensesFragment extends Fragment {
                 } else {
                     editTextModifiedCategory.setError(null);
                     currentExpense.setCategory(inputModifiedCategory);
-                    expenseDao.updateCategory(currentExpense.getId(), inputModifiedCategory);
+                    expenseViewModel.updateExpenseCategory(currentExpense.getId(), inputModifiedCategory);
                     editTextModifiedDescription.setError(null);
                     currentExpense.setDescription(inputModifiedDescription);
-                    expenseDao.updateDescription(currentExpense.getId(), inputModifiedDescription);
+                    expenseViewModel.updateExpenseDescription(currentExpense.getId(), inputModifiedDescription);
                     editTextModifiedDay.setError(null);
                     editTextModifiedMonth.setError(null);
                     editTextModifiedYear.setError(null);
                     String dataCompleta = getString(R.string.dataCompleta, inputModifiedDay, inputModifiedMonth, inputModifiedYear);
                     currentExpense.setDate(dataCompleta);
-                    expenseDao.updateDate(currentExpense.getId(), dataCompleta);
+                    expenseViewModel.updateExpenseDate(currentExpense.getId(), dataCompleta);
                     editTextModifiedAmountSpent.setError(null);
 
                     double spesa = Double.parseDouble(inputModifiedAmountSpent);
@@ -584,10 +572,10 @@ public class ExpensesFragment extends Fragment {
                     else
                         tmp = inputCurrency+spesa;
                     currentExpense.setAmount(tmp);
-                    expenseDao.updateAmount(currentExpense.getId(), tmp);
+                    expenseViewModel.updateExpenseAmount(currentExpense.getId(), tmp);
 
                     currentExpense.setExpense_isSelected(false);
-                    expenseDao.updateIsSelected(currentExpense.getId(), false);
+                    expenseViewModel.updateExpenseIsSelected(currentExpense.getId(), false);
 
                     int position = expenseList.indexOf(currentExpense);
                     if (position != -1) {
@@ -611,8 +599,8 @@ public class ExpensesFragment extends Fragment {
         overlay_filter.setVisibility(View.GONE);
 
         filterButton = view.findViewById(R.id.buttonFilter);
-        backButtonFilter = view.findViewById(R.id.backButtonFilter);
-        saveCategory = view.findViewById(R.id.saveCategory);
+        ImageButton backButtonFilter = view.findViewById(R.id.backButtonFilter);
+        Button saveCategory = view.findViewById(R.id.saveCategory);
         closeFilter = view.findViewById(R.id.closeFilter);
         filterText = view.findViewById(R.id.testoFiltro);
         editTextCategoryFilter = view.findViewById(R.id.inputCategoryFilter);
@@ -649,7 +637,7 @@ public class ExpensesFragment extends Fragment {
                     editTextCategoryFilter.setError("Scegli una categoria");
                 } else {
                     List<Expense> filteredExpenses =
-                            AppRoomDatabase.getDatabase(getContext()).expenseDao().getFilteredExpenses(inputCategoryFilter);
+                            expenseViewModel.getFilteredExpenses(inputCategoryFilter);
 
                     expenseList.clear();
                     expenseList.addAll(filteredExpenses);
@@ -673,7 +661,7 @@ public class ExpensesFragment extends Fragment {
         closeFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Expense> allExpenses = AppRoomDatabase.getDatabase(getContext()).expenseDao().getAll();
+                List<Expense> allExpenses = expenseViewModel.getAllExpenses();
                 expenseList.clear();
                 expenseList.addAll(allExpenses);
                 recyclerAdapter.notifyDataSetChanged();
@@ -685,16 +673,16 @@ public class ExpensesFragment extends Fragment {
         });
     }
 
-    public void updateProgressIndicator(double spesa, int budget, int add){
+    public void updateProgressIndicator(double expense, int budget, int add){
         if(add == 1)
-            spent = spent+spesa;
-        progressPercentage = (int) ((spent / (float) budget) * 100);
+            spent = spent + expense;
+        int progressPercentage = (int) ((spent / (float) budget) * 100);
         if(progressPercentage > 100)
             progressIndicator.setIndicatorColor(getResources().getColor(R.color.error));
         else
             progressIndicator.setIndicatorColor(getResources().getColor(R.color.secondary));
         progressIndicator.setProgress(progressPercentage);
-        formattedText = spent + " / " + budget + " spesi" + " (" + progressPercentage + "%)";
+        String formattedText = spent + " / " + budget + " spesi" + " (" + progressPercentage + "%)";
         progressText.setText(formattedText);
     }
 

@@ -1,5 +1,5 @@
 
-package com.unimib.triptales.ui.diario.fragment;
+package com.unimib.triptales.ui.diary.fragment;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -8,7 +8,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -36,16 +35,12 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -53,9 +48,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.TappaDao;
-import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Tappa;
-import com.unimib.triptales.ui.diario.TappaActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;

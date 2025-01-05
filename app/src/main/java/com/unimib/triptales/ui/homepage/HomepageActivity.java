@@ -8,7 +8,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import android.view.View;
 
 import com.unimib.triptales.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.unimib.triptales.ui.diario.DiaryActivity;
 import com.unimib.triptales.ui.homepage.fragment.CalendarFragment;
 import com.unimib.triptales.ui.homepage.fragment.HomeFragment;
 import com.unimib.triptales.ui.homepage.fragment.MapFragment;

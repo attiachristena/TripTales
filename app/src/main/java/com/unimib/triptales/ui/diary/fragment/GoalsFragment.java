@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.diario.fragment;
+package com.unimib.triptales.ui.diary.fragment;
 
 import android.os.Bundle;
 
@@ -22,41 +22,33 @@ import com.unimib.triptales.adapters.GoalsRecyclerAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.GoalDao;
 import com.unimib.triptales.model.Goal;
-import com.unimib.triptales.ui.diario.DiaryActivity;
+import com.unimib.triptales.ui.diary.DiaryActivity;
 import com.unimib.triptales.util.Constants;
 import java.util.Iterator;
 import java.util.List;
 
 public class GoalsFragment extends Fragment {
 
-    int progressPercentage;
-    CircularProgressIndicator progressIndicator;
-    View overlay_add_goal;
-    ConstraintLayout rootLayoutGoals;
-    LayoutInflater inflater;
-    FloatingActionButton addButtonGoals;
-    ImageButton backButtonGoal;
-    Button saveGoal;
-    EditText editTextGoalName;
-    EditText editTextGoalDescription;
-    String inputGoalName;
-    String inputGoalDescription;
-    FloatingActionButton modifyGoal;
-    FloatingActionButton deleteGoal;
-    ImageButton backButtonModifiedGoal;
-    Button saveModifiedGoal;
-    EditText editTextModifiedGoalName;
-    EditText editTextModifiedGoalDescription;
-    String inputModifiedGoalName;
-    String inputModifiedGoalDescription;
-    View overlay_modify_goal;
-    TextView progressText;
-    TextView noGoalsString;
-    RecyclerView recyclerViewGoals;
+    private CircularProgressIndicator progressIndicator;
+    private View overlay_add_goal;
+    private FloatingActionButton addButtonGoals;
+    private EditText editTextGoalName;
+    private EditText editTextGoalDescription;
+    private String inputGoalName;
+    private String inputGoalDescription;
+    private FloatingActionButton modifyGoal;
+    private FloatingActionButton deleteGoal;
+    private EditText editTextModifiedGoalName;
+    private EditText editTextModifiedGoalDescription;
+    private String inputModifiedGoalName;
+    private String inputModifiedGoalDescription;
+    private View overlay_modify_goal;
+    private TextView progressText;
+    private TextView noGoalsString;
     private List<Goal> goalsList;
     private List<Goal> checkedGoals;
     private List<Goal> selectedGoals;
-    GoalDao goalDao;
+    private GoalDao goalDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,9 +76,9 @@ public class GoalsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rootLayoutGoals = view.findViewById(R.id.rootLayoutGoals);
+        ConstraintLayout rootLayoutGoals = view.findViewById(R.id.rootLayoutGoals);
         progressText = view.findViewById(R.id.numObiettivi);
-        inflater = LayoutInflater.from(view.getContext());
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         addButtonGoals = view.findViewById(R.id.addButtonGoals);
         modifyGoal = view.findViewById(R.id.modifyGoal);
@@ -95,7 +87,7 @@ public class GoalsFragment extends Fragment {
 
         goalDao = AppRoomDatabase.getDatabase(getContext()).goalDao();
 
-        recyclerViewGoals = view.findViewById(R.id.recyclerViewGoals);
+        RecyclerView recyclerViewGoals = view.findViewById(R.id.recyclerViewGoals);
         GoalsRecyclerAdapter recyclerAdapter = new GoalsRecyclerAdapter(goalsList,  getContext(),
                 addButtonGoals, modifyGoal, deleteGoal, progressIndicator, progressText);
         recyclerViewGoals.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -104,8 +96,8 @@ public class GoalsFragment extends Fragment {
         overlay_add_goal = inflater.inflate(R.layout.overlay_add_goal, rootLayoutGoals, false);
         rootLayoutGoals.addView(overlay_add_goal);
         overlay_add_goal.setVisibility(View.GONE);
-        backButtonGoal = view.findViewById(R.id.backButtonGoal);
-        saveGoal = view.findViewById(R.id.saveGoal);
+        ImageButton backButtonGoal = view.findViewById(R.id.backButtonGoal);
+        Button saveGoal = view.findViewById(R.id.saveGoal);
         checkedGoals = goalDao.getCheckedGoals();
         updateProgressIndicator();
         noGoalsString = view.findViewById(R.id.noGoalsString);
@@ -179,8 +171,8 @@ public class GoalsFragment extends Fragment {
         rootLayoutGoals.addView(overlay_modify_goal);
         overlay_modify_goal.setVisibility(View.GONE);
 
-        backButtonModifiedGoal = view.findViewById(R.id.backButtonModifiedGoal);
-        saveModifiedGoal = view.findViewById(R.id.saveModifiedGoal);
+        ImageButton backButtonModifiedGoal = view.findViewById(R.id.backButtonModifiedGoal);
+        Button saveModifiedGoal = view.findViewById(R.id.saveModifiedGoal);
         editTextModifiedGoalName = view.findViewById(R.id.inputModifiedGoalName);
         editTextModifiedGoalDescription = view.findViewById(R.id.inputModifiedGoalDescription);
 
@@ -282,6 +274,7 @@ public class GoalsFragment extends Fragment {
     public void updateProgressIndicator(){
         double numAllCards = goalsList.size();
         double numCheckedCards = checkedGoals.size();
+        int progressPercentage;
         if(goalsList.isEmpty()){
             progressPercentage = 0;
         } else {

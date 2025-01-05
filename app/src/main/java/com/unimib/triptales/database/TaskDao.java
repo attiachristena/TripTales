@@ -12,9 +12,6 @@ public interface TaskDao {
     @Insert
     long insert(Task task);
 
-    @Insert
-    void insertAll(List<Task> tasks);
-
     @Query("UPDATE Task SET task_name = :newName WHERE id = :taskId")
     void updateName(int taskId, String newName);
 
@@ -29,10 +26,6 @@ public interface TaskDao {
 
     @Delete
     void deleteAll(List<Task> tasks);
-
-    //Recupero di un singolo elemento
-    @Query("SELECT * FROM Task WHERE id = :taskId")
-    Task getById(int taskId);
 
     //Recupero di una lista di elementi
     @Query("SELECT * FROM Task")
