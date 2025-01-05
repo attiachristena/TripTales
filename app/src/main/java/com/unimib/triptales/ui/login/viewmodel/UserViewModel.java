@@ -1,11 +1,14 @@
 package com.unimib.triptales.ui.login.viewmodel;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.model.Result;
 import com.unimib.triptales.model.User;
 import com.unimib.triptales.repository.user.IUserRepository;
+
+import java.util.List;
 
 public class UserViewModel extends ViewModel{
 
@@ -71,4 +74,7 @@ public class UserViewModel extends ViewModel{
     public MutableLiveData<Result> resetPassword(String email){
         return userRepository.resetPassword(email);
     }
+
+    public LiveData<Result> checkEmailExists(String email) {
+        return userRepository.checkEmailExists(email); }
 }

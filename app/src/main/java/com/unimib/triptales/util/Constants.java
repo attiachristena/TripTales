@@ -40,20 +40,22 @@ public class Constants {
     public static final String CURRENCY_USD = "$";
     public static final String CURRENCY_GBP = "£";
     public static final String CURRENCY_JPY = "¥";
-    public static final int MINIMUM_LENGTH_PASSWORD = 8;
 
-    public static final String UNEXPECTED_ERROR = "unexpected_error";
-    public static final String INVALID_USER_ERROR = "invalidUserError";
-    public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
-    public static final String USER_COLLISION_ERROR = "userCollisionError";
-    public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
+    public static final String WEAK_PASSWORD_ERROR = "La password è troppo debole. Per favore, scegli una password più robusta.";
+    public static final String INVALID_CREDENTIALS_ERROR = "Credenziali non valide. Per favore, controlla l'email e la password inserite.";
+    public static final String INVALID_USER_ERROR = "Utente non trovato. Per favore, registrati prima di accedere.";
+    public static final String USER_COLLISION_ERROR = "Esiste già un utente con queste credenziali. Per favore, usa un'email diversa.";
+    public static final String MULTI_FACTOR_ERROR = "L'utente è registrato con l'autenticazione a due fattori. Per favore, completala per accedere.";
+    public static final String UNEXPECTED_ERROR = "Errore inaspettato. Per favore, riprova.";
+    public static final String INVALID_ID_TOKEN = "ID token non valido.";
+
+
 
     public static final String FIREBASE_REALTIME_DATABASE = "https://triptales-4765a-default-rtdb.europe-west1.firebasedatabase.app/";
     public static final String FIREBASE_USERS_COLLECTION = "users";
 
     public static final List<String> CURRENCIES = Arrays.asList(CURRENCY_EUR,
             CURRENCY_USD, CURRENCY_GBP, CURRENCY_JPY);
-    public static final String INVALID_ID_TOKEN = "invalidIdToken";
 
     public static void hideKeyboard(View view, FragmentActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);

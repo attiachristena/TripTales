@@ -36,7 +36,7 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
 
         String diaryId = userDiariesRef.push().getKey();
         if(diaryId != null){
-            diary.id = Integer.parseInt(diaryId);
+            diary.setId(Integer.parseInt(diaryId));
             userDiariesRef.child(diaryId).setValue(diary)
                     .addOnSuccessListener(aVoid -> {
                         Log.d(TAG, "Diary saved successfully");

@@ -1,5 +1,6 @@
 package com.unimib.triptales.repository.user;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.model.Diary;
@@ -70,6 +71,10 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     public User getLoggedUser() {
         return userRemoteDataSource.getLoggedUser();
     }
+
+    @Override
+    public LiveData<Result> checkEmailExists(String email) {
+        return userRemoteDataSource.checkEmailExists(email); }
 
     @Override
     public MutableLiveData<Result> resetPassword(String email) {

@@ -153,5 +153,8 @@
     <string name="material_calendar_today_button">Oggi</string>
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
+    <string name="user_not_logged_in_error">Utente non registrato. Per favore, registrati prima di accedere.</string>
+    <string name="unexpected_error">Errore inaspettato. Per favore, riprova.</string>
+    <string name="email_not_found">Email non registrata. Per favore, controlla l\'email inserita.</string>
 
 </resources>

@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.unimib.triptales.R;
+import com.unimib.triptales.model.Result;
 import com.unimib.triptales.repository.user.IUserRepository;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
@@ -64,15 +65,24 @@ public class PasswordDimenticataFragment extends Fragment {
                 editTextEmail.setError(getString(R.string.error_email_invalid));
             } else {
                 resetPasswordButton.setEnabled(false);
-                userViewModel.resetPassword(email).observe(getViewLifecycleOwner(), result -> {
-                    resetPasswordButton.setEnabled(true);
-                    if(result.isSuccess()){
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                getString(R.string.password_reset_email_sent), Snackbar.LENGTH_SHORT).show();
-                        Navigation.findNavController(v).navigateUp();
+                userViewModel.checkEmailExists(email).observe(getViewLifecycleOwner(), result -> {
+                    if (result.isSuccess()) {
+                        userViewModel.resetPassword(email).observe(getViewLifecycleOwner(), resetResult -> {
+                            resetPasswordButton.setEnabled(true);
+                            if (resetResult.isSuccess()) {
+                                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                        getString(R.string.password_reset_email_sent), Snackbar.LENGTH_SHORT).show();
+                                Navigation.findNavController(v).navigateUp();
+                            } else {
+                                String errorMessage = getErrorMessageForResetPassword(((Result.Error) resetResult).getMessage());
+                                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                        errorMessage, Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
                     } else {
+                        resetPasswordButton.setEnabled(true);
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                getString(R.string.error_unexpected), Snackbar.LENGTH_SHORT).show();
+                                getString(R.string.email_not_found), Snackbar.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -81,5 +91,12 @@ public class PasswordDimenticataFragment extends Fragment {
 
     private boolean isEmailOk(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private String getErrorMessageForResetPassword(String errorType) {
+        if (errorType.contains("USER_NOT_FOUND")) {
+            return getString(R.string.email_not_found);
+        }
+        return getString(R.string.unexpected_error);
     }
 }

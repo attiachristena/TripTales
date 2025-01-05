@@ -44,20 +44,12 @@ public class User implements Parcelable {
         this.id = id;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
 
     public int getId() {
         return id;
-    }
-
-    public String getSurname() {
-        return surname;
     }
 
     public String getPassword() {

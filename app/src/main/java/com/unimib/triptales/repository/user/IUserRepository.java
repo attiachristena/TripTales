@@ -1,5 +1,6 @@
 package com.unimib.triptales.repository.user;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.model.User;
@@ -16,5 +17,6 @@ public interface IUserRepository {
     MutableLiveData<Result> getUser(String name, String surname, String email, String password, boolean isUserRegistered);
     User getLoggedUser();
 
+    LiveData<Result> checkEmailExists(String email);
     MutableLiveData<Result> resetPassword(String email);
 }
