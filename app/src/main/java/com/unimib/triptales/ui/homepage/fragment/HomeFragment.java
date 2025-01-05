@@ -57,6 +57,7 @@
         private Diary diary;
 
 
+
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -277,27 +278,30 @@
         }
 
         private void deleteDiary() {
-            if (selectedDiary != null) {
-                int position = diaryList.indexOf(selectedDiary);
-                if (position != -1) {
-                    diaryList.remove(position);  // Remove the selected diary from the list
-                    diaryAdapter.notifyItemRemoved(position);  // Notify the adapter to remove the item from the RecyclerView
+            // Ottieni la lista dei diari selezionati dal DiaryAdapter
+            List<Diary> selectedDiaries = diaryAdapter.getSelectedDiaries();
 
-                    // Hide the buttons
-                    deleteDiaryButton.setVisibility(View.GONE);
-                    modifyDiaryButton.setVisibility(View.GONE);
+            // Verifica se ci sono diari selezionati
+            if (!selectedDiaries.isEmpty()) {
+                // Rimuovi i diari selezionati dalla lista
+                diaryList.removeAll(selectedDiaries);
 
-                    // Show a success message
-                    Toast.makeText(getContext(), "Diario eliminato con successo!", Toast.LENGTH_SHORT).show();
+                // Notifica l'adapter per aggiornare la visualizzazione
+                diaryAdapter.notifyDataSetChanged();
 
-                    // Update empty message visibility
-                    updateEmptyMessage();
-                }
+                // Nascondi i bottoni di eliminazione e modifica
+                deleteDiaryButton.setVisibility(View.GONE);
+                modifyDiaryButton.setVisibility(View.GONE);
+
+                // Mostra un messaggio di successo
+                Toast.makeText(getContext(), "Diari eliminati con successo!", Toast.LENGTH_SHORT).show();
+
+                // Aggiorna il messaggio per caso di lista vuota
+                updateEmptyMessage();
+            } else {
+                Toast.makeText(getContext(), "Nessun diario selezionato!", Toast.LENGTH_SHORT).show();
             }
         }
-
-
-
 
 
         private void modifyDiary() {
@@ -310,8 +314,19 @@
         @Override
         public void onDiaryItemLongClicked(Diary diary) {
             selectedDiary = diary;
-            // Show buttons when an item is long-clicked
+            // Mostra i bottoni quando un elemento viene selezionato con un click prolungato
             deleteDiaryButton.setVisibility(View.VISIBLE);
-            modifyDiaryButton.setVisibility(View.VISIBLE);
+
+            // Ottieni la lista dei diari selezionati dal DiaryAdapter
+            List<Diary> selectedDiaries = diaryAdapter.getSelectedDiaries();
+
+            if (selectedDiaries.size() > 1) {
+                // Nascondi il bottone di modifica se ci sono più di un diario selezionato
+                modifyDiaryButton.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Hai selezionato " + selectedDiaries.size() + " diari", Toast.LENGTH_SHORT).show();
+            } else {
+                // Mostra il bottone di modifica se c'è solo un diario selezionato
+                modifyDiaryButton.setVisibility(View.VISIBLE);
+            }
         }
     }
