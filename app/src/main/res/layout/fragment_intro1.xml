@@ -11,9 +11,10 @@
 
 
     <LinearLayout
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="200dp"
         android:orientation="vertical">
 
         <TextView
@@ -43,12 +44,19 @@
             />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/slideImg"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/img_intro1"
-        />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/slideImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/img_intro1"
+            tools:layout_editor_absoluteX="0dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </LinearLayout>

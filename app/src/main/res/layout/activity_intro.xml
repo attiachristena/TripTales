@@ -21,7 +21,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="750dp"
         android:backgroundTint="@color/light_brown3"
@@ -41,7 +41,7 @@
         android:layout_height="60dp"
         android:layout_marginStart="330dp"
         android:layout_marginEnd="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:layout_marginBottom="750dp"
         android:backgroundTint="@color/light_brown3"
         android:drawableLeft="@drawable/baseline_arrow_forward_ios_24"
@@ -53,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    
+
     <LinearLayout
         android:id="@+id/dotIndicator"
         android:layout_width="wrap_content"

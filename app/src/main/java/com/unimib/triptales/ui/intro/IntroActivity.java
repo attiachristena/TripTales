@@ -38,11 +38,11 @@ public class IntroActivity extends AppCompatActivity {
                 backButton.setVisibility(View.INVISIBLE);
             }
 
-            /*if(position == 3){
+            if(position == 3){
                 nextButton.setText("Finish");
             }else{
                 nextButton.setText("Next");
-            }*/
+            }
 
 
 
