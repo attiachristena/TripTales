@@ -7,11 +7,14 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
+
+import com.unimib.triptales.model.CountryPolygon;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
-import com.unimib.triptales.model.Stage;
+import com.unimib.triptales.model.Tappa;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.model.User;
 import com.unimib.triptales.util.Constants;
@@ -19,14 +22,16 @@ import com.unimib.triptales.util.Constants;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Diary.class, Stage.class, Goal.class, Task.class, Expense.class}, version = DATABASE_VERSION)
+@Database(entities = {User.class, Diary.class, Tappa.class, Goal.class, Task.class, Expense.class}, version = DATABASE_VERSION)
+@TypeConverters({UriConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract DiaryDao diaryDao();
-    public abstract StageDao stageDao();
+    public abstract TappaDao tappaDao();
     public abstract GoalDao goalDao();
     public abstract TaskDao taskDao();
     public abstract ExpenseDao expenseDao();
+    public abstract CountryPolygonDao countryPolygonDao();
 
     public static volatile AppRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors();

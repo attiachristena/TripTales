@@ -4,10 +4,7 @@ import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import com.unimib.triptales.model.Diary;
-import com.unimib.triptales.model.Expense;
-import com.unimib.triptales.model.Goal;
-import com.unimib.triptales.model.Stage;
-import com.unimib.triptales.model.Task;
+import com.unimib.triptales.model.Tappa;
 
 import java.util.List;
 
@@ -15,8 +12,8 @@ public class CompleteDiary {
     @Embedded
     public Diary diary;
 
-    @Relation(parentColumn = "id", entityColumn = "diaryId")
-    public List<Stage> stages;  // Relazione con le tappe
+   /* @Relation(parentColumn = "id", entityColumn = "diaryId")
+    public List<Tappa> stages;  // Relazione con le tappe
 
     /*@Relation(parentColumn = "id", entityColumn = "diaryId")
     public List<Goal> goals;    // Relazione con gli obiettivi*/

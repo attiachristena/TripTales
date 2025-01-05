@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/mapOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    android:background="#80000000"
+    android:gravity="center"
+    android:padding="5dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <!-- Mappa ingrandita -->
+    <com.google.android.gms.maps.MapView
+    android:id="@+id/expandedMap"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black" />
+
+        <!-- Bottone per chiudere l'overlay -->
+
+
+
+        <ImageButton
+            android:id="@+id/closeMapButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="16dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:background="?android:attr/selectableItemBackground" />
+
+    </RelativeLayout>
+</FrameLayout>
