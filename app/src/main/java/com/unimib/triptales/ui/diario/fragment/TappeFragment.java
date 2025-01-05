@@ -2,6 +2,7 @@ package com.unimib.triptales.ui.diario.fragment;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +35,9 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,6 +50,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.unimib.triptales.R;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.TappaDao;
+import com.unimib.triptales.model.Expense;
+import com.unimib.triptales.model.Tappa;
 import com.unimib.triptales.ui.diario.TappaActivity;
 
 import java.io.File;
@@ -96,24 +105,79 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
     TextView testoAnteprimaImmagineModificata;
     Uri selectedImageUriModifica;
     EditText editModificaData;
-    List<LatLng> tappePosizioni;
     GoogleMap googleMap;
     SearchView searchView;
-    Set<String> tappeEsistenti = new HashSet<>();
     boolean isMapExpanded = false;
     RelativeLayout mappaContainer;
     View overlay_mappa;
     ImageButton closeMapButton;
-    View viewMappa;
+     TappaDao tappaDao;
+     List<Tappa> tappeSalvate;
+     Set<Integer> selectedTappeIds = new HashSet<>();
+     AppRoomDatabase database;
+     List<String> tappeEsistenti = new ArrayList<>(); // Per controllare le tappe esistenti
+     FrameLayout mapOverlay;
+     MapView expandedMapView;
+     GoogleMap expandedMap;
 
+
+
+
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_tappe, container, false);
+
+        // Inizializzazione dei componenti
         mappaTappe = rootView.findViewById(R.id.mappaTappe);
         tappeCardContainer = rootView.findViewById(R.id.tappeCardContainer);
+        mapOverlay = rootView.findViewById(R.id.mapOverlay);
+        expandedMapView = mapOverlay.findViewById(R.id.expandedMap);
+        closeMapButton = mapOverlay.findViewById(R.id.closeMapButton);
 
+        // Inizializzazione del database e DAO
+        database = AppRoomDatabase.getDatabase(getContext());
+        tappaDao = database.tappaDao();
+        tappeSalvate = tappaDao.getAllTappe(); // Recupera le tappe salvate
+
+        SearchView searchView = rootView.findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchLocation(query);  // Cerca il luogo
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        // Inizializzazione della mappa principale
+        mappaTappe.onCreate(savedInstanceState);
+        mappaTappe.getMapAsync(googleMap -> {
+            this.googleMap = googleMap;
+            LatLng posizioneIniziale = new LatLng(46.414382, 10.013988);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneIniziale, 10));
+
+            // Imposta il listener per le mappe
+            googleMap.setOnMapClickListener(latLng -> {
+                // Verifica che il listener venga chiamato
+                Log.d("TappeFragment", "Mappa cliccata: " + latLng);
+                mostraOverlayMappe(latLng); // Chiama il metodo per mostrare l'overlay
+            }); // Usa il metodo giusto
+
+            // Carica le tappe salvate dalla base dati
+            caricaTappeSalvate();
+        });
+
+        // Listener per il bottone di chiusura della mappa ingrandita
+        closeMapButton.setOnClickListener(v -> {
+            mapOverlay.setVisibility(View.GONE);  // Nascondi l'overlay
+        });
 
         return rootView;
     }
@@ -121,6 +185,8 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -159,15 +225,17 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         // Inizializza i riferimenti
         layoutTappe = view.findViewById(R.id.layoutTappe);
         inflater = LayoutInflater.from(view.getContext());
         listTappeCards = new ArrayList<>();
-        tappePosizioni = new ArrayList<>();
 
         overlay_add_tappa = inflater.inflate(R.layout.overlay_add_tappa, layoutTappe, false);
         layoutTappe.addView(overlay_add_tappa);
         overlay_add_tappa.setVisibility(View.GONE);
+
+
 
         // Inizializza i componenti di overlay_add_tappa
         addTappaBtn = view.findViewById(R.id.addTappaButton);
@@ -177,12 +245,7 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
         immagineTappaPreview = overlay_add_tappa.findViewById(R.id.anteprimaImmagine); // Aggiunto il riferimento alla preview dell'immagine
         tappeCardContainer = view.findViewById(R.id.tappeCardContainer);
         anteprimaImmagine = overlay_add_tappa.findViewById(R.id.testoAnteprimaImmagine);
-        listTappeCards = new ArrayList<>();
         indice = 0;
-        mappaTappe = view.findViewById(R.id.mappaTappe);
-        mappaTappe.onCreate(savedInstanceState);
-        mappaTappe.getMapAsync(this);
-
 
         // Listener per il pulsante "Aggiungi Tappa"
         addTappaBtn.setOnClickListener(v -> {
@@ -226,154 +289,6 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
             datePickerDialog.show();
         });
 
-
-        // Listener per il pulsante "Salva Tappa"
-        salvaTappa.setOnClickListener(v -> {
-            inputNome = editNome.getText().toString();
-            inputData = editData.getText().toString();
-
-            /*    if (inputNome.isEmpty() || inputData.isEmpty()) {
-                    if (inputNome.isEmpty()) editNome.setError("Inserisci il nome della tappa");
-                    if (inputData.isEmpty()) editData.setError("Inserisci la data della tappa");
-
-                } else if (!inputData.matches("\\d{2}/\\d{2}/\\d{4}") || inputNome.matches(".*\\d.*")) {
-
-                    if (!inputData.matches("\\d{2}/\\d{2}/\\d{4}"))
-                        editData.setError("Inserisci una data nel formato GG/MM/AAAA");
-
-                    if (inputNome.matches(".*\\d.*"))
-                        editNome.setError("Inserisci un nome valido per la tappa. La tappa non può contenere numeri");
-
-                } else { */
-            cardView = inflater.inflate(R.layout.item_card_tappa, tappeCardContainer, false);
-            nomeTappaCard = cardView.findViewById(R.id.nomeTappaCard);
-            immagineTappaCard = cardView.findViewById(R.id.anteprimaImmagine);
-
-            nomeTappaCard.setText(inputNome);
-
-            if (selectedImageUri != null) {
-                immagineTappaCard.setImageURI(selectedImageUri);
-            } else {
-                immagineTappaCard.setImageResource(getRandomImage()); // Immagine di default
-            }
-
-            tappeCardContainer.addView(cardView);
-            overlay_add_tappa.setVisibility(View.GONE);
-            addTappaBtn.setVisibility(View.VISIBLE);
-            editNome.setText("");
-            editData.setText("");
-            editNome.setError(null);
-            editData.setError(null);
-            selectedImageUri = null; // Resetta l'immagine selezionata
-
-
-            // Crea la card della tappa
-            MaterialCardView tappaCorrente = (MaterialCardView) tappeCardContainer.getChildAt(indice);
-            listTappeCards.add(tappaCorrente);
-            indice++;
-
-
-            tappaCorrente.setOnLongClickListener(v1 -> {
-                if (!tappaCorrente.isSelected()) {
-                    // Seleziona la card
-                    tappaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary_light));
-                    tappaCorrente.setStrokeColor(getResources().getColor(R.color.background_dark));
-                    tappaCorrente.setSelected(true);
-                }
-
-                int selectedCount = 0;
-                for (MaterialCardView card : listTappeCards) {
-                    if (card.isSelected()) {
-                        selectedCount++;
-                    }
-                }
-
-                if (selectedCount == 0) {
-                    modificaTappaButton.setVisibility(View.GONE);
-                    eliminaTappaButton.setVisibility(View.GONE);
-                    addTappaBtn.setEnabled(true);
-                } else if (selectedCount == 1) {
-                    modificaTappaButton.setVisibility(View.VISIBLE);
-                    eliminaTappaButton.setVisibility(View.VISIBLE);
-                    addTappaBtn.setEnabled(false);
-                } else {
-                    modificaTappaButton.setVisibility(View.GONE);
-                    eliminaTappaButton.setVisibility(View.VISIBLE);
-                    addTappaBtn.setEnabled(false);
-                }
-
-                return true;
-            });
-
-
-            tappaCorrente.setOnClickListener(v1 -> {
-                int selectedCount = 0;
-                for (MaterialCardView card : listTappeCards) {
-                    if (card.isSelected()) {
-                        selectedCount++;
-                    }
-                }
-
-                // Apri la nuova activity solo se nessuna card è selezionata
-                if (selectedCount == 0) {
-                    TextView nomeTappaCard = tappaCorrente.findViewById(R.id.nomeTappaCard);
-                    String nomeTappa = nomeTappaCard.getText().toString();
-                    String dataTappa = inputData;
-
-                    ImageView immagineTappaCard = tappaCorrente.findViewById(R.id.anteprimaImmagine);
-                    Uri imageUri = null;
-
-                    Drawable drawable = immagineTappaCard.getDrawable();
-                    if (drawable != null && drawable instanceof BitmapDrawable) {
-                        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                        imageUri = saveImageToCache(bitmap); // Salva l'immagine e ottieni il suo URI
-                    }
-
-                    Intent intent = new Intent(getContext(), TappaActivity.class);
-                    intent.putExtra("nomeTappa", nomeTappa);
-                    intent.putExtra("dataTappa", dataTappa);
-                    if (imageUri != null) {
-                        intent.putExtra("immagineTappaUri", imageUri.toString());
-                    }
-
-                    startActivity(intent);
-
-                } else {
-
-                    if (tappaCorrente.isSelected()) {
-                        tappaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary));
-                        tappaCorrente.setStrokeColor(getResources().getColor(R.color.primary));
-                        tappaCorrente.setSelected(false);
-                    } else {
-                        tappaCorrente.setCardBackgroundColor(getResources().getColor(R.color.primary_light));
-                        tappaCorrente.setStrokeColor(getResources().getColor(R.color.background_dark));
-                        tappaCorrente.setSelected(true);
-                    }
-
-                    // Riconto le card selezionate per aggiornare lo stato dei bottoni
-                    selectedCount = 0;
-                    for (MaterialCardView card : listTappeCards) {
-                        if (card.isSelected()) {
-                            selectedCount++;
-                        }
-                    }
-
-                    if (selectedCount == 0) {
-                        modificaTappaButton.setVisibility(View.GONE);
-                        eliminaTappaButton.setVisibility(View.GONE);
-                        addTappaBtn.setEnabled(true);
-                    } else if (selectedCount == 1) {
-                        modificaTappaButton.setVisibility(View.VISIBLE);
-                        eliminaTappaButton.setVisibility(View.VISIBLE);
-                        addTappaBtn.setEnabled(false);
-                    } else {
-                        modificaTappaButton.setVisibility(View.GONE);
-                        eliminaTappaButton.setVisibility(View.VISIBLE);
-                        addTappaBtn.setEnabled(false);
-                    }
-                }
-            });
-        });
 
 
         overlay_modifica_tappa = inflater.inflate(R.layout.overlay_modifica_tappa, layoutTappe, false);
@@ -489,84 +404,42 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
             addTappaBtn.setEnabled(true);
         });
 
-        // Gonfia l'overlay e la mappa
-        overlay_mappa = inflater.inflate(R.layout.overlay_add_tappa_mappa, layoutTappe, false);
-        viewMappa = inflater.inflate(R.layout.overlay_mappa, layoutTappe, false);
-        searchView = viewMappa.findViewById(R.id.searchView);
-        closeMapButton = viewMappa.findViewById(R.id.closeMapButton);
-        viewMappa.setVisibility(View.GONE);
+        overlay_mappa = getLayoutInflater().inflate(R.layout.overlay_add_tappa_mappa, layoutTappe, false);
+        layoutTappe.addView(overlay_mappa);
+        overlay_mappa.setVisibility(View.GONE);
 
+        backTappa = view.findViewById(R.id.backTappaButton);
+        backTappa.setOnClickListener(v -> layoutTappe.removeView(overlay_add_tappa));
 
-        // Inizializza la mappa principale
-        mappaTappe.onCreate(null);
-        mappaTappe.getMapAsync(googleMap -> {
-            this.googleMap = googleMap;
-            LatLng posizioneIniziale = new LatLng(46.414382, 10.013988);
-            this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneIniziale, 10));
-            this.googleMap.setOnMapClickListener(this::mostraOverlayMappe);
-        });
+        mappaTappe = view.findViewById(R.id.mappaTappe);
+
     }
 
+    private void caricaTappeSalvate() {
+        // Carica le tappe esistenti dal database in background
+        new Thread(() -> {
+            List<Tappa> tappe = tappaDao.getAllTappe();
+            getActivity().runOnUiThread(() -> {
+                if (googleMap != null) {
+                    for (Tappa tappa : tappe) {
+                        LatLng latLng = new LatLng(tappa.getLatitude(), tappa.getLongitude());
+                        aggiungiTappaAllaMappa(tappa.getNome(), latLng); // Aggiungi il marker
+                        aggiungiTappaAllaLista(tappa.getNome());
+                    }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
-
-        if (this.googleMap != null) {
-            LatLng posizioneIniziale = new LatLng(46.414382, 10.013988);
-            this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneIniziale, 10));
-
-            // Abilita i gesti
-            this.googleMap.getUiSettings().setAllGesturesEnabled(true);
-
-            // Aggiungi listener per click sulla mappa
-            this.googleMap.setOnMapClickListener(this::mostraOverlayMappe);
-        } else {
-            Log.e("MapError", "GoogleMap non inizializzata correttamente.");
-        }
-    }
-
-    private void mostraOverlayMappe(LatLng latLng) {
-        // Rimuovi overlay esistente se presente
-        if (viewMappa != null && layoutTappe.indexOfChild(viewMappa) != -1) {
-            layoutTappe.removeView(viewMappa);
-        }
-
-        // Gonfia il layout dell'overlay
-        viewMappa = getLayoutInflater().inflate(R.layout.overlay_mappa, layoutTappe, false);
-        layoutTappe.addView(viewMappa);
-
-        // Configura gli elementi dell'overlay
-        SearchView searchView = viewMappa.findViewById(R.id.searchView);
-        ImageButton closeMapButton = viewMappa.findViewById(R.id.closeMapButton);
-        MapView expandedMap = viewMappa.findViewById(R.id.expandedMap);
-
-        closeMapButton.setOnClickListener(v -> layoutTappe.removeView(viewMappa));
-
-        // Configura il MapView
-        expandedMap.onCreate(null);
-        expandedMap.onResume();
-        expandedMap.getMapAsync(expandedGoogleMap -> {
-            expandedGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            expandedGoogleMap.addMarker(new MarkerOptions().position(latLng).title("Mappa ingrandita"));
-
-            // Configura la ricerca
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    searchLocation(query, expandedGoogleMap);
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    return false;
+                    // Sposta la mappa sull'ultima tappa aggiunta (se ce ne sono)
+                    if (!tappe.isEmpty()) {
+                        Tappa ultimaTappa = tappe.get(tappe.size() - 1);
+                        LatLng ultimaPosizione = new LatLng(ultimaTappa.getLatitude(), ultimaTappa.getLongitude());
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ultimaPosizione, 15));
+                    }
                 }
             });
-        });
+        }).start();
     }
 
-    private void searchLocation(String location, GoogleMap map) {
+
+    private void searchLocation(String location) {
         Geocoder geocoder = new Geocoder(getContext());
         try {
             List<Address> addresses = geocoder.getFromLocationName(location, 1);
@@ -574,24 +447,19 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
                 Address address = addresses.get(0);
                 LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
 
-                // Sposta la camera sulla posizione trovata
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                // Sposta la mappa sulla posizione trovata
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
-                // Aggiungi il marker
-                Marker marker = map.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title(address.getFeatureName()));
+                // Aggiungi un marker alla posizione trovata
+                googleMap.clear(); // Rimuovi tutti i marker precedenti
+                googleMap.addMarker(new MarkerOptions().position(latLng).title(address.getFeatureName())
+                        .snippet("Clicca per aggiungere la tappa"));
 
-                // Configura il listener per il click sul marker
-                map.setOnMarkerClickListener(clickedMarker -> {
-                    if (clickedMarker.equals(marker)) {
-                        // Mostra l'overlay per aggiungere una tappa
-                        showOverlayAddTappa(latLng);
-                        return true; // Consuma l'evento
-                    }
-                    return false;
+                // Aggiungi un listener per il click sul marker per aggiungere la tappa
+                googleMap.setOnMarkerClickListener(marker -> {
+                    mostraOverlaySalvataggioTappa(latLng); // Mostra l'overlay per aggiungere la tappa
+                    return true;
                 });
-
             } else {
                 Toast.makeText(getContext(), "Luogo non trovato", Toast.LENGTH_SHORT).show();
             }
@@ -602,18 +470,23 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    private void showOverlayAddTappa(LatLng latLng) {
+    private void mostraOverlaySalvataggioTappa(LatLng latLng) {
+        // Rimuovi overlay esistente se presente
+        if (overlay_mappa != null && layoutTappe.indexOfChild(overlay_mappa) != -1) {
+            layoutTappe.removeView(overlay_mappa);
+        }
 
         // Gonfia il layout dell'overlay
         overlay_mappa = getLayoutInflater().inflate(R.layout.overlay_add_tappa_mappa, layoutTappe, false);
         layoutTappe.addView(overlay_mappa);
 
-        // Configura elementi dell'overlay
+        // Configura gli elementi dell'overlay
         EditText nomeTappaMappaEditText = overlay_mappa.findViewById(R.id.editNomeTappaMappa);
         EditText dataTappaEditText = overlay_mappa.findViewById(R.id.editDataTappaMappa);
         Button salvaTappaButton = overlay_mappa.findViewById(R.id.salvaTappaMappaButton);
         ImageButton backTappaButton = overlay_mappa.findViewById(R.id.backTappaMappaButton);
 
+        // Logica per il salvataggio della tappa
         salvaTappaButton.setOnClickListener(v -> {
             String nomeTappa = nomeTappaMappaEditText.getText().toString();
             String dataTappa = dataTappaEditText.getText().toString();
@@ -626,8 +499,56 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        // Indietro
         backTappaButton.setOnClickListener(v -> layoutTappe.removeView(overlay_mappa));
     }
+
+
+    private void mostraOverlayMappe(LatLng latLng) {
+        // Verifica che l'overlay venga mostrato
+        Log.d("TappeFragment", "Mostra overlay mappa");
+
+        // Mostra l'overlay
+        mapOverlay.setVisibility(View.VISIBLE);  // Assicurati che la visibilità sia corretta
+
+        // Inizializza la MapView all'interno dell'overlay
+        expandedMapView.onCreate(null);
+        expandedMapView.getMapAsync(googleMap -> {
+            expandedMap = googleMap;
+            LatLng posizioneIniziale = latLng != null ? latLng : new LatLng(46.414382, 10.013988);
+            expandedMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneIniziale, 10));
+
+            // Aggiungi i marker delle tappe salvate sulla mappa ingrandita
+            caricaTappeSalvateOnExpandedMap();
+        });
+    }
+
+
+    private void caricaTappeSalvateOnExpandedMap() {
+        // Carica le tappe esistenti sulla mappa ingrandita
+        new Thread(() -> {
+            List<Tappa> tappe = tappaDao.getAllTappe();
+            getActivity().runOnUiThread(() -> {
+                if (expandedMap != null) {
+                    for (Tappa tappa : tappe) {
+                        LatLng latLng = new LatLng(tappa.getLatitude(), tappa.getLongitude());
+                        expandedMap.addMarker(new MarkerOptions().position(latLng).title(tappa.getNome()));
+                    }
+
+                    // Sposta la mappa sull'ultima tappa aggiunta (se ce ne sono)
+                    if (!tappe.isEmpty()) {
+                        Tappa ultimaTappa = tappe.get(tappe.size() - 1);
+                        LatLng ultimaPosizione = new LatLng(ultimaTappa.getLatitude(), ultimaTappa.getLongitude());
+                        expandedMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ultimaPosizione, 15));
+                    }
+                }
+            });
+        }).start();
+    }
+
+
+
+
 
     private void addTappa(String nome, String data, LatLng latLng) {
         if (tappeEsistenti.contains(nome)) {
@@ -635,18 +556,48 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
-        tappeEsistenti.add(nome);
+        // Crea una nuova tappa e salvala nel database
+        Tappa nuovaTappa = new Tappa(nome, data, null, latLng.latitude, latLng.longitude);
+        new Thread(() -> {
+            tappaDao.insertTappa(nuovaTappa);
 
-        MaterialCardView cardView = (MaterialCardView) getLayoutInflater().inflate(R.layout.item_card_tappa, tappeCardContainer, false);
-        TextView nomeTappaCard = cardView.findViewById(R.id.nomeTappaCard);
-        nomeTappaCard.setText(nome);
-        tappeCardContainer.addView(cardView);
+            // Dopo aver salvato, aggiorna la UI
+            getActivity().runOnUiThread(() -> {
+                tappeEsistenti.add(nome);
+                aggiungiTappaAllaMappa(nome, latLng);
+                aggiungiTappaAllaLista(nome);
+            });
+        }).start();
+    }
 
+    private void aggiungiTappaAllaMappa(String nome, LatLng latLng) {
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(nome));
     }
 
+    private void aggiungiTappaAllaLista(String nome) {
+        MaterialCardView cardView = (MaterialCardView) getLayoutInflater().inflate(R.layout.item_card_tappa, tappeCardContainer, false);
+        TextView nomeTappaCard = cardView.findViewById(R.id.nomeTappaCard);
+        nomeTappaCard.setText(nome);
+        tappeCardContainer.addView(cardView);
+    }
+
+    // Metodi per gestire la mappa
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+
+        if (googleMap != null) {
+            LatLng posizioneIniziale = new LatLng(46.414382, 10.013988);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneIniziale, 10));
+
+            // Aggiungi listener per click sulla mappa
+            googleMap.setOnMapClickListener(this::mostraOverlaySalvataggioTappa);
+        } else {
+            Log.e("MapError", "GoogleMap non inizializzata correttamente.");
+        }
+    }
 
     private MaterialCardView findSelectedCard(ArrayList<MaterialCardView> listTappeCards) {
         MaterialCardView selectedCard = listTappeCards.get(0);
@@ -699,4 +650,5 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
 
         return FileProvider.getUriForFile(getContext(), "com.unimib.triptales.fileprovider", file);
     }
+
 }

@@ -89,12 +89,31 @@
             </HorizontalScrollView>
 
 
+            <android.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="52dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginBottom="153dp"
+                android:backgroundTint="@color/light_gray"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:queryHint="Cerca un luogo"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mappaTappe"
                 android:layout_width="match_parent"
-                android:layout_height="205dp"
+                android:layout_height="143dp"
                 android:layout_below="@+id/horizontalScrollView"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="83dp"
                 android:background="@drawable/edit_text_background"
                 android:backgroundTint="@color/light_gray"
                 android:clickable="true"
@@ -154,5 +173,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="@color/light_gray"
         app:tint="@color/white" />
+
+
+    <FrameLayout android:id="@+id/mapOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#80000000"
+        android:gravity="center"
+        android:padding="5dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Mappa ingrandita -->
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/expandedMap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black" />
+
+            <!-- Bottone per chiudere l'overlay -->
+
+
+
+            <ImageButton
+                android:id="@+id/closeMapButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="16dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:background="?android:attr/selectableItemBackground" />
+
+        </RelativeLayout>
+    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
