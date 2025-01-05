@@ -49,13 +49,9 @@
             MaterialCardView cardView = holder.itemView.findViewById(R.id.cardViewDiary);
             if (selectedDiaries.contains(diary)) {
                 cardView.setStrokeColor(context.getResources().getColor(R.color.brown)); // Bordo selezionato
-                cardView.setCardBackgroundColor(context.getResources().getColor(R.color.card_selected_background)); // Cambia il colore di sfondo per l'effetto di oscuramento
-                cardView.setAlpha(0.5f); // Oscura la card (puoi regolare il valore di alpha tra 0 e 1)
+                cardView.setCardBackgroundColor(context.getResources().getColor(R.color.orange)); // Background selezionato
             } else {
-                // Imposta il colore del bordo iniziale trasparente o un colore a tua scelta
                 cardView.setStrokeColor(context.getResources().getColor(R.color.transparent)); // Nessun bordo
-                cardView.setAlpha(1f); // Riporta la card alla visibilità completa
-                cardView.setCardBackgroundColor(context.getResources().getColor(R.color.transparent)); // Rimuove eventuali cambiamenti sullo sfondo
             }
 
             // Click prolungato per selezionare/deselezionare la carta
@@ -79,7 +75,7 @@
             String startMonthAndYear = startMonthAbbreviation + " " + startYear;
             holder.textViewDates.setText(startMonthAndYear);
 
-            // Imposta l'immagine di copertura (se disponibile) o l'immagine di fallback
+            // Imposta l'immagine di copertina (se disponibile) o l'immagine di fallback
             holder.imageViewDiary.setImageResource(R.drawable.default_cover);
             if (diary.getCoverImageUri() != null) {
                 holder.imageViewDiary.setImageURI(diary.getCoverImageUri());
@@ -101,6 +97,7 @@
                 context.startActivity(intent);
             });
         }
+
 
 
 
