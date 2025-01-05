@@ -24,7 +24,6 @@
 
         private Context context;
         private List<Diary> diaries;
-        private List<Diary> selectedDiaries = new ArrayList<>();
         private OnDiaryItemLongClickListener listener;
 
         // Constructor
@@ -45,28 +44,24 @@
         public void onBindViewHolder(@NonNull DiaryViewHolder holder, int position) {
             Diary diary = diaries.get(position);
 
-            // Mostra lo stato selezionato usando il colore del bordo
-            MaterialCardView cardView = holder.itemView.findViewById(R.id.cardViewDiary);
-            if (selectedDiaries.contains(diary)) {
-                cardView.setStrokeColor(context.getResources().getColor(R.color.brown)); // Bordo selezionato
-                cardView.setCardBackgroundColor(context.getResources().getColor(R.color.orange)); // Background selezionato
+            // Mostra lo stato selezionato usando il colore del bordo e del background
+            if (diary.isSelected()) {
+                holder.cardView.setStrokeColor(context.getResources().getColor(R.color.brown));
+                holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.orange));
             } else {
-                cardView.setStrokeColor(context.getResources().getColor(R.color.transparent)); // Nessun bordo
+                holder.cardView.setStrokeColor(context.getResources().getColor(R.color.transparent));
+                holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.white)); // Colore di default
             }
 
             // Click prolungato per selezionare/deselezionare la carta
             holder.itemView.setOnLongClickListener(v -> {
-                if (selectedDiaries.contains(diary)) {
-                    selectedDiaries.remove(diary);
-                } else {
-                    selectedDiaries.add(diary);
-                }
+                diary.setSelected(!diary.isSelected());
                 notifyItemChanged(position); // Aggiorna visivamente la carta
                 listener.onDiaryItemLongClicked(diary); // Notifica il listener
                 return true;
             });
 
-            // Imposta gli altri dati nella carta
+            // Imposta i dati nella carta
             holder.textViewDiaryName.setText(diary.getName());
 
             // Usa il metodo getStartMonthAbbreviation per ottenere l'abbreviazione del mese
@@ -98,9 +93,6 @@
             });
         }
 
-
-
-
         @Override
         public int getItemCount() {
             return diaries.size();
@@ -108,7 +100,21 @@
 
         // Restituisce la lista dei diari selezionati
         public List<Diary> getSelectedDiaries() {
+            List<Diary> selectedDiaries = new ArrayList<>();
+            for (Diary diary : diaries) {
+                if (diary.isSelected()) {
+                    selectedDiaries.add(diary);
+                }
+            }
             return selectedDiaries;
+        }
+
+        // Cancella tutte le selezioni
+        public void clearSelections() {
+            for (Diary diary : diaries) {
+                diary.setSelected(false);
+            }
+            notifyDataSetChanged();
         }
 
         // Interfaccia per notificare il Fragment quando un elemento è selezionato con click prolungato
@@ -120,7 +126,7 @@
         public static class DiaryViewHolder extends RecyclerView.ViewHolder {
 
             MaterialCardView cardView;
-            ImageView imageViewDiary,imageViewCheckMark;
+            ImageView imageViewDiary;
             TextView textViewDiaryName, textViewDates, textViewDuration;
 
             public DiaryViewHolder(View itemView) {

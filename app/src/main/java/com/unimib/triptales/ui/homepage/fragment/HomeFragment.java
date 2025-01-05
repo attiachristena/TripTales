@@ -2,6 +2,7 @@
 
     import android.app.DatePickerDialog;
     import android.content.Intent;
+    import android.graphics.Color;
     import android.net.Uri;
     import android.os.Bundle;
     import android.provider.MediaStore;
@@ -22,7 +23,9 @@
     import androidx.recyclerview.widget.GridLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
 
+    import com.google.android.gms.maps.model.Circle;
     import com.google.android.material.button.MaterialButton;
+    import com.google.android.material.card.MaterialCardView;
     import com.google.android.material.floatingactionbutton.FloatingActionButton;
     import com.unimib.triptales.R;
     import com.unimib.triptales.adapters.Diary;
@@ -55,7 +58,8 @@
         private RecyclerView recyclerViewDiaries;
         private Diary selectedDiary;
         private Diary diary;
-
+        private ArrayList<Diary> selectedDiaries = new ArrayList<>();
+        private MaterialCardView cardView;
 
 
         @Nullable
@@ -134,6 +138,37 @@
                 updateEmptyMessage();
 
             });
+
+            modifyDiaryButton.setOnClickListener(v -> {
+                if (!selectedDiaries.isEmpty() && selectedDiaries.size() == 1) {
+                    selectedDiary = selectedDiaries.get(0); // Assegna il diario selezionato per la modifica
+
+                    inputDiaryName.setText(selectedDiary.getName());
+
+                    String[] startDateParts = selectedDiary.getStartDate().split("/");
+                    inputDayStartDate.setText(startDateParts[0]);
+                    inputMonthStartDate.setText(startDateParts[1]);
+                    inputYearStartDate.setText(startDateParts[2]);
+
+                    String[] endDateParts = selectedDiary.getEndDate().split("/");
+                    inputDayEndDate.setText(endDateParts[0]);
+                    inputMonthEndDate.setText(endDateParts[1]);
+                    inputYearEndDate.setText(endDateParts[2]);
+
+                    imageViewCover.setImageURI(selectedDiary.getCoverImageUri());
+                    imageViewCover.setVisibility(View.VISIBLE);
+
+                    overlayAddDiary.setVisibility(View.VISIBLE);
+
+                    FloatingActionButton floatingActionButton = getView().findViewById(R.id.fab_add_diary);
+                    buttonAddDiary.setVisibility(View.GONE);
+
+                    deleteDiaryButton.setVisibility(View.GONE);
+                    modifyDiaryButton.setVisibility(View.GONE);
+                }
+            });
+
+
 
             return view;
         }
@@ -216,17 +251,42 @@
                 return;
             }
 
-            // Create the Diary object with both start and end dates
-            diaryList.add(new Diary(diaryName, startDate, endDate, selectedImageUri));
+            // If we are editing an existing diary, update it; else create a new diary.
+            if (selectedDiary != null) {
+                // Modify the existing diary
+                selectedDiary.setName(diaryName);
+                selectedDiary.setStartDate(startDate);
+                selectedDiary.setEndDate(endDate);
+                selectedDiary.setCoverImageUri(selectedImageUri);
+                Toast.makeText(getContext(), "Diario modificato con successo!", Toast.LENGTH_SHORT).show();
+                selectedDiary = null; // Reset the selected diary after modification
+            } else {
+                // Create a new diary
+                diaryList.add(new Diary(diaryName, startDate, endDate, selectedImageUri));
+                Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
+            }
+
+            // Notify the adapter that the data has changed and update the view
             diaryAdapter.notifyDataSetChanged();
+            diaryAdapter.clearSelections();
+
+            // Reset the selection state and update buttons
+            selectedDiaries.clear();
+            deleteDiaryButton.setVisibility(View.GONE);
+            modifyDiaryButton.setVisibility(View.GONE);
+
+            // Hide the overlay and reset the form fields
             overlayAddDiary.setVisibility(View.GONE);
-            updateEmptyMessage();
-            Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
             resetDiaryFields();
-            // Rendi di nuovo visibile il bottone "Aggiungi diario"
+            updateEmptyMessage();
+
+            // Show the "Add Diary" button again
             FloatingActionButton buttonAddDiary = getView().findViewById(R.id.fab_add_diary);
             buttonAddDiary.setVisibility(View.VISIBLE);
         }
+
+
+
 
         private void resetDiaryFields() {
             inputDiaryName.setText("");
@@ -310,23 +370,36 @@
                 Toast.makeText(getContext(), "Modifica il diario", Toast.LENGTH_SHORT).show();
             }
         }
+        public void onDiaryDeletedOrModified() {
+            // Deseleziona tutti i diari
+            diaryAdapter.clearSelections();
 
-        @Override
-        public void onDiaryItemLongClicked(Diary diary) {
-            selectedDiary = diary;
-            // Mostra i bottoni quando un elemento viene selezionato con un click prolungato
-            deleteDiaryButton.setVisibility(View.VISIBLE);
+            // Notifica l'adapter per aggiornare la lista
+            diaryAdapter.notifyDataSetChanged();
 
-            // Ottieni la lista dei diari selezionati dal DiaryAdapter
-            List<Diary> selectedDiaries = diaryAdapter.getSelectedDiaries();
-
-            if (selectedDiaries.size() > 1) {
-                // Nascondi il bottone di modifica se ci sono più di un diario selezionato
-                modifyDiaryButton.setVisibility(View.GONE);
-                Toast.makeText(getContext(), "Hai selezionato " + selectedDiaries.size() + " diari", Toast.LENGTH_SHORT).show();
-            } else {
-                // Mostra il bottone di modifica se c'è solo un diario selezionato
-                modifyDiaryButton.setVisibility(View.VISIBLE);
-            }
+            // Nascondi il bottone "Modifica" e aggiorna la visibilità del bottone "Elimina"
+            modifyDiaryButton.setVisibility(View.VISIBLE); // Rendi visibile "Modifica"
+            deleteDiaryButton.setVisibility(View.GONE); // Nascondi "Elimina" se nessun diario è selezionato
         }
+
+
+        public void onDiaryItemLongClicked(Diary diary) {
+
+            if (selectedDiaries.contains(diary)) {
+                selectedDiaries.remove(diary);
+            } else {
+                selectedDiaries.add(diary);
+            }
+
+            // Controlla il numero di diari selezionati
+            if (selectedDiaries.size() > 1) {
+                modifyDiaryButton.setVisibility(View.GONE); // Nascondi il bottone "Modifica"
+            } else {
+                modifyDiaryButton.setVisibility(View.VISIBLE); // Mostra il bottone "Modifica"
+            }
+
+            // Rende visibili o nasconde gli altri bottoni (elimina, ecc.)
+            deleteDiaryButton.setVisibility(selectedDiaries.isEmpty() ? View.GONE : View.VISIBLE);
+        }
+
     }
