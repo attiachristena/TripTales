@@ -11,18 +11,21 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.firebase.annotations.concurrent.Background;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.OnBoardingAdapter;
+import com.unimib.triptales.ui.login.LoginActivity;
 
 public class IntroActivity extends AppCompatActivity {
 
     ViewPager slideViewPager;
     LinearLayout dotIndicator;
     OnBoardingAdapter viewPagerAdapter;
-    Button backButton, nextButton;
+    Button backButton, nextButton, startButton;
     TextView[] dots;
 
     ViewPager.OnPageChangeListener viewPagerListener = new ViewPager.OnPageChangeListener() {
+
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -34,16 +37,46 @@ public class IntroActivity extends AppCompatActivity {
 
             if (position > 0){
                 backButton.setVisibility(View.VISIBLE);
+                if(position == 3){
+                    nextButton.setVisibility(View.INVISIBLE);
+                    startButton.setVisibility(View.VISIBLE);
+                }else{
+                    nextButton.setVisibility(View.VISIBLE);
+                    startButton.setVisibility(View.INVISIBLE);
+                }
             }else{
+                nextButton.setVisibility(View.VISIBLE);
+                startButton.setVisibility(View.INVISIBLE);
                 backButton.setVisibility(View.INVISIBLE);
             }
 
-            if(position == 3){
+
+
+
+            if(position == 0){
+                nextButton.setBackgroundColor(getResources().getColor(R.color.light_brown3,getApplicationContext().getTheme()));
+                backButton.setBackgroundColor(getResources().getColor(R.color.light_brown3,getApplicationContext().getTheme()));
+
+            } else if (position == 1) {
+                nextButton.setBackgroundColor(getResources().getColor(R.color.magenta,getApplicationContext().getTheme()));
+                backButton.setBackgroundColor(getResources().getColor(R.color.magenta,getApplicationContext().getTheme()));
+
+            } else if (position == 2) {
+                nextButton.setBackgroundColor(getResources().getColor(R.color.light_brown2,getApplicationContext().getTheme()));
+                backButton.setBackgroundColor(getResources().getColor(R.color.light_brown2,getApplicationContext().getTheme()));
+
+            } else if (position == 3) {
+                nextButton.setBackgroundColor(getResources().getColor(R.color.orange2,getApplicationContext().getTheme()));
+                backButton.setBackgroundColor(getResources().getColor(R.color.orange2,getApplicationContext().getTheme()));
+            }
+
+            /*if(position == 3){
                 nextButton.setText("Finish");
+
             }else{
                 nextButton.setText("Next");
             }
-
+            */
 
 
         }
@@ -61,6 +94,7 @@ public class IntroActivity extends AppCompatActivity {
 
         backButton = findViewById(R.id.backButton);
         nextButton = findViewById(R.id.nextButton);
+        startButton = findViewById(R.id.startButton);
 
         backButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -76,8 +110,15 @@ public class IntroActivity extends AppCompatActivity {
             public void onClick(View view){
                 if(getItem(0)<3){
                     slideViewPager.setCurrentItem(getItem(1), true);
-                }else{
-                    Intent intent = new Intent(IntroActivity.this, GetStartedActivity.class);
+                }
+            }
+        });
+
+        startButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                if(getItem(0) == 3){
+                    Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }
