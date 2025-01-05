@@ -138,5 +138,6 @@
     <string name="material_calendar_today_button">Oggi</string>
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
+    <string name="aggiungi_diario">Aggiungi Diario</string>
 
 </resources>

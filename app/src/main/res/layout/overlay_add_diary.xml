@@ -29,9 +29,55 @@
                 android:padding="16dp">
 
                 <!-- Nome Diario -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical|end"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
+
+
+                    <ImageButton
+                        android:id="@+id/backaddDiaryButton"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/baseline_arrow_back_ios_24" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="Aggiungi Diario"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/buttonSaveDiary"
+                        android:layout_width="83dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="26dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_button"
+                        android:backgroundTint="@color/secondary"
+                        android:text="@string/saveButton"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="13dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/nome_diario"
                     android:textColor="#000000"
@@ -53,6 +99,7 @@
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
+                <!-- Data Arrivo -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,18 +108,18 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldDayDeparture"
+                        style="?attr/textInputFilledStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="@string/hintDay"
                         android:paddingHorizontal="16dp"
-                        app:boxStrokeColor="@color/background_dark"
-                        app:hintTextColor="@color/background_dark"
-                        app:cursorColor="@color/secondary"
-                        style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
+                        app:boxStrokeColor="@color/background_dark"
+                        app:cursorColor="@color/secondary"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        app:hintTextColor="@color/background_dark">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputDayDeparture"
@@ -92,18 +139,18 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldMonthDeparture"
+                        style="?attr/textInputFilledStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="@string/hintMonth"
                         android:paddingHorizontal="16dp"
-                        app:boxStrokeColor="@color/background_dark"
-                        app:hintTextColor="@color/background_dark"
-                        app:cursorColor="@color/secondary"
-                        style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
+                        app:boxStrokeColor="@color/background_dark"
+                        app:cursorColor="@color/secondary"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        app:hintTextColor="@color/background_dark">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputMonthDeparture"
@@ -123,18 +170,18 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldYearDeparture"
+                        style="?attr/textInputFilledStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
                         android:hint="@string/hintYear"
                         android:paddingHorizontal="16dp"
-                        app:boxStrokeColor="@color/background_dark"
-                        app:hintTextColor="@color/background_dark"
-                        app:cursorColor="@color/secondary"
-                        style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
+                        app:boxStrokeColor="@color/background_dark"
+                        app:cursorColor="@color/secondary"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        app:hintTextColor="@color/background_dark">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputYearDeparture"
@@ -146,11 +193,10 @@
 
                 </LinearLayout>
 
-                <!-- Data Arrivo -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="8dp"
                     android:text="Data arrivo"
                     android:textColor="#000000"
@@ -278,33 +324,6 @@
                     android:visibility="gone" />
 
                 <!-- Buttons -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center_vertical|end"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp">
-
-                    <Button
-                        android:id="@+id/buttonCancel"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:text="Cancella"
-                        android:textColor="#000000"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:id="@+id/buttonSave"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        android:text="Salva"
-                        android:textColor="#FFFFFF"
-                        app:backgroundTint="#B57F63" />
-                </LinearLayout>
 
             </LinearLayout>
 
