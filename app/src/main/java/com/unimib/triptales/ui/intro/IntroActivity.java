@@ -146,8 +146,8 @@ public class IntroActivity extends AppCompatActivity {
         setDotIndicator(0);
         slideViewPager.addOnPageChangeListener(viewPagerListener);
 
-        
 
+        
         if(FirstTime.equals("Yes")){
             Intent intent = new Intent (IntroActivity.this, LoginActivity.class);
             startActivity(intent);
