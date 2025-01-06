@@ -1,6 +1,7 @@
     package com.unimib.triptales.ui.homepage.fragment;
 
     import android.app.DatePickerDialog;
+    import android.content.Context;
     import android.content.Intent;
     import android.net.Uri;
     import android.os.Bundle;
@@ -9,6 +10,8 @@
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
+    import android.widget.ArrayAdapter;
+    import android.widget.AutoCompleteTextView;
     import android.widget.Button;
     import android.widget.EditText;
     import android.widget.ImageButton;
@@ -29,6 +32,13 @@
     import com.unimib.triptales.adapters.Diary;
     import com.unimib.triptales.adapters.DiaryAdapter;
 
+    import org.json.JSONArray;
+    import org.json.JSONException;
+    import org.json.JSONObject;
+
+    import java.io.IOException;
+    import java.io.InputStream;
+    import java.nio.charset.StandardCharsets;
     import java.text.SimpleDateFormat;
     import java.util.ArrayList;
     import java.util.Calendar;
@@ -49,6 +59,8 @@
         private EditText inputDayEndDate, inputMonthEndDate, inputYearEndDate;
         private EditText modifyDayStartDate, modifyMonthStartDate, modifyYearStartDate;
         private EditText modifyDayEndDate, modifyMonthEndDate, modifyYearEndDate;
+        private View Country;
+        private View CountryChanges;
 
         private EditText inputDiaryName, modifyDiaryName;
         private ImageView imageViewCover, modifyCoverImage;
@@ -60,6 +72,7 @@
 
         private ArrayList<Diary> selectedDiaries = new ArrayList<>();
         private View imageViewSelectedChanges;
+        private String country;
 
         @Nullable
         @Override
@@ -96,6 +109,8 @@
             modifyDiaryButton = view.findViewById(R.id.modifyDiaryButton);
 
             inputDiaryName = overlayAddDiary.findViewById(R.id.inputDiaryName);
+            Country = overlayAddDiary.findViewById(R.id.VisitedCountry);
+            CountryChanges = overlayModifyDiary.findViewById(R.id.VisitedCountryChanges);
             inputDayStartDate = overlayAddDiary.findViewById(R.id.inputDayDeparture);
             inputMonthStartDate = overlayAddDiary.findViewById(R.id.inputMonthDeparture);
             inputYearStartDate = overlayAddDiary.findViewById(R.id.inputYearDeparture);
@@ -119,7 +134,49 @@
             modifyCoverImage = overlayModifyDiary.findViewById(R.id.imageViewSelectedChanges);
             buttonSaveModify = overlayModifyDiary.findViewById(R.id.buttonSaveDiaryChanges);
             closeModifyOverlayButton = overlayModifyDiary.findViewById(R.id.backModifyDiaryButton);
+
+            // Configura l'AutoCompleteTextView per i paesi
+            setupAutoCompleteTextView(overlayAddDiary, overlayModifyDiary);
         }
+
+        private List<String> extractCountryNamesFromJson(Context context) {
+            List<String> countryNames = new ArrayList<>();
+            try {
+                InputStream inputStream = context.getResources().openRawResource(R.raw.world_countries);
+
+                String jsonString = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+                }
+
+                JSONObject jsonObject = new JSONObject(jsonString);
+                JSONArray features = jsonObject.getJSONArray("features");
+
+                for (int i = 0; i < features.length(); i++) {
+                    JSONObject feature = features.getJSONObject(i);
+                    JSONObject properties = feature.getJSONObject("properties");
+                    String countryName = properties.getString("NAME_IT");
+                    countryNames.add(countryName);
+                }
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+            return countryNames;
+        }
+
+        private void setupAutoCompleteTextView(View overlayAddDiary, View overlayModifyDiary) {
+            AutoCompleteTextView countryAutoComplete = overlayAddDiary.findViewById(R.id.VisitedCountry);
+            AutoCompleteTextView countryChangesAutoComplete = overlayModifyDiary.findViewById(R.id.VisitedCountryChanges);
+
+            List<String> countryNames = extractCountryNamesFromJson(requireContext());
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, countryNames);
+
+            countryAutoComplete.setAdapter(adapter);
+            countryChangesAutoComplete.setAdapter(adapter);
+        }
+
+
+
 
         private void setupRecyclerView() {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -131,7 +188,25 @@
         private void setupButtonListeners() {
             addDiaryButton.setOnClickListener(v -> showOverlay(overlayAddDiary));
             closeAddOverlayButton.setOnClickListener(v -> hideOverlay(overlayAddDiary));
-            closeModifyOverlayButton.setOnClickListener(v -> hideOverlay(overlayModifyDiary));
+
+            closeModifyOverlayButton.setOnClickListener(v -> {
+
+                // Deseleziona il diario dopo averlo modificato
+                selectedDiaries.remove(selectedDiary);
+
+                // Notifica all'adapter che la lista è cambiata
+                diaryAdapter.notifyDataSetChanged();
+
+                // Aggiungi questa riga per deselezionare tutti i diari
+                diaryAdapter.clearSelections(); // Deseleziona tutti i diari
+
+                // Nascondi l'overlay di modifica e aggiorna i bottoni
+                hideOverlay(overlayModifyDiary);
+            });
+
+
+
+
 
             buttonSave.setOnClickListener(v -> saveDiary());
             buttonSaveModify.setOnClickListener(v -> modifyDiary());
@@ -142,6 +217,16 @@
             deleteDiaryButton.setOnClickListener(v -> {
                 deleteSelectedDiaries();
                 updateEmptyMessage();
+                // Deseleziona il diario dopo averlo modificato
+                selectedDiaries.remove(selectedDiary);
+
+                // Notifica all'adapter che la lista è cambiata
+                diaryAdapter.notifyDataSetChanged();
+
+                // Aggiungi questa riga per deselezionare tutti i diari
+                diaryAdapter.clearSelections(); //
+                deleteDiaryButton.setVisibility(View.GONE);
+                modifyDiaryButton.setVisibility(View.GONE);
             });
 
             modifyDiaryButton.setOnClickListener(v -> {
@@ -209,13 +294,13 @@
             String diaryName = inputDiaryName.getText().toString();
             String startDate = inputDayStartDate.getText().toString() + "/" + inputMonthStartDate.getText().toString() + "/" + inputYearStartDate.getText().toString();
             String endDate = inputDayEndDate.getText().toString() + "/" + inputMonthEndDate.getText().toString() + "/" + inputYearEndDate.getText().toString();
-
-            if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty()) {
+            String country = ((AutoCompleteTextView) overlayAddDiary.findViewById(R.id.VisitedCountry)).getText().toString();
+            if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty()|| country.isEmpty()) {
                 Toast.makeText(getContext(), "Compila tutti i campi e scegli un'immagine!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            Diary newDiary = new Diary(diaryName, startDate, endDate, selectedImageUri);
+            Diary newDiary = new Diary(diaryName, startDate, endDate, selectedImageUri, country);
             diaryList.add(newDiary);
             diaryAdapter.notifyDataSetChanged();
             hideOverlay(overlayAddDiary);
@@ -229,8 +314,9 @@
             String diaryName = modifyDiaryName.getText().toString();
             String startDate = modifyDayStartDate.getText().toString() + "/" + modifyMonthStartDate.getText().toString() + "/" + modifyYearStartDate.getText().toString();
             String endDate = modifyDayEndDate.getText().toString() + "/" + modifyMonthEndDate.getText().toString() + "/" + modifyYearEndDate.getText().toString();
+            String country = ((AutoCompleteTextView) overlayModifyDiary.findViewById(R.id.VisitedCountryChanges)).getText().toString();
 
-            if (diaryName.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
+            if (diaryName.isEmpty() || startDate.isEmpty() || endDate.isEmpty()|| country.isEmpty()) {
                 Toast.makeText(getContext(), "Compila tutti i campi!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -238,6 +324,8 @@
             selectedDiary.setName(diaryName);
             selectedDiary.setStartDate(startDate);
             selectedDiary.setEndDate(endDate);
+            selectedDiary.setCountry(country);
+
             if (selectedImageUri != null) {
                 selectedDiary.setCoverImageUri(selectedImageUri);
             }
@@ -279,6 +367,7 @@
             modifyMonthStartDate.setText(startDate[1]);
             modifyYearStartDate.setText(startDate[2]);
 
+
             // Ripristina la data di fine
             String[] endDate = diary.getEndDate().split("/");
             modifyDayEndDate.setText(endDate[0]);
@@ -293,6 +382,10 @@
             } else {
                 modifyCoverImage.setVisibility(View.GONE);  // Se non c'è un'immagine, nascondila
             }
+
+            // Ripristina il paese
+            AutoCompleteTextView countryChangesAutoComplete = overlayModifyDiary.findViewById(R.id.VisitedCountryChanges);
+            countryChangesAutoComplete.setText(diary.getCountry());
         }
 
 

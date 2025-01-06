@@ -11,14 +11,17 @@ public class Diary {
     private String startDate;
     private String endDate;
     private Uri coverImageUri;
-    private boolean isSelected;  // Aggiunto il campo per la selezione
+    private boolean isSelected;
+    private String country;
 
-    public Diary(String diaryName, String startDate, String endDate, Uri coverImageUri) {
+
+    public Diary(String diaryName, String startDate, String endDate, Uri coverImageUri, String country) {
         this.diaryName = diaryName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.coverImageUri = coverImageUri;
-        this.isSelected = false;  // Di default il diario non è selezionato
+        this.isSelected = false;
+        this.country= country;
     }
 
     public String getName() {
@@ -102,4 +105,14 @@ public class Diary {
     public void setCoverImageUri(Uri coverImageUri) {
         this.coverImageUri = coverImageUri;
     }
+
+    // Getter e setter per il paese
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
 }

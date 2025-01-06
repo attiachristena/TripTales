@@ -74,32 +74,32 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="13dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/nome_diario"
-                    android:textColor="#000000"
-                    android:textSize="18sp" />
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputDiaryName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Inserisci il nome" />
+                    android:hint="Inserisci il nome del diario" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/VisitedCountry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="Il paese visitato"
+                    android:inputType="text"
+                    android:popupBackground="@color/background_overlays" />
+
 
                 <!-- Data Partenza -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="8dp"
                     android:text="Data partenza"
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
-                <!-- Data Arrivo -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -125,6 +125,7 @@
                             android:id="@+id/inputDayDeparture"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:inputType="number" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -156,6 +157,7 @@
                             android:id="@+id/inputMonthDeparture"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:inputType="number" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -187,6 +189,7 @@
                             android:id="@+id/inputYearDeparture"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:inputType="number" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -196,7 +199,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginBottom="8dp"
                     android:text="Data arrivo"
                     android:textColor="#000000"
@@ -227,6 +230,7 @@
                             android:id="@+id/inputReturnDay"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:inputType="number" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -258,6 +262,7 @@
                             android:id="@+id/inputReturnMonth"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:inputType="number" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -289,6 +294,7 @@
                             android:id="@+id/inputReturnYear"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:inputType="number" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -299,7 +305,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginBottom="8dp"
                     android:text="Scegli un’immagine"
                     android:textColor="#000000"
