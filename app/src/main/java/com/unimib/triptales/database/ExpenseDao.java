@@ -18,6 +18,9 @@ public interface ExpenseDao {
     @Update
     void update(Expense expense);
 
+    @Update
+    void updateAll(List<Expense> expenses);
+
     @Query("UPDATE Expense SET expense_category = :newCategory WHERE id = :expenseId")
     void updateCategory(int expenseId, String newCategory);
 

@@ -1,5 +1,6 @@
 package com.unimib.triptales.repository.expense;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.model.Expense;
@@ -7,13 +8,14 @@ import com.unimib.triptales.model.Result;
 import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseRemoteDataSource;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCallback{
 
     private final BaseExpenseLocalDataSource expenseLocalDataSource;
     private final BaseExpenseRemoteDataSource expenseRemoteDataSource;
-
+    private final MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<Result> expenseMutableLiveData = new MutableLiveData<>();
 
     public ExpenseRepository(BaseExpenseLocalDataSource expenseLocalDataSource, BaseExpenseRemoteDataSource expenseRemoteDataSource) {
@@ -27,6 +29,10 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
 
     public void updateExpense(Expense expense) {
         expenseLocalDataSource.updateExpense(expense);
+    }
+
+    public void updateAllExpenses(List<Expense> expenses) {
+        expenseLocalDataSource.updateAllExpenses(expenses);
     }
 
     public void updateExpenseCategory(int expenseId, String newCategory) {
@@ -71,22 +77,12 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
 
 
     @Override
-    public void onSuccessSaveExpense(Expense expense) {
+    public void onSuccessFromLocal(List<Expense> expenses) {
 
     }
 
     @Override
-    public void onSuccessDeleteExpense(String expenseId) {
-
-    }
-
-    @Override
-    public void onSuccessGetExpenses(List<Expense> expenses) {
-
-    }
-
-    @Override
-    public void onFailureExpenseOperation(String message) {
+    public void onFailureFromLocal(Exception exception) {
 
     }
 }

@@ -1,5 +1,6 @@
 package com.unimib.triptales.repository.goal;
 
+import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.source.goal.BaseGoalLocalDataSource;
 import com.unimib.triptales.source.goal.BaseGoalRemoteDataSource;
@@ -69,5 +70,15 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     @Override
     public List<Goal> getCheckedGoals() {
         return goalLocalDataSource.getCheckedGoals();
+    }
+
+    @Override
+    public void onSuccessFromLocal(List<Expense> expenses) {
+
+    }
+
+    @Override
+    public void onFailureFromLocal(Exception exception) {
+
     }
 }

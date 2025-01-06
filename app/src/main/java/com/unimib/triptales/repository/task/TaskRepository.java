@@ -1,5 +1,6 @@
 package com.unimib.triptales.repository.task;
 
+import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.source.task.BaseTaskLocalDataSource;
 import com.unimib.triptales.source.task.BaseTaskRemoteDataSource;
@@ -54,5 +55,15 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     @Override
     public List<Task> getSelectedTasks() {
         return taskLocalDataSource.getSelectedTasks();
+    }
+
+    @Override
+    public void onSuccessFromLocal(List<Expense> expenses) {
+
+    }
+
+    @Override
+    public void onFailureFromLocal(Exception exception) {
+
     }
 }

@@ -24,6 +24,11 @@ public class ExpenseLocalDataSource implements BaseExpenseLocalDataSource {
     }
 
     @Override
+    public void updateAllExpenses(List<Expense> expenses) {
+        expenseDao.updateAll(expenses);
+    }
+
+    @Override
     public void updateExpenseCategory(int expenseId, String newCategory) {
         expenseDao.updateCategory(expenseId, newCategory);
     }

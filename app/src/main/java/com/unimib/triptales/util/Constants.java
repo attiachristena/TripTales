@@ -62,26 +62,4 @@ public class Constants {
         }
     }
 
-    public static String countAmount(List<Expense> expenseList, String currency){
-        double totExpense = 0;
-        for(Expense e: expenseList){
-            String amount = e.getAmount();
-            String realAmount;
-            if(currency.equalsIgnoreCase(CURRENCY_EUR)){
-                realAmount = amount.substring(0, amount.length()-1);
-            } else {
-                realAmount = amount.substring(1);
-            }
-            totExpense += Double.parseDouble(realAmount);
-        }
-        String tmp;
-        if(currency.equalsIgnoreCase(CURRENCY_EUR))
-            tmp = totExpense+currency;
-        else
-            tmp = currency+totExpense;
-
-        return tmp;
-    }
-
-
 }

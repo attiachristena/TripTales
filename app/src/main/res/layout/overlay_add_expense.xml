@@ -165,7 +165,9 @@
                             android:id="@+id/inputDay"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="number"/>
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:ems="2"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -197,7 +199,9 @@
                             android:id="@+id/inputMonth"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="number"/>
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:ems="2"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -229,7 +233,9 @@
                             android:id="@+id/inputYear"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="number"/>
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:ems="4"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 

@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ExpenseResponseCallback {
 
-    void onSuccessSaveExpense(Expense expense);
-    void onSuccessDeleteExpense(String expenseId);
-    void onSuccessGetExpenses(List<Expense> expenses);
-    void onFailureExpenseOperation(String message);
+    //void onSuccessFromRemote(ArticleAPIResponse articleAPIResponse, long lastUpdate);
+    //void onFailureFromRemote(Exception exception);
+    void onSuccessFromLocal(List<Expense> expenses);
+    void onFailureFromLocal(Exception exception);
 
 }

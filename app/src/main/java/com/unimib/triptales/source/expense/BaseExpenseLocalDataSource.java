@@ -8,6 +8,7 @@ public interface BaseExpenseLocalDataSource {
 
     long insertExpense(Expense expense);
     void updateExpense(Expense expense);
+    void updateAllExpenses(List<Expense> expenses);
     void updateExpenseCategory(int expenseId, String newCategory);
     void updateExpenseDescription(int expenseId, String newDescription);
     void updateExpenseAmount(int expenseId, String newAmount);
