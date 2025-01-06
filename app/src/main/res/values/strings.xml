@@ -101,7 +101,7 @@
     <string name="hintCurrency">Valuta*</string>
     <string name="nome_diario">Nome diario</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
-    <string name="intro1_title">Benvenuto su TripTales. Il tuo diario di viaggio personale</string>
+    <string name="intro1_title">Benvenuto su TripTales Il tuo diario di viaggio personale</string>
     <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>
     <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni tappa</string>
     <string name="intro2_body">Qui potrai pianificare le tue avventure, annotare ogni scoperta e rivivere ogni momento</string>
@@ -111,6 +111,21 @@
     <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
+    <string name="error_unexpected">Unexpected error</string>
+    <string name="error_google_login">Google Login Error</string>
+    <string name="error_email_required">Email Required Error</string>
+    <string name="error_email_invalid">Invalid Email Error</string>
+    <string name="password_reset_email_sent">Email for reset password sent</string>
+    <string name="registrati_con_google">Registrati con Google</string>
+
+    <string name="nome_user_momentaneo">Nome Cognome</string>
+    <string name="modalita_scura">Modalità scura</string>
+    <string name="notiche">Notifiche</string>
+    <string name="privacy">Privacy</string>
+    <string name="lingua">Lingua</string>
+    <string name="account">Account</string>
+    <string name="about_us">About us</string>
+    <string name="impostazioni">Impostazioni</string>
 
     <string name="material_calendar_monday">L</string>
     <string name="material_calendar_tuesday">M</string>

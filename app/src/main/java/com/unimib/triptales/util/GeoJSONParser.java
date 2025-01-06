@@ -36,9 +36,8 @@ public class GeoJSONParser {
             for (int i = 0; i < features.length(); i++) {
                 JSONObject feature = features.getJSONObject(i);
                 JSONObject properties = feature.getJSONObject("properties");
-                System.out.println(properties.getString("NAME"));
 
-                if (properties.has("NAME") && properties.getString("NAME").equalsIgnoreCase(countryName)) {
+                if (properties.has("NAME_IT") && properties.getString("NAME_IT").equalsIgnoreCase(countryName)) {
                     JSONObject geometry = feature.getJSONObject("geometry");
                     String geometryType = geometry.getString("type");
 

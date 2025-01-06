@@ -21,15 +21,14 @@
             android:layout_width="216dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@+id/salvaModificaTappaButton"
-            android:fontFamily="@font/poppins_regular"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="31dp"
+            android:layout_marginEnd="96dp"
+            android:fontFamily="@font/poppins_bold"
             android:gravity="center"
-            android:text="@string/aggiungi_una_tappa_modificata"
+            android:text="Modifica tappa"
             android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/salvaModificaTappaButton"
@@ -52,8 +51,8 @@
             android:layout_width="22dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="-1dp"
+            android:layout_marginTop="27dp"
+            android:layout_marginEnd="-25dp"
             android:layout_toStartOf="@+id/textView3"
             android:backgroundTint="@color/background_overlays"
             android:src="@drawable/baseline_arrow_back_ios_24"

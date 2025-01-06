@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Altezza normale della mappa -->
+    <dimen name="default_map_height">200dp</dimen>
+
+    <!-- Altezza espansa della mappa -->
+    <dimen name="large_map_height">400dp</dimen>
+    <dimen name="map_original_height">700dp</dimen>
+</resources>

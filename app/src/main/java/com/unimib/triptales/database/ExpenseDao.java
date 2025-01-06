@@ -42,11 +42,9 @@ public interface ExpenseDao {
     @Delete
     void deleteAll(List<Expense> expenses);
 
-    //Recupero di un singolo elemento
     @Query("SELECT * FROM Expense WHERE id = :expenseId")
     Expense getById(int expenseId);
 
-    //Recupero di una lista di elementi
     @Query("SELECT * FROM Expense")
     List<Expense> getAll();
 

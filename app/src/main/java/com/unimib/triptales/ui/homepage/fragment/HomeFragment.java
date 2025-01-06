@@ -7,6 +7,7 @@
     import android.os.Bundle;
     import android.provider.MediaStore;
     import android.text.TextUtils;
+    import android.util.Log;
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
@@ -23,6 +24,7 @@
     import androidx.annotation.Nullable;
     import androidx.constraintlayout.widget.ConstraintLayout;
     import androidx.fragment.app.Fragment;
+    import androidx.lifecycle.ViewModelProvider;
     import androidx.recyclerview.widget.GridLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +33,7 @@
     import com.unimib.triptales.R;
     import com.unimib.triptales.adapters.Diary;
     import com.unimib.triptales.adapters.DiaryAdapter;
+    import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
     import org.json.JSONArray;
     import org.json.JSONException;
@@ -57,6 +60,7 @@
         private View overlayAddDiary, overlayModifyDiary;
         private EditText inputDayStartDate, inputMonthStartDate, inputYearStartDate;
         private EditText inputDayEndDate, inputMonthEndDate, inputYearEndDate;
+
         private EditText modifyDayStartDate, modifyMonthStartDate, modifyYearStartDate;
         private EditText modifyDayEndDate, modifyMonthEndDate, modifyYearEndDate;
         private View Country;
@@ -66,9 +70,12 @@
         private ImageView imageViewCover, modifyCoverImage;
         private Button buttonChooseImage, buttonSave, buttonSaveModify, buttonChooseImageChanges;
         private ImageButton closeAddOverlayButton, closeModifyOverlayButton;
+
+        public TextView inputDiaryName;
         private Uri selectedImageUri;
         private Diary selectedDiary;
         private final Calendar calendar = Calendar.getInstance();
+        private SharedViewModel sharedViewModel;
 
         private ArrayList<Diary> selectedDiaries = new ArrayList<>();
         private View imageViewSelectedChanges;
@@ -100,6 +107,9 @@
 
             overlayAddDiary.setVisibility(View.GONE);
             overlayModifyDiary.setVisibility(View.GONE);
+
+            sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
 
             recyclerView = view.findViewById(R.id.recycler_view_diaries);
             emptyMessage = view.findViewById(R.id.text_empty_message);
@@ -291,12 +301,27 @@
         }
 
         private void saveDiary() {
+
             String diaryName = inputDiaryName.getText().toString();
             String startDate = inputDayStartDate.getText().toString() + "/" + inputMonthStartDate.getText().toString() + "/" + inputYearStartDate.getText().toString();
             String endDate = inputDayEndDate.getText().toString() + "/" + inputMonthEndDate.getText().toString() + "/" + inputYearEndDate.getText().toString();
             String country = ((AutoCompleteTextView) overlayAddDiary.findViewById(R.id.VisitedCountry)).getText().toString();
             if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty()|| country.isEmpty()) {
                 Toast.makeText(getContext(), "Compila tutti i campi e scegli un'immagine!", Toast.LENGTH_SHORT).show();
+
+            String dayStartDate = inputDayStartDate.getText().toString().trim();
+            String monthStartDate = inputMonthStartDate.getText().toString().trim();
+            String yearStartDate = inputYearStartDate.getText().toString().trim();
+            String dayEndDate = inputDayEndDate.getText().toString().trim();
+            String monthEndDate = inputMonthEndDate.getText().toString().trim();
+            String yearEndDate = inputYearEndDate.getText().toString().trim();
+            String diaryName = inputDiaryName.getText().toString().trim();
+            sharedViewModel.setDiaryName(diaryName);
+
+            if (TextUtils.isEmpty(dayStartDate) || TextUtils.isEmpty(monthStartDate) || TextUtils.isEmpty(yearStartDate) ||
+                    TextUtils.isEmpty(dayEndDate) || TextUtils.isEmpty(monthEndDate) || TextUtils.isEmpty(yearEndDate)) {
+                Toast.makeText(getContext(), "Le date non possono essere vuote!", Toast.LENGTH_SHORT).show();
+
                 return;
             }
 
@@ -308,8 +333,15 @@
             Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
         }
 
+
         private void modifyDiary() {
             if (selectedDiary == null) return;
+
+            String startDate = dayStartDate + "/" + monthStartDate + "/" + yearStartDate;
+            sharedViewModel.setStartDate(startDate);
+            String endDate = dayEndDate + "/" + monthEndDate + "/" + yearEndDate;
+            sharedViewModel.setEndDate(endDate);
+
 
             String diaryName = modifyDiaryName.getText().toString();
             String startDate = modifyDayStartDate.getText().toString() + "/" + modifyMonthStartDate.getText().toString() + "/" + modifyYearStartDate.getText().toString();
