@@ -31,21 +31,11 @@ public class IntroActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             setDotIndicator(position);
-
             if (position > 0){
                 backButton.setVisibility(View.VISIBLE);
             }else{
                 backButton.setVisibility(View.INVISIBLE);
             }
-
-            /*if(position == 3){
-                nextButton.setText("Finish");
-            }else{
-                nextButton.setText("Next");
-            }*/
-
-
-
         }
 
         @Override
