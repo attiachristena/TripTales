@@ -11,12 +11,17 @@ public class Diary {
     private String startDate;
     private String endDate;
     private Uri coverImageUri;
+    private boolean isSelected;
+    private String country;
 
-    public Diary(String diaryName, String startDate, String endDate, Uri coverImageUri) {
+
+    public Diary(String diaryName, String startDate, String endDate, Uri coverImageUri, String country) {
         this.diaryName = diaryName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.coverImageUri = coverImageUri;
+        this.isSelected = false;
+        this.country= country;
     }
 
     public String getName() {
@@ -35,44 +40,79 @@ public class Diary {
         return coverImageUri;
     }
 
-    // Method to calculate the number of days between start and end dates
+    // Metodo per calcolare la durata del viaggio
     public int getTravelDuration() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         try {
             Date start = sdf.parse(startDate);
             Date end = sdf.parse(endDate);
 
-            // If dates are valid and start date is before end date
             if (start != null && end != null && start.before(end)) {
                 long diffInMillis = end.getTime() - start.getTime();
-                long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);  // Convert milliseconds to days
+                long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
                 return (int) diffInDays;
             } else {
-                return 0; // Return 0 if the dates are invalid or if start date is after end date
+                return 0;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return 0;  // Return 0 if there's an error parsing the dates
+            return 0;
         }
     }
 
-    // Method to get the abbreviated month (e.g., "JAN", "FEB") from the start date
+    // Metodo per ottenere l'abbreviazione del mese
     public String getStartMonthAbbreviation() {
         return getMonthAbbreviation(startDate);
     }
-    // Helper method to extract the abbreviated month (e.g., "JAN", "FEB") from a date string
+
+    // Metodo per estrarre l'abbreviazione del mese
     private String getMonthAbbreviation(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         try {
             Date date = sdf.parse(dateString);
             if (date != null) {
-                SimpleDateFormat monthFormat = new SimpleDateFormat("MMM", Locale.getDefault()); // "MMM" gives abbreviated month
-                return monthFormat.format(date).toUpperCase(); // Return the abbreviated month name in uppercase (e.g., "JAN")
+                SimpleDateFormat monthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
+                return monthFormat.format(date).toUpperCase();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";  // Return an empty string if there's an error
+        return "";
+    }
+
+    // Getter e Setter per isSelected
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    // Setter per i dati del diario
+    public void setName(String name) {
+        this.diaryName = name;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setCoverImageUri(Uri coverImageUri) {
+        this.coverImageUri = coverImageUri;
+    }
+
+    // Getter e setter per il paese
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
 }
