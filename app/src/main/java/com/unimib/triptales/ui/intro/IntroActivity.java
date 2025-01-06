@@ -25,6 +25,7 @@ public class IntroActivity extends AppCompatActivity {
     Button backButton, nextButton, startButton;
     TextView[] dots;
 
+
     ViewPager.OnPageChangeListener viewPagerListener = new ViewPager.OnPageChangeListener() {
 
         @Override
@@ -97,6 +98,10 @@ public class IntroActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.nextButton);
         startButton = findViewById(R.id.startButton);
 
+        //to show intro only once after installing the application
+        SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
+        String FirstTime = preferences.getString("FirstTimeInstall","");
+
         backButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -115,6 +120,8 @@ public class IntroActivity extends AppCompatActivity {
             }
         });
 
+
+
         startButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -122,6 +129,10 @@ public class IntroActivity extends AppCompatActivity {
                     Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
+
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("FirstTimeInstall", "Yes");
+                    editor.apply();
                 }
             }
         });
@@ -135,18 +146,11 @@ public class IntroActivity extends AppCompatActivity {
         setDotIndicator(0);
         slideViewPager.addOnPageChangeListener(viewPagerListener);
 
-
-        //to show intro only once after installing the application
-        SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
-        String FirstTime = preferences.getString("FirstTimeInstall","");
+        
 
         if(FirstTime.equals("Yes")){
             Intent intent = new Intent (IntroActivity.this, LoginActivity.class);
             startActivity(intent);
-        }else{
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("FirstTimeInstall","Yes");
-            editor.apply();
         }
 
     }
