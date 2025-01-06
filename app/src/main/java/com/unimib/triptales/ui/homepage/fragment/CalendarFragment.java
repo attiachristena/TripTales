@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.google.android.material.datepicker.DayViewDecorator;
 import com.unimib.triptales.R;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.model.CountryPolygon;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
@@ -32,14 +34,14 @@ public class CalendarFragment extends Fragment {
 
     CalendarView calendarView;
     SharedViewModel sharedViewModel;
-    List<Calendar> datePartenza = new ArrayList<>();
-    List<Calendar> dateRitorno = new ArrayList<>();
+    List<Calendar> startDates = new ArrayList<>();
+    List<Calendar> endDates = new ArrayList<>();
     List<EventDay> events = new ArrayList<>();
+    DiaryDao diaryDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -56,6 +58,7 @@ public class CalendarFragment extends Fragment {
         // Inizializza il calendario
         calendarView = view.findViewById(R.id.calendarView);
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        diaryDao = AppRoomDatabase.getDatabase(getContext()).diaryDao();
 
         sharedViewModel.getStartDate().observe(requireActivity(), new Observer<String>() {
             @Override
@@ -64,10 +67,9 @@ public class CalendarFragment extends Fragment {
                 int day = Integer.parseInt(date[0]);
                 int month = Integer.parseInt(date[1])-1;
                 int year = Integer.parseInt(date[2]);
-                Calendar startDate = Calendar.getInstance();
-                startDate.set(year, month, day);
-                datePartenza.add(startDate);
-                Log.d("DEBUG", "Lista date partenza: "+datePartenza.size());
+                Calendar startCalendar = Calendar.getInstance();
+                startCalendar.set(year, month, day);
+                startDates.add(startCalendar);
                 loadEvents();
             }
         });
@@ -79,10 +81,9 @@ public class CalendarFragment extends Fragment {
                 int day = Integer.parseInt(date[0]);
                 int month = Integer.parseInt(date[1])-1;
                 int year = Integer.parseInt(date[2]);
-                Calendar endDate = Calendar.getInstance();
-                endDate.set(year, month, day);
-                dateRitorno.add(endDate);
-                Log.d("DEBUG", "Lista date ritorno: "+dateRitorno.size());
+                Calendar endCalendar = Calendar.getInstance();
+                endCalendar.set(year, month, day);
+                endDates.add(endCalendar);
                 loadEvents();
             }
         });
@@ -112,17 +113,16 @@ public class CalendarFragment extends Fragment {
         loadEvents();*/
     }
 
-    private void loadEvents() {
-        Log.d("DEBUG", "Lista date partenza: "+datePartenza.size());
-        Log.d("DEBUG", "Lista date ritorno: "+dateRitorno.size());
+    private void loadEvents(){
         events.clear();
-        for(Calendar c : datePartenza) {
-            events.add(new EventDay(c, R.drawable.baseline_flight_takeoff_24));
+        for (Calendar startCalendar : startDates) {
+            events.add(new EventDay(startCalendar, R.drawable.baseline_flight_takeoff_24));
         }
-        for(Calendar c : dateRitorno) {
-            events.add(new EventDay(c, R.drawable.baseline_flight_land_24));
+
+        for (Calendar endCalendar : endDates) {
+            events.add(new EventDay(endCalendar, R.drawable.baseline_flight_land_24));
         }
-        Log.d("DEBUG", "Lista eventi: "+events.size());
+
         calendarView.setEvents(events);
     }
 

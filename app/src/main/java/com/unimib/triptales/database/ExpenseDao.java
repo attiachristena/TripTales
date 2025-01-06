@@ -15,11 +15,11 @@ public interface ExpenseDao {
     @Insert
     long insert(Expense expense);
 
-    @Insert
-    void insertAll(List<Expense> expenses);
-
     @Update
     void update(Expense expense);
+
+    @Update
+    void updateAll(List<Expense> expenses);
 
     @Query("UPDATE Expense SET expense_category = :newCategory WHERE id = :expenseId")
     void updateCategory(int expenseId, String newCategory);
@@ -41,9 +41,6 @@ public interface ExpenseDao {
 
     @Delete
     void deleteAll(List<Expense> expenses);
-
-    @Query("SELECT * FROM Expense WHERE id = :expenseId")
-    Expense getById(int expenseId);
 
     @Query("SELECT * FROM Expense")
     List<Expense> getAll();

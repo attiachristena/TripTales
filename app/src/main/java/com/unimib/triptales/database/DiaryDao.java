@@ -15,10 +15,7 @@ import java.util.List;
 @Dao
 public interface DiaryDao {
     @Insert
-    void insert(Diary diary);
-
-    @Insert
-    void insertAll(List<Diary> diaries);
+    long insert(Diary diary);
 
     @Update
     void update(Diary diary);
@@ -29,17 +26,17 @@ public interface DiaryDao {
     @Delete
     void deleteAll(List<Diary> diaries);
 
-    //Recupero di un singolo elemento
-    @Query("SELECT * FROM Diary WHERE id = :diaryId")
-    Diary getDiaryById(int diaryId);
-
-    //Recupero di una lista di elementi
     @Query("SELECT * FROM Diary")
     List<Diary> getAllDiaries();
 
-    //Recupero dei diari di un determinato user
     @Query("SELECT * FROM Diary WHERE userId = :userId")
     List<Diary> getAllDiariesByUserId(int userId);
+
+    @Query("SELECT diary_start_date FROM Diary")
+    List<String> getStartDates();
+
+    @Query("SELECT diary_end_date FROM Diary")
+    List<String> getEndDates();
 
     @Transaction
     @Query("SELECT * FROM Diary WHERE id = :diaryId")

@@ -5,7 +5,7 @@
     android:id="@+id/rootLayoutDiary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.diario.DiaryActivity">
+    tools:context=".ui.diary.DiaryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarlayout"

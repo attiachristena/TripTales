@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:theme="@style/Base.Theme.TripTales"
     android:id="@+id/rootLayoutGoals"
-    tools:context=".ui.diario.fragment.GoalsFragment">
+    tools:context=".ui.diary.fragment.GoalsFragment">
 
     <LinearLayout
         android:id="@+id/linearLayoutGoals"
