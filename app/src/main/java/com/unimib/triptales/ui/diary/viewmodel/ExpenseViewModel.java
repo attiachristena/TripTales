@@ -1,6 +1,10 @@
 package com.unimib.triptales.ui.diary.viewmodel;
 
+import static com.unimib.triptales.util.Constants.ADD_EXPENSE;
+import static com.unimib.triptales.util.Constants.BUDGET;
 import static com.unimib.triptales.util.Constants.CURRENCY_EUR;
+import static com.unimib.triptales.util.Constants.EDIT_EXPENSE;
+import static com.unimib.triptales.util.Constants.FILTER;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -11,7 +15,9 @@ import com.unimib.triptales.repository.expense.IExpenseRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExpenseViewModel extends ViewModel {
 
@@ -23,7 +29,8 @@ public class ExpenseViewModel extends ViewModel {
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
     private final MutableLiveData<Double> amountSpentLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> overlayVisibility = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> overlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> saveButtonClicked = new MutableLiveData<>(false);
 
     public ExpenseViewModel(IExpenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
@@ -57,9 +64,19 @@ public class ExpenseViewModel extends ViewModel {
         return overlayVisibility;
     }
 
-    public void setOverlayVisibility(boolean visible) {
-        overlayVisibility.setValue(visible);
+
+    public MutableLiveData<Boolean> getSaveButtonClicked() {
+        return saveButtonClicked;
     }
+
+    public void setSaveButtonClicked(boolean clicked) {
+        saveButtonClicked.setValue(clicked);
+    }
+
+    public void setOverlayVisibility(boolean visible) {
+        overlayVisibility.postValue(visible);
+    }
+
 
     public void filterExpenses(String category, String currency){
         if (category == null || category.trim().isEmpty()) {
@@ -382,13 +399,15 @@ public class ExpenseViewModel extends ViewModel {
 
     public void deselectAllExpenses() {
         List<Expense> expenses = getAllExpenses();
-        for (Expense expense : expenses) {
-            expense.setExpense_isSelected(false);
-            updateExpenseIsSelected(expense.getId(), false);
+        if(expenses != null) {
+            for (Expense expense : expenses) {
+                expense.setExpense_isSelected(false);
+                updateExpenseIsSelected(expense.getId(), false);
+            }
+            expensesLiveData.setValue(expenses);
+            selectedExpensesLiveData.postValue(Collections.emptyList());
+            expenseRepository.updateAllExpenses(expenses);
         }
-        expensesLiveData.setValue(expenses);
-        selectedExpensesLiveData.postValue(Collections.emptyList());
-        expenseRepository.updateAllExpenses(expenses);
     }
 
 }

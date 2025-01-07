@@ -37,8 +37,7 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
         }
     }
 
-    public ExpensesRecyclerAdapter(List<Expense> expenseList, Context context) {
-        this.expenseList = expenseList;
+    public ExpensesRecyclerAdapter(Context context) {
         this.context = context;
     }
 

@@ -36,6 +36,9 @@ public interface ExpenseDao {
     @Query("UPDATE Expense SET expense_isSelected = :newIsSelected WHERE id = :expenseId")
     void updateIsSelected(int expenseId, boolean newIsSelected);
 
+    @Query("UPDATE Expense SET expense_iconId = :newIconId WHERE id = :expenseId")
+    void updateIconId(int expenseId, int newIconId);
+
     @Delete
     void delete(Expense expense);
 

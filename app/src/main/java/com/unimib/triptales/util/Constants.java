@@ -36,6 +36,11 @@ public class Constants {
     public static final List<String> CATEGORIES = Arrays.asList(SHOPPING,
             FOOD, TRANSPORT, ACCOMMODATION, CULTURE, RECREATION);
 
+    public static final String BUDGET = "BUDGET";
+    public static final String ADD_EXPENSE = "ADD_EXPENSE";
+    public static final String EDIT_EXPENSE = "EDIT_EXPENSE";
+    public static final String FILTER = "FILTER";
+
     public static final String CURRENCY_EUR = "€";
     public static final String CURRENCY_USD = "$";
     public static final String CURRENCY_GBP = "£";
