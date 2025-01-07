@@ -23,6 +23,7 @@ public class ExpenseViewModel extends ViewModel {
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
     private final MutableLiveData<Double> amountSpentLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> overlayVisibility = new MutableLiveData<>(false);
 
     public ExpenseViewModel(IExpenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
@@ -50,6 +51,14 @@ public class ExpenseViewModel extends ViewModel {
 
     public LiveData<List<Expense>> getFilteredExpensesLiveData() {
         return filteredExpensesLiveData;
+    }
+
+    public MutableLiveData<Boolean> getOverlayVisibility() {
+        return overlayVisibility;
+    }
+
+    public void setOverlayVisibility(boolean visible) {
+        overlayVisibility.setValue(visible);
     }
 
     public void filterExpenses(String category, String currency){

@@ -144,12 +144,13 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         try {
             InputStream inputStream = context.getResources().openRawResource(R.raw.world_countries);
 
-            String jsonString = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            StringBuilder builder = new StringBuilder();
+            int byteData;
+            while ((byteData = inputStream.read()) != -1) {
+                builder.append((char) byteData);
             }
 
-            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonObject = new JSONObject(builder.toString());
             JSONArray features = jsonObject.getJSONArray("features");
 
             for (int i = 0; i < features.length(); i++) {

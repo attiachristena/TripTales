@@ -91,6 +91,10 @@ public class ExpensesFragment extends Fragment {
     private ExpenseViewModel expenseViewModel;
     private ExpensesRecyclerAdapter recyclerAdapter;
     private String inputCategoryFilter;
+    private boolean edit;
+    private boolean delete;
+    private boolean add;
+    private boolean filter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,7 +109,7 @@ public class ExpensesFragment extends Fragment {
         expenseViewModel = new ViewModelProvider(requireActivity(),
                 new ViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
 
-        expenseList = expenseViewModel.getAllExpenses();
+        expenseList = expenseViewModel.getExpensesLiveData().getValue();
         expenseViewModel.deselectAllExpenses();
 
         RecyclerView recyclerViewExpenses = rootView.findViewById(R.id.recyclerViewExpenses);
@@ -127,6 +131,11 @@ public class ExpensesFragment extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
         rootLayout = view.findViewById(R.id.rootLayoutSpese);
         noExpensesString = view.findViewById(R.id.noSpeseString);
+        expenseList = expenseViewModel.getExpensesLiveData().getValue();
+        edit = false;
+        delete = false;
+        add = false;
+        filter = false;
 
         /*if(expenseList.isEmpty()){
             noExpensesString.setVisibility(View.VISIBLE);
@@ -205,6 +214,7 @@ public class ExpensesFragment extends Fragment {
                     budgetText.setText(expenseViewModel.generateTextAmount(inputBudget, inputCurrency));
                     // aggiungere un MutableLiveData<int> budgetLiveData a DiaryViewModel e
                     // poi gestire .observe aggiornando il progress indicator
+                    // si può mettere nell'.observe anche tutto questo codice (in teoria)
                     updateProgressIndicator(spent, budget, 0);
                     Constants.hideKeyboard(view, requireActivity());
                     overlay_add_budget.setVisibility(View.GONE);
@@ -255,28 +265,77 @@ public class ExpensesFragment extends Fragment {
                     deleteExpense.setVisibility(View.GONE);
                     addExpense.setEnabled(true);
                 }
+
+                // gestione modifica spesa
+                /*if(edit){
+
+                }*/
+            }
+        });
+
+        // gestione degli overlays
+        expenseViewModel.getOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(add){
+                    if(budget == 0){
+                        Snackbar snackbar = Snackbar.make(rootLayout, R.string.snackbarErroreBudget, Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }else {
+                        overlay_add_expense.setVisibility(View.VISIBLE);
+                        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
+                        addExpense.setVisibility(View.GONE);
+                        editBudget.setEnabled(false);
+                        filterButton.setEnabled(false);
+                        editTextAmount.setText("");
+                        editTextCategory.setText("");
+                        editTextDescription.setText("");
+                        editTextDay.setText("");
+                        editTextMonth.setText("");
+                        editTextYear.setText("");
+                        add = false;
+                    }
+                } else if(edit){
+                    overlay_modify_expense.setVisibility(View.VISIBLE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
+
+                    List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
+
+                    if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
+                        Expense currentExpense = selectedExpenses.get(0);
+                        String tmp = expenseViewModel.extractRealAmount(currentExpense, inputCurrency);
+                        editTextModifiedAmountSpent.setText(tmp);
+                        editTextModifiedCategory.setText(currentExpense.getCategory(), false);
+                        editTextModifiedDescription.setText(currentExpense.getDescription());
+
+                        int[] extractedDate = expenseViewModel.extractDayMonthYear(currentExpense.getDate());
+                        editTextModifiedDay.setText(String.valueOf(extractedDate[0]));
+                        editTextModifiedMonth.setText(String.valueOf(extractedDate[1]));
+                        editTextModifiedYear.setText(String.valueOf(extractedDate[2]));
+
+                        addExpense.setVisibility(View.GONE);
+                        modifyExpense.setVisibility(View.GONE);
+                        deleteExpense.setVisibility(View.GONE);
+                        editBudget.setEnabled(false);
+                        filterButton.setEnabled(false);
+                        edit = false;
+                    }
+                } else if(filter){
+                    overlay_filter.setVisibility(View.GONE);
+                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
+                    addExpense.setVisibility(View.VISIBLE);
+                    editBudget.setEnabled(true);
+                    filterButton.setEnabled(true);
+                    filter = false;
+                }
             }
         });
 
         addExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(budget == 0){
-                    Snackbar snackbar = Snackbar.make(rootLayout, R.string.snackbarErroreBudget, Snackbar.LENGTH_SHORT);
-                    snackbar.show();
-                }else {
-                    overlay_add_expense.setVisibility(View.VISIBLE);
-                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-                    addExpense.setVisibility(View.GONE);
-                    editBudget.setEnabled(false);
-                    filterButton.setEnabled(false);
-                    editTextAmount.setText("");
-                    editTextCategory.setText("");
-                    editTextDescription.setText("");
-                    editTextDay.setText("");
-                    editTextMonth.setText("");
-                    editTextYear.setText("");
-                }
+                add = true;
+                expenseViewModel.setOverlayVisibility(true);
             }
         });
 
@@ -366,6 +425,7 @@ public class ExpensesFragment extends Fragment {
                             inputCurrency).observe(getViewLifecycleOwner(), insertedExpense -> {
                         Constants.hideKeyboard(view, requireActivity());
                         overlay_add_expense.setVisibility(View.GONE);
+                        expenseViewModel.setOverlayVisibility(false);
                         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                         addExpense.setVisibility(View.VISIBLE);
                         editBudget.setEnabled(true);
@@ -395,29 +455,8 @@ public class ExpensesFragment extends Fragment {
         modifyExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlay_modify_expense.setVisibility(View.VISIBLE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-
-                List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
-
-                if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
-                    Expense currentExpense = selectedExpenses.get(0);
-                    String tmp = expenseViewModel.extractRealAmount(currentExpense, inputCurrency);
-                    editTextModifiedAmountSpent.setText(tmp);
-                    editTextModifiedCategory.setText(currentExpense.getCategory(), false);
-                    editTextModifiedDescription.setText(currentExpense.getDescription());
-
-                    int[] extractedDate = expenseViewModel.extractDayMonthYear(currentExpense.getDate());
-                    editTextModifiedDay.setText(String.valueOf(extractedDate[0]));
-                    editTextModifiedMonth.setText(String.valueOf(extractedDate[1]));
-                    editTextModifiedYear.setText(String.valueOf(extractedDate[2]));
-
-                    addExpense.setVisibility(View.GONE);
-                    modifyExpense.setVisibility(View.GONE);
-                    deleteExpense.setVisibility(View.GONE);
-                    editBudget.setEnabled(false);
-                    filterButton.setEnabled(false);
-                }
+                edit = true;
+                expenseViewModel.setOverlayVisibility(true);
             }
         });
 
@@ -481,6 +520,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+
                 List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
 
                 if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
@@ -502,6 +542,7 @@ public class ExpensesFragment extends Fragment {
 
                         Constants.hideKeyboard(view, requireActivity());
                         overlay_modify_expense.setVisibility(View.GONE);
+                        expenseViewModel.setOverlayVisibility(false);
                         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                         addExpense.setVisibility(View.VISIBLE);
                         addExpense.setEnabled(true);
@@ -529,11 +570,13 @@ public class ExpensesFragment extends Fragment {
         backButtonFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlay_filter.setVisibility(View.GONE);
+                filter = true;
+                expenseViewModel.setOverlayVisibility(true);
+                /*overlay_filter.setVisibility(View.GONE);
                 ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                 addExpense.setVisibility(View.VISIBLE);
                 editBudget.setEnabled(true);
-                filterButton.setEnabled(true);
+                filterButton.setEnabled(true);*/
             }
         });
 
@@ -558,6 +601,7 @@ public class ExpensesFragment extends Fragment {
                 totExpense.setText(totalAmountText);
 
                 overlay_filter.setVisibility(View.GONE);
+                expenseViewModel.setOverlayVisibility(false);
                 ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                 closeFilter.setVisibility(View.VISIBLE);
                 filterText.setVisibility(View.VISIBLE);
