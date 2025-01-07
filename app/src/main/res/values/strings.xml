@@ -112,12 +112,15 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
 
+    ///
     <string name="error_unexpected">Unexpected error</string>
     <string name="error_google_login">Google Login Error</string>
     <string name="error_email_required">Email Required Error</string>
     <string name="error_email_invalid">Invalid Email Error</string>
     <string name="password_reset_email_sent">Email for reset password sent</string>
     <string name="registrati_con_google">Registrati con Google</string>
+    ///
+
 
     <string name="nome_user_momentaneo">Nome Cognome</string>
     <string name="modalita_scura">Modalità scura</string>

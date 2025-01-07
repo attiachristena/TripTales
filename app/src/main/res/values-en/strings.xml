@@ -159,5 +159,12 @@
     <string name="inglese">English</string>
     <string name="elimina_profilo">Delete profile</string>
 
+    <string name="error_unexpected">Unexpected error</string>
+    <string name="error_google_login">Google Login Error</string>
+    <string name="error_email_required">Email Required Error</string>
+    <string name="error_email_invalid">Invalid Email Error</string>
+    <string name="password_reset_email_sent">Email for reset password sent</string>
+    <string name="registrati_con_google">Registrati con Google</string>
+
 
 </resources>

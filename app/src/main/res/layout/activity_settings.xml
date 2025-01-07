@@ -10,7 +10,7 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarlayout"
+        android:id="@+id/appbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
@@ -20,8 +20,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="10dp"
             android:background="@color/primary"
+            android:elevation="10dp"
             app:menu="@menu/top_app_bar"
             app:navigationIcon="@drawable/baseline_menu_24"
             app:title="@string/app_name"
