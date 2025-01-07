@@ -4,7 +4,7 @@
     <string name="tabTappe">Tappe</string>
     <string name="tabSpese">Spese</string>
     <string name="tabObiettivi">Obiettivi</string>
-    <string name="tabCheckList">Attività</string>   //
+    <string name="tabCheckList">Attività</string>
     <string name="page_title">TripTales</string>
     <string name="action_home">Home</string>
     <string name="action_logout">Logout</string>
@@ -96,12 +96,12 @@
     <string name="noTasksString">Aggiungi la prima attività!</string>
     <string name="noGoalsString">Aggiungi il primo obiettivo del viaggio!</string>
     <string name="noSpeseString">Imposta il budget e aggiungi la prima spesa!</string>
-    <string name="checklistTitle">Lista delle attività da svolgere</string>     //
-    <string name="warningCurrency">*Ricorda: puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
+    <string name="checklistTitle">Lista delle attività da svolgere</string>
+    <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>    //
     <string name="hintCurrency">Valuta*</string>
     <string name="nome_diario">Nome diario</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
-    <string name="intro1_title">Benvenuto su TripTales. Il tuo diario di viaggio personale</string>
+    <string name="intro1_title">Benvenuto su TripTales Il tuo diario di viaggio personale</string>
     <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>
     <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni tappa</string>
     <string name="intro2_body">Qui potrai pianificare le tue avventure, annotare ogni scoperta e rivivere ogni momento</string>
@@ -157,6 +157,7 @@
     <string name="material_calendar_today_button">Oggi</string>
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
+    <string name="aggiungi_diario">Aggiungi Diario</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>

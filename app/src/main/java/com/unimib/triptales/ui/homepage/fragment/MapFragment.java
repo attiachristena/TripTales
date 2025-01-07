@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.CountryPolygonDao;
 import com.unimib.triptales.model.CountryPolygon;
-import com.unimib.triptales.ui.diario.DiaryActivity;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
 import androidx.lifecycle.Observer;
@@ -66,6 +64,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
+        //usare il campo "paese" del diario e poi eliminare il database countryPolygon!!
         countryPolygonList = countryPolygonDao.getAll();
 
         return rootView;
@@ -96,14 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 List<List<LatLng>> countryBorders = parser.getCountryBorders(countryPolygon.getCountryName());
 
                 if(countryBorders != null) {
-                    for (List<LatLng> polygon : countryBorders) {
-                        PolygonOptions polygonOptions = new PolygonOptions()
-                                .addAll(polygon)
-                                .strokeColor(getResources().getColor(R.color.secondary))
-                                .fillColor(Color.parseColor("#80CDBAA9"))
-                                .strokeWidth(4);
-                        mMap.addPolygon(polygonOptions);
-                    }
+                    colorPolygons(countryBorders);
                 }
             }
         }
@@ -113,14 +105,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         CountryPolygon verifica = countryPolygonDao.getByName(userCountry);
         if(verifica == null && countryBorders != null) {
-            for (List<LatLng> polygon : countryBorders) {
-                PolygonOptions polygonOptions = new PolygonOptions()
-                        .addAll(polygon)
-                        .strokeColor(getResources().getColor(R.color.secondary))
-                        .fillColor(Color.parseColor("#80CDBAA9"))
-                        .strokeWidth(4);
-                mMap.addPolygon(polygonOptions);
-            }
+            colorPolygons(countryBorders);
         }
 
         /*// Rimuovi un poligono specifico
@@ -174,6 +159,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 // Permessi negati
                 Toast.makeText(getContext(), "Location permission is required to show your location on the map", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    public void colorPolygons(List<List<LatLng>> countryBorders){
+        for (List<LatLng> polygon : countryBorders) {
+            PolygonOptions polygonOptions = new PolygonOptions()
+                    .addAll(polygon)
+                    .strokeColor(getResources().getColor(R.color.secondary))
+                    .fillColor(Color.parseColor("#70F6EEE5"))
+                    .strokeWidth(4);
+            mMap.addPolygon(polygonOptions);
         }
     }
 }

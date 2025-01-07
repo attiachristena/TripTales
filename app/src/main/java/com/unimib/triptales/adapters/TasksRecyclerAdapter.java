@@ -104,7 +104,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 FloatingActionButton deleteGoal = getDeleteTask();
 
                 addGoal.setEnabled(false);
-                viewHolder.taskCheckBox.setEnabled(false);
 
                 if (task.isSelected()) {
                     //Deseleziona l'attività
@@ -112,6 +111,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                     card.setStrokeColor(ContextCompat.getColor(context, R.color.light_gray));
                     task.setSelected(false);
                     taskDao.updateIsSelected(task.getId(), false);
+                    viewHolder.taskCheckBox.setEnabled(true);
 
                     boolean notSelectedAll = true;
                     for (Task t : tasksList) {
@@ -131,6 +131,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                     card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
                     task.setSelected(true);
                     taskDao.updateIsSelected(task.getId(), true);
+                    viewHolder.taskCheckBox.setEnabled(false);
                 }
 
                 List<Task> selectedTasks = taskDao.getSelectedTasks();

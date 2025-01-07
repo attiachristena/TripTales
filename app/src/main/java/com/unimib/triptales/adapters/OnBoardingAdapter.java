@@ -25,6 +25,7 @@ public class OnBoardingAdapter extends PagerAdapter {
     int []sliderAllDesc = {R.string.intro1_body,R.string.intro2_body,R.string.intro3_body,R.string.intro4_body};
     int []sliderAllBackgrounds = {R.drawable.bg1,R.drawable.bg2,R.drawable.bg3,R.drawable.bg4};
 
+
     public OnBoardingAdapter(Context context){
         this.context = context;
     }
@@ -49,7 +50,7 @@ public class OnBoardingAdapter extends PagerAdapter {
         ImageView sliderImage = (ImageView) view.findViewById(R.id.slideImg);
         TextView sliderTitle =(TextView) view.findViewById(R.id.sliderTitle);
         TextView sliderDesc = (TextView) view.findViewById(R.id.sliderSubtitle);
-        LinearLayout sliderLayout = view.findViewById(R.id.sliderLayout);
+        LinearLayout sliderLayout = (LinearLayout) view.findViewById(R.id.sliderLayout);
 
         sliderImage.setImageResource(sliderAllImages[position]);
         sliderTitle.setText(this.sliderAllTitle[position]);
@@ -59,6 +60,8 @@ public class OnBoardingAdapter extends PagerAdapter {
         container.addView(view);
         return view;
     }
+
+
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object){

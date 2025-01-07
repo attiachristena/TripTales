@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rootLayoutSpese"
-    tools:context=".ui.diario.fragment.ExpensesFragment">
+    tools:context=".ui.diary.fragment.ExpensesFragment">
 
     <LinearLayout
         android:id="@+id/linearLayoutSpese"

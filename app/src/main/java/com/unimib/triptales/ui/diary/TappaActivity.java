@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.diario;
+package com.unimib.triptales.ui.diary;
 
 
 import android.app.Activity;
