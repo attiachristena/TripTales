@@ -22,6 +22,7 @@ import com.unimib.triptales.ui.homepage.fragment.CalendarFragment;
 import com.unimib.triptales.ui.homepage.fragment.HomeFragment;
 import com.unimib.triptales.ui.homepage.fragment.MapFragment;
 import com.unimib.triptales.ui.login.LoginActivity;
+import com.unimib.triptales.ui.settings.SettingsActivity;
 
 
 public class HomepageActivity extends AppCompatActivity {
@@ -113,6 +114,9 @@ public class HomepageActivity extends AppCompatActivity {
 
         if (id == android.R.id.home){
             //inserire intent per andare alla SetingsActivity
+            Intent intent = new Intent(HomepageActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

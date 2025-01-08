@@ -97,7 +97,7 @@
     <string name="noGoalsString">Aggiungi il primo obiettivo del viaggio!</string>
     <string name="noSpeseString">Imposta il budget e aggiungi la prima spesa!</string>
     <string name="checklistTitle">Lista delle attività da svolgere</string>
-    <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
+    <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>    //
     <string name="hintCurrency">Valuta*</string>
     <string name="nome_diario">Nome diario</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
@@ -111,12 +111,16 @@
     <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
+
+    ///
     <string name="error_unexpected">Unexpected error</string>
     <string name="error_google_login">Google Login Error</string>
     <string name="error_email_required">Email Required Error</string>
     <string name="error_email_invalid">Invalid Email Error</string>
     <string name="password_reset_email_sent">Email for reset password sent</string>
     <string name="registrati_con_google">Registrati con Google</string>
+    ///
+
 
     <string name="nome_user_momentaneo">Nome Cognome</string>
     <string name="modalita_scura">Modalità scura</string>
@@ -154,5 +158,15 @@
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
     <string name="aggiungi_diario">Aggiungi Diario</string>
+
+    <string name="modifica_password">Modifica password</string>
+    <string name="vecchia_password">Vecchia password</string>
+    <string name="nuova_password">Nuova password</string>
+    <string name="modifica_email">Modifica email</string>
+    <string name="vecchia_email">Vecchia email</string>
+    <string name="nuova_email">Nuova email</string>
+    <string name="italiano">Italiano</string>
+    <string name="inglese">Inglese</string>
+    <string name="elimina_profilo">Elimina profilo</string>
 
 </resources>
