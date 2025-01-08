@@ -34,7 +34,7 @@ public class SettingsFragment extends Fragment {
     SharedPreferences.Editor editor;
 
     public SettingsFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -48,13 +48,11 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflazione del layout
+
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        // Trova il riferimento al ViewPager2 nel tuo layout
-        viewPager2 = getActivity().findViewById(R.id.settingsSlider); // Assicurati che l'ID corrisponda
+        viewPager2 = getActivity().findViewById(R.id.settingsSlider);
 
-        // Trova il bottone Privacy
         PrivacyButton = view.findViewById(R.id.PrivacyButton);
         LinguaButton = view.findViewById(R.id.LinguaButton);
         AccountButton = view.findViewById(R.id.AccountButton);
@@ -71,7 +69,6 @@ public class SettingsFragment extends Fragment {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
-        // Associa lo stato iniziale dello switch
         switchNightMode.setChecked(nightMode);
 
         switchNightMode.setOnClickListener(new View.OnClickListener(){
@@ -124,14 +121,11 @@ public class SettingsFragment extends Fragment {
         AccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Crea il PopupMenu
                 PopupMenu popupMenu = new PopupMenu(getActivity(), AccountButton);
 
-                // Inflates il menu dal file XML
                 MenuInflater inflater = popupMenu.getMenuInflater();
                 inflater.inflate(R.menu.account_menu, popupMenu.getMenu());
 
-                // Gestisci l'evento di selezione di un item dal menu
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -149,8 +143,6 @@ public class SettingsFragment extends Fragment {
                         return false;
                     }
                 });
-
-                // Mostra il menu
                 popupMenu.show();
             }
         });
@@ -159,7 +151,7 @@ public class SettingsFragment extends Fragment {
 
 
         //BOTTONE PER ANDARE AL PRIVACYFRAGMENT
-        // Aggiungi il listener per il bottone
+
         PrivacyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,7 +163,6 @@ public class SettingsFragment extends Fragment {
         AboutUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Imposta la pagina corrente a quella desiderata
                 viewPager2.setCurrentItem(4, false); // Supponendo che il PrivacyFragment sia alla posizione 1
             }
         });
@@ -179,23 +170,21 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-    // Funzione per cambiare la lingua
+    //CAMBIO LINGUA
     private void changeLanguage(String languageCode) {
-        // Cambia la lingua dell'app qui
+
         Locale locale = new Locale(languageCode);
         Locale.setDefault(locale);
         Configuration config = getActivity().getResources().getConfiguration();
         config.setLocale(locale);
         getActivity().getResources().updateConfiguration(config, getActivity().getResources().getDisplayMetrics());
 
-        // Salva la lingua preferita in SharedPreferences
         SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("language", languageCode);
         editor.apply();
 
-        // Aggiorna l'interfaccia utente o ricarica l'attività
-        getActivity().recreate(); // Ricarica l'attività per applicare la nuova lingua
+        getActivity().recreate();
     }
 
     private void applySavedLanguage() {
@@ -203,14 +192,13 @@ public class SettingsFragment extends Fragment {
         String languageCode = preferences.getString("language", null); // Controlla se una lingua è già salvata
 
         if (languageCode == null) {
-            // Nessuna lingua salvata, imposta l'italiano come default
+
             languageCode = "it";
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("language", languageCode);
             editor.apply();
         }
 
-        // Applica la lingua salvata o quella di default
         Locale locale = new Locale(languageCode);
         Locale.setDefault(locale);
         Configuration config = getActivity().getResources().getConfiguration();
