@@ -77,13 +77,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         countryPolygonDao = AppRoomDatabase.getDatabase(getContext()).countryPolygonDao();
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
-        sharedViewModel.getDiaryName().observe(requireActivity(), new Observer<String>() {
+        sharedViewModel.getDiaryCountry().observe(requireActivity(), new Observer<String>() {
             @Override
-            public void onChanged(String parameter) {
-                userCountry = parameter;
-                CountryPolygon verifica = countryPolygonDao.getByName(parameter);
-                if(verifica == null && !parameter.isEmpty()) {
-                    CountryPolygon countryPolygon = new CountryPolygon(parameter);
+            public void onChanged(String country) {
+                userCountry = country;
+                CountryPolygon verifica = countryPolygonDao.getByName(country);
+                if(verifica == null && !country.isEmpty()) {
+                    CountryPolygon countryPolygon = new CountryPolygon(country);
                     countryPolygonDao.insert(countryPolygon);
                 }
             }
@@ -115,7 +115,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             countryPolygons.remove("Italy"); // Rimuovi dalla mappa
         }*/
 
-        // Controlla i permessi di localizzazione
+        /*// Controlla i permessi di localizzazione
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Richiedi i permessi
@@ -125,7 +125,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         // Permessi concessi: abilita la posizione dell'utente
-        enableUserLocation();
+        enableUserLocation();*/
     }
 
 

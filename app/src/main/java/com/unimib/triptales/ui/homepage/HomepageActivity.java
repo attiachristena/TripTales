@@ -1,13 +1,15 @@
 
 package com.unimib.triptales.ui.homepage;
 
+import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -16,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.navigation.NavigationBarView;
 import com.unimib.triptales.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.unimib.triptales.ui.homepage.fragment.CalendarFragment;
@@ -23,11 +26,16 @@ import com.unimib.triptales.ui.homepage.fragment.HomeFragment;
 import com.unimib.triptales.ui.homepage.fragment.MapFragment;
 import com.unimib.triptales.ui.login.LoginActivity;
 
+import java.util.Map;
+
 
 public class HomepageActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
-    Fragment currentFragment;
+    private Toolbar toolbar;
+    private Fragment homeFragment;
+    private Fragment mapFragment;
+    private Fragment calendarFragment;
+    private Fragment activeFragment;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -37,37 +45,89 @@ public class HomepageActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        // Mostra il primo fragment (HomeFragment)
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment())
-                .commit();
+        homeFragment = new HomeFragment();
+        mapFragment = new MapFragment();
+        calendarFragment = new CalendarFragment();
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
+        if(savedInstanceState != null){
+            String activeTag = savedInstanceState.getString(ACTIVE_FRAGMENT_TAG);
+            activeFragment = getSupportFragmentManager().findFragmentByTag(activeTag);
+            restoreFragment(activeFragment);
+        }else{
+            Intent intent = getIntent();
+            boolean fromSettings = intent.getBooleanExtra("fromSettings", false);
 
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.page_1) {
-                selectedFragment = new HomeFragment();
-            } else if (itemId == R.id.page_2) {
-                selectedFragment = new MapFragment();
-            } else if (itemId == R.id.page_3) {
-                selectedFragment = new CalendarFragment();
-            }
-
-            if (selectedFragment != null) {
+            if(fromSettings){
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
+                        .add(R.id.fragment_container, activeFragment, ACTIVE_FRAGMENT_TAG).commit();
+            }else{
+                activeFragment = homeFragment;
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, homeFragment, "HOME")
                         .commit();
             }
-            return true;
+        }
 
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.page_1) {
+                switchFragment(homeFragment, "HOME");
+            } else if (itemId == R.id.page_2) {
+                switchFragment(mapFragment, "MAP");
+            } else if (itemId == R.id.page_3) {
+                switchFragment(calendarFragment, "CALENDAR");
+            }
+            return true;
         });
 
+    }
+
+    private void switchFragment(Fragment fragment, String tag){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(fragment instanceof MapFragment){
+            Fragment existingMapFragment = getSupportFragmentManager().findFragmentByTag(tag);
+            if(existingMapFragment != null){
+                transaction.remove(existingMapFragment);
+            }
+            mapFragment = new MapFragment();
+            transaction.hide(activeFragment).add(R.id.fragment_container, mapFragment, tag);
+            activeFragment = mapFragment;
+            transaction.commit();
+        }else{
+            //per non creare nuova la mappa basta togliere l'if sopra e lasciare solo contenuto else!
+            if(!fragment.isAdded()){
+                transaction.hide(activeFragment)
+                        .add(R.id.fragment_container, fragment, tag);
+            }else{
+                transaction.hide(activeFragment).show(fragment);
+            }
+            activeFragment = fragment;
+            transaction.commit();
+        }
+    }
+
+    private void restoreFragment(Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(fragment != null){
+            transaction.show(fragment);
+            activeFragment = fragment;
+        }else{
+            transaction.add(R.id.fragment_container, homeFragment, "HOME");
+            activeFragment = homeFragment;
+        }
+        transaction.commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(activeFragment != null){
+            String tag = activeFragment.getTag();
+            outState.putString(ACTIVE_FRAGMENT_TAG, tag);
+        }
     }
 
     @Override

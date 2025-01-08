@@ -154,5 +154,9 @@
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
     <string name="aggiungi_diario">Aggiungi Diario</string>
+    <string name="snackbarExpenseAdded">Spesa aggiunta correttamente!</string>
+    <string name="snackbarExpenseUpdated">Spesa aggiornata correttamente!</string>
+    <string name="snackbarExpenseDeleted">Spesa rimossa correttamente!</string>
+    <string name="snackbarExpenseNotDeleted">Errore: spesa non rimossa!</string>
 
 </resources>

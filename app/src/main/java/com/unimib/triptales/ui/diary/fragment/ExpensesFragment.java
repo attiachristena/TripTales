@@ -9,7 +9,11 @@ import static com.unimib.triptales.util.Constants.CURRENCY_GBP;
 import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
 import static com.unimib.triptales.util.Constants.CURRENCY_USD;
 import static com.unimib.triptales.util.Constants.EDIT_EXPENSE;
+import static com.unimib.triptales.util.Constants.EXPENSE_ADDED;
+import static com.unimib.triptales.util.Constants.EXPENSE_DELETED;
+import static com.unimib.triptales.util.Constants.EXPENSE_UPDATED;
 import static com.unimib.triptales.util.Constants.FILTER;
+import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 
 import android.os.Bundle;
 
@@ -90,14 +94,10 @@ public class ExpensesFragment extends Fragment {
     private ExpensesRecyclerAdapter expensesRecyclerAdapter;
     private String inputFilterCategory;
     private boolean bEdit;
-    private boolean bDelete;
     private boolean bAdd;
-    private boolean bFilter;
-    private boolean bBudget;
     private boolean bSaveExpense;
     private boolean bSaveBudget;
     private boolean bSaveFilter;
-    private String overlayType;
     // serve per il budget non cancellare!
     private TextInputLayout currencyTextInputLayout;
 
@@ -136,14 +136,10 @@ public class ExpensesFragment extends Fragment {
         expenseRootLayout = view.findViewById(R.id.rootLayoutSpese);
         noExpensesTextView = view.findViewById(R.id.noSpeseString);
         bEdit = false;
-        bDelete = false;
         bAdd = false;
-        bFilter = false;
-        bBudget = false;
         bSaveBudget = false;
         bSaveExpense = false;
         bSaveFilter = false;
-        overlayType = "";
 
         expenseViewModel.getExpensesLiveData().observe(getViewLifecycleOwner(), expenses -> {
             expenseList = expenses;
@@ -174,15 +170,14 @@ public class ExpensesFragment extends Fragment {
         editBudgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bBudget = true;
-                expenseViewModel.setOverlayVisibility(true);
+                expenseViewModel.setBudgetOverlayVisibility(true);
             }
         });
 
         budgetBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                expenseViewModel.setOverlayVisibility(false);
+                expenseViewModel.setBudgetOverlayVisibility(false);
             }
         });
 
@@ -209,7 +204,7 @@ public class ExpensesFragment extends Fragment {
                     // poi gestire .observe aggiornando il progress indicator
                     // si può mettere nell'.observe anche tutto questo codice (in teoria)
                     updateProgressIndicator(amountSpent, budget, 0);
-                    expenseViewModel.setOverlayVisibility(false);
+                    expenseViewModel.setBudgetOverlayVisibility(false);
                     if(totExpenseTextView.getVisibility() == View.VISIBLE) {
                         expenseViewModel.filterExpenses(inputFilterCategory, inputCurrency);
                     }
@@ -218,7 +213,29 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        //gestione aggiunta di una spesa
+        expenseViewModel.getBudgetOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean visible) {
+                if (visible) {
+                    disableSwipeAndButtons();
+                    showOverlay(BUDGET);
+                } else {
+                    enableSwipeAndButtons(view);
+                    hideOverlay(BUDGET);
+                }
+            }
+        });
+
+        expenseViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String errorMessage) {
+                if(errorMessage != null){
+                    Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //gestione di una spesa
         overlay_add_edit_expense = inflater.inflate(R.layout.overlay_add_edit_expense, expenseRootLayout, false);
         expenseRootLayout.addView(overlay_add_edit_expense);
         overlay_add_edit_expense.setVisibility(View.GONE);
@@ -226,85 +243,11 @@ public class ExpensesFragment extends Fragment {
         editExpenseButton = view.findViewById(R.id.modificaSpesa);
         deleteExpenseButton = view.findViewById(R.id.eliminaSpesa);
 
-        expenseViewModel.getSelectedExpensesLiveData().observe(getViewLifecycleOwner(), selectedExpenses -> {
-            if(selectedExpenses != null) {
-                if (selectedExpenses.size() == 1) {
-                    if(overlay_add_edit_expense.getVisibility() == View.VISIBLE){
-                        editExpenseButton.setVisibility(View.GONE);
-                        deleteExpenseButton.setVisibility(View.GONE);
-                    } else {
-                        addExpenseButton.setEnabled(false);
-                        editExpenseButton.setVisibility(View.VISIBLE);
-                        deleteExpenseButton.setVisibility(View.VISIBLE);
-                    }
-                } else if (selectedExpenses.size() == 2) {
-                    addExpenseButton.setEnabled(false);
-                    editExpenseButton.setVisibility(View.GONE);
-                } else if (selectedExpenses.isEmpty()) {
-                    editExpenseButton.setVisibility(View.GONE);
-                    deleteExpenseButton.setVisibility(View.GONE);
-                    addExpenseButton.setEnabled(true);
-                }
-
-                // gestione modifica spesa
-                /*if(bEdit){
-
-                }*/
-            }
-        });
-
-        // gestione degli overlays
-        expenseViewModel.getOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean visible) {
-                if (visible) {
-                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-                    addExpenseButton.setVisibility(View.GONE);
-                    editBudgetButton.setEnabled(false);
-                    filterButton.setEnabled(false);
-                    if(bBudget){
-                        showOverlay(BUDGET);
-                    } else if (bAdd) {
-                        if (budget == 0) {
-                            Snackbar snackbar = Snackbar.make(expenseRootLayout, R.string.snackbarErroreBudget, Snackbar.LENGTH_SHORT);
-                            snackbar.show();
-                            expenseViewModel.setOverlayVisibility(false);
-                        } else {
-                            showOverlay(ADD_EXPENSE);
-                        }
-                    } else if (bEdit) {
-                        showOverlay(EDIT_EXPENSE);
-                        editExpenseButton.setVisibility(View.GONE);
-                        deleteExpenseButton.setVisibility(View.GONE);
-                    } else if (bFilter) {
-                        showOverlay(FILTER);
-                    }
-                } else {
-                    enableSwipeAndButtons(view);
-                    if(bBudget){
-                        overlay_add_budget.setVisibility(View.GONE);
-                        bBudget = false;
-                    } else if(bAdd){
-                        overlay_add_edit_expense.setVisibility(View.GONE);
-                        bAdd = false;
-                    } else if(bEdit){
-                        overlay_add_edit_expense.setVisibility(View.GONE);
-                        editExpenseButton.setVisibility(View.VISIBLE);
-                        deleteExpenseButton.setVisibility(View.VISIBLE);
-                        bEdit = false;
-                    } else if(bFilter){
-                        overlay_filter.setVisibility(View.GONE);
-                        bFilter = false;
-                    }
-                }
-            }
-        });
-
         addExpenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 bAdd = true;
-                expenseViewModel.setOverlayVisibility(true);
+                expenseViewModel.setExpenseOverlayVisibility(true);
             }
         });
 
@@ -313,7 +256,11 @@ public class ExpensesFragment extends Fragment {
         expenseBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                expenseViewModel.setOverlayVisibility(false);
+                if(bEdit){
+                    editExpenseButton.setVisibility(View.VISIBLE);
+                    deleteExpenseButton.setVisibility(View.VISIBLE);
+                }
+                expenseViewModel.setExpenseOverlayVisibility(false);
             }
         });
 
@@ -324,6 +271,29 @@ public class ExpensesFragment extends Fragment {
         dayEditText = view.findViewById(R.id.inputDay);
         monthEditText = view.findViewById(R.id.inputMonth);
         yearEditText = view.findViewById(R.id.inputYear);
+
+        expenseViewModel.getExpenseOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean visible) {
+                if (visible) {
+                    disableSwipeAndButtons();
+                    if(bAdd) {
+                        showOverlay(ADD_EXPENSE);
+                    } else if(bEdit){
+                        showOverlay(EDIT_EXPENSE);
+                        editExpenseButton.setVisibility(View.GONE);
+                        deleteExpenseButton.setVisibility(View.GONE);
+                    }
+                } else {
+                    enableSwipeAndButtons(view);
+                    if(bAdd){
+                        hideOverlay(ADD_EXPENSE);
+                    } else if(bEdit){
+                        hideOverlay(EDIT_EXPENSE);
+                    }
+                }
+            }
+        });
 
         dayEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -359,17 +329,6 @@ public class ExpensesFragment extends Fragment {
                 android.R.layout.simple_dropdown_item_1line, CATEGORIES);
         categoryAutoCompleteTextView.setAdapter(categoryAdapter);
 
-        expenseViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String errorMessage) {
-                if(errorMessage != null){
-                    Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireActivity(), "Tutto corretto", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         saveExpenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -398,19 +357,59 @@ public class ExpensesFragment extends Fragment {
                             expenseViewModel.deselectAllExpenses();
                         }
                     }
-                    expenseViewModel.setOverlayVisibility(false);
+                    expenseViewModel.setExpenseOverlayVisibility(false);
                 }
             }
         });
 
-        // gestione rimozione della spesa
+        expenseViewModel.getSelectedExpensesLiveData().observe(getViewLifecycleOwner(), selectedExpenses -> {
+            if(selectedExpenses != null) {
+                if (selectedExpenses.size() == 1) {
+                    if(overlay_add_edit_expense.getVisibility() == View.VISIBLE){
+                        editExpenseButton.setVisibility(View.GONE);
+                        deleteExpenseButton.setVisibility(View.GONE);
+                    } else {
+                        addExpenseButton.setEnabled(false);
+                        editExpenseButton.setVisibility(View.VISIBLE);
+                        deleteExpenseButton.setVisibility(View.VISIBLE);
+                    }
+                } else if (selectedExpenses.size() == 2) {
+                    addExpenseButton.setEnabled(false);
+                    editExpenseButton.setVisibility(View.GONE);
+                } else if (selectedExpenses.isEmpty()) {
+                    editExpenseButton.setVisibility(View.GONE);
+                    deleteExpenseButton.setVisibility(View.GONE);
+                    addExpenseButton.setEnabled(true);
+                }
+            }
+        });
+
+        expenseViewModel.getExpenseEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String message) {
+                if(message != null){
+                    switch (message) {
+                        case EXPENSE_ADDED:
+                            Toast.makeText(requireActivity(), R.string.snackbarExpenseAdded, Toast.LENGTH_SHORT).show();
+                            break;
+                        case EXPENSE_UPDATED:
+                            Toast.makeText(requireActivity(), R.string.snackbarExpenseUpdated, Toast.LENGTH_SHORT).show();
+                            break;
+                        case EXPENSE_DELETED:
+                            Toast.makeText(requireActivity(), R.string.snackbarExpenseDeleted, Toast.LENGTH_SHORT).show();
+                            break;
+                        case INVALID_DELETE:
+                            Toast.makeText(requireActivity(), R.string.snackbarExpenseNotDeleted, Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+            }
+        });
+
         deleteExpenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
-                if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
-                    expenseViewModel.deleteSelectedExpenses(selectedExpenses, inputCurrency);
-                }
+                expenseViewModel.deleteSelectedExpenses(inputCurrency);
             }
         });
 
@@ -418,7 +417,7 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 bEdit = true;
-                expenseViewModel.setOverlayVisibility(true);
+                expenseViewModel.setExpenseOverlayVisibility(true);
             }
         });
 
@@ -438,15 +437,27 @@ public class ExpensesFragment extends Fragment {
         filterBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                expenseViewModel.setOverlayVisibility(false);
+                expenseViewModel.setFilterOverlayVisibility(false);
             }
         });
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bFilter = true;
-                expenseViewModel.setOverlayVisibility(true);
+                expenseViewModel.setFilterOverlayVisibility(true);
+            }
+        });
+
+        expenseViewModel.getFilterOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean visible) {
+                if(visible){
+                    disableSwipeAndButtons();
+                    showOverlay(FILTER);
+                } else {
+                    enableSwipeAndButtons(view);
+                    hideOverlay(FILTER);
+                }
             }
         });
 
@@ -464,10 +475,11 @@ public class ExpensesFragment extends Fragment {
             public void onClick(View view) {
                 inputFilterCategory = filterCategoryEditText.getText().toString().trim();
                 expenseViewModel.filterExpenses(inputFilterCategory, inputCurrency);
-                expenseViewModel.setOverlayVisibility(false);
+                expenseViewModel.setFilterOverlayVisibility(false);
                 closeFilterButton.setVisibility(View.VISIBLE);
                 filterTextView.setVisibility(View.VISIBLE);
                 totExpenseTextView.setVisibility(View.VISIBLE);
+                addExpenseButton.setEnabled(false);
             }
         });
 
@@ -532,8 +544,14 @@ public class ExpensesFragment extends Fragment {
                 overlay_add_budget.setVisibility(View.VISIBLE);
                 break;
             case ADD_EXPENSE:
-                overlay_add_edit_expense.setVisibility(View.VISIBLE);
-                resetExpenseInputFields();
+                if(budget == 0) {
+                    Snackbar snackbar = Snackbar.make(expenseRootLayout, R.string.snackbarErroreBudget, Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                    expenseViewModel.setExpenseOverlayVisibility(false);
+                } else {
+                    overlay_add_edit_expense.setVisibility(View.VISIBLE);
+                    resetExpenseInputFields();
+                }
                 break;
             case EDIT_EXPENSE:
                 overlay_add_edit_expense.setVisibility(View.VISIBLE);
@@ -565,7 +583,6 @@ public class ExpensesFragment extends Fragment {
         switch (overlayType) {
             case BUDGET:
                 overlay_add_budget.setVisibility(View.GONE);
-                bBudget = false;
                 break;
             case ADD_EXPENSE:
                 overlay_add_edit_expense.setVisibility(View.GONE);
@@ -573,13 +590,10 @@ public class ExpensesFragment extends Fragment {
                 break;
             case EDIT_EXPENSE:
                 overlay_add_edit_expense.setVisibility(View.GONE);
-                editExpenseButton.setVisibility(View.VISIBLE);
-                deleteExpenseButton.setVisibility(View.VISIBLE);
                 bEdit = false;
                 break;
             case FILTER:
                 overlay_filter.setVisibility(View.GONE);
-                bFilter = false;
                 break;
         }
     }
