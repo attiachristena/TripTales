@@ -202,7 +202,9 @@ public class HomepageActivity extends AppCompatActivity {
         if (id == android.R.id.home){
             //inserire intent per andare alla SetingsActivity
             Intent intent = new Intent(HomepageActivity.this, SettingsActivity.class);
-            intent.putExtra(ACTIVE_FRAGMENT_TAG, activeFragment.getTag());
+            if (activeFragment != null && activeFragment.getTag() != null) {
+                intent.putExtra(ACTIVE_FRAGMENT_TAG, activeFragment.getTag());
+            }
             startActivity(intent);
             return true;
         }
