@@ -1,6 +1,8 @@
 package com.unimib.triptales.ui.settings;
 
 
+import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -112,8 +114,12 @@ public class SettingsActivity extends AppCompatActivity {
             int posizione_vp2 = viewPager2.getCurrentItem();
 
             if(posizione_vp2==0){
+                Intent resultIntent = getIntent();
+                String fragmentTag = resultIntent.getStringExtra("ACTIVE_FRAGMENT_TAG");
+
                 Intent intent = new Intent(SettingsActivity.this, HomepageActivity.class);
                 intent.putExtra("fromSettings", true);
+                intent.putExtra(ACTIVE_FRAGMENT_TAG, resultIntent.getStringExtra(ACTIVE_FRAGMENT_TAG));
                 startActivity(intent);
                 return true;
             }else{
