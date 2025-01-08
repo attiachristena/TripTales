@@ -1,5 +1,6 @@
 package com.unimib.triptales.source.expense;
 
+import com.unimib.triptales.R;
 import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
 
@@ -30,6 +31,19 @@ public class ExpenseLocalDataSource implements BaseExpenseLocalDataSource {
 
     @Override
     public void updateExpenseCategory(int expenseId, String newCategory) {
+        if (newCategory.equalsIgnoreCase("Shopping")){
+            expenseDao.updateIconId(expenseId, R.drawable.baseline_shopping_cart_24);
+        } else if (newCategory.equalsIgnoreCase("Cibo")){
+            expenseDao.updateIconId(expenseId, R.drawable.baseline_fastfood_24);
+        } else if (newCategory.equalsIgnoreCase("Trasporto")){
+            expenseDao.updateIconId(expenseId, R.drawable.baseline_directions_bus_24);
+        } else if (newCategory.equalsIgnoreCase("Alloggio")){
+            expenseDao.updateIconId(expenseId, R.drawable.baseline_hotel_24);
+        } else if (newCategory.equalsIgnoreCase("Cultura")){
+            expenseDao.updateIconId(expenseId, R.drawable.baseline_museum_24);
+        } else if (newCategory.equalsIgnoreCase("Svago")){
+            expenseDao.updateIconId(expenseId, R.drawable.baseline_attractions_24);
+        }
         expenseDao.updateCategory(expenseId, newCategory);
     }
 

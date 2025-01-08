@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -47,7 +48,6 @@ public class CalendarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
 
@@ -55,7 +55,6 @@ public class CalendarFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Inizializza il calendario
         calendarView = view.findViewById(R.id.calendarView);
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         diaryDao = AppRoomDatabase.getDatabase(getContext()).diaryDao();
@@ -87,30 +86,6 @@ public class CalendarFragment extends Fragment {
                 loadEvents();
             }
         });
-
-        /*// Seleziona la data di partenza e ritorno quando l'utente clicca su una data
-        calendarView.setOnDayClickListener(eventDay -> {
-            Calendar selectedDate = eventDay.getCalendar();
-
-            if (startDate == null || endDate != null) {
-                // Se non è stata ancora selezionata la data di partenza o se la data di ritorno è già stata impostata
-                startDate = selectedDate;
-                endDate = null;
-                Toast.makeText(requireActivity(), "Data di partenza selezionata: " + selectedDate.getTime(), Toast.LENGTH_SHORT).show();
-            } else {
-                // Se la data di ritorno viene selezionata
-                if (selectedDate.after(startDate)) {
-                    endDate = selectedDate;
-                    Toast.makeText(requireActivity(), "Data di ritorno selezionata: " + selectedDate.getTime(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            // Ricarica gli eventi (per applicare i cambiamenti)
-            loadEvents();
-        });
-
-        // Aggiungi eventi alle date selezionate
-        loadEvents();*/
     }
 
     private void loadEvents(){
@@ -118,11 +93,9 @@ public class CalendarFragment extends Fragment {
         for (Calendar startCalendar : startDates) {
             events.add(new EventDay(startCalendar, R.drawable.baseline_flight_takeoff_24));
         }
-
         for (Calendar endCalendar : endDates) {
             events.add(new EventDay(endCalendar, R.drawable.baseline_flight_land_24));
         }
-
         calendarView.setEvents(events);
     }
 

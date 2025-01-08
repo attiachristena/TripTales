@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.Diary;
 import com.unimib.triptales.adapters.DiaryAdapter;
+import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +75,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private ArrayList<Diary> selectedDiaries = new ArrayList<>();
     private View imageViewSelectedChanges;
     private String country;
+    private SharedViewModel sharedViewModel;
 
     @Nullable
     @Override
@@ -86,6 +89,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         setupDatePicker(inputDayEndDate, inputMonthEndDate, inputYearEndDate);
         setupDatePicker(modifyDayStartDate, modifyMonthStartDate, modifyYearStartDate);
         setupDatePicker(modifyDayEndDate, modifyMonthEndDate, modifyYearEndDate);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         return view;
     }
@@ -144,12 +148,13 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         try {
             InputStream inputStream = context.getResources().openRawResource(R.raw.world_countries);
 
-            String jsonString = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            StringBuilder builder = new StringBuilder();
+            int byteData;
+            while ((byteData = inputStream.read()) != -1) {
+                builder.append((char) byteData);
             }
 
-            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonObject = new JSONObject(builder.toString());
             JSONArray features = jsonObject.getJSONArray("features");
 
             for (int i = 0; i < features.length(); i++) {
@@ -292,9 +297,13 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
 
     private void saveDiary() {
         String diaryName = inputDiaryName.getText().toString();
+        sharedViewModel.setDiaryName(diaryName);
         String startDate = inputDayStartDate.getText().toString() + "/" + inputMonthStartDate.getText().toString() + "/" + inputYearStartDate.getText().toString();
+        sharedViewModel.setStartDate(startDate);
         String endDate = inputDayEndDate.getText().toString() + "/" + inputMonthEndDate.getText().toString() + "/" + inputYearEndDate.getText().toString();
+        sharedViewModel.setEndDate(endDate);
         String country = ((AutoCompleteTextView) overlayAddDiary.findViewById(R.id.VisitedCountry)).getText().toString();
+        sharedViewModel.setDiaryCountry(country);
         if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty()|| country.isEmpty()) {
             Toast.makeText(getContext(), "Compila tutti i campi e scegli un'immagine!", Toast.LENGTH_SHORT).show();
             return;
