@@ -141,10 +141,10 @@ public class SettingsFragment extends Fragment {
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
                         if (id == R.id.action_modifica_email) {
-                            viewPager2.setCurrentItem(2, true);
+                            viewPager2.setCurrentItem(2, false);
                             return true;
                         } else if (id == R.id.action_modifica_password) {
-                            viewPager2.setCurrentItem(3, true);
+                            viewPager2.setCurrentItem(3, false);
                             return true;
                         }else if (id == R.id.action_elimina_profilo) {
 
@@ -168,7 +168,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Imposta la pagina corrente a quella desiderata
-                viewPager2.setCurrentItem(1, true); // Supponendo che il PrivacyFragment sia alla posizione 1
+                viewPager2.setCurrentItem(1, false); // Supponendo che il PrivacyFragment sia alla posizione 1
             }
         });
 
@@ -176,7 +176,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Imposta la pagina corrente a quella desiderata
-                viewPager2.setCurrentItem(4, true); // Supponendo che il PrivacyFragment sia alla posizione 1
+                viewPager2.setCurrentItem(4, false); // Supponendo che il PrivacyFragment sia alla posizione 1
             }
         });
 
