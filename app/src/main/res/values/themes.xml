@@ -45,6 +45,7 @@
     </style>
 
     <style name="button">
-        <item name="android:background">@android:color/white</item>
+
+        <item name="android:foreground">@color/white</item>
     </style>
 </resources>

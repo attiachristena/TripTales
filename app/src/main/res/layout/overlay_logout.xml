@@ -27,7 +27,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/black"
                 android:textAlignment="textStart"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
         </LinearLayout>
 
 

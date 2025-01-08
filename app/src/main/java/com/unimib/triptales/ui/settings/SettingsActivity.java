@@ -37,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
     SettingsAdapter viewPagerAdapter;
     //LinearLayout rootLayoutDiary;
     Toolbar toolbar;
-    BottomNavigationView bottom_navigation;
+    //BottomNavigationView bottom_navigation;
 
 
 
@@ -53,7 +53,7 @@ public class SettingsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
 
-        bottom_navigation = findViewById(R.id.bottom_navigation);
+        //bottom_navigation = findViewById(R.id.bottom_navigation);
         viewPager2 = findViewById(R.id.settingsSlider);
 
 

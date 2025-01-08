@@ -94,33 +94,29 @@ public class SettingsFragment extends Fragment {
         LinguaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Crea il PopupMenu
                 PopupMenu popupMenu = new PopupMenu(getActivity(), LinguaButton);
 
-                // Inflates il menu dal file XML
                 MenuInflater inflater = popupMenu.getMenuInflater();
-                inflater.inflate(R.menu.lingua_menu, popupMenu.getMenu());
+                popupMenu.getMenuInflater().inflate(R.menu.lingua_menu, popupMenu.getMenu());
 
-                // Gestisci l'evento di selezione di un item dal menu
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
                         if (id == R.id.action_italiano) {
-                            changeLanguage("it"); // Cambia la lingua a italiano
+                            changeLanguage("it");
                             return true;
                         } else if (id == R.id.action_inglese) {
-                            changeLanguage("en"); // Cambia la lingua a inglese
+                            changeLanguage("en");
                             return true;
                         }
                         return false;
                     }
                 });
-
-                // Mostra il menu
                 popupMenu.show();
             }
         });
+
 
 
 
