@@ -113,6 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             if(posizione_vp2==0){
                 Intent intent = new Intent(SettingsActivity.this, HomepageActivity.class);
+                intent.putExtra("fromSettings", true);
                 startActivity(intent);
                 return true;
             }else{

@@ -28,6 +28,7 @@ import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
 
 import java.util.Map;
+import java.util.Objects;
 
 
 public class HomepageActivity extends AppCompatActivity {
@@ -53,25 +54,51 @@ public class HomepageActivity extends AppCompatActivity {
         mapFragment = new MapFragment();
         calendarFragment = new CalendarFragment();
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
+            // Ripristina il fragment attivo dal salvataggio dello stato
             String activeTag = savedInstanceState.getString(ACTIVE_FRAGMENT_TAG);
             activeFragment = getSupportFragmentManager().findFragmentByTag(activeTag);
-            restoreFragment(activeFragment);
-        }else{
+            if (activeFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .show(activeFragment)
+                        .commit();
+            }
+        } else {
             Intent intent = getIntent();
             boolean fromSettings = intent.getBooleanExtra("fromSettings", false);
 
-            if(fromSettings){
+            if (fromSettings) {
+                // Ripristina il fragment attivo dal tag passato nell'Intent
+                String lastFragmentTag = intent.getStringExtra(ACTIVE_FRAGMENT_TAG);
+                if (lastFragmentTag != null) {
+                    activeFragment = getSupportFragmentManager().findFragmentByTag(lastFragmentTag);
+                }
+                if (activeFragment == null) {
+                    // Se il fragment non esiste, creane uno nuovo
+                    switch (Objects.requireNonNull(lastFragmentTag)) {
+                        case "CALENDAR":
+                            activeFragment = new CalendarFragment();
+                            break;
+                        case "MAP":
+                            activeFragment = new MapFragment();
+                            break;
+                        default:
+                            activeFragment = homeFragment;
+                            break;
+                    }
+                }
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, activeFragment, ACTIVE_FRAGMENT_TAG).commit();
-            }else{
+                        .replace(R.id.fragment_container, activeFragment, lastFragmentTag)
+                        .commit();
+            } else {
+                // Caso iniziale: carica il frammento Home
                 activeFragment = homeFragment;
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_container, homeFragment, "HOME")
                         .commit();
             }
         }
-
+        
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.page_1) {
@@ -175,6 +202,7 @@ public class HomepageActivity extends AppCompatActivity {
         if (id == android.R.id.home){
             //inserire intent per andare alla SetingsActivity
             Intent intent = new Intent(HomepageActivity.this, SettingsActivity.class);
+            intent.putExtra(ACTIVE_FRAGMENT_TAG, activeFragment.getTag());
             startActivity(intent);
             return true;
         }
