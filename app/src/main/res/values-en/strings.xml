@@ -149,6 +149,11 @@
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Delete</string>
 
+    <string name="aggiungi_diario">Add diary</string>
+    <string name="snackbarExpenseAdded">Expense added correctly!</string>
+    <string name="snackbarExpenseUpdated">Expense updated correctly!</string>
+    <string name="snackbarExpenseDeleted">Expense deleted correctly</string>
+    <string name="snackbarExpenseNotDeleted">Error: expense not deleted!</string>
     <string name="modifica_password">Change password</string>
     <string name="vecchia_password">Old password</string>
     <string name="nuova_password">New password</string>

@@ -32,7 +32,5 @@
         <item name="android:background">@android:color/background_dark</item>
         <item name="android:foreground">@color/background_dark</item>
     </style>
-    
-    <style name=""
 
 </resources>
