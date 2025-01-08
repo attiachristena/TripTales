@@ -17,4 +17,22 @@
         <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
         <item name="fullscreenTextColor">@color/light_blue_A400</item>
     </style>
+
+
+
+    <style name="screen">
+        <item name="android:background">#2C2C2C</item>
+    </style>
+
+    <style name="text">
+        <item name="android:textColor">#FFF</item>
+    </style>
+
+    <style name="button">
+        <item name="android:background">@android:color/background_dark</item>
+        <item name="android:foreground">@color/background_dark</item>
+    </style>
+    
+    <style name=""
+
 </resources>

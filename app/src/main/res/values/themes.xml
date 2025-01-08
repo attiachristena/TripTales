@@ -32,4 +32,20 @@
         <item name="colorSwitchThumbNormal">@color/white</item>
         <item name="android:colorForeground">@color/dark_gray</item>
     </style>
+
+
+
+
+    <style name="Screen">
+        <item name="android:background">#FFF</item>
+    </style>
+
+    <style name="text">
+        <item name="android:textColor">#000</item>
+    </style>
+
+    <style name="button">
+
+        <item name="android:foreground">@color/white</item>
+    </style>
 </resources>

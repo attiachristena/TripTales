@@ -39,8 +39,8 @@
             android:text="@string/intro1_body"
             android:textSize="17sp"
             android:gravity="center"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="27dp"
+            android:layout_marginRight="27dp"
             />
     </LinearLayout>
 
