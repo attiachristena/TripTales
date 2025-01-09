@@ -38,6 +38,7 @@ public class HomepageActivity extends AppCompatActivity {
     private Fragment mapFragment;
     private Fragment calendarFragment;
     private Fragment activeFragment;
+    private BottomNavigationView bottomNavigationView;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -48,14 +49,13 @@ public class HomepageActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         homeFragment = new HomeFragment();
         mapFragment = new MapFragment();
         calendarFragment = new CalendarFragment();
 
         if (savedInstanceState != null) {
-            // Ripristina il fragment attivo dal salvataggio dello stato
             String activeTag = savedInstanceState.getString(ACTIVE_FRAGMENT_TAG);
             activeFragment = getSupportFragmentManager().findFragmentByTag(activeTag);
             if (activeFragment != null) {
@@ -63,18 +63,17 @@ public class HomepageActivity extends AppCompatActivity {
                         .show(activeFragment)
                         .commit();
             }
+            updateBottomNavigation();
         } else {
             Intent intent = getIntent();
             boolean fromSettings = intent.getBooleanExtra("fromSettings", false);
 
             if (fromSettings) {
-                // Ripristina il fragment attivo dal tag passato nell'Intent
                 String lastFragmentTag = intent.getStringExtra(ACTIVE_FRAGMENT_TAG);
                 if (lastFragmentTag != null) {
                     activeFragment = getSupportFragmentManager().findFragmentByTag(lastFragmentTag);
                 }
                 if (activeFragment == null) {
-                    // Se il fragment non esiste, creane uno nuovo
                     switch (Objects.requireNonNull(lastFragmentTag)) {
                         case "CALENDAR":
                             activeFragment = new CalendarFragment();
@@ -90,8 +89,8 @@ public class HomepageActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, activeFragment, lastFragmentTag)
                         .commit();
+                updateBottomNavigation();
             } else {
-                // Caso iniziale: carica il frammento Home
                 activeFragment = homeFragment;
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_container, homeFragment, "HOME")
@@ -101,11 +100,11 @@ public class HomepageActivity extends AppCompatActivity {
         
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.page_1) {
+            if (itemId == R.id.homeFragment) {
                 switchFragment(homeFragment, "HOME");
-            } else if (itemId == R.id.page_2) {
+            } else if (itemId == R.id.mapFragment) {
                 switchFragment(mapFragment, "MAP");
-            } else if (itemId == R.id.page_3) {
+            } else if (itemId == R.id.calendarFragment) {
                 switchFragment(calendarFragment, "CALENDAR");
             }
             return true;
@@ -137,16 +136,14 @@ public class HomepageActivity extends AppCompatActivity {
         }
     }
 
-    private void restoreFragment(Fragment fragment){
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(fragment != null){
-            transaction.show(fragment);
-            activeFragment = fragment;
-        }else{
-            transaction.add(R.id.fragment_container, homeFragment, "HOME");
-            activeFragment = homeFragment;
+    private void updateBottomNavigation(){
+        if (activeFragment instanceof HomeFragment) {
+            bottomNavigationView.setSelectedItemId(R.id.homeFragment);
+        }else if (activeFragment instanceof MapFragment) {
+            bottomNavigationView.setSelectedItemId(R.id.mapFragment);
+        } else if (activeFragment instanceof CalendarFragment) {
+            bottomNavigationView.setSelectedItemId(R.id.calendarFragment);
         }
-        transaction.commit();
     }
 
     @Override
@@ -200,7 +197,6 @@ public class HomepageActivity extends AppCompatActivity {
         }
 
         if (id == android.R.id.home){
-            //inserire intent per andare alla SetingsActivity
             Intent intent = new Intent(HomepageActivity.this, SettingsActivity.class);
             if (activeFragment != null && activeFragment.getTag() != null) {
                 intent.putExtra(ACTIVE_FRAGMENT_TAG, activeFragment.getTag());
