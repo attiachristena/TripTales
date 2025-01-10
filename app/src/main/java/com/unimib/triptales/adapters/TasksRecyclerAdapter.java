@@ -16,6 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.TaskDao;
+import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.model.Task;
 import java.util.List;
 
@@ -23,14 +24,10 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     private List<Task> tasksList;
     private Context context;
-    private FloatingActionButton addTask;
-    private FloatingActionButton deleteTask;
-    private FloatingActionButton modifyTask;
+    private OnTaskClickListener onTaskClickListener;
+    private OnTaskCheckBoxClickListener onTaskCheckBoxClickListener;
 
     public Context getContext() { return context; }
-    public FloatingActionButton getAddTask() { return addTask; }
-    public FloatingActionButton getDeleteTask() { return deleteTask; }
-    public FloatingActionButton getModifyTask() { return modifyTask; }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView taskNameTextView;
@@ -43,14 +40,21 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         }
     }
 
-    public TasksRecyclerAdapter(List<Task> tasksList, Context context,
-                                FloatingActionButton addGoal, FloatingActionButton modifyGoal,
-                                FloatingActionButton deleteGoal) {
-        this.tasksList = tasksList;
+    public TasksRecyclerAdapter(Context context) {
         this.context = context;
-        this.addTask = addGoal;
-        this.modifyTask = modifyGoal;
-        this.deleteTask = deleteGoal;
+    }
+
+    public void setTasksList(List<Task> tasksList) {
+        this.tasksList = tasksList;
+        notifyDataSetChanged();
+    }
+
+    public void setOnTaskClickListener(OnTaskClickListener listener) {
+        this.onTaskClickListener = listener;
+    }
+
+    public void setOnTaskCheckBoxClickListener(OnTaskCheckBoxClickListener listener) {
+        this.onTaskCheckBoxClickListener = listener;
     }
 
     @Override
@@ -67,102 +71,46 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         Task task = tasksList.get(position);
 
-        TaskDao taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
-
         viewHolder.taskNameTextView.setText(task.getName());
 
         MaterialCardView card = (MaterialCardView) viewHolder.itemView;
-        card.setCheckable(true);
+        CheckBox checkBox = viewHolder.taskCheckBox;
 
         if (task.isSelected()) {
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
             card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
-        } else {
-            card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.light_gray));
-            card.setStrokeColor(ContextCompat.getColor(context, R.color.light_gray));
-        }
-
-        if (task.isChecked()) {
+            checkBox.setEnabled(false);
+        } else if (task.isChecked()) {
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.dark_gray));
             card.setStrokeColor(ContextCompat.getColor(context, R.color.light_gray));
-            viewHolder.taskCheckBox.setChecked(true);
+            checkBox.setEnabled(true);
+            checkBox.setChecked(true);
             viewHolder.taskNameTextView.setPaintFlags(viewHolder.taskNameTextView.getPaintFlags()
                     | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.light_gray));
             card.setStrokeColor(ContextCompat.getColor(context, R.color.light_gray));
-            viewHolder.taskCheckBox.setChecked(false);
+            checkBox.setEnabled(true);
+            checkBox.setChecked(false);
             viewHolder.taskNameTextView.setPaintFlags(viewHolder.taskNameTextView.getPaintFlags()
                     & ~Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
-        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        card.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                FloatingActionButton addGoal = getAddTask();
-                FloatingActionButton modifyGoal = getModifyTask();
-                FloatingActionButton deleteGoal = getDeleteTask();
-
-                addGoal.setEnabled(false);
-
-                if (task.isSelected()) {
-                    //Deseleziona l'attività
-                    card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.light_gray));
-                    card.setStrokeColor(ContextCompat.getColor(context, R.color.light_gray));
-                    task.setSelected(false);
-                    taskDao.updateIsSelected(task.getId(), false);
-                    viewHolder.taskCheckBox.setEnabled(true);
-
-                    boolean notSelectedAll = true;
-                    for (Task t : tasksList) {
-                        if (t.isSelected()) {
-                            notSelectedAll = false;
-                            break;
-                        }
-                    }
-                    if (notSelectedAll) {
-                        modifyGoal.setVisibility(View.GONE);
-                        deleteGoal.setVisibility(View.GONE);
-                        viewHolder.taskCheckBox.setEnabled(true);
-                        addGoal.setEnabled(true);
-                    }
-                } else {
-                    card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
-                    card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
-                    task.setSelected(true);
-                    taskDao.updateIsSelected(task.getId(), true);
-                    viewHolder.taskCheckBox.setEnabled(false);
+                if(onTaskClickListener != null){
+                    onTaskClickListener.onTaskClick(task);
                 }
-
-                List<Task> selectedTasks = taskDao.getSelectedTasks();
-                if (selectedTasks.size() == 1) {
-                    modifyGoal.setVisibility(View.VISIBLE);
-                    deleteGoal.setVisibility(View.VISIBLE);
-                } else if (selectedTasks.size() == 2) {
-                    modifyGoal.setVisibility(View.GONE);
-                }
-
                 return false;
             }
         });
 
-        viewHolder.taskCheckBox.setOnClickListener(new View.OnClickListener() {
+        checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!task.isChecked()){
-                    card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.dark_gray));
-                    viewHolder.taskNameTextView.setPaintFlags(viewHolder.taskNameTextView.getPaintFlags()
-                            | Paint.STRIKE_THRU_TEXT_FLAG);
-                    card.setChecked(true);
-                    task.setChecked(true);
-                    taskDao.updateIsChecked(task.getId(), true);
-                } else {
-                    card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.light_gray));
-                    viewHolder.taskNameTextView.setPaintFlags(viewHolder.taskNameTextView.getPaintFlags()
-                            & ~Paint.STRIKE_THRU_TEXT_FLAG);
-                    card.setChecked(false);
-                    task.setChecked(false);
-                    taskDao.updateIsChecked(task.getId(), false);
+                if(onTaskCheckBoxClickListener != null){
+                    onTaskCheckBoxClickListener.onTaskCheckBoxClick(task);
                 }
             }
         });
@@ -172,6 +120,14 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     @Override
     public int getItemCount() {
         return tasksList.size();
+    }
+
+    public interface OnTaskClickListener {
+        void onTaskClick(Task task);
+    }
+
+    public interface OnTaskCheckBoxClickListener {
+        void onTaskCheckBoxClick(Task task);
     }
 
 }

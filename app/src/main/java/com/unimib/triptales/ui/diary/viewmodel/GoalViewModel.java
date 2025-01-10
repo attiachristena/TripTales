@@ -1,5 +1,10 @@
 package com.unimib.triptales.ui.diary.viewmodel;
 
+import static com.unimib.triptales.util.Constants.ADDED;
+import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.INVALID_DELETE;
+import static com.unimib.triptales.util.Constants.UPDATED;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -7,6 +12,7 @@ import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.repository.goal.IGoalRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GoalViewModel extends ViewModel {
@@ -14,8 +20,12 @@ public class GoalViewModel extends ViewModel {
     private final IGoalRepository goalRepository;
 
     private final MutableLiveData<List<Goal>> goalsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Goal>> selectedGoalsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Goal>> checkedGoalsLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> goalOverlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<String> goalEvent = new MutableLiveData<>();
 
     public GoalViewModel(IGoalRepository goalRepository) {
         this.goalRepository = goalRepository;
@@ -29,8 +39,28 @@ public class GoalViewModel extends ViewModel {
         return errorLiveData;
     }
 
-    public MutableLiveData<Boolean> getLoadingLiveData() {
-        return loadingLiveData;
+    public MutableLiveData<List<Goal>> getSelectedGoalsLiveData() { return selectedGoalsLiveData; }
+
+    public MutableLiveData<List<Goal>> getCheckedGoalsLiveData() { return checkedGoalsLiveData; }
+
+    public MutableLiveData<Boolean> getGoalOverlayVisibility() { return goalOverlayVisibility; }
+
+    public MutableLiveData<String> getGoalEvent() { return goalEvent; }
+
+    public void setGoalOverlayVisibility(boolean visible) {
+        goalOverlayVisibility.postValue(visible);
+    }
+
+    public boolean validateInputGoal(String name){
+        boolean correct = true;
+        if (name.isEmpty()) {
+            errorLiveData.setValue("Inserisci il nome dell'obiettivo");
+        } else {
+            errorLiveData.setValue(null);
+        }
+
+        if(errorLiveData.getValue() != null) correct = false;
+        return correct;
     }
 
     public void fetchAllGoals() {
@@ -45,28 +75,23 @@ public class GoalViewModel extends ViewModel {
         }
     }
 
-    public long insertGoal(Goal goal) {
-        loadingLiveData.setValue(true);
-        long id = 0;
-        try {
-            id = goalRepository.insertGoal(goal);
-            fetchAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue("Errore nell'inserimento dell'obiettivo: "+e.getMessage());
-        }
-        return id;
+    public void insertGoal(String name, String description) {
+        Goal goal = new Goal(name, description, false, false);
+        goalRepository.insertGoal(goal);
+        fetchAllGoals();
+        goalEvent.setValue(ADDED);
     }
 
-    public void updateGoal(Goal goal) {
-        loadingLiveData.setValue(true);
-        try {
-            goalRepository.updateGoal(goal);
-            fetchAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue("Errore nell'aggiornamento dell'obiettivo: "+e.getMessage());
+    public void updateGoal(Goal goal, String name, String description) {
+        if(!goal.getName().equals(name)){
+            updateGoalName(goal.getId(), name);
+            goal.setName(name);
         }
+        if(!goal.getDescription().equals(description)){
+            updateGoalDescription(goal.getId(), description);
+            goal.setDescription(description);
+        }
+        goalEvent.setValue(UPDATED);
     }
 
     public void updateGoalName(int goalId, String newName) {
@@ -117,25 +142,15 @@ public class GoalViewModel extends ViewModel {
         }
     }
 
-    public void deleteGoal(Goal goal) {
-        loadingLiveData.setValue(true);
-        try {
-            goalRepository.deleteGoal(goal);
+    public void deleteSelectedGoals() {
+        List<Goal> selectedGoals = getSelectedGoalsLiveData().getValue();
+        if(selectedGoals != null && !selectedGoals.isEmpty()) {
+            goalRepository.deleteAllGoals(selectedGoals);
+            selectedGoalsLiveData.postValue(Collections.emptyList());
             fetchAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue("Errore nella rimozione dell'obiettivo: "+e.getMessage());
-        }
-    }
-
-    public void deleteAllGoals(List<Goal> goals) {
-        loadingLiveData.setValue(true);
-        try {
-            goalRepository.deleteAllGoals(goals);
-            fetchAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue("Errore nella rimozione della lista di obiettivi: "+e.getMessage());
+            goalEvent.setValue(DELETED);
+        } else {
+            goalEvent.setValue(INVALID_DELETE);
         }
     }
 
@@ -157,8 +172,10 @@ public class GoalViewModel extends ViewModel {
         List<Goal> goals = new ArrayList<>();
         try {
             goals = goalRepository.getSelectedGoals();
+            selectedGoalsLiveData.postValue(goalRepository.getSelectedGoals());
         } catch (Exception e) {
             loadingLiveData.postValue(false);
+            selectedGoalsLiveData.postValue(Collections.emptyList());
             errorLiveData.postValue
                     ("Errore nella restituzione dell'obiettivo selezionato: "+e.getMessage());
         }
@@ -170,12 +187,45 @@ public class GoalViewModel extends ViewModel {
         List<Goal> goals = new ArrayList<>();
         try {
             goals = goalRepository.getCheckedGoals();
+            checkedGoalsLiveData.postValue(goalRepository.getCheckedGoals());
         } catch (Exception e) {
             loadingLiveData.postValue(false);
+            checkedGoalsLiveData.postValue(Collections.emptyList());
             errorLiveData.postValue
                     ("Errore nella restituzione dell'obiettivo spuntato: "+e.getMessage());
         }
         return goals;
+    }
+
+    public void toggleGoalSelection(Goal goal){
+        boolean isSelected = goal.isGoal_isSelected();
+        goal.setGoal_isSelected(!isSelected);
+        updateGoalIsSelected(goal.getId(), !isSelected);
+        List<Goal> goals = getSelectedGoals();
+        selectedGoalsLiveData.postValue(goals);
+        fetchAllGoals();
+    }
+
+    public void toggleGoalCheck(Goal goal){
+        boolean isChecked = goal.isGoal_isChecked();
+        goal.setGoal_isChecked(!isChecked);
+        updateGoalIsChecked(goal.getId(), !isChecked);
+        List<Goal> goals = getCheckedGoals();
+        checkedGoalsLiveData.postValue(goals);
+        fetchAllGoals();
+    }
+
+    public void deselectAllGoals() {
+        List<Goal> goals = getAllGoals();
+        if(goals != null) {
+            for (Goal g : goals) {
+                g.setGoal_isSelected(false);
+                updateGoalIsSelected(g.getId(), false);
+            }
+            goalsLiveData.setValue(goals);
+            selectedGoalsLiveData.postValue(Collections.emptyList());
+            goalRepository.updateAllGoals(goals);
+        }
     }
 
 }

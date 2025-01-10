@@ -17,6 +17,9 @@ public interface GoalDao {
     @Update
     void update(Goal goal);
 
+    @Update
+    void updateAll(List<Goal> goals);
+
     @Query("UPDATE Goal SET goal_name = :newName WHERE id = :goalId")
     void updateName(int goalId, String newName);
 

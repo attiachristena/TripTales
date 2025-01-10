@@ -9,9 +9,9 @@ import static com.unimib.triptales.util.Constants.CURRENCY_GBP;
 import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
 import static com.unimib.triptales.util.Constants.CURRENCY_USD;
 import static com.unimib.triptales.util.Constants.EDIT_EXPENSE;
-import static com.unimib.triptales.util.Constants.EXPENSE_ADDED;
-import static com.unimib.triptales.util.Constants.EXPENSE_DELETED;
-import static com.unimib.triptales.util.Constants.EXPENSE_UPDATED;
+import static com.unimib.triptales.util.Constants.ADDED;
+import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.UPDATED;
 import static com.unimib.triptales.util.Constants.FILTER;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 
@@ -55,7 +55,6 @@ import com.unimib.triptales.util.Constants;
 import com.unimib.triptales.util.ServiceLocator;
 
 import java.util.List;
-import java.util.Map;
 
 
 public class ExpensesFragment extends Fragment {
@@ -95,9 +94,6 @@ public class ExpensesFragment extends Fragment {
     private String inputFilterCategory;
     private boolean bEdit;
     private boolean bAdd;
-    private boolean bSaveExpense;
-    private boolean bSaveBudget;
-    private boolean bSaveFilter;
     // serve per il budget non cancellare!
     private TextInputLayout currencyTextInputLayout;
 
@@ -121,7 +117,7 @@ public class ExpensesFragment extends Fragment {
         recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewExpenses.setAdapter(expensesRecyclerAdapter);
 
-        expensesRecyclerAdapter.setOnExpenseClickListener((expense, card) -> {
+        expensesRecyclerAdapter.setOnExpenseClickListener((expense) -> {
             expenseViewModel.toggleExpenseSelection(expense);
         });
 
@@ -137,9 +133,6 @@ public class ExpensesFragment extends Fragment {
         noExpensesTextView = view.findViewById(R.id.noSpeseString);
         bEdit = false;
         bAdd = false;
-        bSaveBudget = false;
-        bSaveExpense = false;
-        bSaveFilter = false;
 
         expenseViewModel.getExpensesLiveData().observe(getViewLifecycleOwner(), expenses -> {
             expenseList = expenses;
@@ -346,8 +339,7 @@ public class ExpensesFragment extends Fragment {
                     if(bAdd){
                         expenseViewModel.insertExpense(inputAmount, inputCategory,
                                 inputDescription, inputDay, inputMonth, inputYear,
-                                inputCurrency).observe(getViewLifecycleOwner(), insertedExpense -> {
-                        });
+                                inputCurrency);
                     } else if(bEdit){
                         List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
                         if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
@@ -389,13 +381,13 @@ public class ExpensesFragment extends Fragment {
             public void onChanged(String message) {
                 if(message != null){
                     switch (message) {
-                        case EXPENSE_ADDED:
+                        case ADDED:
                             Toast.makeText(requireActivity(), R.string.snackbarExpenseAdded, Toast.LENGTH_SHORT).show();
                             break;
-                        case EXPENSE_UPDATED:
+                        case UPDATED:
                             Toast.makeText(requireActivity(), R.string.snackbarExpenseUpdated, Toast.LENGTH_SHORT).show();
                             break;
-                        case EXPENSE_DELETED:
+                        case DELETED:
                             Toast.makeText(requireActivity(), R.string.snackbarExpenseDeleted, Toast.LENGTH_SHORT).show();
                             break;
                         case INVALID_DELETE:

@@ -19,6 +19,9 @@ public class TaskLocalDataSource implements BaseTaskLocalDataSource{
     }
 
     @Override
+    public void updateAllTasks(List<Task> tasks) { taskDao.updateAll(tasks); }
+
+    @Override
     public void updateTaskName(int taskId, String newName) {
         taskDao.updateName(taskId, newName);
     }
@@ -52,4 +55,5 @@ public class TaskLocalDataSource implements BaseTaskLocalDataSource{
     public List<Task> getSelectedTasks() {
         return taskDao.getSelectedTasks();
     }
+
 }

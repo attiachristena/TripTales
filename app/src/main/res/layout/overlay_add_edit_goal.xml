@@ -2,7 +2,7 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cardAddTask"
+    android:id="@+id/cardAddGoal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
@@ -27,9 +27,9 @@
             android:paddingHorizontal="16dp">
 
             <ImageButton
-                android:id="@+id/backButtonTask"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:id="@+id/backButtonGoal"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:layout_marginTop="2dp"
@@ -39,21 +39,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
-                android:layout_marginStart="12dp"
-                android:text="@string/nuovo_compito"
+                android:text="@string/aggiungi_obiettivo"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/saveTask"
+                android:id="@+id/saveGoal"
                 android:layout_width="83dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginStart="26dp"
+                android:layout_gravity="end|center"
                 android:background="@drawable/rounded_button"
                 android:backgroundTint="@color/secondary"
                 android:text="@string/saveButton"
@@ -63,7 +61,7 @@
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/taskNameTextField"
+            android:id="@+id/goalNameTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -72,16 +70,38 @@
             app:boxCornerRadiusBottomStart="20dp"
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
-            android:layout_marginBottom="20dp"
             android:backgroundTint="@color/background_overlays"
             android:hint="@string/nome">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputTaskName"
+                android:id="@+id/inputGoalName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/goalDescriptionTextField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="16dp"
+            app:boxStrokeColor="@color/primary"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/background_overlays"
+            android:hint="@string/hintDescription">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputGoalDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
     </LinearLayout>
 

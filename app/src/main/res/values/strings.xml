@@ -161,6 +161,14 @@
     <string name="snackbarExpenseUpdated">Spesa aggiornata correttamente!</string>
     <string name="snackbarExpenseDeleted">Spesa rimossa correttamente!</string>
     <string name="snackbarExpenseNotDeleted">Errore: spesa non rimossa!</string>
+    <string name="snackbarGoalAdded">Obiettivo aggiunto correttamente!</string>
+    <string name="snackbarGoalUpdated">Obiettivo aggiornato correttamente!</string>
+    <string name="snackbarGoalDeleted">Obiettivo rimosso correttamente!</string>
+    <string name="snackbarGoalNotDeleted">Errore: obiettivo non rimosso!</string>
+    <string name="snackbarTaskAdded">Attività aggiunta correttamente!</string>
+    <string name="snackbarTaskUpdated">Attività aggiornata correttamente!</string>
+    <string name="snackbarTaskDeleted">Attività rimossa correttamente!</string>
+    <string name="snackbarTaskNotDeleted">Errore: attività non rimossa!</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>
