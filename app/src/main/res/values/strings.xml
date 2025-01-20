@@ -110,7 +110,11 @@
     <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
-
+    <string name="data_partenza">Data partenza</string>
+    <string name="data_arrivo">Data arrivo</string>
+    <string name="scegli_immagine">Scegli un’immagine</string>
+    <string name="inserisci_nome_diario">Inserisci il nome del diario</string>
+    <string name="paese_visitato">Il paese visitato</string>
 
     <string name="error_unexpected">Unexpected error</string>
     <string name="error_google_login">Google Login Error</string>

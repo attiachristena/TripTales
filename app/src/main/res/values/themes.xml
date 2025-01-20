@@ -8,11 +8,11 @@
         <item name="colorControlActivated">@color/primary</item>
         <item name="colorControlHighlight">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
-        <item name="popupMenuBackground">@color/white_dark</item>
+        <item name="popupMenuBackground">@color/error</item>
         <item name="popupMenuStyle">@style/PopupMenuStyle</item>
         <item name="colorSecondaryContainer">@color/primary_light</item>
-
     </style>
+
 
 
     <style name="ThemeOverlay.TripTales.FullscreenContainer" parent="">
@@ -45,7 +45,7 @@
     </style>
 
     <style name="button">
-
         <item name="android:foreground">@color/white</item>
     </style>
+
 </resources>

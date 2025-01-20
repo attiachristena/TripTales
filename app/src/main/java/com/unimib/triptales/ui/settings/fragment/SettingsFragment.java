@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -172,41 +173,21 @@ public class SettingsFragment extends Fragment {
 
     //CAMBIO LINGUA
     private void changeLanguage(String languageCode) {
-
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-        Configuration config = getActivity().getResources().getConfiguration();
-        config.setLocale(locale);
-        getActivity().getResources().updateConfiguration(config, getActivity().getResources().getDisplayMetrics());
-
         SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("language", languageCode);
         editor.apply();
+
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
 
         getActivity().recreate();
     }
 
     private void applySavedLanguage() {
         SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String languageCode = preferences.getString("language", null); // Controlla se una lingua è già salvata
+        String languageCode = preferences.getString("language", "it"); // Default: Italiano
 
-        if (languageCode == null) {
-
-            languageCode = "it";
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("language", languageCode);
-            editor.apply();
-        }
-
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-        Configuration config = getActivity().getResources().getConfiguration();
-        config.setLocale(locale);
-        getActivity().getResources().updateConfiguration(config, getActivity().getResources().getDisplayMetrics());
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
     }
-
-    /*private int getItem(int i){
-        return settingsSlider.getCurrentItem() + i;
-    }*/
+    
 }
