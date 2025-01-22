@@ -157,14 +157,14 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Imposta la pagina corrente a quella desiderata
-                viewPager2.setCurrentItem(1, false); // Supponendo che il PrivacyFragment sia alla posizione 1
+                viewPager2.setCurrentItem(1, false);
             }
         });
 
         AboutUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager2.setCurrentItem(4, false); // Supponendo che il PrivacyFragment sia alla posizione 1
+                viewPager2.setCurrentItem(4, false);
             }
         });
 
@@ -185,7 +185,7 @@ public class SettingsFragment extends Fragment {
 
     private void applySavedLanguage() {
         SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String languageCode = preferences.getString("language", "it"); // Default: Italiano
+        String languageCode = preferences.getString("language", "it"); 
 
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
     }
