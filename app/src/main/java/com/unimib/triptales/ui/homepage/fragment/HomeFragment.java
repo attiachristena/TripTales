@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +26,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
-import com.unimib.triptales.adapters.Diary;
 import com.unimib.triptales.adapters.DiaryAdapter;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.DiaryDao;
+import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
 import org.json.JSONArray;
@@ -40,8 +40,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -76,6 +74,12 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private View imageViewSelectedChanges;
     private String country;
     private SharedViewModel sharedViewModel;
+    private int id;
+    private int idUser;
+    private String budget;
+    AppRoomDatabase database;
+    private DiaryDao diaryDao;
+
 
     @Nullable
     @Override
@@ -139,9 +143,16 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         buttonSaveModify = overlayModifyDiary.findViewById(R.id.buttonSaveDiaryChanges);
         closeModifyOverlayButton = overlayModifyDiary.findViewById(R.id.backModifyDiaryButton);
 
+
         // Configura l'AutoCompleteTextView per i paesi
         setupAutoCompleteTextView(overlayAddDiary, overlayModifyDiary);
+        // Inizializzazione del database e DAO
+        database = AppRoomDatabase.getDatabase(getContext());
+        diaryDao = database.diaryDao();
+        diaryList = diaryDao.getAllDiaries(); // Recupera le diary salvati
     }
+
+
 
     private List<String> extractCountryNamesFromJson(Context context) {
         List<String> countryNames = new ArrayList<>();
@@ -309,7 +320,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             return;
         }
 
-        Diary newDiary = new Diary(diaryName, startDate, endDate, selectedImageUri, country);
+        Diary newDiary = new Diary(id, idUser, diaryName, startDate, endDate, selectedImageUri, budget, country);
         diaryList.add(newDiary);
         diaryAdapter.notifyDataSetChanged();
         hideOverlay(overlayAddDiary);

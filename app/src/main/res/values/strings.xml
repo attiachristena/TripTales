@@ -175,5 +175,6 @@
     <string name="italiano">Italiano</string>
     <string name="inglese">Inglese</string>
     <string name="elimina_profilo">Elimina profilo</string>
+    <string name="searchbar_hint">Cerca diario per nome</string>
 
 </resources>

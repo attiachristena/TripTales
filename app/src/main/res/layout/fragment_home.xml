@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/firstHomePageText"
+        android:text="Non hai ancora creato nessun diario, comincia la tua avventura!"
         android:textColor="@color/dark_gray"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
