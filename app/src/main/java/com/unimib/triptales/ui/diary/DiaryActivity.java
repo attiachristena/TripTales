@@ -1,9 +1,8 @@
-package com.unimib.triptales.ui.diario;
+package com.unimib.triptales.ui.diary;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -118,7 +117,6 @@ import com.unimib.triptales.ui.login.LoginActivity;
         View buttonAccount = toolbar.findViewById(R.id.action_account);
 
         if (id == R.id.action_account) {
-            // Create a PopupMenu for account actions
             PopupMenu popupMenu = new PopupMenu(DiaryActivity.this, buttonAccount);
             popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
 
@@ -129,7 +127,7 @@ import com.unimib.triptales.ui.login.LoginActivity;
                         Intent intent = new Intent(DiaryActivity.this, LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        finish(); // Finish DiaryActivity
+                        finish();
                         return true;
                     }
                     return false;

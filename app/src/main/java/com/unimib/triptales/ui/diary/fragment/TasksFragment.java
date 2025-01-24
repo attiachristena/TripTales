@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.diario.fragment;
+package com.unimib.triptales.ui.diary.fragment;
 
 import android.os.Bundle;
 
@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,34 +23,34 @@ import com.unimib.triptales.adapters.TasksRecyclerAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.TaskDao;
 import com.unimib.triptales.model.Task;
-import com.unimib.triptales.ui.diario.DiaryActivity;
+import com.unimib.triptales.repository.goal.IGoalRepository;
+import com.unimib.triptales.repository.task.ITaskRepository;
+import com.unimib.triptales.ui.diary.DiaryActivity;
+import com.unimib.triptales.ui.diary.viewmodel.GoalViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.Constants;
+import com.unimib.triptales.util.ServiceLocator;
+
 import java.util.Iterator;
 import java.util.List;
 
 public class TasksFragment extends Fragment {
 
-    FloatingActionButton addTaskButton;
-    View overlay_add_task;
-    ConstraintLayout rootLayoutCheckList;
-    LayoutInflater inflater;
-    ImageButton backButtonTask;
-    Button saveTask;
-    EditText editTextTaskName;
-    String inputTaskName;
-    FloatingActionButton modifyTask;
-    FloatingActionButton deleteTask;
-    CheckBox cardListCheckBox;
-    View overlay_modify_task;
-    EditText editTextModifiedTaskName;
-    String inputModifiedTaskName;
-    ImageButton backButtonModifyTask;
-    Button saveModifiedTask;
-    TextView noTasksString;
-    TaskDao taskDao;
+    private FloatingActionButton addTaskButton;
+    private View overlay_add_task;
+    private EditText editTextTaskName;
+    private String inputTaskName;
+    private FloatingActionButton modifyTask;
+    private FloatingActionButton deleteTask;
+    private View overlay_modify_task;
+    private EditText editTextModifiedTaskName;
+    private String inputModifiedTaskName;
+    private TextView noTasksString;
+    //private TaskDao taskDao;
     private List<Task> tasksList;
     private List<Task> selectedTasks;
-    RecyclerView recyclerViewTasks;
+    private TaskViewModel taskViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,13 +58,19 @@ public class TasksFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
-        tasksList = taskDao.getAll();
+
+        ITaskRepository taskRepository = ServiceLocator.getINSTANCE().getTaskRepository(getContext());
+        taskViewModel = new ViewModelProvider(requireActivity(),
+                new ViewModelFactory(taskRepository)).get(TaskViewModel.class);
+
+        //taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
+        tasksList = taskViewModel.getAllTasks();
+        //tasksList = taskDao.getAll();
         for(Task t : tasksList){
             t.setSelected(false);
-            taskDao.updateIsSelected(t.getId(), false);
+            taskViewModel.updateTaskIsSelected(t.getId(), false);
         }
         return inflater.inflate(R.layout.fragment_check_list, container, false);
     }
@@ -73,15 +79,15 @@ public class TasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rootLayoutCheckList = view.findViewById(R.id.rootLayoutCheckList);
-        inflater = LayoutInflater.from(view.getContext());
-        taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
+        ConstraintLayout rootLayoutCheckList = view.findViewById(R.id.rootLayoutCheckList);
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        //taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
 
         addTaskButton = view.findViewById(R.id.addTaskButton);
         modifyTask = view.findViewById(R.id.modifyTask);
         deleteTask = view.findViewById(R.id.deleteTask);
 
-        recyclerViewTasks = view.findViewById(R.id.recyclerViewTasks);
+        RecyclerView recyclerViewTasks = view.findViewById(R.id.recyclerViewTasks);
         TasksRecyclerAdapter recyclerAdapter = new TasksRecyclerAdapter(tasksList,  getContext(),
                 addTaskButton, modifyTask, deleteTask);
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -91,8 +97,8 @@ public class TasksFragment extends Fragment {
         rootLayoutCheckList.addView(overlay_add_task);
         overlay_add_task.setVisibility(View.GONE);
 
-        backButtonTask = view.findViewById(R.id.backButtonTask);
-        saveTask = view.findViewById(R.id.saveTask);
+        ImageButton backButtonTask = view.findViewById(R.id.backButtonTask);
+        Button saveTask = view.findViewById(R.id.saveTask);
         noTasksString = view.findViewById(R.id.noTasksString);
 
         if(tasksList.isEmpty()){
@@ -136,7 +142,7 @@ public class TasksFragment extends Fragment {
                     editTextTaskName.setError(null);
                     currentTask = new Task(inputTaskName, false, false);
 
-                    long id = taskDao.insert(currentTask);
+                    long id = taskViewModel.insertTask(currentTask);
                     currentTask.setId((int) id);
                     tasksList.add(currentTask);
                     recyclerAdapter.notifyItemInserted(tasksList.size() - 1);
@@ -154,8 +160,8 @@ public class TasksFragment extends Fragment {
         rootLayoutCheckList.addView(overlay_modify_task);
         overlay_modify_task.setVisibility(View.GONE);
 
-        backButtonModifyTask = view.findViewById(R.id.backButtonModifyTask);
-        saveModifiedTask = view.findViewById(R.id.saveModifiedTask);
+        ImageButton backButtonModifyTask = view.findViewById(R.id.backButtonModifyTask);
+        Button saveModifiedTask = view.findViewById(R.id.saveModifiedTask);
         editTextModifiedTaskName = view.findViewById(R.id.inputModifiedTaskName);
 
         modifyTask.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +170,7 @@ public class TasksFragment extends Fragment {
                 overlay_modify_task.setVisibility(View.VISIBLE);
                 ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
 
-                selectedTasks = taskDao.getSelectedTasks();
+                selectedTasks = taskViewModel.getSelectedTasks();
                 Task currentTask = selectedTasks.get(0);
                 editTextModifiedTaskName.setText(currentTask.getName());
 
@@ -190,7 +196,7 @@ public class TasksFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                selectedTasks = taskDao.getSelectedTasks();
+                selectedTasks = taskViewModel.getSelectedTasks();
                 Task currentTask = selectedTasks.get(0);
 
                 inputModifiedTaskName = editTextModifiedTaskName.getText().toString().trim();
@@ -199,11 +205,11 @@ public class TasksFragment extends Fragment {
                     editTextModifiedTaskName.setError("Inserisci il nome dell'attività");
                 } else {
                     editTextModifiedTaskName.setError(null);
-                    currentTask.setName(inputTaskName);
-                    taskDao.updateName(currentTask.getId(), inputTaskName);
+                    currentTask.setName(inputModifiedTaskName);
+                    taskViewModel.updateTaskName(currentTask.getId(), inputModifiedTaskName);
 
                     currentTask.setSelected(false);
-                    taskDao.updateIsSelected(currentTask.getId(), false);
+                    taskViewModel.updateTaskIsSelected(currentTask.getId(), false);
 
                     int position = tasksList.indexOf(currentTask);
                     if (position != -1) {
@@ -215,6 +221,7 @@ public class TasksFragment extends Fragment {
                     overlay_modify_task.setVisibility(View.GONE);
                     ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
                     addTaskButton.setVisibility(View.VISIBLE);
+                    addTaskButton.setEnabled(true);
                 }
             }
         });
@@ -229,7 +236,7 @@ public class TasksFragment extends Fragment {
                     if (t.isSelected()) {
                         iterator.remove();
                         recyclerAdapter.notifyItemRemoved(index);
-                        taskDao.delete(t);
+                        taskViewModel.deleteTask(t);
                     } else {
                         index++;
                     }

@@ -1,4 +1,6 @@
-package com.unimib.triptales.ui.diario.fragment;
+
+
+package com.unimib.triptales.ui.diary.fragment;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -51,7 +54,6 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.TappaDao;
 import com.unimib.triptales.model.Tappa;
-import com.unimib.triptales.ui.diario.TappaActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;

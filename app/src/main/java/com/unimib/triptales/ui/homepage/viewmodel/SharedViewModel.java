@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 public class SharedViewModel extends ViewModel {
     private final MutableLiveData<String> diaryName = new MutableLiveData<>();
+    private final MutableLiveData<String> diaryCountry = new MutableLiveData<>();
     private final MutableLiveData<String> startDate = new MutableLiveData<>();
     private final MutableLiveData<String> endDate = new MutableLiveData<>();
 
@@ -13,9 +14,11 @@ public class SharedViewModel extends ViewModel {
         return diaryName;
     }
 
-    public void setDiaryName(String name) {
-        diaryName.setValue(name);
-    }
+    public void setDiaryName(String name) { diaryName.setValue(name); }
+
+    public MutableLiveData<String> getDiaryCountry() { return diaryCountry; }
+
+    public void setDiaryCountry(String country) { diaryCountry.setValue(country); }
 
     public LiveData<String> getStartDate() {
         return startDate;

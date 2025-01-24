@@ -66,7 +66,6 @@
     <string name="accedi">Accedi</string>
     <string name="registrati">Registrati</string>
     <string name="email">Email</string>
-    <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="password_dimenticata">Password dimenticata?</string>
@@ -97,11 +96,11 @@
     <string name="noGoalsString">Aggiungi il primo obiettivo del viaggio!</string>
     <string name="noSpeseString">Imposta il budget e aggiungi la prima spesa!</string>
     <string name="checklistTitle">Lista delle attività da svolgere</string>
-    <string name="warningCurrency">*Ricorda: puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
+    <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>    //
     <string name="hintCurrency">Valuta*</string>
     <string name="nome_diario">Nome diario</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
-    <string name="intro1_title">Benvenuto su TripTales. Il tuo diario di viaggio personale</string>
+    <string name="intro1_title">Benvenuto su TripTales Il tuo diario di viaggio personale</string>
     <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>
     <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni tappa</string>
     <string name="intro2_body">Qui potrai pianificare le tue avventure, annotare ogni scoperta e rivivere ogni momento</string>
@@ -111,12 +110,20 @@
     <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
+    <string name="data_partenza">Data partenza</string>
+    <string name="data_arrivo">Data arrivo</string>
+    <string name="scegli_immagine">Scegli un’immagine</string>
+    <string name="inserisci_nome_diario">Inserisci il nome del diario</string>
+    <string name="paese_visitato">Il paese visitato</string>
+
     <string name="error_unexpected">Unexpected error</string>
     <string name="error_google_login">Google Login Error</string>
     <string name="error_email_required">Email Required Error</string>
     <string name="error_email_invalid">Invalid Email Error</string>
     <string name="password_reset_email_sent">Email for reset password sent</string>
     <string name="registrati_con_google">Registrati con Google</string>
+
+
 
     <string name="nome_user_momentaneo">Nome Cognome</string>
     <string name="modalita_scura">Modalità scura</string>
@@ -153,5 +160,20 @@
     <string name="material_calendar_today_button">Oggi</string>
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
+    <string name="aggiungi_diario">Aggiungi Diario</string>
+    <string name="snackbarExpenseAdded">Spesa aggiunta correttamente!</string>
+    <string name="snackbarExpenseUpdated">Spesa aggiornata correttamente!</string>
+    <string name="snackbarExpenseDeleted">Spesa rimossa correttamente!</string>
+    <string name="snackbarExpenseNotDeleted">Errore: spesa non rimossa!</string>
+
+    <string name="modifica_password">Modifica password</string>
+    <string name="vecchia_password">Vecchia password</string>
+    <string name="nuova_password">Nuova password</string>
+    <string name="modifica_email">Modifica email</string>
+    <string name="vecchia_email">Vecchia email</string>
+    <string name="nuova_email">Nuova email</string>
+    <string name="italiano">Italiano</string>
+    <string name="inglese">Inglese</string>
+    <string name="elimina_profilo">Elimina profilo</string>
 
 </resources>

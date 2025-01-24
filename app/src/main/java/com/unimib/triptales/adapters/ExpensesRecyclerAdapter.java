@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
 
 import java.util.List;
@@ -21,14 +19,9 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
 
     private List<Expense> expenseList;
     private Context context;
-    private FloatingActionButton addExpense;
-    private FloatingActionButton deleteExpense;
-    private FloatingActionButton modifyExpense;
+    private OnExpenseClickListener OnExpenseClickListener;
 
     public Context getContext() { return context; }
-    public FloatingActionButton getAddExpense() { return addExpense; }
-    public FloatingActionButton getDeleteExpense() { return deleteExpense; }
-    public FloatingActionButton getModifyExpense() { return modifyExpense; }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView amountTextView, categoryTextView, descriptionTextView, dateTextView;
@@ -44,20 +37,30 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
         }
     }
 
-    public ExpensesRecyclerAdapter(List<Expense> expenseList, Context context,
-                                   FloatingActionButton addExpense, FloatingActionButton modifyExpense,
-                                   FloatingActionButton deleteExpense) {
-        this.expenseList = expenseList;
+    public ExpensesRecyclerAdapter(Context context) {
         this.context = context;
-        this.addExpense = addExpense;
-        this.modifyExpense = modifyExpense;
-        this.deleteExpense = deleteExpense;
+    }
+
+    public void setExpenseList(List<Expense> expenses) {
+        /*for (int i = 0; i < expenses.size(); i++) {
+            if (i >= expenseList.size() || !expenseList.get(i).equals(expenses.get(i))) {
+                notifyItemChanged(i);
+            }
+            //aggiungere il controllo su ogni campo di una spesa?
+        }*/
+        this.expenseList = expenses;
+        notifyDataSetChanged();
+    }
+
+
+    public void setOnExpenseClickListener(OnExpenseClickListener listener) {
+        this.OnExpenseClickListener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_card_spesa, viewGroup, false);
+                .inflate(R.layout.item_card_expense, viewGroup, false);
 
         if (this.context == null) this.context = viewGroup.getContext();
 
@@ -84,59 +87,21 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
             card.setStrokeColor(ContextCompat.getColor(context, R.color.primary));
         }
 
-        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                FloatingActionButton addExpense = getAddExpense();
-                FloatingActionButton modifyExpense = getModifyExpense();
-                FloatingActionButton deleteExpense = getDeleteExpense();
-
-                ExpenseDao expenseDao = AppRoomDatabase.getDatabase(getContext()).expenseDao();
-
-                addExpense.setEnabled(false);
-
-                if (expense.isExpense_isSelected()) {
-                    //Deseleziona la spesa
-                    card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary));
-                    card.setStrokeColor(ContextCompat.getColor(context, R.color.primary));
-                    expense.setExpense_isSelected(false);
-                    expenseDao.updateIsSelected(expense.getId(), false);
-                    boolean notSelectedAll = true;
-                    for (Expense e : expenseList) {
-                        if (e.isExpense_isSelected()) {
-                            notSelectedAll = false;
-                            break;
-                        }
-                    }
-                    if (notSelectedAll) {
-                        modifyExpense.setVisibility(View.GONE);
-                        deleteExpense.setVisibility(View.GONE);
-                        addExpense.setEnabled(true);
-                    }
-                } else {
-                    card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
-                    card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
-                    expense.setExpense_isSelected(true);
-                    expenseDao.updateIsSelected(expense.getId(), true);
-                }
-
-                List<Expense> selectedExpenses = expenseDao.getSelectedExpenses();
-
-                if (selectedExpenses.size() == 1) {
-                    modifyExpense.setVisibility(View.VISIBLE);
-                    deleteExpense.setVisibility(View.VISIBLE);
-                } else if (selectedExpenses.size() == 2) {
-                    modifyExpense.setVisibility(View.GONE);
-                }
-
-                return false;
+        card.setOnLongClickListener(v -> {
+            if (OnExpenseClickListener != null) {
+                OnExpenseClickListener.onExpenseClick(expense, card);
             }
+            return false;
         });
-
     }
 
     @Override
     public int getItemCount() {
         return expenseList.size();
+    }
+
+
+    public interface OnExpenseClickListener {
+        void onExpenseClick(Expense expense, MaterialCardView card);
     }
 }

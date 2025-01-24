@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sliderLayoutSettings"
+    android:id="@+id/sliderLayoutSettings1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -30,7 +30,8 @@
             android:layout_marginStart="18dp"
             android:layout_toEndOf="@id/profile_icon"
             android:text="@string/nome_user_momentaneo"
-            android:textSize="22sp"/>
+            android:textSize="22sp"
+            />
     </RelativeLayout>
 
     <LinearLayout
@@ -50,10 +51,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="26dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="2dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -77,6 +79,7 @@
                 android:layout_toEndOf="@+id/nightModeIcon"/>
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNightMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -91,41 +94,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
+        android:layout_marginStart="26dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="2dp">
+
+
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/notIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/notifiche_img"
-                android:background="@drawable/round_back_primary"
-                android:padding="9dp">
-            </ImageView>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_centerVertical="true"
-                android:text="@string/notiche"
-                android:layout_toEndOf="@+id/notIcon"/>
-            <androidx.appcompat.widget.SwitchCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:switchMinWidth="50dp"
-                android:theme="@style/notSwitch"/>
-        </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
@@ -143,6 +121,18 @@
                 android:layout_centerVertical="true"
                 android:text="@string/privacy"
                 android:layout_toEndOf="@+id/privacyIcon"/>
+            <ImageButton
+                android:id="@+id/PrivacyButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/icon_bg_color"
+                android:src="@drawable/baseline_arrow_forward_ios_24" />
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -164,6 +154,17 @@
                 android:layout_centerVertical="true"
                 android:text="@string/lingua"
                 android:layout_toEndOf="@+id/linguaIcon"/>
+            <ImageButton
+                android:id="@+id/LinguaButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/icon_bg_color"
+                android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -171,11 +172,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
+        android:layout_marginStart="26dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="2dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -195,6 +196,17 @@
                 android:layout_centerVertical="true"
                 android:text="@string/account"
                 android:layout_toEndOf="@+id/accountIcon"/>
+            <ImageButton
+                android:id="@+id/AccountButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/icon_bg_color"
+                android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -216,6 +228,17 @@
                 android:layout_centerVertical="true"
                 android:text="@string/about_us"
                 android:layout_toEndOf="@+id/aboutUsIcon"/>
+            <ImageButton
+                android:id="@+id/AboutUsButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/icon_bg_color"
+                android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
     </LinearLayout>
 
