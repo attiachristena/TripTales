@@ -436,12 +436,12 @@ public class TappeFragment extends Fragment implements OnMapReadyCallback {
             return true;
         });
 
-        cardView.setOnClickListener(v -> {
+       /* cardView.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), TappaActivity.class);
             intent.putExtra("nomeTappa", nomeTappaCard.getText().toString());
             intent.putExtra("dataTappa", dataTappaCard.getText().toString());  // Passa la data
             startActivity(intent);
-        });
+        }); */
 
         salvaModificaTappa.setOnClickListener(v1 -> {
             String inputModificaNome = editModificaNome.getText().toString();
