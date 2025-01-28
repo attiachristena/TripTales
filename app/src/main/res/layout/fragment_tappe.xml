@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Base.Theme.TripTales"
-    android:id="@+id/layoutTappe"
+    android:id="@+id/checkpointsLayout"
     android:padding="10dp">
 
     <!-- NestedScrollView per gestire lo scrolling del contenuto -->
 
-    <!-- Bottone aggiungi tappa -->
+    <!-- Bottone aggiungi checkpoint -->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -122,7 +122,7 @@
             android:layout_marginTop="9dp">
 
             <LinearLayout
-                android:id="@+id/tappeCardContainer"
+                android:id="@+id/checkpointsCardContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal" />
@@ -176,9 +176,9 @@
         android:visibility="gone"
         app:tint="@color/black" />
 
-    <!-- Bottone elimina tappa -->
+    <!-- Bottone elimina checkpoint -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/eliminaTappa"
+        android:id="@+id/deleteCheckpointButton"
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -195,9 +195,9 @@
         app:rippleColor="@color/light_gray"
         app:tint="@color/white" />
 
-    <!-- Bottone modifica tappa -->
+    <!-- Bottone modifica checkpoint -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/modificaTappa"
+        android:id="@+id/editCheckpointButton"
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -206,7 +206,7 @@
         android:elevation="4dp"
         android:src="@drawable/baseline_pen"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/eliminaTappa"
+        app:layout_constraintBottom_toTopOf="@+id/deleteCheckpointButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.976"
         app:layout_constraintStart_toStartOf="parent"

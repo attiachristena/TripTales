@@ -15,17 +15,17 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/anteprimaImmagineCard"
+                android:id="@+id/checkpointCardImage"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
                 android:src="@drawable/ic_launcher_background"
                 android:scaleType="centerCrop" />
 
             <TextView
-                android:id="@+id/nomeTappaCard"
+                android:id="@+id/checkpointNameCard"
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
-                android:layout_below="@id/anteprimaImmagineCard"
+                android:layout_below="@id/checkpointCardImage"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="2dp"
@@ -36,10 +36,10 @@
                 android:textSize="13sp" />
 
             <TextView
-                android:id="@+id/dataTappaCard"
+                android:id="@+id/checkpointDateCard"
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
-                android:layout_below="@id/anteprimaImmagineCard"
+                android:layout_below="@id/checkpointCardImage"
                 android:layout_alignParentBottom="true"
                 android:gravity="center"
                 android:visibility="gone"

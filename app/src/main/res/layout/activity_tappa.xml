@@ -75,7 +75,7 @@
         android:backgroundTint="@color/background_overlays"
         android:fontFamily="@font/poppins_regular"
         android:gravity="start"
-        android:hint="Inserisici una breve descrizione della tappa!"
+        android:hint="Inserisici una breve descrizione della checkpoint!"
         android:textColorHint="@color/primary"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"

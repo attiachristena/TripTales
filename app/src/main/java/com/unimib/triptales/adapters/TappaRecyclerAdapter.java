@@ -15,49 +15,49 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.TappaDao;
-import com.unimib.triptales.model.Tappa;
+import com.unimib.triptales.database.CheckpointDao;
+import com.unimib.triptales.model.Checkpoint;
 
 import java.util.List;
 
 public class TappaRecyclerAdapter extends RecyclerView.Adapter<TappaRecyclerAdapter.ViewHolder> {
 
-    private final List<Tappa> tappaList;
+    private final List<Checkpoint> checkpointList;
     private final Context context;
     private final FloatingActionButton modificaTappa;
     private final FloatingActionButton eliminaTappa;
-    private final TappaDao tappaDao;
+    private final CheckpointDao checkpointDao;
 
-    public TappaRecyclerAdapter(Context context, List<Tappa> tappaList, FloatingActionButton modificaTappa, FloatingActionButton eliminaTappa) {
+    public TappaRecyclerAdapter(Context context, List<Checkpoint> checkpointList, FloatingActionButton modificaTappa, FloatingActionButton eliminaTappa) {
         this.context = context;
-        this.tappaList = tappaList;
+        this.checkpointList = checkpointList;
         this.modificaTappa = modificaTappa;
         this.eliminaTappa = eliminaTappa;
-        this.tappaDao = AppRoomDatabase.getDatabase(context).tappaDao();
+        this.checkpointDao = AppRoomDatabase.getDatabase(context).checkpointDao();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflaziona il layout della tappa (CardView)
-        View itemView = LayoutInflater.from(context).inflate(R.layout.item_card_tappa, parent, false);
+        View itemView = LayoutInflater.from(context).inflate(R.layout.item_card_checkpoint, parent, false);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Tappa tappa = tappaList.get(position);
+        Checkpoint checkpoint = checkpointList.get(position);
 
-        holder.nomeTappa.setText(tappa.getNome());
+        holder.nomeTappa.setText(checkpoint.getNome());
 
         MaterialCardView card = (MaterialCardView) holder.itemView;
-        aggiornaAspettoCard(card, tappa);
+        aggiornaAspettoCard(card, checkpoint);
 
         holder.itemView.setOnLongClickListener(view -> {
-            if (tappa.isTappa_isSelected()) {
-                deselezionaTappa(card, tappa);
+            if (checkpoint.isTappa_isSelected()) {
+                deselezionaTappa(card, checkpoint);
             } else {
-                selezionaTappa(card, tappa);
+                selezionaTappa(card, checkpoint);
             }
             aggiornaVisibilitaFAB();
             return true;
@@ -66,11 +66,11 @@ public class TappaRecyclerAdapter extends RecyclerView.Adapter<TappaRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return tappaList.size();
+        return checkpointList.size();
     }
 
-    private void aggiornaAspettoCard(MaterialCardView card, Tappa tappa) {
-        if (tappa.isTappa_isSelected()) {
+    private void aggiornaAspettoCard(MaterialCardView card, Checkpoint checkpoint) {
+        if (checkpoint.isTappa_isSelected()) {
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
             card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
         } else {
@@ -79,22 +79,22 @@ public class TappaRecyclerAdapter extends RecyclerView.Adapter<TappaRecyclerAdap
         }
     }
 
-    private void selezionaTappa(MaterialCardView card, Tappa tappa) {
+    private void selezionaTappa(MaterialCardView card, Checkpoint checkpoint) {
         card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
         card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
-        tappa.setTappa_isSelected(true);
-        tappaDao.updateIsSelected(tappa.getId(), true);
+        checkpoint.setTappa_isSelected(true);
+        checkpointDao.updateIsSelected(checkpoint.getId(), true);
     }
 
-    private void deselezionaTappa(MaterialCardView card, Tappa tappa) {
+    private void deselezionaTappa(MaterialCardView card, Checkpoint checkpoint) {
         card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary));
         card.setStrokeColor(ContextCompat.getColor(context, R.color.primary));
-        tappa.setTappa_isSelected(false);
-        tappaDao.updateIsSelected(tappa.getId(), false);
+        checkpoint.setTappa_isSelected(false);
+        checkpointDao.updateIsSelected(checkpoint.getId(), false);
     }
 
     private void aggiornaVisibilitaFAB() {
-        List<Tappa> selectedTappe = tappaDao.getSelectedTappe();
+        List<Checkpoint> selectedTappe = checkpointDao.getSelectedCheckpoint();
 
         if (selectedTappe.isEmpty()) {
             modificaTappa.setVisibility(View.GONE);
@@ -113,8 +113,8 @@ public class TappaRecyclerAdapter extends RecyclerView.Adapter<TappaRecyclerAdap
 
         public ViewHolder(View view) {
             super(view);
-            nomeTappa = view.findViewById(R.id.nomeTappaCard);
-            immagineCard = view.findViewById(R.id.anteprimaImmagineCard);
+            nomeTappa = view.findViewById(R.id.checkpointNameCard);
+            immagineCard = view.findViewById(R.id.checkpointCardImage);
         }
     }
 }

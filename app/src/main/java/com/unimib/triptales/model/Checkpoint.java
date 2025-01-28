@@ -4,8 +4,10 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 
-@Entity(tableName = "tappe")
-public class Tappa {
+import java.util.Objects;
+
+@Entity
+public class Checkpoint {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
@@ -27,7 +29,7 @@ public class Tappa {
     @ColumnInfo(name = "tappa_isSelected")
     public boolean tappa_isSelected;
 
-    public Tappa(String nome, String data, String immagineUri, double latitude, double longitude) {
+    public Checkpoint(String nome, String data, String immagineUri, double latitude, double longitude) {
         this.nome = nome;
         this.data = data;
         this.immagineUri = immagineUri;
@@ -90,4 +92,19 @@ public class Tappa {
     public void setTappa_isSelected(boolean tappa_isSelected) {
         this.tappa_isSelected = tappa_isSelected;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Checkpoint that = (Checkpoint) o;
+        return id == that.id; // or use Objects.equals() for null-safe comparison
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
 }
