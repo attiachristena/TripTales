@@ -15,7 +15,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/anteprimaImmagineCard"
+                android:id="@+id/anteprimaImmagine"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
                 android:src="@drawable/ic_launcher_background"
@@ -25,24 +25,15 @@
                 android:id="@+id/nomeTappaCard"
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
-                android:layout_below="@id/anteprimaImmagineCard"
+                android:layout_below="@id/anteprimaImmagine"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="2dp"
                 android:fontFamily="@font/poppins_regular"
+
                 android:gravity="center"
                 android:text="@string/nome_tappa_card"
                 android:textColor="@color/black"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/dataTappaCard"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_below="@id/anteprimaImmagineCard"
-                android:layout_alignParentBottom="true"
-                android:gravity="center"
-                android:visibility="gone"
                 android:textSize="13sp" />
 
         </RelativeLayout>

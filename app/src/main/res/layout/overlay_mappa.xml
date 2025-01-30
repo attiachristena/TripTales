@@ -1,8 +1,8 @@
-<FrameLayout
-    android:id="@+id/mapOverlay"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/mapOverlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone"
+    android:visibility="visible"
     android:background="#80000000"
     android:gravity="center"
     android:padding="5dp"
@@ -13,33 +13,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Mappa ingrandita -->
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/expandedMap"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/black" />
+    <!-- Mappa ingrandita -->
+    <com.google.android.gms.maps.MapView
+    android:id="@+id/expandedMap"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black" />
 
-        <!-- SearchView -->
-        <android.widget.SearchView
-            android:id="@+id/searchView"
-            android:layout_width="300dp"
-            android:layout_height="60dp"
-            android:layout_margin="16dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/edit_text_background"
-            android:queryHint="Cerca un luogo" />
+        <!-- Bottone per chiudere l'overlay -->
 
-        <!-- Bottone chiudi overlay -->
+
+
         <ImageButton
             android:id="@+id/closeMapButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="16dp"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
             android:background="?android:attr/selectableItemBackground" />
 
     </RelativeLayout>
