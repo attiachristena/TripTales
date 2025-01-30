@@ -174,7 +174,23 @@
     <string name="error_email_required">Email Required Error</string>
     <string name="error_email_invalid">Invalid Email Error</string>
     <string name="password_reset_email_sent">Email for reset password sent</string>
-    <string name="registrati_con_google">Registrati con Google</string>
+    <string name="registrati_con_google">Sign up with Google</string>
 
+    <string name="modifica_profilo"><u>Edit profile</u></string>
+    <string name="modifica_profilo2">Edit profile</string>
+    <string name="cambia_foto"><u>Change photo</u></string>
+
+    <string name="inserisci_nome_e_cognome">Please enter both first name and last name</string>
+    <string name="aggiornamento_con_successo">First name and last name updated successfully!</string>
+    <string name="errore_aggiornamento">Error during update</string>
+    <string name="utente_non_autenticato">User not authenticated</string>
+
+    <string name="elimina_account">Delete account</string>
+    <string name="dialog_elimina_account">Are you sure you want to delete your account? This action is irreversible.</string>
+    <string name="elimina">Delete</string>
+    <string name="eliminazione_con_successo">Account successfully deleted!</string>
+    <string name="errore_eliminazione">Error deleting the account.</string>
+    <string name="annulla">Cancel</string>
+    <string name="nessun_utente_trovato">No authenticated user found!</string>
 
 </resources>

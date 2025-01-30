@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sliderLayoutSettings3"
+    android:id="@+id/sliderLayoutSettings2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.settings.fragment.ChangeEmailFragment"
+    tools:context=".ui.settings.fragment.EditProfileFragment"
     android:layout_marginTop="70dp"
     android:layout_marginBottom="70dp">
 
@@ -19,11 +19,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
-            android:text="@string/modifica_email"
+            android:text="@string/modifica_profilo2"
             android:textSize="22sp"
             android:textStyle="bold"/>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:id="@+id/imageLayout"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:id="@+id/profile_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/profile_icon" />
+
+
+        <Button
+            android:id="@+id/changePhotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/profile_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-38dp"
+            android:background="@android:color/transparent"
+            android:padding="0dp"
+            android:text="@string/cambia_foto"
+            android:textColor="@color/dark_gray" />
+
+
+    </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,9 +67,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="2dp"
-            android:text="@string/vecchia_email" />
+            android:text="@string/nome" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -52,7 +82,7 @@
             app:boxCornerRadiusTopStart="20dp">
 
             <EditText
-                android:id="@+id/oldEmail"
+                android:id="@+id/editName"
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,7 +96,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="2dp"
-            android:text="@string/nuova_email" />
+            android:text="@string/cognome" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -79,7 +109,7 @@
             app:boxCornerRadiusTopStart="20dp">
 
             <EditText
-                android:id="@+id/newEmail"
+                android:id="@+id/editSurname"
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,7 +118,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/changeEmail"
+            android:id="@+id/editProfileButton"
             style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="match_parent"
             android:layout_height="52dp"
@@ -102,5 +132,9 @@
             />
 
     </LinearLayout>
+
+
+
+
 
 </LinearLayout>

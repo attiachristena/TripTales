@@ -144,6 +144,7 @@ public class SignInFragment extends Fragment {
         signInButton.setOnClickListener(v -> {
             boolean isValid = true;
 
+
             if (TextUtils.isEmpty(editTextNome.getText())) {
                 editTextNome.setError("Compila con il tuo nome");
                 isValid = false;

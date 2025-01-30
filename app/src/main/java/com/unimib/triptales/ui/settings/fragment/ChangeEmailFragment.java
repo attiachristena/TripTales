@@ -1,66 +1,127 @@
 package com.unimib.triptales.ui.settings.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.unimib.triptales.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChangeEmailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ChangeEmailFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+    private DatabaseReference databaseReference;
+    private EditText oldEmailField, newEmailField;
+    private Button changeEmailButton;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ChangeEmailFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChangeEmailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChangeEmailFragment newInstance(String param1, String param2) {
-        ChangeEmailFragment fragment = new ChangeEmailFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_change_email, container, false);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+
+        oldEmailField = view.findViewById(R.id.oldEmail);
+        newEmailField = view.findViewById(R.id.newEmail);
+        changeEmailButton = view.findViewById(R.id.changeEmail);
+
+        changeEmailButton.setEnabled(false);
+
+        oldEmailField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                checkEmailFields();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        newEmailField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                checkEmailFields();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        if (firebaseUser != null) {
+            String userEmail = firebaseUser.getEmail();
+            if (!TextUtils.isEmpty(userEmail)) {
+                Query query = databaseReference.orderByChild("email").equalTo(userEmail);
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String email = "" + snapshot.child("email").getValue();
+                            Toast.makeText(getContext(), "Email: " + email, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(getContext(), "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(getContext(), "User email is empty", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
         }
+
+        changeEmailButton.setOnClickListener(v -> {
+            String oldEmail = oldEmailField.getText().toString();
+            String newEmail = newEmailField.getText().toString();
+
+            if (!TextUtils.isEmpty(oldEmail) && !TextUtils.isEmpty(newEmail) && !oldEmail.equals(newEmail)) {
+                Toast.makeText(getContext(), "Email changed successfully!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Emails do not match or invalid", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_change_email, container, false);
+    private void checkEmailFields() {
+        String oldEmail = oldEmailField.getText().toString().trim();
+        String newEmail = newEmailField.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(oldEmail) && !TextUtils.isEmpty(newEmail) && !oldEmail.equals(newEmail)) {
+            changeEmailButton.setEnabled(true);
+        } else {
+            changeEmailButton.setEnabled(false);
+        }
     }
 }

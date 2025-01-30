@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.unimib.triptales.ui.settings.fragment.AboutUsFragment;
 import com.unimib.triptales.ui.settings.fragment.ChangeEmailFragment;
 import com.unimib.triptales.ui.settings.fragment.ChangePasswordFragment;
+import com.unimib.triptales.ui.settings.fragment.EditProfileFragment;
 import com.unimib.triptales.ui.settings.fragment.PrivacyFragment;
 import com.unimib.triptales.ui.settings.fragment.SettingsFragment;
 
@@ -42,6 +43,9 @@ public class SettingsAdapter extends FragmentStateAdapter {
             case 4:
                 fragment = new AboutUsFragment();
                 break;
+            case 5:
+                fragment = new EditProfileFragment();
+                break;
             default:
                 fragment = new SettingsFragment();
         }
@@ -52,6 +56,6 @@ public class SettingsAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 6;
     }
 }
