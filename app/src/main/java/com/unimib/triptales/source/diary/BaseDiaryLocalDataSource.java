@@ -13,5 +13,8 @@ public interface BaseDiaryLocalDataSource {
     void deleteAllDiaries(List<Diary> diaries);
     List<Diary> getAllDiaries();
     List<Diary> getSelectedDiaries();
-    //List<Diaey> getAllDiariesByUserId(int Id);
+
+    List<Diary> getAllDiariesByUserId(int userId);
+    //List<Diary> getAllDiariesByUserId(int Id);
+
 }

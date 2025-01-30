@@ -54,4 +54,9 @@ public class DiaryLocalDataSource implements BaseDiaryLocalDataSource {
         // Restituisce tutti i diari selezionati
         return diaryDao.getSelectedDiaries();
     }
+
+    @Override
+    public List<Diary> getAllDiariesByUserId(int userId) {
+        return diaryDao.getAllDiariesByUserId(userId);
+    }
 }
