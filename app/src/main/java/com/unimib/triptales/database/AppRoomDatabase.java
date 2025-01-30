@@ -18,6 +18,7 @@ import com.unimib.triptales.model.Tappa;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.model.User;
 import com.unimib.triptales.util.Constants;
+import com.unimib.triptales.util.UriConverter;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

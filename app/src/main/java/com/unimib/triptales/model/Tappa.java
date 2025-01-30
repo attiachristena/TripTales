@@ -1,14 +1,8 @@
 package com.unimib.triptales.model;
 
-import android.net.Uri;
-
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
-
-
-import androidx.room.TypeConverter;
-
 
 @Entity(tableName = "tappe")
 public class Tappa {
@@ -22,7 +16,7 @@ public class Tappa {
     public String data;
 
     @ColumnInfo(name = "immagine_uri")
-    public Uri immagineUri;
+    public String immagineUri; // Percorso dell'immagine come stringa
 
     @ColumnInfo(name = "latitude")
     public double latitude;
@@ -30,15 +24,16 @@ public class Tappa {
     @ColumnInfo(name = "longitude")
     public double longitude;
 
-    // Costruttore
-    public Tappa(String nome, String data, Uri immagineUri, double latitude, double longitude) {
+    @ColumnInfo(name = "tappa_isSelected")
+    public boolean tappa_isSelected;
+
+    public Tappa(String nome, String data, String immagineUri, double latitude, double longitude) {
         this.nome = nome;
         this.data = data;
         this.immagineUri = immagineUri;
         this.latitude = latitude;
         this.longitude = longitude;
     }
-
     // Getters e Setters
     public int getId() {
         return id;
@@ -64,11 +59,11 @@ public class Tappa {
         this.data = data;
     }
 
-    public Uri getImmagineUri() {
+    public String getImmagineUri() {
         return immagineUri;
     }
 
-    public void setImmagineUri(Uri immagineUri) {
+    public void setImmagineUri(String immagineUri) {
         this.immagineUri = immagineUri;
     }
 
@@ -86,5 +81,13 @@ public class Tappa {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isTappa_isSelected() {
+        return tappa_isSelected;
+    }
+
+    public void setTappa_isSelected(boolean tappa_isSelected) {
+        this.tappa_isSelected = tappa_isSelected;
     }
 }

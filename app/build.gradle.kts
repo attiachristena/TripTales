@@ -68,4 +68,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.8")
     implementation("com.google.firebase:firebase-firestore:24.2.1")
 
+    implementation(libs.play.services.base)
+    implementation(libs.play.services.maps.v1810)
+
 }

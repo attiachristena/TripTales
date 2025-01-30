@@ -10,119 +10,157 @@
     android:padding="10dp">
 
     <!-- NestedScrollView per gestire lo scrolling del contenuto -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <!-- Titolo Diario -->
-            <TextView
-                android:id="@+id/diary_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/nunito_bold"
-                android:gravity="center"
-                android:text="@string/titolo_diario"
-                android:textColor="#000000"
-                android:textSize="27sp"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentTop="true" />
-
-            <!-- Data del viaggio -->
-            <TextView
-                android:id="@+id/date_trip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/nunito_regular"
-                android:gravity="center"
-                android:text="03/03/2023 - 06/03/2023"
-                android:textSize="15sp"
-                android:layout_below="@id/diary_title"
-                android:layout_centerHorizontal="true" />
-
-            <!-- Immagine del viaggio -->
-
-            <!-- Titolo per le tappe -->
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="170dp"
-                android:layout_below="@id/date_trip"
-                android:layout_marginTop="16dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_launcher_background"
-                app:shapeAppearance="@style/roundedImage" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:fontFamily="@font/nunito_regular"
-                android:gravity="center"
-                android:text="@string/tappe"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:layout_below="@id/imageView"
-                android:layout_centerHorizontal="true" />
-
-            <!-- Scroll orizzontale per le cards -->
-
-
-            <!-- Barra di ricerca (inizialmente invisibile) -->
-            <!-- Mappa del viaggio -->
-
-            <HorizontalScrollView
-                android:id="@+id/horizontalScrollView"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_below="@id/textView"
-                android:layout_marginTop="12dp">
-
-                <LinearLayout
-                    android:id="@+id/tappeCardContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
-
-
-            <android.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="52dp"
-                android:layout_marginEnd="48dp"
-                android:layout_marginBottom="153dp"
-                android:backgroundTint="@color/light_gray"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:queryHint="Cerca un luogo"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mappaTappe"
-                android:layout_width="match_parent"
-                android:layout_height="143dp"
-                android:layout_below="@+id/horizontalScrollView"
-                android:layout_marginTop="83dp"
-                android:background="@drawable/edit_text_background"
-                android:backgroundTint="@color/light_gray"
-                android:clickable="true"
-                android:focusable="true" />
-
-
-        </RelativeLayout>
 
     <!-- Bottone aggiungi tappa -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="10dp">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageView"
+            android:layout_margin="16dp"
+            android:layout_marginBottom="86dp"
+            android:backgroundTint="@color/background_overlays"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <!-- Icona posizione -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Location Icon"
+                    android:src="@drawable/baseline_location_pin_24"
+                    />
+
+                <!-- Testo posizione -->
+                <TextView
+                    android:id="@+id/diary_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Titolo Diario"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <!-- Spazio tra gli elementi -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Icona calendario -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/baseline_calendar_month_24"
+                    />
+
+                <!-- Testo data -->
+                <TextView
+                    android:id="@+id/date_trip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="1st - 12th Jan 2025"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <!-- Spazio tra gli elementi -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageView"
+            android:layout_width="391dp"
+            android:layout_height="222dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/ic_launcher_background"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/roundedImage" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="164dp"
+            android:layout_marginTop="11dp"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center"
+            android:text="@string/tappe"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_below="@id/textView"
+            android:layout_marginTop="9dp">
+
+            <LinearLayout
+                android:id="@+id/tappeCardContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <android.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/mappaTappe"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/edit_text_background"
+            android:backgroundTint="@color/background_overlays"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:queryBackground="@color/background_overlays"
+            android:queryHint="Cerca un luogo"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mappaTappe"
+            android:layout_width="389dp"
+            android:layout_height="181dp"
+            android:layout_below="@+id/horizontalScrollView"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/edit_text_background"
+            android:backgroundTint="@color/light_gray"
+            android:clickable="true"
+            android:focusable="true" />
+
+
+    </RelativeLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addTappaButton"
         android:layout_width="wrap_content"
@@ -135,6 +173,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.988"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:tint="@color/black" />
 
     <!-- Bottone elimina tappa -->
@@ -197,8 +236,6 @@
                 android:background="@android:color/black" />
 
             <!-- Bottone per chiudere l'overlay -->
-
-
 
             <ImageButton
                 android:id="@+id/closeMapButton"
