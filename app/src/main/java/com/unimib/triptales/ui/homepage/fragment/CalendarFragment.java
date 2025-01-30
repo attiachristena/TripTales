@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 
 import com.google.android.material.datepicker.DayViewDecorator;
 import com.unimib.triptales.R;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.model.CountryPolygon;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
@@ -32,20 +35,19 @@ public class CalendarFragment extends Fragment {
 
     CalendarView calendarView;
     SharedViewModel sharedViewModel;
-    List<Calendar> datePartenza = new ArrayList<>();
-    List<Calendar> dateRitorno = new ArrayList<>();
+    List<Calendar> startDates = new ArrayList<>();
+    List<Calendar> endDates = new ArrayList<>();
     List<EventDay> events = new ArrayList<>();
+    DiaryDao diaryDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
 
@@ -53,9 +55,9 @@ public class CalendarFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Inizializza il calendario
         calendarView = view.findViewById(R.id.calendarView);
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        diaryDao = AppRoomDatabase.getDatabase(getContext()).diaryDao();
 
         sharedViewModel.getStartDate().observe(requireActivity(), new Observer<String>() {
             @Override
@@ -64,10 +66,9 @@ public class CalendarFragment extends Fragment {
                 int day = Integer.parseInt(date[0]);
                 int month = Integer.parseInt(date[1])-1;
                 int year = Integer.parseInt(date[2]);
-                Calendar startDate = Calendar.getInstance();
-                startDate.set(year, month, day);
-                datePartenza.add(startDate);
-                Log.d("DEBUG", "Lista date partenza: "+datePartenza.size());
+                Calendar startCalendar = Calendar.getInstance();
+                startCalendar.set(year, month, day);
+                startDates.add(startCalendar);
                 loadEvents();
             }
         });
@@ -79,50 +80,22 @@ public class CalendarFragment extends Fragment {
                 int day = Integer.parseInt(date[0]);
                 int month = Integer.parseInt(date[1])-1;
                 int year = Integer.parseInt(date[2]);
-                Calendar endDate = Calendar.getInstance();
-                endDate.set(year, month, day);
-                dateRitorno.add(endDate);
-                Log.d("DEBUG", "Lista date ritorno: "+dateRitorno.size());
+                Calendar endCalendar = Calendar.getInstance();
+                endCalendar.set(year, month, day);
+                endDates.add(endCalendar);
                 loadEvents();
             }
         });
-
-        /*// Seleziona la data di partenza e ritorno quando l'utente clicca su una data
-        calendarView.setOnDayClickListener(eventDay -> {
-            Calendar selectedDate = eventDay.getCalendar();
-
-            if (startDate == null || endDate != null) {
-                // Se non è stata ancora selezionata la data di partenza o se la data di ritorno è già stata impostata
-                startDate = selectedDate;
-                endDate = null;
-                Toast.makeText(requireActivity(), "Data di partenza selezionata: " + selectedDate.getTime(), Toast.LENGTH_SHORT).show();
-            } else {
-                // Se la data di ritorno viene selezionata
-                if (selectedDate.after(startDate)) {
-                    endDate = selectedDate;
-                    Toast.makeText(requireActivity(), "Data di ritorno selezionata: " + selectedDate.getTime(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            // Ricarica gli eventi (per applicare i cambiamenti)
-            loadEvents();
-        });
-
-        // Aggiungi eventi alle date selezionate
-        loadEvents();*/
     }
 
-    private void loadEvents() {
-        Log.d("DEBUG", "Lista date partenza: "+datePartenza.size());
-        Log.d("DEBUG", "Lista date ritorno: "+dateRitorno.size());
+    private void loadEvents(){
         events.clear();
-        for(Calendar c : datePartenza) {
-            events.add(new EventDay(c, R.drawable.baseline_flight_takeoff_24));
+        for (Calendar startCalendar : startDates) {
+            events.add(new EventDay(startCalendar, R.drawable.baseline_flight_takeoff_24));
         }
-        for(Calendar c : dateRitorno) {
-            events.add(new EventDay(c, R.drawable.baseline_flight_land_24));
+        for (Calendar endCalendar : endDates) {
+            events.add(new EventDay(endCalendar, R.drawable.baseline_flight_land_24));
         }
-        Log.d("DEBUG", "Lista eventi: "+events.size());
         calendarView.setEvents(events);
     }
 

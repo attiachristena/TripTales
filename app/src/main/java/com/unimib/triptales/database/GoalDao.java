@@ -14,9 +14,6 @@ public interface GoalDao {
     @Insert
     long insert(Goal goal);
 
-    @Insert
-    void insertAll(List<Goal> goals);
-
     @Update
     void update(Goal goal);
 
@@ -38,11 +35,6 @@ public interface GoalDao {
     @Delete
     void deleteAll(List<Goal> goals);
 
-    //Recupero di un singolo elemento
-    @Query("SELECT * FROM Goal WHERE id = :goalId")
-    Goal getById(int goalId);
-
-    //Recupero di una lista di elementi
     @Query("SELECT * FROM Goal")
     List<Goal> getAll();
 

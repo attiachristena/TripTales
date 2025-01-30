@@ -36,6 +36,17 @@ public class Constants {
     public static final List<String> CATEGORIES = Arrays.asList(SHOPPING,
             FOOD, TRANSPORT, ACCOMMODATION, CULTURE, RECREATION);
 
+    public static final String BUDGET = "BUDGET";
+    public static final String ADD_EXPENSE = "ADD_EXPENSE";
+    public static final String EDIT_EXPENSE = "EDIT_EXPENSE";
+    public static final String FILTER = "FILTER";
+    public static final String EXPENSE_ADDED = "EXPENSE_ADDED";
+    public static final String EXPENSE_UPDATED = "EXPENSE_UPDATED";
+    public static final String EXPENSE_DELETED = "EXPENSE_DELETED";
+    public static final String INVALID_DELETE = "INVALID_DELETE";
+
+    public static final String ACTIVE_FRAGMENT_TAG = "active_fragment";
+
     public static final String CURRENCY_EUR = "€";
     public static final String CURRENCY_USD = "$";
     public static final String CURRENCY_GBP = "£";
@@ -63,36 +74,5 @@ public class Constants {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
-    public static MaterialCardView findSelectedCard(ArrayList<MaterialCardView> cardList){
-        MaterialCardView selectedCard = cardList.get(0);
-        for (MaterialCardView card : cardList) {
-            if (card.isSelected())
-                selectedCard = card;
-        }
-        return selectedCard;
-    }
-
-    public static String countAmount(List<Expense> expenseList, String currency){
-        double totExpense = 0;
-        for(Expense e: expenseList){
-            String amount = e.getAmount();
-            String realAmount;
-            if(currency.equalsIgnoreCase(CURRENCY_EUR)){
-                realAmount = amount.substring(0, amount.length()-1);
-            } else {
-                realAmount = amount.substring(1);
-            }
-            totExpense += Double.parseDouble(realAmount);
-        }
-        String tmp;
-        if(currency.equalsIgnoreCase(CURRENCY_EUR))
-            tmp = totExpense+currency;
-        else
-            tmp = currency+totExpense;
-
-        return tmp;
-    }
-
 
 }

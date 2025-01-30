@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_modifica_password"
+        android:title="@string/modifica_password"
+        android:enabled="true" />
+    <item
+        android:id="@+id/action_modifica_email"
+        android:title="@string/modifica_email"
+        android:enabled="true" />
+    <item
+        android:id="@+id/action_elimina_profilo"
+        android:title="@string/elimina_profilo"
+        android:enabled="true" />
+</menu>

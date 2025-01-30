@@ -8,10 +8,10 @@
     import androidx.fragment.app.FragmentActivity;
     import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-    import com.unimib.triptales.ui.diario.fragment.TasksFragment;
-    import com.unimib.triptales.ui.diario.fragment.GoalsFragment;
-    import com.unimib.triptales.ui.diario.fragment.ExpensesFragment;
-    import com.unimib.triptales.ui.diario.fragment.TappeFragment;
+    import com.unimib.triptales.ui.diary.fragment.TasksFragment;
+    import com.unimib.triptales.ui.diary.fragment.GoalsFragment;
+    import com.unimib.triptales.ui.diary.fragment.ExpensesFragment;
+    import com.unimib.triptales.ui.diary.fragment.TappeFragment;
 
     public class ViewPagerAdapter extends FragmentStateAdapter {
 

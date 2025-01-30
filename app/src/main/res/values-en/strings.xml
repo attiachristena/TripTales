@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TripTales</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tabTappe">Stages</string>
+    <string name="tabSpese">Expenses</string>
+    <string name="tabObiettivi">Goals</string>
+    <string name="tabCheckList">CheckList</string>
+    <string name="page_title">TripTales</string>
+    <string name="action_home">Home</string>
+    <string name="action_logout">Logout</string>
+    <string name="fragment_tappe">fragment_tappe</string>
+    <string name="fragment_obiettivi">fragment_obiettivi</string>
+    <string name="fragment_expenses">fragment_expenses</string>
+    <string name="fragment_checklist">fragment_checklist</string>
+    <string name="checklist_fragment">checkList_fragment</string>
+    <string name="obiettivi_fragment">obiettivi_fragment</string>
+    <string name="spese_fragment">spese_fragment</string>
+    <string name="tappe_fragment">tappe_fragment</string>
+    <string name="budget">0</string>
+    <string name="buttonEditDescription">Change</string>
+    <string name="listaSpese">All expenses</string>
+    <string name="buttonSpese">Filter</string>
+    <string name="prova_spesa_descrizione">Means of transportation</string>
+    <string name="prova_data_spesa">05/06/2022</string>
+    <string name="spesa_amount">30€</string>
+    <string name="add_button_spese_description">add button for expenses</string>
+    <string name="percentualeSpesa">0 / 0 spent (0%)</string>
+    <string name="hintBudget">Amount</string>
+    <string name="editBudgetTitle">Change budget</string>
+    <string name="saveButton">Save</string>
+    <string name="titleBudgetCard">Budget</string>
+    <string name="spesaDescription">Weekly transportation pass</string>
+    <string name="addSpesaCardTitle">Add stage</string>
+    <string name="hintDescription">Description</string>
+    <string name="hintCategoria">Category</string>
+    <string name="hintDay">DD</string>
+    <string name="hintMonth">MM</string>
+    <string name="hintYear">YYYY</string>
+    <string name="dataCompleta">%1$d/%2$d/%3$d</string>
+    <string name="triptales">TripTales</string>
+    <string name="page_1">Diaries</string>
+    <string name="page_2">Map</string>
+    <string name="page_3">Calendar</string>
+    <string name="snackbarErroreBudget">Set the budget!</string>
+    <string name="firstHomePageText">You haven\'t created any diary yet, start your adventure!</string>
+    <string name="tappe">Stages</string>
+    <string name="titolo_diario">Diary Title</string>
+    <string name="aggiungi_una_tappa">Stage name</string>
+    <string name="nome_tappa_hint">Stage name</string>
+    <string name="inserisci_un_immagine">Insert an image</string>
+    <string name="data_tappa_hint">Stage date</string>
+    <string name="anteprima_immagine">Image preview</string>
+    <string name="pulsante_per_tornare_indietro">Button to go back</string>
+    <string name="pulsante_per_salvare_la_tappa">Button to save the stage</string>
+    <string name="aggiungi_una_tappa_modificata">Add stage</string>
+    <string name="nome_tappa_modificata">Stage name</string>
+    <string name="inserisci_un_immagine_modifica">Insert an image</string>
+    <string name="data_tappa_modificata">Stage date</string>
+    <string name="anteprima_immagine_modificata">Image preview</string>
+    <string name="nome_tappa_card">Stage name</string>
+    <string name="nome_tappa">Stage name</string>
+    <string name="title_activity_fullscreen_image">FullscreenImageActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="pronto">Ready to share\nyour journey?</string>
+    <string name="accedi">Log in</string>
+    <string name="registrati">Sign up</string>
+    <string name="email">Email</string>
+    <string name="freccetta" />
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="password_dimenticata">Password dimenticata?</string>
+    <string name="oppure">or</string>
+    <string name="accedi_con_google">Sign in with Google</string>
+    <string name="nome">Name</string>
+    <string name="cognome">Surname</string>
+    <string name="inserisci_la_tua_email">Enter your email</string>
+    <string name="invia_email">Send email</string>
+    <string name="error_email_login">Check your email</string>
+    <string name="error_password_login">The password must be at least 8 characters long: at least 1 letter, 1 number, and 1 special character</string>
+    <string name="benvenuto_nella_home">Welcome to the home page</string>
+    <string name="totalespesa">"Total expense of the category:"</string>
+    <string name="SeparatoreData">/</string>
+    <string name="titleFilter">Category filter</string>
+    <string name="saveFilter">Filter</string>
+    <string name="obiettiviRaggiunti">Goals achieved:</string>
+    <string name="numObiettivi">%1$d/%2$d achieved</string>
+    <string name="addButtonGoalsDescription">add a goal</string>
+    <string name="prova_goal_descrizione">Visit the Louvre</string>
+    <string name="aggiungi_obiettivo">New goal</string>
+    <string name="addItemButtonDescription">Add an item to the list.</string>
+    <string name="action_account">action_account</string>
+    <string name="in_corso">Ongoing</string>
+    <string name="fatto">Done</string>
+    <string name="nuovo_compito">New activity</string>
+    <string name="noTasksString">Add your first activity!</string>
+    <string name="noGoalsString">Add your first travel goal!</string>
+    <string name="noSpeseString">Set your budget and add your first expense</string>
+    <string name="checklistTitle">Checklist of Tasks to Complete</string>
+    <string name="warningCurrency">*Please note: you can only change the currency if no expenses have been entered yet.</string>
+    <string name="hintCurrency">Currency*</string>
+    <string name="nome_diario">Diary name</string>
+    <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
+    <string name="intro1_title">Welcome to TripTales. Your Personal Travel Journal</string>
+    <string name="intro1_body">Tell your journey, capture your memories and discover the world your own way</string>
+    <string name="intro2_title">Plan your trip, explore the world, treasure every stage</string>
+    <string name="intro2_body">Here you can plan your adventures, note down every discovery and relive every moment.</string>
+    <string name="intro3_title">Explore without internet connection, plan without stress</string>
+    <string name="intro3_body">Download maps and create your itinerary without needing to be online</string>
+    <string name="intro4_title">Travel with peace of mind: we help you remember every detail</string>
+    <string name="intro4_body">Goals, checklists and calendars: everything you need for a perfect trip, without forgetting anything</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="inizia">START</string>
+    <string name="data_partenza">Departure date</string>
+    <string name="data_arrivo">Arrival date</string>
+    <string name="scegli_immagine">Choose an image</string>
+    <string name="inserisci_nome_diario">Enter diary name</string>
+    <string name="paese_visitato">Enter visited country</string>
+
+    <string name="nome_user_momentaneo">Name Surname</string>
+    <string name="modalita_scura">Dark mode</string>
+    <string name="notiche">Notifications</string>
+    <string name="privacy">Privacy</string>
+    <string name="lingua">Language</string>
+    <string name="account">Account</string>
+    <string name="about_us">About us</string>
+    <string name="impostazioni">Settings</string>
+
+    <string name="material_calendar_monday">M</string>
+    <string name="material_calendar_tuesday">T</string>
+    <string name="material_calendar_wednesday">W</string>
+    <string name="material_calendar_thursday">T</string>
+    <string name="material_calendar_friday">F</string>
+    <string name="material_calendar_saturday">S</string>
+    <string name="material_calendar_sunday">S</string>
+
+    <array name="material_calendar_months_array">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </array>
+
+    <string name="material_calendar_today_button">Today</string>
+    <string name="material_calendar_positive_button">OK</string>
+    <string name="material_calendar_negative_button">Delete</string>
+
+    <string name="aggiungi_diario">Add diary</string>
+    <string name="snackbarExpenseAdded">Expense added correctly!</string>
+    <string name="snackbarExpenseUpdated">Expense updated correctly!</string>
+    <string name="snackbarExpenseDeleted">Expense deleted correctly</string>
+    <string name="snackbarExpenseNotDeleted">Error: expense not deleted!</string>
+    <string name="modifica_password">Change password</string>
+    <string name="vecchia_password">Old password</string>
+    <string name="nuova_password">New password</string>
+    <string name="modifica_email">Change email</string>
+    <string name="vecchia_email">Change email</string>
+    <string name="nuova_email">New email</string>
+    <string name="italiano">Italian</string>
+    <string name="inglese">English</string>
+    <string name="elimina_profilo">Delete profile</string>
+
+    <string name="error_unexpected">Unexpected error</string>
+    <string name="error_google_login">Google Login Error</string>
+    <string name="error_email_required">Email Required Error</string>
+    <string name="error_email_invalid">Invalid Email Error</string>
+    <string name="password_reset_email_sent">Email for reset password sent</string>
+    <string name="registrati_con_google">Registrati con Google</string>
+
+
+</resources>
