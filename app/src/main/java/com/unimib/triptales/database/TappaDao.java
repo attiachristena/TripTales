@@ -8,7 +8,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Tappa;
 
 import java.util.List;
@@ -47,10 +46,4 @@ public interface TappaDao {
 
     @Query("DELETE FROM tappe")
     void deleteAll();
-
-    @Query("SELECT * FROM tappe WHERE tappa_isSelected = 1")
-    List<Tappa> getSelectedTappe();
-
-    @Query("UPDATE tappe SET tappa_isSelected = :isSelected WHERE id = :id")
-    void updateIsSelected(int id, boolean isSelected);
 }

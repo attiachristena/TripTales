@@ -21,8 +21,6 @@ materialVersion = "1.9.0"
 navigationFragment = "2.8.4"
 navigationUi = "2.8.4"
 firebaseDatabase = "21.0.0"
-playServicesBase = "18.5.0"
-playServicesMapsVersion = "18.1.0"
 roomRuntime = "2.6.1"
 playServicesMaps = "19.0.0"
 playServicesLocation = "21.3.0"
@@ -52,12 +50,10 @@ material-calendar-view = { module = "com.applandeo:material-calendar-view", vers
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
-play-services-base = { module = "com.google.android.gms:play-services-base", version.ref = "playServicesBase" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
-play-services-maps-v1810 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 
 
 [plugins]

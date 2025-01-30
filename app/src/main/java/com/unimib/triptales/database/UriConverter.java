@@ -1,4 +1,8 @@
-package com.unimib.triptales.util;
+package com.unimib.triptales.database;
+
+import android.net.Uri;
+
+import androidx.room.TypeConverter;
 
 import android.net.Uri;
 
