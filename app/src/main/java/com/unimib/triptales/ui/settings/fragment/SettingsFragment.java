@@ -11,7 +11,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -26,31 +27,27 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.*;
 import com.unimib.triptales.R;
 import com.unimib.triptales.ui.login.LoginActivity;
-import com.google.firebase.database.*;
-
-import java.util.Locale;
+import com.unimib.triptales.ui.settings.SettingsActivity;
 
 public class SettingsFragment extends Fragment {
 
     ImageButton PrivacyButton, LinguaButton, AccountButton, AboutUsButton;
     Button ModificaProfiloButton;
-    ViewPager2 viewPager2;
     SwitchCompat switchNightMode;
     boolean nightMode;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     private FirebaseAuth firebaseAuth;
+    private NavController navController;
 
-    public SettingsFragment() {
-
-    }
+    public SettingsFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         applySavedLanguage();
         firebaseAuth = FirebaseAuth.getInstance();
     }
@@ -61,7 +58,8 @@ public class SettingsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        viewPager2 = getActivity().findViewById(R.id.settingsSlider);
+        // Inizializza il NavController
+        navController = NavHostFragment.findNavController(this);
 
         PrivacyButton = view.findViewById(R.id.PrivacyButton);
         LinguaButton = view.findViewById(R.id.LinguaButton);
@@ -72,12 +70,11 @@ public class SettingsFragment extends Fragment {
         TextView nomeCognomeTextView = view.findViewById(R.id.nome_cognome);
 
         sharedPreferences = getActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        nightMode =sharedPreferences.getBoolean("nightMode", false);
+        nightMode = sharedPreferences.getBoolean("nightMode", false);
 
-        //NOME E COGNOME UTENTE
+        // Recupera nome e cognome utente da Firebase
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference usersRef = database.getReference("Users");
-
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -98,12 +95,10 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-
-
-        //SWITCH PER MODALITA' NOTTURNA
-        if(nightMode){
+        // Imposta lo stato dello switch per la modalità notturna
+        if (nightMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }else {
+        } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
@@ -122,102 +117,63 @@ public class SettingsFragment extends Fragment {
                     editor.putBoolean("nightMode", true);
                 }
                 editor.apply();
+
+                Intent intent = new Intent(requireActivity(), SettingsActivity.class);
+                requireActivity().finish();
+                startActivity(intent);
             }
         });
 
-        //CAMBIARE LINGUA + POP UP MENU
-        LinguaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(getActivity(), LinguaButton);
+        // Cambiare lingua con popup menu
+        LinguaButton.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(getActivity(), LinguaButton);
+            popupMenu.getMenuInflater().inflate(R.menu.lingua_menu, popupMenu.getMenu());
 
-                MenuInflater inflater = popupMenu.getMenuInflater();
-                popupMenu.getMenuInflater().inflate(R.menu.lingua_menu, popupMenu.getMenu());
-
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int id = item.getItemId();
-                        if (id == R.id.action_italiano) {
-                            changeLanguage("it");
-                            return true;
-                        } else if (id == R.id.action_inglese) {
-                            changeLanguage("en");
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-            }
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                if (id == R.id.action_italiano) {
+                    changeLanguage("it");
+                    return true;
+                } else if (id == R.id.action_inglese) {
+                    changeLanguage("en");
+                    return true;
+                }
+                return false;
+            });
+            popupMenu.show();
         });
 
+        // Navigazione con Navigation Component
+        PrivacyButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_privacy));
+        AboutUsButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_aboutUs));
+        ModificaProfiloButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_edit_profile));
 
+        // Menu Account con navigazione
+        AccountButton.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(getActivity(), AccountButton);
+            popupMenu.getMenuInflater().inflate(R.menu.account_menu, popupMenu.getMenu());
 
-
-        //ACCOUNT
-        AccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(getActivity(), AccountButton);
-
-                MenuInflater inflater = popupMenu.getMenuInflater();
-                inflater.inflate(R.menu.account_menu, popupMenu.getMenu());
-
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int id = item.getItemId();
-                        if (id == R.id.action_modifica_email) {
-                            viewPager2.setCurrentItem(2, false);
-                            return true;
-                        } else if (id == R.id.action_modifica_password) {
-                            viewPager2.setCurrentItem(3, false);
-                            return true;
-                        }else if (id == R.id.action_elimina_profilo) {
-                            confirmAndDeleteAccount();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-            }
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                if (id == R.id.action_modifica_email) {
+                    navController.navigate(R.id.action_settings_to_change_email);
+                    return true;
+                } else if (id == R.id.action_modifica_password) {
+                    navController.navigate(R.id.action_settings_to_change_password);
+                    return true;
+                } else if (id == R.id.action_elimina_profilo) {
+                    confirmAndDeleteAccount();
+                    return true;
+                }
+                return false;
+            });
+            popupMenu.show();
         });
-
-
-
-
-        //BOTTONE PER ANDARE AL PRIVACYFRAGMENT
-
-        PrivacyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager2.setCurrentItem(1, false);
-            }
-        });
-
-        AboutUsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager2.setCurrentItem(4, false);
-            }
-        });
-
-        ModificaProfiloButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager2.setCurrentItem(6, false);
-            }
-        });
-
 
         return view;
     }
 
-
-
-    //CAMBIO LINGUA
+    // Cambio lingua
     private void changeLanguage(String languageCode) {
         SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -225,7 +181,6 @@ public class SettingsFragment extends Fragment {
         editor.apply();
 
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
-
         getActivity().recreate();
     }
 
@@ -236,8 +191,7 @@ public class SettingsFragment extends Fragment {
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
     }
 
-
-    //ELIMINARE ACCOUNT
+    // Eliminazione account con conferma
     private void confirmAndDeleteAccount() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
@@ -245,16 +199,21 @@ public class SettingsFragment extends Fragment {
                     .setTitle(getString(R.string.elimina_account))
                     .setMessage(getString(R.string.dialog_elimina_account))
                     .setPositiveButton(getString(R.string.elimina), (dialog, which) -> {
-                        currentUser.delete().addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getContext(), getString(R.string.eliminazione_con_successo), Toast.LENGTH_SHORT).show();
-                                firebaseAuth.signOut();
-                                Intent intent = new Intent(getContext(), LoginActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(getContext(), getString(R.string.errore_eliminazione), Toast.LENGTH_SHORT).show();
-                            }
+                        String userId = currentUser.getUid();
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+
+                        userRef.removeValue().addOnCompleteListener(task -> {
+                            currentUser.delete().addOnCompleteListener(task2 -> {
+                                if (task2.isSuccessful()) {
+                                    Toast.makeText(getContext(), getString(R.string.eliminazione_con_successo), Toast.LENGTH_SHORT).show();
+                                    firebaseAuth.signOut();
+                                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(getContext(), getString(R.string.errore_eliminazione), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         });
                     })
                     .setNegativeButton(getString(R.string.annulla), null)
@@ -263,7 +222,4 @@ public class SettingsFragment extends Fragment {
             Toast.makeText(getContext(), getString(R.string.nessun_utente_trovato), Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
 }

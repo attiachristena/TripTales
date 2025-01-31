@@ -8,8 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.settings.SettingsActivity"
     android:orientation="vertical"
-    android:name="androidx.navigation.fragment.NavHostFragment"
-    app:navGraph="@navigation/nav_graph_settings">
+    >
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarLayout"
@@ -32,18 +31,14 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fragment_container_settings"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment_settings"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/settingsSlider"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </FrameLayout>
+        android:layout_weight="1"
+        app:navGraph="@navigation/nav_graph_settings"
+        app:defaultNavHost="true"/>
 
 
 </LinearLayout>
