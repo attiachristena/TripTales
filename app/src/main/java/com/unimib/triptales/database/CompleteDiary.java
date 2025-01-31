@@ -12,7 +12,7 @@ public class CompleteDiary {
     @Embedded
     public Diary diary;
 
-   /* @Relation(parentColumn = "id", entityColumn = "diaryId")
+   /*    @Relation(parentColumn = "id", entityColumn = "diaryId")
     public List<Tappa> stages;  // Relazione con le tappe
 
     /*@Relation(parentColumn = "id", entityColumn = "diaryId")

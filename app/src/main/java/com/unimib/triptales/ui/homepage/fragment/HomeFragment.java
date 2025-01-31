@@ -4,9 +4,11 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,15 +36,19 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.DiaryAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.DiaryDao;
+import com.unimib.triptales.database.UserDao;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.User;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -50,7 +56,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+
 public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLongClickListener {
+
+    private static final String TAG = HomeFragment.class.getSimpleName();
 
     private RecyclerView recyclerView;
     private DiaryAdapter diaryAdapter;
@@ -71,7 +80,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private ImageView imageViewCover, modifyCoverImage;
     private Button buttonChooseImage, buttonSave, buttonSaveModify, buttonChooseImageChanges;
     private ImageButton closeAddOverlayButton, closeModifyOverlayButton;
-    private Uri selectedImageUri;
+    private String selectedImageUri;
     private Diary selectedDiary;
     private final Calendar calendar = Calendar.getInstance();
 
@@ -80,10 +89,11 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private String country;
     private SharedViewModel sharedViewModel;
     private int id;
-    private int idUser;
+    private String idUser;
     private String budget;
     AppRoomDatabase database;
     private DiaryDao diaryDao;
+    private UserDao userDao;
 
 
     @Nullable
@@ -175,12 +185,17 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private void initializeDatabase() {
         database = AppRoomDatabase.getDatabase(getContext());
         diaryDao = database.diaryDao();
+        String idUser = getLoggedUserId();
 
-        // Ottieni l'ID dell'utente corrente
-        int currentUserId = getCurrentUserId();
+
 
         // Recupera solo i diari dell'utente corrente
-        diaryList = diaryDao.getAllDiariesByUserId(currentUserId);
+        diaryList = diaryDao.getAllDiariesByUserId(idUser);
+
+        diaryAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Diari recuperati: " + diaryList.size());
+
+        //load diarys. appdat erecycle view
     }
 
     private List<String> extractCountryNamesFromJson(Context context) {
@@ -325,14 +340,39 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         startActivityForResult(intent, 1);
     }
 
+    private Uri saveImageToInternalStorage(Uri sourceUri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), sourceUri);
+            File storageDir = getContext().getFilesDir();
+            String fileName = "diary_" + System.currentTimeMillis() + ".jpg";
+            File imageFile = new File(storageDir, fileName);
+            try(FileOutputStream out = new FileOutputStream(imageFile)) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            }
+            return Uri.fromFile(imageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == getActivity().RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            imageViewCover.setImageURI(selectedImageUri);
+            selectedImageUri = String.valueOf(data.getData());
+            imageViewCover.setImageURI(Uri.parse(selectedImageUri));
             imageViewCover.setVisibility(View.VISIBLE);
         }
+    }
+
+    public String getLoggedUserId() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            return null;
+        }
+        Log.d(TAG, "Logged user ID: " + firebaseUser.getUid());
+        return firebaseUser.getUid();
     }
 
     private void saveDiary() {
@@ -343,15 +383,18 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
 
         if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty() || country.isEmpty()) {
             Toast.makeText(getContext(), "Compila tutti i campi e scegli un'immagine!", Toast.LENGTH_SHORT).show();
-            return;
+            saveImageToInternalStorage(Uri.parse(selectedImageUri));
+
         }
 
-        // Ottieni l'ID dell'utente corrente (ad esempio, da un sistema di autenticazione)
-        int currentUserId = getCurrentUserId(); // Implementa questo metodo per ottenere l'ID dell'utente
 
-        Diary newDiary = new Diary(0, currentUserId, diaryName, startDate, endDate, selectedImageUri, budget, country);
+        // Ottieni l'ID dell'utente corrente (ad esempio, da un sistema di autenticazione)
+        String currentUserId = getLoggedUserId(); // Implementa questo metodo per ottenere l'ID dell'utente
+
+        Diary newDiary = new Diary(id, currentUserId, diaryName, startDate, endDate, selectedImageUri, budget, country);
         long diaryId = diaryDao.insert(newDiary); // Inserisci il diario nel database
         newDiary.setId((int) diaryId); // Imposta l'ID generato dal database
+        Log.d(TAG,"Diary saved with ID: " + diaryId);
 
         diaryList.add(newDiary);
         diaryAdapter.notifyDataSetChanged();
@@ -360,10 +403,6 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
     }
 
-    private int getCurrentUserId() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        return sharedPreferences.getInt("user_id", -1); // Ottieni l'ID dell'utente dalle SharedPreferences
-    }
 
     private void modifyDiary() {
         if (selectedDiary == null) return;
@@ -428,9 +467,9 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         modifyYearEndDate.setText(endDate[2]);
 
         // Ripristina l'immagine
-        Uri coverImageUri = diary.getCoverImageUri();
+        String coverImageUri = diary.getCoverImageUri();
         if (coverImageUri != null) {
-            modifyCoverImage.setImageURI(coverImageUri);
+            modifyCoverImage.setImageURI(Uri.parse(coverImageUri));
             modifyCoverImage.setVisibility(View.VISIBLE);  // Assicurati che l'immagine sia visibile
         } else {
             modifyCoverImage.setVisibility(View.GONE);  // Se non c'è un'immagine, nascondila

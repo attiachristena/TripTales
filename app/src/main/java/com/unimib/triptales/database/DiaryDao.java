@@ -39,7 +39,7 @@ public interface DiaryDao {
     List<Diary> getSelectedDiaries();
 
     @Query("SELECT * FROM Diary WHERE userId = :userId")
-    List<Diary> getAllDiariesByUserId(int userId);
+    List<Diary> getAllDiariesByUserId(String userId);
 
     @Query("SELECT diary_start_date FROM Diary")
     List<String> getStartDates();
@@ -53,9 +53,5 @@ public interface DiaryDao {
 
     @Query("UPDATE Diary SET diary_budget = :newBudget WHERE id = :diaryId")
     void updateBudget(int diaryId, String newBudget);
-
-    /*//Recupero dei diari di un determinato utente
-    @Query("SELECT * FROM Diary WHERE userId = :userId")
-    List<Diary> getAllByUserId(int userId);*/
 
 }
