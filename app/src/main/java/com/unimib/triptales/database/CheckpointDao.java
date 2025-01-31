@@ -41,7 +41,7 @@ public interface CheckpointDao {
     @Query("UPDATE Checkpoint SET tappa_isSelected = :newIsSelected WHERE id = :checkpointId")
     void updateCheckpointIsSelected(int checkpointId, boolean newIsSelected);
 
-    @Query("SELECT * FROM Checkpoint ORDER BY data ASC")
+    @Query("SELECT * FROM Checkpoint ORDER BY data DESC")
     List<Checkpoint> getAllCheckpoints();
 
     @Query("SELECT * FROM Checkpoint WHERE id = :id")

@@ -9,6 +9,8 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -40,6 +42,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Checkpoint;
 import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
+import com.unimib.triptales.ui.diary.CheckpointDiaryActivity;
 import com.unimib.triptales.ui.diary.viewmodel.CheckpointViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
@@ -117,6 +120,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         expandedMapView = mapOverlay.findViewById(R.id.expandedMap);
         closeMapButton = mapOverlay.findViewById(R.id.closeMapButton);
 
+
         // Gestione della ricerca
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -184,7 +188,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         checkpointsLayout = view.findViewById(R.id.checkpointsLayout);
         inflater = LayoutInflater.from(view.getContext());
         checkpointContainer = view.findViewById(R.id.checkpointsCardContainer);
-        indice = 0;
 
         overlay_edit_checkpoint = inflater.inflate(R.layout.overlay_edit_checkpoint, checkpointsLayout, false);
         checkpointsLayout.addView(overlay_edit_checkpoint);
@@ -391,12 +394,14 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         });
 
 
-       /* cardView.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), TappaActivity.class);
-            intent.putExtra("nomeTappa", nomeTappaCard.getText().toString());
-            intent.putExtra("dataTappa", dataTappaCard.getText().toString());  // Passa la data
+        cardView.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), CheckpointDiaryActivity.class);
+            intent.putExtra("checkpointId", checkpoint.getId()); // Passa l'ID della tappa
+            intent.putExtra("nomeTappa", nome);
+            intent.putExtra("dataTappa", data);
+            intent.putExtra("immagineTappaUri", immagine);
             startActivity(intent);
-        }); */
+        });
 
         // Pulsante per tornare indietro
         goBackEditCheckpoint.setOnClickListener(v -> {

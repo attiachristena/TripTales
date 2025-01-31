@@ -45,10 +45,10 @@
     <string name="firstHomePageText">Non hai ancora creato nessun diario, comincia la tua avventura!</string>
     <string name="tappe">Tappe</string>
     <string name="titolo_diario">Titolo Diario</string>
-    <string name="aggiungi_una_tappa">Aggiungi una checkpoint</string>
-    <string name="nome_tappa_hint">Nome checkpoint</string>
+    <string name="aggiungi_una_tappa">Aggiungi una tappa</string>
+    <string name="nome_tappa_hint">Nome tappa</string>
     <string name="inserisci_un_immagine">Inserisci un\'immagine</string>
-    <string name="data_tappa_hint">Data checkpoint</string>
+    <string name="data_tappa_hint">Data tappa</string>
     <string name="anteprima_immagine">Anteprima immagine</string>
     <string name="pulsante_per_tornare_indietro">Pulsante per tornare indietro</string>
     <string name="pulsante_per_salvare_la_tappa">Pulsante per salvare la checkpoint</string>
