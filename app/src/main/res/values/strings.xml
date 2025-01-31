@@ -161,18 +161,18 @@
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
     <string name="aggiungi_diario">Aggiungi Diario</string>
-    <string name="snackbarExpenseAdded">Spesa aggiunta correttamente!</string>
-    <string name="snackbarExpenseUpdated">Spesa aggiornata correttamente!</string>
-    <string name="snackbarExpenseDeleted">Spesa rimossa correttamente!</string>
-    <string name="snackbarExpenseNotDeleted">Errore: spesa non rimossa!</string>
-    <string name="snackbarGoalAdded">Obiettivo aggiunto correttamente!</string>
-    <string name="snackbarGoalUpdated">Obiettivo aggiornato correttamente!</string>
-    <string name="snackbarGoalDeleted">Obiettivo rimosso correttamente!</string>
-    <string name="snackbarGoalNotDeleted">Errore: obiettivo non rimosso!</string>
-    <string name="snackbarTaskAdded">Attività aggiunta correttamente!</string>
-    <string name="snackbarTaskUpdated">Attività aggiornata correttamente!</string>
-    <string name="snackbarTaskDeleted">Attività rimossa correttamente!</string>
-    <string name="snackbarTaskNotDeleted">Errore: attività non rimossa!</string>
+    <string name="snackbarExpenseAdded">Spesa aggiunta</string>
+    <string name="snackbarExpenseUpdated">Spesa aggiornata</string>
+    <string name="snackbarExpenseDeleted">Spesa rimossa</string>
+    <string name="snackbarExpenseNotDeleted">Errore: spesa non rimossa</string>
+    <string name="snackbarGoalAdded">Obiettivo aggiunto</string>
+    <string name="snackbarGoalUpdated">Obiettivo aggiornato</string>
+    <string name="snackbarGoalDeleted">Obiettivo rimosso</string>
+    <string name="snackbarGoalNotDeleted">Errore: obiettivo non rimosso</string>
+    <string name="snackbarTaskAdded">Attività aggiunta</string>
+    <string name="snackbarTaskUpdated">Attività aggiornata</string>
+    <string name="snackbarTaskDeleted">Attività rimossa</string>
+    <string name="snackbarTaskNotDeleted">Errore: attività non rimossa</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>
@@ -184,5 +184,7 @@
     <string name="inglese">Inglese</string>
     <string name="elimina_profilo">Elimina profilo</string>
     <string name="searchbar_hint">Cerca diario per nome</string>
+
+    <string name="nomeStringheParser">NAME_IT</string>
 
 </resources>
