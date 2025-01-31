@@ -7,6 +7,7 @@ import java.util.List;
 public interface BaseTaskLocalDataSource {
 
     long insertTask(Task task);
+    void updateAllTasks(List<Task> tasks);
     void updateTaskName(int taskId, String newName);
     void updateTaskIsSelected(int taskId, boolean newIsSelected);
     void updateTaskIsChecked(int taskId, boolean newIsChecked);

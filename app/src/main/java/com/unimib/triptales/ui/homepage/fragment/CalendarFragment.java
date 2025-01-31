@@ -1,30 +1,23 @@
 package com.unimib.triptales.ui.homepage.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.applandeo.materialcalendarview.CalendarDay;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.google.android.material.datepicker.DayViewDecorator;
 import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.DiaryDao;
-import com.unimib.triptales.model.CountryPolygon;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
 import java.util.ArrayList;

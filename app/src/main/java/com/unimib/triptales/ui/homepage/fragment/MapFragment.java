@@ -25,15 +25,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.unimib.triptales.R;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.CountryPolygonDao;
-import com.unimib.triptales.model.CountryPolygon;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.unimib.triptales.util.GeoJSONParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -43,17 +41,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private CountryPolygonDao countryPolygonDao;
-    private List<CountryPolygon> countryPolygonList;
     private SharedViewModel sharedViewModel;
     private String userCountry;
+    private List<String> countryList;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
-
-        countryPolygonDao = AppRoomDatabase.getDatabase(getContext()).countryPolygonDao();
 
         // Inizializza il provider della posizione
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
@@ -64,8 +59,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
-        //usare il campo "paese" del diario e poi eliminare il database countryPolygon!!
-        countryPolygonList = countryPolygonDao.getAll();
+        //usare DiaryViewModel per prendere i paesi dei diari salvati
+        //countryPolygonList = diaryViewModel.getAllCountries();
 
         return rootView;
     }
@@ -74,25 +69,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        countryPolygonDao = AppRoomDatabase.getDatabase(getContext()).countryPolygonDao();
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        countryList = new ArrayList<>();
 
         sharedViewModel.getDiaryCountry().observe(requireActivity(), new Observer<String>() {
             @Override
             public void onChanged(String country) {
                 userCountry = country;
-                CountryPolygon verifica = countryPolygonDao.getByName(country);
+                // usare DiaryViewModel per verificare che il paese non sia già colorato
+                /*CountryPolygon verifica = diaryViewModel.getByCountry(country);
                 if(verifica == null && !country.isEmpty()) {
                     CountryPolygon countryPolygon = new CountryPolygon(country);
                     countryPolygonDao.insert(countryPolygon);
+                }*/
+                if(!country.isEmpty()){
+                    countryList.add(country);
                 }
             }
         });
 
-        if(countryPolygonList != null) {
-            for (CountryPolygon countryPolygon : countryPolygonList) {
+        if(countryList != null) {
+            for (String country : countryList) {
                 GeoJSONParser parser = new GeoJSONParser(getContext(), "world_countries");
-                List<List<LatLng>> countryBorders = parser.getCountryBorders(countryPolygon.getCountryName());
+                List<List<LatLng>> countryBorders = parser.getCountryBorders(country);
 
                 if(countryBorders != null) {
                     colorPolygons(countryBorders);
@@ -103,8 +102,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         GeoJSONParser parser = new GeoJSONParser(getContext(), "world_countries");
         List<List<LatLng>> countryBorders = parser.getCountryBorders(userCountry);
 
-        CountryPolygon verifica = countryPolygonDao.getByName(userCountry);
-        if(verifica == null && countryBorders != null) {
+        //CountryPolygon verifica = countryPolygonDao.getByName(userCountry);
+        /*if(verifica == null && countryBorders != null) {
+            colorPolygons(countryBorders);
+        }*/
+
+        if(countryBorders != null) {
             colorPolygons(countryBorders);
         }
 

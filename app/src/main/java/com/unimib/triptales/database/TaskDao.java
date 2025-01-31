@@ -4,6 +4,8 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
+
 import com.unimib.triptales.model.Task;
 import java.util.List;
 
@@ -11,6 +13,9 @@ import java.util.List;
 public interface TaskDao {
     @Insert
     long insert(Task task);
+
+    @Update
+    void updateAll(List<Task> tasks);
 
     @Query("UPDATE Task SET task_name = :newName WHERE id = :taskId")
     void updateName(int taskId, String newName);

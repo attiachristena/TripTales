@@ -23,6 +23,11 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     }
 
     @Override
+    public void updateAllTasks(List<Task> tasks) {
+        taskLocalDataSource.updateAllTasks(tasks);
+    }
+
+    @Override
     public void updateTaskName(int taskId, String newName) {
         taskLocalDataSource.updateTaskName(taskId, newName);
     }
