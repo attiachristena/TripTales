@@ -2,6 +2,8 @@ package com.unimib.triptales.util;
 
 import android.content.Context;
 import com.google.android.gms.maps.model.LatLng;
+import com.unimib.triptales.R;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
