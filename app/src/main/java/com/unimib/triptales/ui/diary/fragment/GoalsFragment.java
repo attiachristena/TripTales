@@ -70,6 +70,7 @@ public class GoalsFragment extends Fragment {
                 new ViewModelFactory(goalRepository)).get(GoalViewModel.class);
 
         goalViewModel.deselectAllGoals();
+        goalViewModel.getCheckedGoals();
 
         progressIndicator = view.findViewById(R.id.goalsProgressIndicator);
         progressTextView = view.findViewById(R.id.numObiettivi);

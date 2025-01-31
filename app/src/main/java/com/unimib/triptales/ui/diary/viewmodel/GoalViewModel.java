@@ -187,7 +187,7 @@ public class GoalViewModel extends ViewModel {
         List<Goal> goals = new ArrayList<>();
         try {
             goals = goalRepository.getCheckedGoals();
-            checkedGoalsLiveData.postValue(goalRepository.getCheckedGoals());
+            checkedGoalsLiveData.postValue(goals);
         } catch (Exception e) {
             loadingLiveData.postValue(false);
             checkedGoalsLiveData.postValue(Collections.emptyList());

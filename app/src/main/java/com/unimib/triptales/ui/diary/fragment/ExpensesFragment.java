@@ -105,7 +105,7 @@ public class ExpensesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_spese, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_expenses, container, false);
         IExpenseRepository expenseRepository = ServiceLocator.getINSTANCE().getExpenseRepository(getContext());
         expenseViewModel = new ViewModelProvider(requireActivity(),
                 new ViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
