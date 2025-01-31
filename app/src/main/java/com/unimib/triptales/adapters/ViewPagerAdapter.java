@@ -11,7 +11,7 @@
     import com.unimib.triptales.ui.diary.fragment.TasksFragment;
     import com.unimib.triptales.ui.diary.fragment.GoalsFragment;
     import com.unimib.triptales.ui.diary.fragment.ExpensesFragment;
-    import com.unimib.triptales.ui.diary.fragment.TappeFragment;
+    import com.unimib.triptales.ui.diary.fragment.CheckpointsFragment;
 
     public class ViewPagerAdapter extends FragmentStateAdapter {
 
@@ -43,7 +43,7 @@
 
             switch (position) {
                 case 0:
-                    fragment = new TappeFragment();
+                    fragment = new CheckpointsFragment();
                     break;
                 case 1:
                     fragment = new ExpensesFragment();
@@ -55,7 +55,7 @@
                     fragment = new TasksFragment();
                     break;
                 default:
-                    fragment = new TappeFragment();
+                    fragment = new CheckpointsFragment();
             }
 
             fragment.setArguments(args);

@@ -56,7 +56,7 @@ public class DiaryLocalDataSource implements BaseDiaryLocalDataSource {
     }
 
     @Override
-    public List<Diary> getAllDiariesByUserId(int userId) {
+    public List<Diary> getAllDiariesByUserId(String userId) {
         return diaryDao.getAllDiariesByUserId(userId);
     }
 }

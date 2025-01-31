@@ -18,10 +18,10 @@ public class User implements Parcelable {
     private String name;
     @ColumnInfo(name = "user_email")
     private String email;
-    private String idToken;
 
+    @NonNull
     @PrimaryKey
-    private int id;
+    private String idToken;
 
     @ColumnInfo(name = "user_surname")
     private String surname;
@@ -40,20 +40,12 @@ public class User implements Parcelable {
         this.idToken = idToken;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setSurname(String surname) {
         this.surname = surname;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getSurname() {

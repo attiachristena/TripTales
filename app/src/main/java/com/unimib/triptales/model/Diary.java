@@ -6,19 +6,18 @@ import android.net.Uri;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-@Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "id", childColumns = "userId", onDelete = CASCADE))
+@Entity
 public class Diary {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
-    private int userId; // ID dell'utente proprietario del diario
+    private String userId; // ID dell'utente proprietario del diario
 
     @ColumnInfo(name = "diary_name")
     private String name;
@@ -30,7 +29,7 @@ public class Diary {
     private String endDate;
 
     @ColumnInfo(name = "diary_cover_image_uri")
-    private Uri coverImageUri;
+    private String coverImageUri;
 
     @ColumnInfo(name = "diary_budget")
     private String budget;
@@ -41,7 +40,7 @@ public class Diary {
     private String country;
 
     // Costruttore completo
-    public Diary(int id, int userId, String name, String startDate, String endDate, Uri coverImageUri, String budget, String country) {
+    public Diary(int id, String userId, String name, String startDate, String endDate, String coverImageUri, String budget, String country) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -102,11 +101,11 @@ public class Diary {
         this.id = id;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -134,10 +133,10 @@ public class Diary {
         this.endDate = endDate;
     }
 
-    public Uri getCoverImageUri() {
+    public String getCoverImageUri() {
         return coverImageUri;
     }
-    public void setCoverImageUri(Uri coverImageUri) {
+    public void setCoverImageUri(String coverImageUri) {
         this.coverImageUri = coverImageUri;
     }
 
