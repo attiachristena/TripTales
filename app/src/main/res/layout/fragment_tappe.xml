@@ -9,53 +9,6 @@
     android:id="@+id/checkpointsLayout"
     android:padding="10dp">
 
-<<<<<<< HEAD
-    <!-- NestedScrollView per gestire lo scrolling del contenuto -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <!-- Titolo Diario -->
-            <TextView
-                android:id="@+id/diary_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/nunito_bold"
-                android:gravity="center"
-                android:text="@string/titolo_diario"
-                android:textColor="#000000"
-                android:textSize="27sp"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentTop="true" />
-
-            <!-- Data del viaggio -->
-            <TextView
-                android:id="@+id/date_trip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/nunito_regular"
-                android:gravity="center"
-                android:text="03/03/2023 - 06/03/2023"
-                android:textSize="15sp"
-                android:layout_below="@id/diary_title"
-                android:layout_centerHorizontal="true" />
-
-            <!-- Immagine del viaggio -->
-
-            <!-- Titolo per le tappe -->
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="170dp"
-                android:layout_below="@id/date_trip"
-                android:layout_marginTop="16dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_launcher_background"
-                app:shapeAppearance="@style/roundedImage" />
-=======
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -178,28 +131,11 @@
                 android:text="Data di Partenza - Data di Arrivo"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
->>>>>>> tappa
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-<<<<<<< HEAD
-                android:layout_marginTop="12dp"
-                android:fontFamily="@font/nunito_regular"
-                android:gravity="center"
-                android:text="@string/tappe"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:layout_below="@id/imageView"
-                android:layout_centerHorizontal="true" />
-
-            <!-- Scroll orizzontale per le cards -->
-
-
-            <!-- Barra di ricerca (inizialmente invisibile) -->
-            <!-- Mappa del viaggio -->
-=======
                 android:layout_below="@+id/imageView"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
@@ -214,22 +150,10 @@
 
 
 
->>>>>>> tappa
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"
                 android:layout_width="match_parent"
-<<<<<<< HEAD
-                android:layout_height="160dp"
-                android:layout_below="@id/textView"
-                android:layout_marginTop="12dp">
-
-                <LinearLayout
-                    android:id="@+id/tappeCardContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" />
-=======
                 android:layout_height="200dp"
                 android:layout_below="@id/textView"
                 android:layout_marginTop="9dp">
@@ -240,37 +164,12 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal" />
 
->>>>>>> tappa
             </HorizontalScrollView>
 
 
             <android.widget.SearchView
                 android:id="@+id/searchView"
                 android:layout_width="300dp"
-<<<<<<< HEAD
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="52dp"
-                android:layout_marginEnd="48dp"
-                android:layout_marginBottom="153dp"
-                android:backgroundTint="@color/light_gray"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:queryHint="Cerca un luogo"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mappaTappe"
-                android:layout_width="match_parent"
-                android:layout_height="143dp"
-                android:layout_below="@+id/horizontalScrollView"
-                android:layout_marginTop="83dp"
-=======
                 android:layout_height="56dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
@@ -304,22 +203,14 @@
                 android:layout_height="220dp"
                 android:layout_below="@+id/horizontalScrollView"
                 android:layout_marginTop="19dp"
->>>>>>> tappa
                 android:background="@drawable/edit_text_background"
                 android:backgroundTint="@color/light_gray"
                 android:clickable="true"
                 android:focusable="true" />
 
-<<<<<<< HEAD
-
-        </RelativeLayout>
-
-    <!-- Bottone aggiungi tappa -->
-=======
         </RelativeLayout>
     </ScrollView>
 
->>>>>>> tappa
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addTappaButton"
         android:layout_width="wrap_content"
@@ -332,6 +223,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.988"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:tint="@color/black" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -388,13 +280,6 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/black" />
 
-<<<<<<< HEAD
-            <!-- Bottone per chiudere l'overlay -->
-
-
-
-=======
->>>>>>> tappa
             <ImageButton
                 android:id="@+id/closeMapButton"
                 android:layout_width="50dp"
