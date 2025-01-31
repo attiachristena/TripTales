@@ -37,7 +37,8 @@
             args.putString("startDate", startDate);
             args.putString("endDate", endDate);
             if (coverImageUri != null) {
-                args.putParcelable("coverImageUri", coverImageUri); // Store as Parcelable
+                Uri coverImageUriObj = Uri.parse(String.valueOf(coverImageUri));
+                args.putParcelable("coverImageUri", coverImageUriObj);
             }
 
 

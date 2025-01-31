@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -104,6 +106,39 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_tappe, container, false);
 
+        // Recupera i dati passati dal Bundle
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String diaryName = bundle.getString("diaryName");
+            String startDate = bundle.getString("startDate");
+            String endDate = bundle.getString("endDate");
+
+
+            // Usa i dati per aggiornare la UI
+            TextView diaryNameTextView = rootView.findViewById(R.id.textViewDiaryName);
+            TextView datesTextView = rootView.findViewById(R.id.textViewDates);
+            ImageView coverImageView = rootView.findViewById(R.id.imageView);
+
+            diaryNameTextView.setText(diaryName);
+            datesTextView.setText(startDate + " - " + endDate);
+            coverImageView.setVisibility(View.VISIBLE);
+
+            String coverImageUriString = bundle.getString("coverImageUri");
+
+            if (coverImageUriString != null) {
+                Uri coverImageUri = Uri.parse(coverImageUriString);
+                Log.d("CheckpointsFragment", "Cover Image URI: " + coverImageUri.toString());
+
+                // Usa Glide o Picasso per caricare l'immagine
+                Glide.with(requireContext())
+                        .load(coverImageUri)
+                        .into(coverImageView);
+            } else {
+                Log.d("CheckpointsFragment", "Cover Image URI is null");
+            }
+
+
+        }
         // Inizializza il ViewModel
         ICheckpointRepository checkpointRepository = ServiceLocator.getINSTANCE().getCheckpointRepository(getContext());
         checkpointViewModel = new ViewModelProvider(requireActivity(),
