@@ -97,7 +97,8 @@
     <string name="noGoalsString">Aggiungi il primo obiettivo del viaggio!</string>
     <string name="noSpeseString">Imposta il budget e aggiungi la prima spesa!</string>
     <string name="checklistTitle">Lista delle attività da svolgere</string>
-    <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>    //
+    <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
+    //
     <string name="hintCurrency">Valuta*</string>
     <string name="nome_diario">Nome diario</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
