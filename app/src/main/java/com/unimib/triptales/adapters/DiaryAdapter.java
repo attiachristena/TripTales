@@ -12,6 +12,7 @@
     import androidx.recyclerview.widget.RecyclerView;
 
     import com.unimib.triptales.R;
+    import com.unimib.triptales.model.Diary;
     import com.unimib.triptales.ui.diary.DiaryActivity;
 
     import java.util.List;

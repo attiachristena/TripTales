@@ -39,4 +39,10 @@
     <color name="magenta">#B65066</color>
     <color name="orange2">#FFAA67</color>
     <color name="light_orange3">#FFD3B1</color>
+
+    <color name="icon_color">#000000</color>
+    <color name="icon_bg_color">#FFFFFF</color>
+
+    <color name="bg_popupmenu">#D9D9D9</color>
+
 </resources>

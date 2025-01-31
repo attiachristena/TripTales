@@ -116,6 +116,11 @@
     <string name="intro4_body">Goals, checklists and calendars: everything you need for a perfect trip, without forgetting anything</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">START</string>
+    <string name="data_partenza">Departure date</string>
+    <string name="data_arrivo">Arrival date</string>
+    <string name="scegli_immagine">Choose an image</string>
+    <string name="inserisci_nome_diario">Enter diary name</string>
+    <string name="paese_visitato">Enter visited country</string>
 
     <string name="nome_user_momentaneo">Name Surname</string>
     <string name="modalita_scura">Dark mode</string>

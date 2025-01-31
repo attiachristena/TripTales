@@ -8,8 +8,7 @@
     android:orientation="vertical"
     tools:context=".ui.settings.fragment.SettingsFragment"
     android:layout_marginTop="70dp"
-    android:layout_marginBottom="70dp"
-    android:theme="@style/screen">
+    android:layout_marginBottom="70dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -131,7 +130,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="2dp"
-                android:background="@color/white"
+                android:background="@color/icon_bg_color"
                 android:src="@drawable/baseline_arrow_forward_ios_24" />
 
         </RelativeLayout>
@@ -164,7 +163,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="2dp"
-                android:background="@color/white"
+                android:background="@color/icon_bg_color"
                 android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
 
@@ -206,7 +205,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="2dp"
-                android:background="@color/white"
+                android:background="@color/icon_bg_color"
                 android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
 
@@ -238,7 +237,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="2dp"
-                android:background="@color/white"
+                android:background="@color/icon_bg_color"
                 android:src="@drawable/baseline_arrow_forward_ios_24" />
         </RelativeLayout>
     </LinearLayout>
