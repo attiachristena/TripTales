@@ -123,7 +123,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
             datesTextView.setText(startDate + " - " + endDate);
             coverImageView.setVisibility(View.VISIBLE);
 
-            String coverImageUriString = bundle.getString("coverImageUri");
+            String coverImageUriString = String.valueOf(bundle.get("coverImageUri"));
 
             if (coverImageUriString != null) {
                 Uri coverImageUri = Uri.parse(coverImageUriString);
