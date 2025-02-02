@@ -49,7 +49,7 @@
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/oldEmail"
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
@@ -76,7 +76,7 @@
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/newEmail"
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"

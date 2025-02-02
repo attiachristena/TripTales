@@ -6,9 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.settings.fragment.EditProfileFragment"
-    android:layout_marginTop="70dp"
-    android:layout_marginBottom="70dp">
+    tools:context=".ui.settings.fragment.EditProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
