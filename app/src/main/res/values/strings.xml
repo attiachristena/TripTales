@@ -96,7 +96,8 @@
     <string name="noGoalsString">Aggiungi il primo obiettivo del viaggio!</string>
     <string name="noSpeseString">Imposta il budget e aggiungi la prima spesa!</string>
     <string name="checklistTitle">Lista delle attività da svolgere</string>
-    <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>    //
+    <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
+    //
     <string name="hintCurrency">Valuta*</string>
     <string name="nome_diario">Nome diario</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
@@ -122,7 +123,6 @@
     <string name="error_email_invalid">Invalid Email Error</string>
     <string name="password_reset_email_sent">Email for reset password sent</string>
     <string name="registrati_con_google">Registrati con Google</string>
-
 
 
     <string name="nome_user_momentaneo">Nome Cognome</string>
@@ -187,4 +187,20 @@
 
     <string name="nomeStringheParser">NAME_IT</string>
 
+    <string name="modifica_profilo"><u>Modifica profilo</u></string>
+    <string name="modifica_profilo2">Modifica profilo</string>
+    <string name="cambia_foto"><u>Cambia foto</u></string>
+
+    <string name="inserisci_nome_e_cognome">Per favore, inserisci sia il nome che il cognome</string>
+    <string name="aggiornamento_con_successo">Nome e cognome aggiornati con successo!</string>
+    <string name="errore_aggiornamento">Errore durante l\'aggiornamento</string>
+    <string name="utente_non_autenticato">Utente non autenticato</string>
+
+    <string name="elimina_account">Elimina account</string>
+    <string name="dialog_elimina_account">Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.</string>
+    <string name="elimina">Elimina</string>
+    <string name="eliminazione_con_successo">Account eliminato con successo!</string>
+    <string name="errore_eliminazione">Errore durante l\'eliminazione dell\'account.</string>
+    <string name="annulla">Annulla</string>
+    <string name="nessun_utente_trovato">Nessun utente autenticato trovato!</string>
 </resources>
