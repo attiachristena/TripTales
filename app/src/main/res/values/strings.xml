@@ -51,11 +51,11 @@
     <string name="data_tappa_hint">Data tappa</string>
     <string name="anteprima_immagine">Anteprima immagine</string>
     <string name="pulsante_per_tornare_indietro">Pulsante per tornare indietro</string>
-    <string name="pulsante_per_salvare_la_tappa">Pulsante per salvare la tappa</string>
-    <string name="aggiungi_una_tappa_modificata">Aggiungi una tappa</string>
-    <string name="nome_tappa_modificata">Nome tappa</string>
+    <string name="pulsante_per_salvare_la_tappa">Pulsante per salvare la checkpoint</string>
+    <string name="aggiungi_una_tappa_modificata">Aggiungi una checkpoint</string>
+    <string name="nome_tappa_modificata">Nome checkpoint</string>
     <string name="inserisci_un_immagine_modifica">Inserisci un\'immagine</string>
-    <string name="data_tappa_modificata">Data tappa</string>
+    <string name="data_tappa_modificata">Data checkpoint</string>
     <string name="anteprima_immagine_modificata">Anteprima immagine</string>
     <string name="nome_tappa_card">Nome Tappa</string>
     <string name="nome_tappa">Nome Tappa</string>
@@ -103,7 +103,7 @@
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
     <string name="intro1_title">Benvenuto su TripTales Il tuo diario di viaggio personale</string>
     <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>
-    <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni tappa</string>
+    <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni checkpoint</string>
     <string name="intro2_body">Qui potrai pianificare le tue avventure, annotare ogni scoperta e rivivere ogni momento</string>
     <string name="intro3_title">Esplora senza connessione, pianifica senza stress</string>
     <string name="intro3_body">Scarica mappe e crea il tuo itinerario senza bisogno di essere online</string>
@@ -161,10 +161,18 @@
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
     <string name="aggiungi_diario">Aggiungi Diario</string>
-    <string name="snackbarExpenseAdded">Spesa aggiunta correttamente!</string>
-    <string name="snackbarExpenseUpdated">Spesa aggiornata correttamente!</string>
-    <string name="snackbarExpenseDeleted">Spesa rimossa correttamente!</string>
-    <string name="snackbarExpenseNotDeleted">Errore: spesa non rimossa!</string>
+    <string name="snackbarExpenseAdded">Spesa aggiunta</string>
+    <string name="snackbarExpenseUpdated">Spesa aggiornata</string>
+    <string name="snackbarExpenseDeleted">Spesa rimossa</string>
+    <string name="snackbarExpenseNotDeleted">Errore: spesa non rimossa</string>
+    <string name="snackbarGoalAdded">Obiettivo aggiunto</string>
+    <string name="snackbarGoalUpdated">Obiettivo aggiornato</string>
+    <string name="snackbarGoalDeleted">Obiettivo rimosso</string>
+    <string name="snackbarGoalNotDeleted">Errore: obiettivo non rimosso</string>
+    <string name="snackbarTaskAdded">Attività aggiunta</string>
+    <string name="snackbarTaskUpdated">Attività aggiornata</string>
+    <string name="snackbarTaskDeleted">Attività rimossa</string>
+    <string name="snackbarTaskNotDeleted">Errore: attività non rimossa</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>
@@ -175,6 +183,9 @@
     <string name="italiano">Italiano</string>
     <string name="inglese">Inglese</string>
     <string name="elimina_profilo">Elimina profilo</string>
+    <string name="searchbar_hint">Cerca diario per nome</string>
+
+    <string name="nomeStringheParser">NAME_IT</string>
 
     <string name="modifica_profilo"><u>Modifica profilo</u></string>
     <string name="modifica_profilo2">Modifica profilo</string>

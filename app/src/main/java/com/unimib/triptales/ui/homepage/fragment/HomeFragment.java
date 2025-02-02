@@ -3,10 +3,12 @@ package com.unimib.triptales.ui.homepage.fragment;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,27 +29,38 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.unimib.triptales.R;
-import com.unimib.triptales.adapters.Diary;
 import com.unimib.triptales.adapters.DiaryAdapter;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.DiaryDao;
+import com.unimib.triptales.database.UserDao;
+import com.unimib.triptales.model.Diary;
+import com.unimib.triptales.model.User;
+import com.unimib.triptales.ui.diary.fragment.CheckpointsFragment;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+
 public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLongClickListener {
+
+    private static final String TAG = HomeFragment.class.getSimpleName();
 
     private RecyclerView recyclerView;
     private DiaryAdapter diaryAdapter;
@@ -68,7 +81,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private ImageView imageViewCover, modifyCoverImage;
     private Button buttonChooseImage, buttonSave, buttonSaveModify, buttonChooseImageChanges;
     private ImageButton closeAddOverlayButton, closeModifyOverlayButton;
-    private Uri selectedImageUri;
+    private String selectedImageUri;
     private Diary selectedDiary;
     private final Calendar calendar = Calendar.getInstance();
 
@@ -76,6 +89,13 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private View imageViewSelectedChanges;
     private String country;
     private SharedViewModel sharedViewModel;
+    private int id;
+    private String idUser;
+    private String budget;
+    AppRoomDatabase database;
+    private DiaryDao diaryDao;
+    private UserDao userDao;
+
 
     @Nullable
     @Override
@@ -95,52 +115,88 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     }
 
     private void initializeViews(View view, LayoutInflater inflater) {
+        initializeOverlays(view, inflater);
+        initializeRecyclerView(view);
+        initializeButtons(view);
+        initializeFormFields();
+        setupAutoCompleteTextView(overlayAddDiary, overlayModifyDiary);
+        initializeDatabase();
+    }
+
+    private void initializeOverlays(View view, LayoutInflater inflater) {
         rootLayoutHome = view.findViewById(R.id.root_layout_home);
         overlayAddDiary = inflater.inflate(R.layout.overlay_add_diary, rootLayoutHome, false);
         overlayModifyDiary = inflater.inflate(R.layout.overlay_modify_diary, rootLayoutHome, false);
-
         rootLayoutHome.addView(overlayAddDiary);
         rootLayoutHome.addView(overlayModifyDiary);
-
         overlayAddDiary.setVisibility(View.GONE);
         overlayModifyDiary.setVisibility(View.GONE);
+    }
 
+    private void initializeRecyclerView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_diaries);
         emptyMessage = view.findViewById(R.id.text_empty_message);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        diaryAdapter = new DiaryAdapter(getContext(), diaryList, this);
+        recyclerView.setAdapter(diaryAdapter);
+        updateEmptyMessage();
+    }
 
+    private void initializeButtons(View view) {
         addDiaryButton = view.findViewById(R.id.fab_add_diary);
         deleteDiaryButton = view.findViewById(R.id.deleteDiaryButton);
         modifyDiaryButton = view.findViewById(R.id.modifyDiaryButton);
+        buttonSave = overlayAddDiary.findViewById(R.id.buttonSaveDiary);
+        buttonChooseImage = overlayAddDiary.findViewById(R.id.buttonChooseImage);
+        buttonChooseImageChanges = overlayModifyDiary.findViewById(R.id.buttonChooseImageChanges);
+        closeAddOverlayButton = overlayAddDiary.findViewById(R.id.backaddDiaryButton);
+        closeModifyOverlayButton = overlayModifyDiary.findViewById(R.id.backModifyDiaryButton);
+        buttonSaveModify = overlayModifyDiary.findViewById(R.id.buttonSaveDiaryChanges);
+    }
 
+    private void initializeFormFields() {
         inputDiaryName = overlayAddDiary.findViewById(R.id.inputDiaryName);
-        Country = overlayAddDiary.findViewById(R.id.VisitedCountry);
-        CountryChanges = overlayModifyDiary.findViewById(R.id.VisitedCountryChanges);
+        modifyDiaryName = overlayModifyDiary.findViewById(R.id.inputDiaryNameChanges);
+        imageViewCover = overlayAddDiary.findViewById(R.id.imageViewSelected);
+        modifyCoverImage = overlayModifyDiary.findViewById(R.id.imageViewSelectedChanges);
+        setupDateFields();
+    }
+
+    private void setupDateFields() {
         inputDayStartDate = overlayAddDiary.findViewById(R.id.inputDayDeparture);
         inputMonthStartDate = overlayAddDiary.findViewById(R.id.inputMonthDeparture);
         inputYearStartDate = overlayAddDiary.findViewById(R.id.inputYearDeparture);
         inputDayEndDate = overlayAddDiary.findViewById(R.id.inputReturnDay);
         inputMonthEndDate = overlayAddDiary.findViewById(R.id.inputReturnMonth);
         inputYearEndDate = overlayAddDiary.findViewById(R.id.inputReturnYear);
-        imageViewCover = overlayAddDiary.findViewById(R.id.imageViewSelected);
-        buttonSave = overlayAddDiary.findViewById(R.id.buttonSaveDiary);
-        buttonChooseImage = overlayAddDiary.findViewById(R.id.buttonChooseImage);
-        buttonChooseImageChanges = overlayModifyDiary.findViewById(R.id.buttonChooseImageChanges);
-        closeAddOverlayButton = overlayAddDiary.findViewById(R.id.backaddDiaryButton);
-        imageViewSelectedChanges = overlayModifyDiary.findViewById(R.id.imageViewSelectedChanges);
 
-        modifyDiaryName = overlayModifyDiary.findViewById(R.id.inputDiaryNameChanges);
         modifyDayStartDate = overlayModifyDiary.findViewById(R.id.inputDayDepartureChanges);
         modifyMonthStartDate = overlayModifyDiary.findViewById(R.id.inputMonthDepartureChanges);
         modifyYearStartDate = overlayModifyDiary.findViewById(R.id.inputYearDepartureChanges);
         modifyDayEndDate = overlayModifyDiary.findViewById(R.id.inputReturnDayChanges);
         modifyMonthEndDate = overlayModifyDiary.findViewById(R.id.inputReturnMonthChanges);
         modifyYearEndDate = overlayModifyDiary.findViewById(R.id.inputReturnYearChanges);
-        modifyCoverImage = overlayModifyDiary.findViewById(R.id.imageViewSelectedChanges);
-        buttonSaveModify = overlayModifyDiary.findViewById(R.id.buttonSaveDiaryChanges);
-        closeModifyOverlayButton = overlayModifyDiary.findViewById(R.id.backModifyDiaryButton);
 
-        // Configura l'AutoCompleteTextView per i paesi
-        setupAutoCompleteTextView(overlayAddDiary, overlayModifyDiary);
+        setupDatePicker(inputDayStartDate, inputMonthStartDate, inputYearStartDate);
+        setupDatePicker(inputDayEndDate, inputMonthEndDate, inputYearEndDate);
+        setupDatePicker(modifyDayStartDate, modifyMonthStartDate, modifyYearStartDate);
+        setupDatePicker(modifyDayEndDate, modifyMonthEndDate, modifyYearEndDate);
+    }
+
+    private void initializeDatabase() {
+        database = AppRoomDatabase.getDatabase(getContext());
+        diaryDao = database.diaryDao();
+        String idUser = getLoggedUserId();
+
+
+
+        // Recupera solo i diari dell'utente corrente
+        diaryList = diaryDao.getAllDiariesByUserId(idUser);
+
+        diaryAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Diari recuperati: " + diaryList.size());
+
+        //load diarys. appdat erecycle view
     }
 
     private List<String> extractCountryNamesFromJson(Context context) {
@@ -283,39 +339,81 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, 1);
+
     }
+
+    private Uri saveImageToInternalStorage(Uri sourceUri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), sourceUri);
+            File storageDir = getContext().getFilesDir();
+            String fileName = "diary_" + System.currentTimeMillis() + ".jpg";
+            File imageFile = new File(storageDir, fileName);
+
+            try (FileOutputStream out = new FileOutputStream(imageFile)) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            }
+
+            return Uri.fromFile(imageFile); // Restituisci un URI accessibile dalla tua app
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == getActivity().RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            imageViewCover.setImageURI(selectedImageUri);
-            imageViewCover.setVisibility(View.VISIBLE);
+            Uri selectedUri = data.getData();
+            Uri newUri = saveImageToInternalStorage(selectedUri); // Copia l'immagine
+            if (newUri != null) {
+                selectedImageUri = newUri.toString(); // Aggiorna l'URI usato dalla tua app
+                imageViewCover.setImageURI(newUri);
+                imageViewCover.setVisibility(View.VISIBLE);
+            }
+
         }
+    }
+
+
+    public String getLoggedUserId() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            return null;
+        }
+        Log.d(TAG, "Logged user ID: " + firebaseUser.getUid());
+        return firebaseUser.getUid();
     }
 
     private void saveDiary() {
         String diaryName = inputDiaryName.getText().toString();
-        sharedViewModel.setDiaryName(diaryName);
         String startDate = inputDayStartDate.getText().toString() + "/" + inputMonthStartDate.getText().toString() + "/" + inputYearStartDate.getText().toString();
-        sharedViewModel.setStartDate(startDate);
         String endDate = inputDayEndDate.getText().toString() + "/" + inputMonthEndDate.getText().toString() + "/" + inputYearEndDate.getText().toString();
-        sharedViewModel.setEndDate(endDate);
         String country = ((AutoCompleteTextView) overlayAddDiary.findViewById(R.id.VisitedCountry)).getText().toString();
-        sharedViewModel.setDiaryCountry(country);
-        if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty()|| country.isEmpty()) {
+
+        if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty() || country.isEmpty()) {
             Toast.makeText(getContext(), "Compila tutti i campi e scegli un'immagine!", Toast.LENGTH_SHORT).show();
-            return;
+            saveImageToInternalStorage(Uri.parse(selectedImageUri));
+
         }
 
-        Diary newDiary = new Diary(diaryName, startDate, endDate, selectedImageUri, country);
+
+        // Ottieni l'ID dell'utente corrente (ad esempio, da un sistema di autenticazione)
+        String currentUserId = getLoggedUserId(); // Implementa questo metodo per ottenere l'ID dell'utente
+
+        Diary newDiary = new Diary(id, currentUserId, diaryName, startDate, endDate, selectedImageUri, budget, country);
+        long diaryId = diaryDao.insert(newDiary); // Inserisci il diario nel database
+        newDiary.setId((int) diaryId); // Imposta l'ID generato dal database
+        Log.d(TAG,"Diary saved with ID: " + diaryId);
+
         diaryList.add(newDiary);
         diaryAdapter.notifyDataSetChanged();
         hideOverlay(overlayAddDiary);
         updateEmptyMessage();
         Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
     }
+
 
     private void modifyDiary() {
         if (selectedDiary == null) return;
@@ -325,7 +423,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         String endDate = modifyDayEndDate.getText().toString() + "/" + modifyMonthEndDate.getText().toString() + "/" + modifyYearEndDate.getText().toString();
         String country = ((AutoCompleteTextView) overlayModifyDiary.findViewById(R.id.VisitedCountryChanges)).getText().toString();
 
-        if (diaryName.isEmpty() || startDate.isEmpty() || endDate.isEmpty()|| country.isEmpty()) {
+        if (diaryName.isEmpty() || startDate.isEmpty() || endDate.isEmpty() || country.isEmpty()) {
             Toast.makeText(getContext(), "Compila tutti i campi!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -339,21 +437,14 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             selectedDiary.setCoverImageUri(selectedImageUri);
         }
 
-        // Deseleziona il diario dopo averlo modificato
-        selectedDiaries.remove(selectedDiary);
+        // Aggiorna il diario nel database
+        diaryDao.update(selectedDiary);
 
         // Notifica all'adapter che la lista è cambiata
         diaryAdapter.notifyDataSetChanged();
 
-        // Aggiungi questa riga per deselezionare tutti i diari
-        diaryAdapter.clearSelections(); // Deseleziona tutti i diari
-
-        // Nascondi l'overlay di modifica e aggiorna i bottoni
+        // Nascondi l'overlay di modifica
         hideOverlay(overlayModifyDiary);
-
-        // Aggiorna la visibilità dei pulsanti
-        modifyDiaryButton.setVisibility(View.GONE); // Rendi visibile il bottone "Modifica"
-        deleteDiaryButton.setVisibility(selectedDiaries.isEmpty() ? View.GONE : View.VISIBLE); // Nascondi "Elimina" se nessun diario è selezionato
 
         Toast.makeText(getContext(), "Diario modificato con successo!", Toast.LENGTH_SHORT).show();
     }
@@ -361,10 +452,13 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
 
 
     private void deleteSelectedDiaries() {
-        diaryList.removeAll(selectedDiaries);
-        diaryAdapter.notifyDataSetChanged();
+        for (Diary diary : selectedDiaries) {
+            diaryDao.delete(diary); // Elimina il diario dal database
+        }
+        diaryList.removeAll(selectedDiaries); // Rimuovi i diari dalla lista
+        diaryAdapter.notifyDataSetChanged(); // Notifica l'adapter
         Toast.makeText(getContext(), "Diari eliminati con successo!", Toast.LENGTH_SHORT).show();
-        selectedDiaries.clear();
+        selectedDiaries.clear(); // Pulisci la lista dei diari selezionati
     }
 
     private void populateModifyOverlay(Diary diary) {
@@ -384,9 +478,9 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         modifyYearEndDate.setText(endDate[2]);
 
         // Ripristina l'immagine
-        Uri coverImageUri = diary.getCoverImageUri();
+        String coverImageUri = diary.getCoverImageUri();
         if (coverImageUri != null) {
-            modifyCoverImage.setImageURI(coverImageUri);
+            modifyCoverImage.setImageURI(Uri.parse(coverImageUri));
             modifyCoverImage.setVisibility(View.VISIBLE);  // Assicurati che l'immagine sia visibile
         } else {
             modifyCoverImage.setVisibility(View.GONE);  // Se non c'è un'immagine, nascondila
@@ -428,7 +522,6 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             recyclerView.setVisibility(View.VISIBLE);
         }
     }
-
 
 
     public void onDiaryItemLongClicked(Diary diary) {

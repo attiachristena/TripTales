@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="140dp"
+    android:layout_height="180dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="7dp"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Immagine della tappa -->
+        <ImageView
+            android:id="@+id/checkpointCardImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            android:contentDescription="@string/nome_tappa_card" />
+
+        <!-- Overlay trasparente per testo leggibile -->
+        <View
+            android:id="@+id/imageOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/gradient_overlay"
+            android:alpha="0.8" />
+
+        <!-- Nome della tappa -->
+        <TextView
+            android:id="@+id/checkpointNameCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="8dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="@string/nome_tappa_card"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/checkpointDateCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="8dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="@string/nome_tappa_card"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:gravity="center" />
+
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -26,11 +26,20 @@ public interface DiaryDao {
     @Delete
     void deleteAll(List<Diary> diaries);
 
+    @Query("UPDATE Diary SET diary_name = :newName WHERE id = :diaryId")
+    void updateName(int diaryId, String newName);
+
+    @Query("UPDATE Diary SET isSelected = :newIsSelected WHERE id = :diaryId")
+    void updateIsSelected(int diaryId, boolean newIsSelected);
+
     @Query("SELECT * FROM Diary")
     List<Diary> getAllDiaries();
 
+    @Query("SELECT * FROM Diary WHERE isSelected = 1")
+    List<Diary> getSelectedDiaries();
+
     @Query("SELECT * FROM Diary WHERE userId = :userId")
-    List<Diary> getAllDiariesByUserId(int userId);
+    List<Diary> getAllDiariesByUserId(String userId);
 
     @Query("SELECT diary_start_date FROM Diary")
     List<String> getStartDates();
@@ -44,9 +53,5 @@ public interface DiaryDao {
 
     @Query("UPDATE Diary SET diary_budget = :newBudget WHERE id = :diaryId")
     void updateBudget(int diaryId, String newBudget);
-
-    /*//Recupero dei diari di un determinato utente
-    @Query("SELECT * FROM Diary WHERE userId = :userId")
-    List<Diary> getAllByUserId(int userId);*/
 
 }

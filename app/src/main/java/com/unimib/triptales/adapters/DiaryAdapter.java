@@ -2,6 +2,7 @@
 
     import android.content.Context;
     import android.content.Intent;
+    import android.net.Uri;
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
@@ -12,6 +13,7 @@
     import androidx.recyclerview.widget.RecyclerView;
 
     import com.unimib.triptales.R;
+    import com.unimib.triptales.model.Diary;
     import com.unimib.triptales.ui.diary.DiaryActivity;
 
     import java.util.List;
@@ -73,7 +75,7 @@
             // Imposta l'immagine di copertina (se disponibile) o l'immagine di fallback
             holder.imageViewDiary.setImageResource(R.drawable.default_cover);
             if (diary.getCoverImageUri() != null) {
-                holder.imageViewDiary.setImageURI(diary.getCoverImageUri());
+                holder.imageViewDiary.setImageURI(Uri.parse(diary.getCoverImageUri()));
             }
 
             // Calcola la durata del viaggio e la mostra come numero di giorni

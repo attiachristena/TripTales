@@ -1,17 +1,14 @@
-package com.unimib.triptales.model;
 
-import android.net.Uri;
+package com.unimib.triptales.model;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 
+import java.util.Objects;
 
-import androidx.room.TypeConverter;
-
-
-@Entity(tableName = "tappe")
-public class Tappa {
+@Entity
+public class Checkpoint {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
@@ -22,7 +19,7 @@ public class Tappa {
     public String data;
 
     @ColumnInfo(name = "immagine_uri")
-    public Uri immagineUri;
+    public String immagineUri; // Percorso dell'immagine come stringa
 
     @ColumnInfo(name = "latitude")
     public double latitude;
@@ -30,15 +27,16 @@ public class Tappa {
     @ColumnInfo(name = "longitude")
     public double longitude;
 
-    // Costruttore
-    public Tappa(String nome, String data, Uri immagineUri, double latitude, double longitude) {
+    @ColumnInfo(name = "tappa_isSelected")
+    public boolean tappa_isSelected;
+
+    public Checkpoint(String nome, String data, String immagineUri, double latitude, double longitude) {
         this.nome = nome;
         this.data = data;
         this.immagineUri = immagineUri;
         this.latitude = latitude;
         this.longitude = longitude;
     }
-
     // Getters e Setters
     public int getId() {
         return id;
@@ -64,11 +62,11 @@ public class Tappa {
         this.data = data;
     }
 
-    public Uri getImmagineUri() {
+    public String getImmagineUri() {
         return immagineUri;
     }
 
-    public void setImmagineUri(Uri immagineUri) {
+    public void setImmagineUri(String immagineUri) {
         this.immagineUri = immagineUri;
     }
 
@@ -87,4 +85,27 @@ public class Tappa {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    public boolean isTappa_isSelected() {
+        return tappa_isSelected;
+    }
+
+    public void setTappa_isSelected(boolean tappa_isSelected) {
+        this.tappa_isSelected = tappa_isSelected;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Checkpoint that = (Checkpoint) o;
+        return id == that.id; // or use Objects.equals() for null-safe comparison
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
 }

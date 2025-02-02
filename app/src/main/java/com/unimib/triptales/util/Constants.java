@@ -2,22 +2,12 @@ package com.unimib.triptales.util;
 
 import static android.app.PendingIntent.getActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ProgressBar;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.unimib.triptales.R;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.model.Expense;
-import com.unimib.triptales.model.Goal;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,10 +30,14 @@ public class Constants {
     public static final String ADD_EXPENSE = "ADD_EXPENSE";
     public static final String EDIT_EXPENSE = "EDIT_EXPENSE";
     public static final String FILTER = "FILTER";
-    public static final String EXPENSE_ADDED = "EXPENSE_ADDED";
-    public static final String EXPENSE_UPDATED = "EXPENSE_UPDATED";
-    public static final String EXPENSE_DELETED = "EXPENSE_DELETED";
+    public static final String ADDED = "ADDED";
+    public static final String UPDATED = "UPDATED";
+    public static final String DELETED = "DELETED";
     public static final String INVALID_DELETE = "INVALID_DELETE";
+    public static final String ADD_GOAL = "ADD_GOAL";
+    public static final String EDIT_GOAL = "EDIT_GOAL";
+    public static final String ADD_TASK = "ADD_TASK";
+    public static final String EDIT_TASK = "EDIT_TASK";
 
     public static final String ACTIVE_FRAGMENT_TAG = "active_fragment";
 

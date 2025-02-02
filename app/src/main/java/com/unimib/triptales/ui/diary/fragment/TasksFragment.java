@@ -1,11 +1,19 @@
 package com.unimib.triptales.ui.diary.fragment;
 
+import static com.unimib.triptales.util.Constants.ADDED;
+import static com.unimib.triptales.util.Constants.ADD_TASK;
+import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.EDIT_TASK;
+import static com.unimib.triptales.util.Constants.INVALID_DELETE;
+import static com.unimib.triptales.util.Constants.UPDATED;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,40 +25,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.TasksRecyclerAdapter;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.TaskDao;
 import com.unimib.triptales.model.Task;
-import com.unimib.triptales.repository.goal.IGoalRepository;
 import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.ui.diary.DiaryActivity;
-import com.unimib.triptales.ui.diary.viewmodel.GoalViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.Constants;
 import com.unimib.triptales.util.ServiceLocator;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class TasksFragment extends Fragment {
 
     private FloatingActionButton addTaskButton;
-    private View overlay_add_task;
-    private EditText editTextTaskName;
-    private String inputTaskName;
-    private FloatingActionButton modifyTask;
-    private FloatingActionButton deleteTask;
-    private View overlay_modify_task;
-    private EditText editTextModifiedTaskName;
-    private String inputModifiedTaskName;
-    private TextView noTasksString;
-    //private TaskDao taskDao;
-    private List<Task> tasksList;
-    private List<Task> selectedTasks;
+    private View overlay_add_edit_task;
+    private EditText taskNameEditText;
+    private FloatingActionButton editTaskButton;
+    private FloatingActionButton deleteTaskButton;
+    private TextView noTasksTextView;
     private TaskViewModel taskViewModel;
+    private TasksRecyclerAdapter tasksRecyclerAdapter;
+    private boolean bAdd;
+    private boolean bEdit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,19 +61,33 @@ public class TasksFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        View view = inflater.inflate(R.layout.fragment_check_list, container, false);
         ITaskRepository taskRepository = ServiceLocator.getINSTANCE().getTaskRepository(getContext());
         taskViewModel = new ViewModelProvider(requireActivity(),
                 new ViewModelFactory(taskRepository)).get(TaskViewModel.class);
 
-        //taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
-        tasksList = taskViewModel.getAllTasks();
-        //tasksList = taskDao.getAll();
-        for(Task t : tasksList){
-            t.setSelected(false);
-            taskViewModel.updateTaskIsSelected(t.getId(), false);
-        }
-        return inflater.inflate(R.layout.fragment_check_list, container, false);
+        taskViewModel.deselectAllTasks();
+
+        RecyclerView recyclerViewTasks = view.findViewById(R.id.recyclerViewTasks);
+        tasksRecyclerAdapter = new TasksRecyclerAdapter(getContext());
+        recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewTasks.setAdapter(tasksRecyclerAdapter);
+
+        tasksRecyclerAdapter.setOnTaskClickListener(new TasksRecyclerAdapter.OnTaskClickListener() {
+            @Override
+            public void onTaskClick(Task task) {
+                taskViewModel.toggleTaskSelection(task);
+            }
+        });
+
+        tasksRecyclerAdapter.setOnTaskCheckBoxClickListener(new TasksRecyclerAdapter.OnTaskCheckBoxClickListener() {
+            @Override
+            public void onTaskCheckBoxClick(Task task) {
+                taskViewModel.toggleTaskCheck(task);
+            }
+        });
+
+        return view;
     }
 
     @Override
@@ -81,175 +96,213 @@ public class TasksFragment extends Fragment {
 
         ConstraintLayout rootLayoutCheckList = view.findViewById(R.id.rootLayoutCheckList);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        //taskDao = AppRoomDatabase.getDatabase(getContext()).taskDao();
 
         addTaskButton = view.findViewById(R.id.addTaskButton);
-        modifyTask = view.findViewById(R.id.modifyTask);
-        deleteTask = view.findViewById(R.id.deleteTask);
+        editTaskButton = view.findViewById(R.id.modifyTask);
+        deleteTaskButton = view.findViewById(R.id.deleteTask);
+        bAdd = false;
+        bEdit = false;
 
-        RecyclerView recyclerViewTasks = view.findViewById(R.id.recyclerViewTasks);
-        TasksRecyclerAdapter recyclerAdapter = new TasksRecyclerAdapter(tasksList,  getContext(),
-                addTaskButton, modifyTask, deleteTask);
-        recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewTasks.setAdapter(recyclerAdapter);
-
-        overlay_add_task = inflater.inflate(R.layout.overlay_add_task, rootLayoutCheckList, false);
-        rootLayoutCheckList.addView(overlay_add_task);
-        overlay_add_task.setVisibility(View.GONE);
+        overlay_add_edit_task = inflater.inflate(R.layout.overlay_add_edit_task, rootLayoutCheckList, false);
+        rootLayoutCheckList.addView(overlay_add_edit_task);
+        overlay_add_edit_task.setVisibility(View.GONE);
 
         ImageButton backButtonTask = view.findViewById(R.id.backButtonTask);
         Button saveTask = view.findViewById(R.id.saveTask);
-        noTasksString = view.findViewById(R.id.noTasksString);
+        noTasksTextView = view.findViewById(R.id.noTasksString);
 
-        if(tasksList.isEmpty()){
-            noTasksString.setVisibility(View.VISIBLE);
-        } else {
-            noTasksString.setVisibility(View.GONE);
-        }
+        taskViewModel.getTasksLiveData().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                tasksRecyclerAdapter.setTasksList(tasks);
+                if(tasks.isEmpty()){
+                    noTasksTextView.setVisibility(View.VISIBLE);
+                } else {
+                    noTasksTextView.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        taskViewModel.getSelectedTasksLiveData().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> selectedTasks) {
+                if(selectedTasks != null){
+                    if(selectedTasks.size() == 1){
+                        if(overlay_add_edit_task.getVisibility() == View.VISIBLE){
+                            editTaskButton.setVisibility(View.GONE);
+                            deleteTaskButton.setVisibility(View.GONE);
+                        } else {
+                            addTaskButton.setEnabled(false);
+                            editTaskButton.setVisibility(View.VISIBLE);
+                            deleteTaskButton.setVisibility(View.VISIBLE);
+                        }
+                    } else if(selectedTasks.size() == 2) {
+                        addTaskButton.setEnabled(false);
+                        editTaskButton.setVisibility(View.GONE);
+                    } else if(selectedTasks.isEmpty()){
+                        editTaskButton.setVisibility(View.GONE);
+                        deleteTaskButton.setVisibility(View.GONE);
+                        addTaskButton.setEnabled(true);
+                    }
+                }
+            }
+        });
+
+        taskViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String errorMessage) {
+                if(errorMessage != null){
+                    Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        taskViewModel.getTaskEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String message) {
+                if(message != null){
+                    switch (message) {
+                        case ADDED:
+                            Toast.makeText(requireActivity(), R.string.snackbarTaskAdded, Toast.LENGTH_SHORT).show();
+                            break;
+                        case UPDATED:
+                            Toast.makeText(requireActivity(), R.string.snackbarTaskUpdated, Toast.LENGTH_SHORT).show();
+                            break;
+                        case DELETED:
+                            Toast.makeText(requireActivity(), R.string.snackbarTaskDeleted, Toast.LENGTH_SHORT).show();
+                            break;
+                        case INVALID_DELETE:
+                            Toast.makeText(requireActivity(), R.string.snackbarTaskNotDeleted, Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+            }
+        });
 
         backButtonTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlay_add_task.setVisibility(View.GONE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-                Constants.hideKeyboard(view, requireActivity());
-                addTaskButton.setVisibility(View.VISIBLE);
+                if(bEdit){
+                    editTaskButton.setVisibility(View.VISIBLE);
+                    deleteTaskButton.setVisibility(View.VISIBLE);
+                }
+                taskViewModel.setTaskOverlayVisibility(false);
             }
         });
 
-        editTextTaskName = view.findViewById(R.id.inputTaskName);
+        taskNameEditText = view.findViewById(R.id.inputTaskName);
 
         addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlay_add_task.setVisibility(View.VISIBLE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-                addTaskButton.setVisibility(View.GONE);
-                editTextTaskName.setText("");
+                bAdd = true;
+                taskViewModel.setTaskOverlayVisibility(true);
+            }
+        });
+
+        taskViewModel.getTaskOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean visible) {
+                if(visible){
+                    if(bAdd){
+                        showOverlay(ADD_TASK);
+                    } else if(bEdit){
+                        showOverlay(EDIT_TASK);
+                        editTaskButton.setVisibility(View.GONE);
+                        deleteTaskButton.setVisibility(View.GONE);
+                    }
+                } else {
+                    enableSwipeAndButtons(view);
+                    if(bAdd){
+                        hideOverlay(ADD_TASK);
+                    } else if(bEdit){
+                        hideOverlay(EDIT_TASK);
+                    }
+                }
             }
         });
 
         saveTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String inputTaskName = taskNameEditText.getText().toString().trim();
 
-                Task currentTask;
-                inputTaskName = editTextTaskName.getText().toString().trim();
+                boolean correct = taskViewModel.validateInputTask(inputTaskName);
 
-                if (inputTaskName.isEmpty()) {
-                    editTextTaskName.setError("Inserisci un nome");
-                } else {
-                    editTextTaskName.setError(null);
-                    currentTask = new Task(inputTaskName, false, false);
-
-                    long id = taskViewModel.insertTask(currentTask);
-                    currentTask.setId((int) id);
-                    tasksList.add(currentTask);
-                    recyclerAdapter.notifyItemInserted(tasksList.size() - 1);
-
-                    Constants.hideKeyboard(view, requireActivity());
-                    overlay_add_task.setVisibility(View.GONE);
-                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-                    addTaskButton.setVisibility(View.VISIBLE);
-                    noTasksString.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        overlay_modify_task = inflater.inflate(R.layout.overlay_modify_task, rootLayoutCheckList, false);
-        rootLayoutCheckList.addView(overlay_modify_task);
-        overlay_modify_task.setVisibility(View.GONE);
-
-        ImageButton backButtonModifyTask = view.findViewById(R.id.backButtonModifyTask);
-        Button saveModifiedTask = view.findViewById(R.id.saveModifiedTask);
-        editTextModifiedTaskName = view.findViewById(R.id.inputModifiedTaskName);
-
-        modifyTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                overlay_modify_task.setVisibility(View.VISIBLE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-
-                selectedTasks = taskViewModel.getSelectedTasks();
-                Task currentTask = selectedTasks.get(0);
-                editTextModifiedTaskName.setText(currentTask.getName());
-
-                addTaskButton.setVisibility(View.GONE);
-                modifyTask.setVisibility(View.GONE);
-                deleteTask.setVisibility(View.GONE);
-            }
-        });
-
-        backButtonModifyTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                overlay_modify_task.setVisibility(View.GONE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-                Constants.hideKeyboard(view, requireActivity());
-                addTaskButton.setVisibility(View.VISIBLE);
-                modifyTask.setVisibility(View.VISIBLE);
-                deleteTask.setVisibility(View.VISIBLE);
-            }
-        });
-
-        saveModifiedTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                selectedTasks = taskViewModel.getSelectedTasks();
-                Task currentTask = selectedTasks.get(0);
-
-                inputModifiedTaskName = editTextModifiedTaskName.getText().toString().trim();
-
-                if (inputModifiedTaskName.isEmpty()) {
-                    editTextModifiedTaskName.setError("Inserisci il nome dell'attività");
-                } else {
-                    editTextModifiedTaskName.setError(null);
-                    currentTask.setName(inputModifiedTaskName);
-                    taskViewModel.updateTaskName(currentTask.getId(), inputModifiedTaskName);
-
-                    currentTask.setSelected(false);
-                    taskViewModel.updateTaskIsSelected(currentTask.getId(), false);
-
-                    int position = tasksList.indexOf(currentTask);
-                    if (position != -1) {
-                        tasksList.set(position, currentTask);
-                        recyclerAdapter.notifyItemChanged(position);
+                if(correct){
+                    if(bAdd){
+                        taskViewModel.insertTask(inputTaskName);
+                    } else if(bEdit){
+                        List<Task> selectedTasks = taskViewModel.getSelectedTasksLiveData().getValue();
+                        if(selectedTasks != null && !selectedTasks.isEmpty()){
+                            Task currentTask = selectedTasks.get(0);
+                            taskViewModel.updateTask(currentTask, inputTaskName);
+                            taskViewModel.deselectAllTasks();
+                        }
                     }
-
-                    Constants.hideKeyboard(view, requireActivity());
-                    overlay_modify_task.setVisibility(View.GONE);
-                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-                    addTaskButton.setVisibility(View.VISIBLE);
-                    addTaskButton.setEnabled(true);
+                    taskViewModel.setTaskOverlayVisibility(false);
                 }
             }
         });
 
-        deleteTask.setOnClickListener(new View.OnClickListener() {
+        editTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int index = 0;
-                Iterator<Task> iterator = tasksList.iterator();
-                while (iterator.hasNext()) {
-                    Task t = iterator.next();
-                    if (t.isSelected()) {
-                        iterator.remove();
-                        recyclerAdapter.notifyItemRemoved(index);
-                        taskViewModel.deleteTask(t);
-                    } else {
-                        index++;
-                    }
-                }
-                modifyTask.setVisibility(View.GONE);
-                deleteTask.setVisibility(View.GONE);
-                addTaskButton.setEnabled(true);
-                if(tasksList.isEmpty()){
-                    noTasksString.setVisibility(View.VISIBLE);
-                }
+                bEdit = true;
+                taskViewModel.setTaskOverlayVisibility(true);
             }
         });
 
+        deleteTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                taskViewModel.deleteSelectedTasks();
+            }
+        });
+
+    }
+
+    private void disableSwipeAndButtons(){
+        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
+        addTaskButton.setVisibility(View.GONE);
+    }
+
+    private void enableSwipeAndButtons(View view){
+        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
+        Constants.hideKeyboard(view, requireActivity());
+        addTaskButton.setVisibility(View.VISIBLE);
+    }
+
+    private void showOverlay(String overlayType){
+        disableSwipeAndButtons();
+        overlay_add_edit_task.setVisibility(View.VISIBLE);
+        switch(overlayType){
+            case ADD_TASK:
+                taskNameEditText.setText("");
+                break;
+            case EDIT_TASK:
+                populateGoalField();
+        }
+    }
+
+    private void hideOverlay(String overlayType){
+        overlay_add_edit_task.setVisibility(View.GONE);
+        switch(overlayType){
+            case ADD_TASK:
+                bAdd = false;
+                break;
+            case EDIT_TASK:
+                bEdit = false;
+                break;
+        }
+    }
+
+    private void populateGoalField(){
+        List<Task> selectedTasks = taskViewModel.getSelectedTasksLiveData().getValue();
+        if(selectedTasks != null && !selectedTasks.isEmpty()){
+            Task currentTask = selectedTasks.get(0);
+            taskNameEditText.setText(currentTask.getName());
+        }
     }
 
 }

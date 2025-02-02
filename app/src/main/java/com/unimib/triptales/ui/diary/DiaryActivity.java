@@ -1,5 +1,7 @@
 package com.unimib.triptales.ui.diary;
 
+import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,8 +22,9 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.ViewPagerAdapter;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
+import com.unimib.triptales.ui.settings.SettingsActivity;
 
-    public class DiaryActivity extends AppCompatActivity {
+public class DiaryActivity extends AppCompatActivity {
 
         TabLayout tabLayout;
         ViewPager2 viewPager2;
@@ -42,11 +45,17 @@ import com.unimib.triptales.ui.login.LoginActivity;
 
             // Recupera i dati dall'Intent
             Intent intent = getIntent();
+
             if (intent != null) {
                 diaryName = intent.getStringExtra("diaryName");
                 startDate = intent.getStringExtra("startDate");
                 endDate = intent.getStringExtra("endDate");
-                coverImageUri = intent.getParcelableExtra("coverImageUri"); // Ricevi come Uri direttamente
+
+                // Se coverImageUri è una String, convertila in Uri
+                String coverImageUriString = intent.getStringExtra("coverImageUri");
+                if (coverImageUriString != null) {
+                    coverImageUri = Uri.parse(coverImageUriString);
+                }
             }
 
             // Set up the ViewPager2 and TabLayout (after the fragment setup)
@@ -138,7 +147,9 @@ import com.unimib.triptales.ui.login.LoginActivity;
         }
       
             if (id == android.R.id.home){
-            //inserire intent per andare alla SetingsActivity
+                Intent intent = new Intent(DiaryActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
             }
 
             return super.onOptionsItemSelected(item);
