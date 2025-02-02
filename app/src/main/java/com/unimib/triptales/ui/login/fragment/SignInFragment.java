@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -40,6 +41,7 @@ import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,6 +91,7 @@ public class SignInFragment extends Fragment {
                     if (idToken !=  null) {
                         userViewModel.signUpWithGoogle(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
                             if (authenticationResult.isSuccess()) {
+                                SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
@@ -139,6 +142,21 @@ public class SignInFragment extends Fragment {
         editTextEmail = view.findViewById(R.id.textInputEmail);
         editTextPassword = view.findViewById(R.id.textInputPassword);
 
+        ImageButton togglePassword = view.findViewById(R.id.showPassword);
+        togglePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(editTextPassword.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+                    editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    togglePassword.setImageResource(R.drawable.eye_key_look_password_security_see_svgrepo_com);
+                } else {
+                    editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    togglePassword.setImageResource(R.drawable.eye_password_see_view_svgrepo_com);
+                }
+                editTextPassword.setSelection(editTextPassword.getText().length());
+            }
+        });
+
         Button signInButton = view.findViewById(R.id.signInButton);
 
         signInButton.setOnClickListener(v -> {
@@ -180,7 +198,8 @@ public class SignInFragment extends Fragment {
                         .observe(getViewLifecycleOwner(), result -> {
                             signInButton.setEnabled(true);
                             if (result.isSuccess()) {
-                        Navigation.findNavController(v).navigate(R.id.action_signInFragment_to_homepageActivity);
+                                SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getString(R.string.error_unexpected), Snackbar.LENGTH_SHORT).show();

@@ -6,6 +6,7 @@ import static com.unimib.triptales.util.Constants.INVALID_USER_ERROR;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
@@ -38,6 +40,7 @@ import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,6 +91,7 @@ public class LoginFragment extends Fragment {
                     if (idToken !=  null) {
                         userViewModel.getGoogleUserMutableLiveData(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
                             if (authenticationResult.isSuccess()) {
+                                SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
@@ -137,6 +141,21 @@ public class LoginFragment extends Fragment {
         editTextEmail = view.findViewById(R.id.textInputEmail);
         editTextPassword = view.findViewById(R.id.textInputPassword);
 
+        ImageButton togglePassword = view.findViewById(R.id.showPassword);
+        togglePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(editTextPassword.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+                    editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    togglePassword.setImageResource(R.drawable.eye_key_look_password_security_see_svgrepo_com);
+                } else {
+                    editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    togglePassword.setImageResource(R.drawable.eye_password_see_view_svgrepo_com);
+                }
+                editTextPassword.setSelection(editTextPassword.getText().length());
+            }
+        });
+
         Button loginButton = view.findViewById(R.id.loginButton);
 
         loginButton.setOnClickListener(v -> {
@@ -167,6 +186,7 @@ public class LoginFragment extends Fragment {
                 userViewModel.getUserMutableLiveData(email, password, true).observe(getViewLifecycleOwner(), result -> {
                     loginButton.setEnabled(true);
                     if (result.isSuccess()) {
+                        SharedPreferencesUtils.setLoggedIn(getContext(), true);
                         startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
                         userViewModel.setAuthenticationError(true);
@@ -214,4 +234,6 @@ public class LoginFragment extends Fragment {
     private boolean isEmailOk(String email) {
         return (Patterns.EMAIL_ADDRESS.matcher(email).matches());
     }
+
+
 }
