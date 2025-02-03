@@ -10,6 +10,7 @@ import androidx.room.Update;
 
 import com.unimib.triptales.model.Diary;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Dao
@@ -41,11 +42,8 @@ public interface DiaryDao {
     @Query("SELECT * FROM Diary WHERE userId = :userId")
     List<Diary> getAllDiariesByUserId(String userId);
 
-    @Query("SELECT diary_start_date FROM Diary")
-    List<String> getStartDates();
-
-    @Query("SELECT diary_end_date FROM Diary")
-    List<String> getEndDates();
+    @Query("SELECT diary_country FROM Diary WHERE userId = :userId")
+    List<String> getAllCountriesByUserId(String userId);
 
     @Transaction
     @Query("SELECT * FROM Diary WHERE id = :diaryId")

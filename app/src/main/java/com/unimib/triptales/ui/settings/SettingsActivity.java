@@ -98,6 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent intent = new Intent(SettingsActivity.this, HomepageActivity.class);
                 intent.putExtra("fromSettings", true);
                 intent.putExtra(ACTIVE_FRAGMENT_TAG, fragmentTag);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
                 return true;
             } else {
