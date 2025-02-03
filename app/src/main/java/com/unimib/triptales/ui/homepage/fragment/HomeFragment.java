@@ -39,6 +39,7 @@ import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.database.UserDao;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.User;
+import com.unimib.triptales.ui.diary.fragment.CheckpointsFragment;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
 import com.unimib.triptales.util.SharedPreferencesUtils;
@@ -338,6 +339,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, 1);
+
     }
 
     private Uri saveImageToInternalStorage(Uri sourceUri) {
@@ -346,25 +348,34 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             File storageDir = getContext().getFilesDir();
             String fileName = "diary_" + System.currentTimeMillis() + ".jpg";
             File imageFile = new File(storageDir, fileName);
-            try(FileOutputStream out = new FileOutputStream(imageFile)) {
+
+            try (FileOutputStream out = new FileOutputStream(imageFile)) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
             }
-            return Uri.fromFile(imageFile);
+
+            return Uri.fromFile(imageFile); // Restituisci un URI accessibile dalla tua app
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == getActivity().RESULT_OK && data != null) {
-            selectedImageUri = String.valueOf(data.getData());
-            imageViewCover.setImageURI(Uri.parse(selectedImageUri));
-            imageViewCover.setVisibility(View.VISIBLE);
+            Uri selectedUri = data.getData();
+            Uri newUri = saveImageToInternalStorage(selectedUri); // Copia l'immagine
+            if (newUri != null) {
+                selectedImageUri = newUri.toString(); // Aggiorna l'URI usato dalla tua app
+                imageViewCover.setImageURI(newUri);
+                imageViewCover.setVisibility(View.VISIBLE);
+            }
+
         }
     }
+
 
     public String getLoggedUserId() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -511,7 +522,6 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             recyclerView.setVisibility(View.VISIBLE);
         }
     }
-
 
 
     public void onDiaryItemLongClicked(Diary diary) {

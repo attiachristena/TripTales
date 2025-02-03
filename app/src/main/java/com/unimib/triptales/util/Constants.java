@@ -46,6 +46,7 @@ public class Constants {
     public static final String CURRENCY_GBP = "£";
     public static final String CURRENCY_JPY = "¥";
     public static final int MINIMUM_LENGTH_PASSWORD = 8;
+    public static final String USER_ALREADY_EXISTS = "L'user esiste già";
 
     public static final String UNEXPECTED_ERROR = "unexpected_error";
     public static final String INVALID_USER_ERROR = "invalidUserError";

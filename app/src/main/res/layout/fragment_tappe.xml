@@ -92,7 +92,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="0dp"
                 android:background="@drawable/ic_launcher_background"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                 />
 
             <!-- Aggiungi questi TextView per mostrare il nome del diario e le date -->
 

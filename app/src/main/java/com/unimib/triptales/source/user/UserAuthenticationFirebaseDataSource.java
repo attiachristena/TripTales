@@ -23,10 +23,12 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
 
     private final FirebaseAuth firebaseAuth;
     private final FirebaseFirestore firestore;
+    private final FirebaseUser firebaseUser;
 
     public UserAuthenticationFirebaseDataSource(){
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
     }
 
     @Override
@@ -55,17 +57,24 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
 
     @Override
     public void logout() {
-        FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() == null){
-                    firebaseAuth.removeAuthStateListener(this);
-                    userResponseCallback.onSuccessLogout();
+        if(firebaseUser != null) {
+            String uid = firebaseUser.getUid();
+            firestore.collection("users").document(uid).delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    firebaseUser.delete().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            userResponseCallback.onSuccessLogout();
+                        } else {
+                            userResponseCallback.onFailureFromAuthentication("Error deleting user account");
+                        }
+                    });
+                } else {
+                    userResponseCallback.onFailureFromAuthentication("Error deleting user data from Firestore");
                 }
-            }
-        };
-        firebaseAuth.addAuthStateListener(authStateListener);
-        firebaseAuth.signOut();
+            });
+        } else {
+            userResponseCallback.onFailureFromAuthentication("No user is currently signed in");
+        }
     }
 
     @Override
@@ -117,29 +126,38 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
                                 String email = firebaseUser.getEmail();
                                 String surname = "";
 
-                                User user = new User(name, surname, email, firebaseUser.getUid());
                                 DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
-                                docRef.set(user).addOnCompleteListener(task1 -> {
+                                docRef.get().addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
-                                        userResponseCallback.onSuccessFromAuthentication(user);
+                                        DocumentSnapshot document = task1.getResult();
+                                        if (document.exists()) {
+                                            userResponseCallback.onFailureFromAuthentication(USER_ALREADY_EXISTS);
+                                        } else {
+                                            User user = new User(name, surname, email, firebaseUser.getUid());
+                                            docRef.set(user).addOnCompleteListener(task2 -> {
+                                                if (task2.isSuccessful()) {
+                                                    userResponseCallback.onSuccessFromAuthentication(user);
+                                                } else {
+                                                    userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                                                }
+                                            });
+                                        }
                                     } else {
-                                        userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+                                        userResponseCallback.onFailureFromAuthentication(getErrorMessage(task1.getException()));
                                     }
+                                }).addOnFailureListener(e -> {
+                                    userResponseCallback.onFailureFromAuthentication(getErrorMessage(e));
                                 });
                             } else {
                                 userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
                             }
                         } else {
-                            userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
+                            userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
                         }
-                    })
-                    .addOnFailureListener(e -> {
-                        userResponseCallback.onFailureFromAuthentication(getErrorMessage(e));
                     });
-        } else {
-            userResponseCallback.onFailureFromAuthentication(INVALID_ID_TOKEN);
         }
     }
+
 
     @Override
     public MutableLiveData<Result> resetPassword(String email) {

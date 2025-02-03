@@ -45,11 +45,17 @@ public class DiaryActivity extends AppCompatActivity {
 
             // Recupera i dati dall'Intent
             Intent intent = getIntent();
+
             if (intent != null) {
                 diaryName = intent.getStringExtra("diaryName");
                 startDate = intent.getStringExtra("startDate");
                 endDate = intent.getStringExtra("endDate");
-                coverImageUri = intent.getParcelableExtra("coverImageUri"); // Ricevi come Uri direttamente
+
+                // Se coverImageUri è una String, convertila in Uri
+                String coverImageUriString = intent.getStringExtra("coverImageUri");
+                if (coverImageUriString != null) {
+                    coverImageUri = Uri.parse(coverImageUriString);
+                }
             }
 
             // Set up the ViewPager2 and TabLayout (after the fragment setup)
