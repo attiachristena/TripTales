@@ -14,7 +14,7 @@ public interface BaseDiaryLocalDataSource {
     List<Diary> getAllDiaries();
     List<Diary> getSelectedDiaries();
 
-    List<Diary> getAllDiariesByUserId(int userId);
+    List<Diary> getAllDiariesByUserId(String userId);
     //List<Diary> getAllDiariesByUserId(int Id);
 
 }

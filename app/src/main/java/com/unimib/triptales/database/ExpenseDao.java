@@ -45,13 +45,13 @@ public interface ExpenseDao {
     @Delete
     void deleteAll(List<Expense> expenses);
 
-    @Query("SELECT * FROM Expense")
+    @Query("SELECT * FROM Expense ORDER BY expense_date DESC")
     List<Expense> getAll();
 
     @Query("SELECT * FROM Expense WHERE expense_isSelected = 1")
     List<Expense> getSelectedExpenses();
 
-    @Query("SELECT * FROM Expense WHERE expense_category = :category")
+    @Query("SELECT * FROM Expense WHERE expense_category = :category ORDER BY expense_date DESC")
     List<Expense> getFilteredExpenses(String category);
 
     /*//Recupero delle spese di un determinato diario

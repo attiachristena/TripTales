@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.repository.checkpoint.CheckpointRepository;
+import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
 import com.unimib.triptales.repository.expense.ExpenseRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.repository.goal.GoalRepository;
@@ -12,6 +14,10 @@ import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.repository.task.TaskRepository;
 import com.unimib.triptales.repository.user.IUserRepository;
 import com.unimib.triptales.repository.user.UserRepository;
+import com.unimib.triptales.source.checkpoint.BaseCheckpointLocalDataSource;
+import com.unimib.triptales.source.checkpoint.BaseCheckpointRemoteDataSource;
+import com.unimib.triptales.source.checkpoint.CheckpointLocalDataSource;
+import com.unimib.triptales.source.checkpoint.CheckpointRemoteDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseRemoteDataSource;
 import com.unimib.triptales.source.expense.ExpenseLocalDataSource;
@@ -99,5 +105,13 @@ public class ServiceLocator {
         BaseTaskRemoteDataSource taskRemoteDataSource =
                 new TaskRemoteDataSource();
         return new TaskRepository(taskLocalDataSource, taskRemoteDataSource);
+    }
+
+    public ICheckpointRepository getCheckpointRepository(Context context){
+        BaseCheckpointLocalDataSource checkpointLocalDataSource =
+                new CheckpointLocalDataSource(AppRoomDatabase.getDatabase(context).checkpointDao());
+        BaseCheckpointRemoteDataSource checkpointRemoteDataSource =
+                new CheckpointRemoteDataSource();
+        return new CheckpointRepository(checkpointLocalDataSource, checkpointRemoteDataSource);
     }
 }

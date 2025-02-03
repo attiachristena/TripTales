@@ -1,9 +1,9 @@
 package com.unimib.triptales.ui.diary.viewmodel;
 
 import static com.unimib.triptales.util.Constants.CURRENCY_EUR;
-import static com.unimib.triptales.util.Constants.EXPENSE_ADDED;
-import static com.unimib.triptales.util.Constants.EXPENSE_DELETED;
-import static com.unimib.triptales.util.Constants.EXPENSE_UPDATED;
+import static com.unimib.triptales.util.Constants.ADDED;
+import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.UPDATED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 
 import androidx.lifecycle.LiveData;
@@ -116,6 +116,7 @@ public class ExpenseViewModel extends ViewModel {
     public boolean validateInputExpense(String amount, String category, String description,
                                         String day, String month, String year) {
         boolean correct = true;
+        int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         int inputDay = 0, inputMonth= 0, inputYear = 0;
         if(!day.isEmpty()) inputDay = Integer.parseInt(day);
         if(!month.isEmpty()) inputMonth = Integer.parseInt(month);
@@ -142,8 +143,20 @@ public class ExpenseViewModel extends ViewModel {
             errorLiveData.setValue(null);
         }
 
+        if (inputMonth == 2 && isLeapYear(inputYear)) {
+            daysInMonth[1] = 29;
+        }
+
+        if(inputDay > daysInMonth[inputMonth - 1]){
+            errorLiveData.setValue("Giorno inserito non corretto");
+        }
+
         if(errorLiveData.getValue() != null) correct = false;
         return correct;
+    }
+
+    private boolean isLeapYear(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 
     public boolean validateInputBudget(String budget, String currency){
@@ -162,7 +175,7 @@ public class ExpenseViewModel extends ViewModel {
         return correct;
     }
 
-    public MutableLiveData<List<Expense>> insertExpense(String amount, String category, String description,
+    public void insertExpense(String amount, String category, String description,
                                            String day, String month, String year, String inputCurrency) {
         String completedDate = day+"/"+month+"/"+year;
         String completedAmount;
@@ -174,8 +187,7 @@ public class ExpenseViewModel extends ViewModel {
         expenseRepository.insertExpense(expense);
         amountSpentLiveData.postValue(countAmount(getAllExpenses(), inputCurrency));
         fetchAllExpenses();
-        expenseEvent.setValue(EXPENSE_ADDED);
-        return expensesLiveData;
+        expenseEvent.setValue(ADDED);
     }
 
     public void updateExpense(Expense expense, String currency, String amount,
@@ -199,7 +211,7 @@ public class ExpenseViewModel extends ViewModel {
             updateExpenseDate(expense.getId(), completeDate);
             expense.setDate(completeDate);
         }
-        expenseEvent.setValue(EXPENSE_UPDATED);
+        expenseEvent.setValue(UPDATED);
     }
 
     public void updateExpenseCategory(int expenseId, String newCategory) {
@@ -272,7 +284,7 @@ public class ExpenseViewModel extends ViewModel {
             expenseRepository.deleteAllExpenses(selectedExpenses);
             selectedExpensesLiveData.postValue(Collections.emptyList());
             fetchAllExpenses();
-            expenseEvent.setValue(EXPENSE_DELETED);
+            expenseEvent.setValue(DELETED);
         } else {
             expenseEvent.setValue(INVALID_DELETE);
         }
@@ -357,7 +369,7 @@ public class ExpenseViewModel extends ViewModel {
         List<Expense> expenses;
         try {
             expenses = expenseRepository.getSelectedExpenses();
-             selectedExpensesLiveData.postValue(expenseRepository.getSelectedExpenses());
+            selectedExpensesLiveData.postValue(expenseRepository.getSelectedExpenses());
         } catch (Exception e) {
             loadingLiveData.postValue(false);
             expenses = Collections.emptyList();

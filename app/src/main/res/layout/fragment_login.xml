@@ -86,13 +86,30 @@
                 android:layout_marginBottom="2dp"
                 android:text="@string/password" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textInputPassword"
-                style="?attr/textInputOutlinedStyle"
+            <RelativeLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputPassword"
+                    style="?attr/textInputOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_background_login"
+                    android:inputType="textPassword"/>
+
+            <ImageButton
+                android:id="@+id/showPassword"
+                android:background="?attr/selectableItemBackground"
+                android:src="@drawable/eye_password_see_view_svgrepo_com"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background_login"
-                android:inputType="textPassword"/>
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                />
+
+        </RelativeLayout>
 
             <Button
                 android:id="@+id/loginButton"

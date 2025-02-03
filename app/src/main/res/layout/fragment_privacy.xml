@@ -6,8 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.settings.fragment.PrivacyFragment"
-    android:layout_marginTop="70dp"
-    android:layout_marginBottom="70dp"
     style="@style/screen">
 
     <LinearLayout

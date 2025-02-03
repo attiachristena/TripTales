@@ -11,7 +11,7 @@
     import com.unimib.triptales.ui.diary.fragment.TasksFragment;
     import com.unimib.triptales.ui.diary.fragment.GoalsFragment;
     import com.unimib.triptales.ui.diary.fragment.ExpensesFragment;
-    import com.unimib.triptales.ui.diary.fragment.TappeFragment;
+    import com.unimib.triptales.ui.diary.fragment.CheckpointsFragment;
 
     public class ViewPagerAdapter extends FragmentStateAdapter {
 
@@ -37,13 +37,14 @@
             args.putString("startDate", startDate);
             args.putString("endDate", endDate);
             if (coverImageUri != null) {
-                args.putParcelable("coverImageUri", coverImageUri); // Store as Parcelable
+                Uri coverImageUriObj = Uri.parse(String.valueOf(coverImageUri));
+                args.putParcelable("coverImageUri", coverImageUriObj);
             }
 
 
             switch (position) {
                 case 0:
-                    fragment = new TappeFragment();
+                    fragment = new CheckpointsFragment();
                     break;
                 case 1:
                     fragment = new ExpensesFragment();
@@ -55,7 +56,7 @@
                     fragment = new TasksFragment();
                     break;
                 default:
-                    fragment = new TappeFragment();
+                    fragment = new CheckpointsFragment();
             }
 
             fragment.setArguments(args);

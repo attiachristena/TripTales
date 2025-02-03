@@ -14,7 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -51,7 +51,7 @@ public class PasswordDimenticataFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageButton backButton = view.findViewById(R.id.backarrow);
+        ImageView backButton = view.findViewById(R.id.backarrow);
         backButton.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
         editTextEmail = view.findViewById(R.id.textInputEmail);

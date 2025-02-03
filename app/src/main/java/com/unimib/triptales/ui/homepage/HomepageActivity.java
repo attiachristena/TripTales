@@ -26,6 +26,7 @@ import com.unimib.triptales.ui.homepage.fragment.HomeFragment;
 import com.unimib.triptales.ui.homepage.fragment.MapFragment;
 import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.Map;
 import java.util.Objects;
@@ -183,6 +184,7 @@ public class HomepageActivity extends AppCompatActivity {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     if (item.getItemId() == R.id.action_logout) {
+                        SharedPreferencesUtils.setLoggedIn(HomepageActivity.this, false);
                         Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);

@@ -12,6 +12,6 @@ public class CompleteUser {
     @Embedded
     public User user;
 
-    @Relation(parentColumn = "id", entityColumn = "userId")
-    public List<Diary> diaries;
+    //@Relation(parentColumn = "id", entityColumn = "userId")
+    //public List<Diary> diaries;
 }

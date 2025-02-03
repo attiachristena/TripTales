@@ -28,6 +28,9 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     }
 
     @Override
+    public void updateAllGoals(List<Goal> goals) { goalLocalDataSource.updateAllGoals(goals); }
+
+    @Override
     public void updateGoalName(int goalId, String newName) {
         goalLocalDataSource.updateGoalName(goalId, newName);
     }

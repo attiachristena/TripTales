@@ -89,7 +89,7 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
 
         card.setOnLongClickListener(v -> {
             if (OnExpenseClickListener != null) {
-                OnExpenseClickListener.onExpenseClick(expense, card);
+                OnExpenseClickListener.onExpenseClick(expense);
             }
             return false;
         });
@@ -102,6 +102,6 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
 
 
     public interface OnExpenseClickListener {
-        void onExpenseClick(Expense expense, MaterialCardView card);
+        void onExpenseClick(Expense expense);
     }
 }
