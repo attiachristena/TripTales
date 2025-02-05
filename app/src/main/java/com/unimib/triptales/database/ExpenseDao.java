@@ -13,31 +13,28 @@ import java.util.List;
 @Dao
 public interface ExpenseDao {
     @Insert
-    long insert(Expense expense);
+    void insert(Expense expense);
 
     @Update
     void update(Expense expense);
 
-    @Update
-    void updateAll(List<Expense> expenses);
-
     @Query("UPDATE Expense SET expense_category = :newCategory WHERE id = :expenseId")
-    void updateCategory(int expenseId, String newCategory);
+    void updateCategory(String expenseId, String newCategory);
 
     @Query("UPDATE Expense SET expense_description = :newDescription WHERE id = :expenseId")
-    void updateDescription(int expenseId, String newDescription);
+    void updateDescription(String expenseId, String newDescription);
 
     @Query("UPDATE Expense SET expense_amount = :newAmount WHERE id = :expenseId")
-    void updateAmount(int expenseId, String newAmount);
+    void updateAmount(String expenseId, String newAmount);
 
     @Query("UPDATE Expense SET expense_date = :newDate WHERE id = :expenseId")
-    void updateDate(int expenseId, String newDate);
+    void updateDate(String expenseId, String newDate);
 
     @Query("UPDATE Expense SET expense_isSelected = :newIsSelected WHERE id = :expenseId")
-    void updateIsSelected(int expenseId, boolean newIsSelected);
+    void updateIsSelected(String expenseId, boolean newIsSelected);
 
     @Query("UPDATE Expense SET expense_iconId = :newIconId WHERE id = :expenseId")
-    void updateIconId(int expenseId, int newIconId);
+    void updateIconId(String expenseId, int newIconId);
 
     @Delete
     void delete(Expense expense);
@@ -45,13 +42,19 @@ public interface ExpenseDao {
     @Delete
     void deleteAll(List<Expense> expenses);
 
-    @Query("SELECT * FROM Expense ORDER BY expense_date DESC")
+    @Query("SELECT * FROM Expense ORDER BY STRFTIME('%Y-%m-%d', \n" +
+            "                 SUBSTR(expense_date, 7, 4) || '-' || \n" +
+            "                 SUBSTR(expense_date, 4, 2) || '-' || \n" +
+            "                 SUBSTR(expense_date, 1, 2)) DESC")
     List<Expense> getAll();
 
     @Query("SELECT * FROM Expense WHERE expense_isSelected = 1")
     List<Expense> getSelectedExpenses();
 
-    @Query("SELECT * FROM Expense WHERE expense_category = :category ORDER BY expense_date DESC")
+    @Query("SELECT * FROM Expense WHERE expense_category = :category ORDER BY STRFTIME('%Y-%m-%d', \n" +
+            "                 SUBSTR(expense_date, 7, 4) || '-' || \n" +
+            "                 SUBSTR(expense_date, 4, 2) || '-' || \n" +
+            "                 SUBSTR(expense_date, 1, 2)) DESC")
     List<Expense> getFilteredExpenses(String category);
 
     /*//Recupero delle spese di un determinato diario

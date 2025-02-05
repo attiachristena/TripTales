@@ -36,6 +36,7 @@ import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.unimib.triptales.util.GeoJSONParser;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,6 @@ import java.util.List;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
-    private static final String TAG = MapFragment.class.getSimpleName();
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
@@ -125,17 +125,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private String getLoggedUserId() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null) {
-            return null;
-        }
-        Log.d(TAG, "Logged user ID: " + firebaseUser.getUid());
-        return firebaseUser.getUid();
-    }
-
     private void updateMap(){
-        String userId = getLoggedUserId();
+        String userId = SharedPreferencesUtils.getLoggedUserId();
         List<String> countryList = diaryDao.getAllCountriesByUserId(userId);
 
         HashSet<String> countryListSet = new HashSet<>(countryList);

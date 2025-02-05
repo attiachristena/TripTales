@@ -23,7 +23,6 @@ public class GoalViewModel extends ViewModel {
     private final MutableLiveData<List<Goal>> selectedGoalsLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Goal>> checkedGoalsLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> goalOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> goalEvent = new MutableLiveData<>();
 
@@ -64,15 +63,7 @@ public class GoalViewModel extends ViewModel {
     }
 
     public void fetchAllGoals() {
-        loadingLiveData.setValue(true);
-        try {
-            List<Goal> goals = goalRepository.getAllGoals();
-            goalsLiveData.postValue(goals);
-            loadingLiveData.postValue(false);
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue(e.getMessage());
-        }
+        goalsLiveData.setValue(goalRepository.getAllGoals());
     }
 
     public void insertGoal(String name, String description) {
@@ -91,55 +82,28 @@ public class GoalViewModel extends ViewModel {
             updateGoalDescription(goal.getId(), description);
             goal.setDescription(description);
         }
+        fetchAllGoals();
         goalEvent.setValue(UPDATED);
     }
 
-    public void updateGoalName(int goalId, String newName) {
-        loadingLiveData.setValue(true);
-        try {
-            goalRepository.updateGoalName(goalId, newName);
-            fetchAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento del nome dell'obiettivo: " + e.getMessage());
-        }
+    public void updateGoalName(String goalId, String newName) {
+        goalRepository.updateGoalName(goalId, newName);
+        fetchAllGoals();
     }
 
-    public void updateGoalDescription(int goalId, String newDescription) {
-        loadingLiveData.setValue(true);
-        try {
-            goalRepository.updateGoalDescription(goalId, newDescription);
-            fetchAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento della descrizione dell'obiettivo: " + e.getMessage());
-        }
+    public void updateGoalDescription(String goalId, String newDescription) {
+        goalRepository.updateGoalDescription(goalId, newDescription);
+        fetchAllGoals();
     }
 
-    public void updateGoalIsSelected(int goalId, boolean newIsSelected) {
-        loadingLiveData.setValue(true);
-        try {
-            goalRepository.updateGoalIsSelected(goalId, newIsSelected);
-            fetchAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento di isSelected: " + e.getMessage());
-        }
+    public void updateGoalIsSelected(String goalId, boolean newIsSelected) {
+        goalRepository.updateGoalIsSelected(goalId, newIsSelected);
+        fetchAllGoals();
     }
 
-    public void updateGoalIsChecked(int goalId, boolean newIsChecked) {
-        loadingLiveData.setValue(true);
-        try {
-            goalRepository.updateGoalIsChecked(goalId, newIsChecked);
-            fetchAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento di isChecked: " + e.getMessage());
-        }
+    public void updateGoalIsChecked(String goalId, boolean newIsChecked) {
+        goalRepository.updateGoalIsChecked(goalId, newIsChecked);
+        fetchAllGoals();
     }
 
     public void deleteSelectedGoals() {
@@ -154,55 +118,16 @@ public class GoalViewModel extends ViewModel {
         }
     }
 
-    public List<Goal> getAllGoals() {
-        loadingLiveData.setValue(true);
-        List<Goal> goals = new ArrayList<>();
-        try {
-            goals = goalRepository.getAllGoals();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nella restituzione di tutti gli obiettivi: "+e.getMessage());
-        }
-        return goals;
-    }
-
-    public List<Goal> getSelectedGoals() {
-        loadingLiveData.setValue(true);
-        List<Goal> goals = new ArrayList<>();
-        try {
-            goals = goalRepository.getSelectedGoals();
-            selectedGoalsLiveData.postValue(goalRepository.getSelectedGoals());
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            selectedGoalsLiveData.postValue(Collections.emptyList());
-            errorLiveData.postValue
-                    ("Errore nella restituzione dell'obiettivo selezionato: "+e.getMessage());
-        }
-        return goals;
-    }
-
     public List<Goal> getCheckedGoals() {
-        loadingLiveData.setValue(true);
-        List<Goal> goals = new ArrayList<>();
-        try {
-            goals = goalRepository.getCheckedGoals();
-            checkedGoalsLiveData.postValue(goals);
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            checkedGoalsLiveData.postValue(Collections.emptyList());
-            errorLiveData.postValue
-                    ("Errore nella restituzione dell'obiettivo spuntato: "+e.getMessage());
-        }
-        return goals;
+        checkedGoalsLiveData.setValue(goalRepository.getCheckedGoals());
+        return checkedGoalsLiveData.getValue();
     }
 
     public void toggleGoalSelection(Goal goal){
         boolean isSelected = goal.isGoal_isSelected();
         goal.setGoal_isSelected(!isSelected);
         updateGoalIsSelected(goal.getId(), !isSelected);
-        List<Goal> goals = getSelectedGoals();
-        selectedGoalsLiveData.postValue(goals);
+        selectedGoalsLiveData.setValue(goalRepository.getSelectedGoals());
         fetchAllGoals();
     }
 
@@ -210,13 +135,13 @@ public class GoalViewModel extends ViewModel {
         boolean isChecked = goal.isGoal_isChecked();
         goal.setGoal_isChecked(!isChecked);
         updateGoalIsChecked(goal.getId(), !isChecked);
-        List<Goal> goals = getCheckedGoals();
-        checkedGoalsLiveData.postValue(goals);
+        checkedGoalsLiveData.setValue(goalRepository.getCheckedGoals());
         fetchAllGoals();
     }
 
     public void deselectAllGoals() {
-        List<Goal> goals = getAllGoals();
+        fetchAllGoals();
+        List<Goal> goals = goalsLiveData.getValue();
         if(goals != null) {
             for (Goal g : goals) {
                 g.setGoal_isSelected(false);

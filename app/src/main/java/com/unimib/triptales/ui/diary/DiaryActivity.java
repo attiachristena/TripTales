@@ -23,6 +23,7 @@ import com.unimib.triptales.adapters.ViewPagerAdapter;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class DiaryActivity extends AppCompatActivity {
 
@@ -116,6 +117,7 @@ public class DiaryActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_home) {
+            SharedPreferencesUtils.clearDiaryId(getApplicationContext());
             Intent intent = new Intent(DiaryActivity.this, HomepageActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);

@@ -12,19 +12,19 @@ import java.util.List;
 @Dao
 public interface TaskDao {
     @Insert
-    long insert(Task task);
+    void insert(Task task);
 
     @Update
     void updateAll(List<Task> tasks);
 
     @Query("UPDATE Task SET task_name = :newName WHERE id = :taskId")
-    void updateName(int taskId, String newName);
+    void updateName(String taskId, String newName);
 
     @Query("UPDATE Task SET task_isSelected = :newIsSelected WHERE id = :taskId")
-    void updateIsSelected(int taskId, boolean newIsSelected);
+    void updateIsSelected(String taskId, boolean newIsSelected);
 
     @Query("UPDATE Task SET task_isChecked = :newIsChecked WHERE id = :taskId")
-    void updateIsChecked(int taskId, boolean newIsChecked);
+    void updateIsChecked(String taskId, boolean newIsChecked);
 
     @Delete
     void delete(Task task);

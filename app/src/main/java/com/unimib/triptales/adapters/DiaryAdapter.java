@@ -19,6 +19,7 @@
     import java.util.List;
 
     import com.google.android.material.card.MaterialCardView;
+    import com.unimib.triptales.util.SharedPreferencesUtils;
 
     import java.util.ArrayList;
 
@@ -84,6 +85,8 @@
 
             // Click singolo per avviare DiaryActivity
             holder.itemView.setOnClickListener(v -> {
+                String id = String.valueOf(diary.getId());
+                SharedPreferencesUtils.saveDiaryId(context, id);
                 Intent intent = new Intent(context, DiaryActivity.class);
                 intent.putExtra("diaryName", diary.getName());
                 intent.putExtra("startDate", diary.getStartDate());

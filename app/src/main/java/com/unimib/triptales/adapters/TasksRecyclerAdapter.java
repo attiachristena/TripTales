@@ -12,11 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.TaskDao;
-import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.model.Task;
 import java.util.List;
 
@@ -76,11 +72,11 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         MaterialCardView card = (MaterialCardView) viewHolder.itemView;
         CheckBox checkBox = viewHolder.taskCheckBox;
 
-        if (task.isSelected()) {
+        if (task.isTask_isSelected()) {
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
             card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
             checkBox.setEnabled(false);
-        } else if (task.isChecked()) {
+        } else if (task.isTask_isChecked()) {
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.dark_gray));
             card.setStrokeColor(ContextCompat.getColor(context, R.color.light_gray));
             checkBox.setEnabled(true);

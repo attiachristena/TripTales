@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface GoalDao {
     @Insert
-    long insert(Goal goal);
+    void insert(Goal goal);
 
     @Update
     void update(Goal goal);
@@ -21,16 +21,16 @@ public interface GoalDao {
     void updateAll(List<Goal> goals);
 
     @Query("UPDATE Goal SET goal_name = :newName WHERE id = :goalId")
-    void updateName(int goalId, String newName);
+    void updateName(String goalId, String newName);
 
     @Query("UPDATE Goal SET goal_description = :newDescription WHERE id = :goalId")
-    void updateDescription(int goalId, String newDescription);
+    void updateDescription(String goalId, String newDescription);
 
     @Query("UPDATE Goal SET goal_isSelected = :newIsSelected WHERE id = :goalId")
-    void updateIsSelected(int goalId, boolean newIsSelected);
+    void updateIsSelected(String goalId, boolean newIsSelected);
 
     @Query("UPDATE Goal SET goal_isChecked = :newIsChecked WHERE id = :goalId")
-    void updateIsChecked(int goalId, boolean newIsChecked);
+    void updateIsChecked(String goalId, boolean newIsChecked);
 
     @Delete
     void delete(Goal goal);

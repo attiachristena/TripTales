@@ -1,12 +1,13 @@
 package com.unimib.triptales.source.expense;
 
 import com.unimib.triptales.R;
+import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
 
 import java.util.List;
 
-public class ExpenseLocalDataSource implements BaseExpenseLocalDataSource {
+public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
 
     private final ExpenseDao expenseDao;
 
@@ -15,80 +16,132 @@ public class ExpenseLocalDataSource implements BaseExpenseLocalDataSource {
     }
 
     @Override
-    public long insertExpense(Expense expense) {
-        return expenseDao.insert(expense);
+    public void insertExpense(Expense expense) {
+        try{
+            expenseDao.insert(expense);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void updateExpense(Expense expense) {
-        expenseDao.update(expense);
-    }
-
-    @Override
-    public void updateAllExpenses(List<Expense> expenses) {
-        expenseDao.updateAll(expenses);
-    }
-
-    @Override
-    public void updateExpenseCategory(int expenseId, String newCategory) {
-        if (newCategory.equalsIgnoreCase("Shopping")){
-            expenseDao.updateIconId(expenseId, R.drawable.baseline_shopping_cart_24);
-        } else if (newCategory.equalsIgnoreCase("Cibo")){
-            expenseDao.updateIconId(expenseId, R.drawable.baseline_fastfood_24);
-        } else if (newCategory.equalsIgnoreCase("Trasporto")){
-            expenseDao.updateIconId(expenseId, R.drawable.baseline_directions_bus_24);
-        } else if (newCategory.equalsIgnoreCase("Alloggio")){
-            expenseDao.updateIconId(expenseId, R.drawable.baseline_hotel_24);
-        } else if (newCategory.equalsIgnoreCase("Cultura")){
-            expenseDao.updateIconId(expenseId, R.drawable.baseline_museum_24);
-        } else if (newCategory.equalsIgnoreCase("Svago")){
-            expenseDao.updateIconId(expenseId, R.drawable.baseline_attractions_24);
+        try{
+            expenseDao.update(expense);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
         }
-        expenseDao.updateCategory(expenseId, newCategory);
     }
 
     @Override
-    public void updateExpenseDescription(int expenseId, String newDescription) {
-        expenseDao.updateDescription(expenseId, newDescription);
+    public void updateExpenseCategory(String expenseId, String newCategory) {
+        try{
+            if (newCategory.equalsIgnoreCase("Shopping")){
+                expenseDao.updateIconId(expenseId, R.drawable.baseline_shopping_cart_24);
+            } else if (newCategory.equalsIgnoreCase("Cibo")){
+                expenseDao.updateIconId(expenseId, R.drawable.baseline_fastfood_24);
+            } else if (newCategory.equalsIgnoreCase("Trasporto")){
+                expenseDao.updateIconId(expenseId, R.drawable.baseline_directions_bus_24);
+            } else if (newCategory.equalsIgnoreCase("Alloggio")){
+                expenseDao.updateIconId(expenseId, R.drawable.baseline_hotel_24);
+            } else if (newCategory.equalsIgnoreCase("Cultura")){
+                expenseDao.updateIconId(expenseId, R.drawable.baseline_museum_24);
+            } else if (newCategory.equalsIgnoreCase("Svago")){
+                expenseDao.updateIconId(expenseId, R.drawable.baseline_attractions_24);
+            }
+            expenseDao.updateCategory(expenseId, newCategory);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateExpenseAmount(int expenseId, String newAmount) {
-        expenseDao.updateAmount(expenseId, newAmount);
+    public void updateExpenseDescription(String expenseId, String newDescription) {
+        try{
+            expenseDao.updateDescription(expenseId, newDescription);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateExpenseDate(int expenseId, String newDate) {
-        expenseDao.updateDate(expenseId, newDate);
+    public void updateExpenseAmount(String expenseId, String newAmount) {
+        try{
+            expenseDao.updateAmount(expenseId, newAmount);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateExpenseIsSelected(int expenseId, boolean newIsSelected) {
-        expenseDao.updateIsSelected(expenseId, newIsSelected);
+    public void updateExpenseDate(String expenseId, String newDate) {
+        try{
+            expenseDao.updateDate(expenseId, newDate);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
+    }
+
+    @Override
+    public void updateExpenseIsSelected(String expenseId, boolean newIsSelected) {
+        try{
+            expenseDao.updateIsSelected(expenseId, newIsSelected);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void deleteExpense(Expense expense) {
-        expenseDao.delete(expense);
+        try{
+            expenseDao.delete(expense);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void deleteAllExpenses(List<Expense> expenses) {
-        expenseDao.deleteAll(expenses);
+        try{
+            expenseDao.deleteAll(expenses);
+            expenseCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public List<Expense> getAllExpenses() {
-        return expenseDao.getAll();
+    public void getAllExpenses() {
+        try{
+            expenseCallback.onSuccessFromLocal(expenseDao.getAll());
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public List<Expense> getSelectedExpenses() {
-        return expenseDao.getSelectedExpenses();
+    public void getSelectedExpenses() {
+        try{
+            expenseCallback.onSuccessSelectionFromLocal(expenseDao.getSelectedExpenses());
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public List<Expense> getFilteredExpenses(String category) {
-        return expenseDao.getFilteredExpenses(category);
+    public void getFilteredExpenses(String category) {
+        try{
+            expenseCallback.onSuccessFilterFromLocal(expenseDao.getFilteredExpenses(category));
+        } catch (Exception e){
+            expenseCallback.onFailureFromLocal(e);
+        }
     }
 }

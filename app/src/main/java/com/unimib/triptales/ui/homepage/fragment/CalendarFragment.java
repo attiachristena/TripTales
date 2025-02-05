@@ -23,6 +23,7 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.model.Diary;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,8 +33,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CalendarFragment extends Fragment {
-
-    private static final String TAG = CalendarFragment.class.getSimpleName();
 
     private CalendarView calendarView;
     private List<EventDay> events = new ArrayList<>();
@@ -74,7 +73,7 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadCalendarData(getLoggedUserId());
+        loadCalendarData(SharedPreferencesUtils.getLoggedUserId());
     }
 
     private void updateCalendar(List<Diary> diaries) {
@@ -131,15 +130,6 @@ public class CalendarFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
         return calendar;
-    }
-
-    private String getLoggedUserId() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null) {
-            return null;
-        }
-        Log.d(TAG, "Logged user ID: " + firebaseUser.getUid());
-        return firebaseUser.getUid();
     }
 
 }

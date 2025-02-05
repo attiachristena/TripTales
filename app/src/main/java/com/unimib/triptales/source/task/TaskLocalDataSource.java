@@ -5,7 +5,7 @@ import com.unimib.triptales.model.Task;
 
 import java.util.List;
 
-public class TaskLocalDataSource implements BaseTaskLocalDataSource{
+public class TaskLocalDataSource extends BaseTaskLocalDataSource{
 
     private final TaskDao taskDao;
 
@@ -14,46 +14,91 @@ public class TaskLocalDataSource implements BaseTaskLocalDataSource{
     }
 
     @Override
-    public long insertTask(Task task) {
-        return taskDao.insert(task);
+    public void insertTask(Task task) {
+        try{
+            taskDao.insert(task);
+            taskCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateAllTasks(List<Task> tasks) { taskDao.updateAll(tasks); }
-
-    @Override
-    public void updateTaskName(int taskId, String newName) {
-        taskDao.updateName(taskId, newName);
+    public void updateAllTasks(List<Task> tasks) {
+        try{
+            taskDao.updateAll(tasks);
+            taskCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateTaskIsSelected(int taskId, boolean newIsSelected) {
-        taskDao.updateIsSelected(taskId, newIsSelected);
+    public void updateTaskName(String taskId, String newName) {
+        try{
+            taskDao.updateName(taskId, newName);
+            taskCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateTaskIsChecked(int taskId, boolean newIsChecked) {
-        taskDao.updateIsChecked(taskId, newIsChecked);
+    public void updateTaskIsSelected(String taskId, boolean newIsSelected) {
+        try{
+            taskDao.updateIsSelected(taskId, newIsSelected);
+            taskCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
+    }
+
+    @Override
+    public void updateTaskIsChecked(String taskId, boolean newIsChecked) {
+        try{
+            taskDao.updateIsChecked(taskId, newIsChecked);
+            taskCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void deleteTask(Task task) {
-        taskDao.delete(task);
+        try{
+            taskDao.delete(task);
+            taskCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void deleteAllTasks(List<Task> tasks) {
-        taskDao.deleteAll(tasks);
+        try{
+            taskDao.deleteAll(tasks);
+            taskCallback.onSuccessFromLocal();
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public List<Task> getAllTasks() {
-        return taskDao.getAll();
+    public void getAllTasks() {
+        try{
+            taskCallback.onSuccessFromLocal(taskDao.getAll());
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public List<Task> getSelectedTasks() {
-        return taskDao.getSelectedTasks();
+    public void getSelectedTasks() {
+        try{
+            taskCallback.onSuccessSelectionFromLocal(taskDao.getSelectedTasks());
+        } catch (Exception e){
+            taskCallback.onFailureFromLocal(e);
+        }
     }
 
 }

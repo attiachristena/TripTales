@@ -13,6 +13,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Expense;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecyclerAdapter.ViewHolder> {
@@ -39,6 +40,7 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
 
     public ExpensesRecyclerAdapter(Context context) {
         this.context = context;
+        this.expenseList = new ArrayList<>();
     }
 
     public void setExpenseList(List<Expense> expenses) {
