@@ -14,7 +14,6 @@ import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.repository.goal.IGoalRepository;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -122,9 +121,9 @@ public class GoalViewModel extends ViewModel {
         }
     }
 
-    public List<Goal> getCheckedGoals() {
+    public void getCheckedGoals() {
         checkedGoalsLiveData.setValue(goalRepository.getCheckedGoals());
-        return checkedGoalsLiveData.getValue();
+        checkedGoalsLiveData.getValue();
     }
 
     public void toggleGoalSelection(Goal goal){

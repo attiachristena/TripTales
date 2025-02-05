@@ -128,27 +128,4 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
             }
         });
     }
-
-    @Override
-    public void getSelectedTasks() {
-        databaseReference.orderByChild("task_isSelected").equalTo(1)
-                .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                List<Task> taskList = new ArrayList<>();
-                for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
-                    Task task = taskSnapshot.getValue(Task.class);
-                    if (task != null) {
-                        taskList.add(task);
-                    }
-                }
-                taskCallback.onSuccessFromRemote(taskList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                taskCallback.onFailureFromRemote(new Exception(error.getMessage()));
-            }
-        });
-    }
 }

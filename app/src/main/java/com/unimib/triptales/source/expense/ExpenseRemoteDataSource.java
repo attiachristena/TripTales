@@ -2,6 +2,10 @@ package com.unimib.triptales.source.expense;
 
 import static com.unimib.triptales.util.Constants.UNEXPECTED_ERROR;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -139,7 +143,7 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
     public void getAllExpenses() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Expense> expensesList = new ArrayList<>();
                 for (DataSnapshot expenseSnapshot : snapshot.getChildren()) {
                     Expense expense = expenseSnapshot.getValue(Expense.class);
@@ -151,56 +155,10 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 expenseCallback.onFailureFromRemote(new Exception(error.getMessage()));
             }
         });
-    }
-
-    @Override
-    public void getSelectedExpenses() {
-        databaseReference.orderByChild("expense_isSelected").equalTo(1)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        List<Expense> selectedExpenses = new ArrayList<>();
-                        for (DataSnapshot expenseSnapshot : snapshot.getChildren()) {
-                            Expense expense = expenseSnapshot.getValue(Expense.class);
-                            if (expense != null) {
-                                selectedExpenses.add(expense);
-                            }
-                        }
-                        expenseCallback.onSuccessFromRemote(selectedExpenses);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        expenseCallback.onFailureFromRemote(new Exception(error.getMessage()));
-                    }
-                });
-    }
-
-    @Override
-    public void getFilteredExpenses(String category) {
-        databaseReference.orderByChild("category").equalTo(category)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        List<Expense> filteredExpenses = new ArrayList<>();
-                        for (DataSnapshot expenseSnapshot : snapshot.getChildren()) {
-                            Expense expense = expenseSnapshot.getValue(Expense.class);
-                            if (expense != null) {
-                                filteredExpenses.add(expense);
-                            }
-                        }
-                        expenseCallback.onSuccessFromRemote(filteredExpenses);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        expenseCallback.onFailureFromRemote(new Exception(error.getMessage()));
-                    }
-                });
     }
 }
 

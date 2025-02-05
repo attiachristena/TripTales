@@ -135,18 +135,20 @@ public class ExpensesFragment extends Fragment {
         bAdd = false;
 
         expenseViewModel.getExpensesLiveData().observe(getViewLifecycleOwner(), expenses -> {
-            expenseList = expenses;
-            expensesRecyclerAdapter.setExpenseList(expenses);
-            if(expenses.isEmpty()){
-                noExpensesTextView.setVisibility(View.VISIBLE);
-                // da aggiungere quando viene salvato il budget
-                /*currencyTextInputLayout.setEnabled(true);*/
-            } else {
-                noExpensesTextView.setVisibility(View.GONE);
-                // da aggiungere quando viene salvato il budget
+            if(expenses != null) {
+                expenseList = expenses;
+                expensesRecyclerAdapter.setExpenseList(expenses);
+                if (expenses.isEmpty()) {
+                    noExpensesTextView.setVisibility(View.VISIBLE);
+                    // da aggiungere quando viene salvato il budget
+                    /*currencyTextInputLayout.setEnabled(true);*/
+                } else {
+                    noExpensesTextView.setVisibility(View.GONE);
+                    // da aggiungere quando viene salvato il budget
                 /*currencyTextInputLayout.setEnabled(false);
                 currencyTextInputLayout.setBoxBackgroundColor
                         (ContextCompat.getColor(requireContext(), R.color.background_overlays));*/
+                }
             }
         });
 

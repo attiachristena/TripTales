@@ -1,8 +1,11 @@
 package com.unimib.triptales.repository.expense;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Result;
 import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
@@ -79,13 +82,11 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
 
     public List<Expense> getSelectedExpenses() {
         expenseLocalDataSource.getSelectedExpenses();
-        expenseRemoteDataSource.getSelectedExpenses();
         return selectedExpensesLiveData.getValue();
     }
 
     public List<Expense> getFilteredExpenses(String category) {
         expenseLocalDataSource.getFilteredExpenses(category);
-        expenseRemoteDataSource.getFilteredExpenses(category);
         return filteredExpensesLiveData.getValue();
     }
 
@@ -93,7 +94,14 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     public void onSuccessFromRemote() {}
 
     @Override
-    public void onSuccessFromRemote(List<Expense> expenses) {}
+    public void onSuccessFromRemote(List<Expense> expenses) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            for(Expense expense : expenses){
+                expenseLocalDataSource.insertExpense(expense);
+            }
+            expenseLocalDataSource.getAllExpenses();
+        });
+    }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
@@ -104,6 +112,9 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     @Override
     public void onSuccessFromLocal(List<Expense> expenses) {
         expensesLiveData.setValue(expenses);
+        for(Expense expense : expenses){
+            expenseRemoteDataSource.insertExpense(expense);
+        }
     }
 
     @Override

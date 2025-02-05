@@ -2,6 +2,7 @@ package com.unimib.triptales.repository.goal;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.source.goal.BaseGoalLocalDataSource;
@@ -88,23 +89,27 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     @Override
     public List<Goal> getSelectedGoals() {
         goalLocalDataSource.getSelectedGoals();
-        goalRemoteDataSource.getSelectedGoals();
         return selectedGoalsLiveData.getValue();
     }
 
     @Override
     public List<Goal> getCheckedGoals() {
         goalLocalDataSource.getCheckedGoals();
-        goalRemoteDataSource.getCheckedGoals();
         return checkedGoalsLiveData.getValue();
     }
-
 
     @Override
     public void onSuccessFromRemote() {}
 
     @Override
-    public void onSuccessFromRemote(List<Goal> goals) {}
+    public void onSuccessFromRemote(List<Goal> goals) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            for(Goal goal : goals){
+                goalLocalDataSource.insertGoal(goal);
+            }
+            goalLocalDataSource.getAllGoals();
+        });
+    }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
@@ -115,6 +120,9 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     @Override
     public void onSuccessFromLocal(List<Goal> goals) {
         goalsLiveData.setValue(goals);
+        for(Goal goal : goals){
+            goalRemoteDataSource.insertGoal(goal);
+        }
     }
 
     @Override

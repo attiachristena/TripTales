@@ -1,7 +1,11 @@
 package com.unimib.triptales.repository.task;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.lifecycle.MutableLiveData;
 
+import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.model.Task;
@@ -76,7 +80,6 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     @Override
     public List<Task> getSelectedTasks() {
         taskLocalDataSource.getSelectedTasks();
-        taskRemoteDataSource.getSelectedTasks();
         return selectedTasksLiveData.getValue();
     }
 
@@ -85,7 +88,14 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     public void onSuccessFromRemote() {}
 
     @Override
-    public void onSuccessFromRemote(List<Task> tasks) {}
+    public void onSuccessFromRemote(List<Task> tasks) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            for(Task task : tasks){
+                taskLocalDataSource.insertTask(task);
+            }
+            taskLocalDataSource.getAllTasks();
+        });
+    }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
@@ -96,6 +106,9 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     @Override
     public void onSuccessFromLocal(List<Task> tasks) {
         tasksLiveData.setValue(tasks);
+        for(Task task : tasks){
+            taskRemoteDataSource.insertTask(task);
+        }
     }
 
     @Override
