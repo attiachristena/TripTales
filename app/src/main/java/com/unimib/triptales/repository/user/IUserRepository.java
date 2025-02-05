@@ -17,6 +17,5 @@ public interface IUserRepository {
     MutableLiveData<Result> getUser(String name, String surname, String email, String password, boolean isUserRegistered);
     User getLoggedUser();
 
-    LiveData<Result> checkEmailExists(String email);
     MutableLiveData<Result> resetPassword(String email);
 }

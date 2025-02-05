@@ -1,30 +1,19 @@
 package com.unimib.triptales.repository.user;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.Result;
 import com.unimib.triptales.model.User;
 import com.unimib.triptales.source.user.BaseUserAuthenticationRemoteDataSource;
-import com.unimib.triptales.source.user.BaseUserDataRemoteDataSource;
-
-import java.util.List;
 
 public class UserRepository implements IUserRepository, UserResponseCallback {
 
     private final BaseUserAuthenticationRemoteDataSource userRemoteDataSource;
-    private final BaseUserDataRemoteDataSource userDataRemoteDataSource;
     private final MutableLiveData<Result> userMutableLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Result> diariesMutableLiveData = new MutableLiveData<>();
 
-    public UserRepository(BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
-                          BaseUserDataRemoteDataSource userDataRemoteDataSource) {
+    public UserRepository(BaseUserAuthenticationRemoteDataSource userRemoteDataSource) {
         this.userRemoteDataSource = userRemoteDataSource;
-        this.userDataRemoteDataSource = userDataRemoteDataSource;
-
         this.userRemoteDataSource.setUserResponseCallback(this);
-        this.userDataRemoteDataSource.setUserResponseCallback(this);
     }
 
     @Override
@@ -73,10 +62,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
-    public LiveData<Result> checkEmailExists(String email) {
-        return userRemoteDataSource.checkEmailExists(email); }
-
-    @Override
     public MutableLiveData<Result> resetPassword(String email) {
         return userRemoteDataSource.resetPassword(email);
     }
@@ -116,26 +101,4 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     public void onFailureFromRemoteDatabase(String message) {
         userMutableLiveData.postValue(new Result.Error(message));
     }
-
-    @Override
-    public void onSuccessSaveDiary(Diary diary) {
-        diariesMutableLiveData.postValue(new Result.DiarySuccess(diary));
-    }
-
-    @Override
-    public void onSuccessDeleteDiary(String diaryId) {
-        diariesMutableLiveData.postValue(new Result.GenericSuccess());
-    }
-
-    @Override
-    public void onSuccessGetDiaries(List<Diary> diaries) {
-        diariesMutableLiveData.postValue(new Result.DiarySuccess(diaries));
-    }
-
-    @Override
-    public void onFailureDiaryOperation(String message) {
-        diariesMutableLiveData.postValue(new Result.Error(message));
-    }
-
-
 }
