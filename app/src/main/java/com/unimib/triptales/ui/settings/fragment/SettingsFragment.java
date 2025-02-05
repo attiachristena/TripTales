@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.unimib.triptales.R;
 import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
@@ -73,27 +75,24 @@ public class SettingsFragment extends Fragment {
         nightMode = sharedPreferences.getBoolean("nightMode", false);
 
         // Recupera nome e cognome utente da Firebase
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference usersRef = database.getReference("Users");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String name = dataSnapshot.child("name").getValue(String.class);
-                    String surname = dataSnapshot.child("surname").getValue(String.class);
-                    nomeCognomeTextView.setText(name + " " + surname);
-                } else {
-                    nomeCognomeTextView.setText("Dati non disponibili");
-                }
-            }
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("name");
+                        String surname = documentSnapshot.getString("surname");
+                        nomeCognomeTextView.setText(name + " " + surname);
+                    } else {
+                        Log.d("Firestore", "Documento non trovato!");
+                        nomeCognomeTextView.setText("Dati non disponibili");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Errore nel recupero dati", e);
+                });
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                nomeCognomeTextView.setText("Errore nel recupero dei dati");
-            }
-        });
 
         // Imposta lo stato dello switch per la modalità notturna
         if (nightMode) {

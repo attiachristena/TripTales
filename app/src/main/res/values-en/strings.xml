@@ -84,7 +84,7 @@
     <string name="inserisci_la_tua_email">Enter your email</string>
     <string name="invia_email">Send email</string>
     <string name="error_email_login">Check your email</string>
-    <string name="error_password_login">The password must be at least 8 characters long: at least 1 letter, 1 number, and 1 special character</string>
+    <string name="error_password_signUp">The password must be at least 8 characters long: at least 1 letter, 1 number, and 1 special character</string>
     <string name="benvenuto_nella_home">Welcome to the home page</string>
     <string name="totalespesa">"Total expense of the category:"</string>
     <string name="SeparatoreData">/</string>
@@ -203,5 +203,8 @@
     <string name="errore_eliminazione">Error deleting the account.</string>
     <string name="annulla">Cancel</string>
     <string name="nessun_utente_trovato">No authenticated user found!</string>
+    <string name="user_not_logged_in_error">User not signed up</string>
+    <string name="unexpected_error">Unexpected error</string>
+    <string name="error_password_login">Wrong password. Please, retry.</string>
 
 </resources>

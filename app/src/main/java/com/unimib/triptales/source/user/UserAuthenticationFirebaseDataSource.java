@@ -13,21 +13,23 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.unimib.triptales.model.Result;
 import com.unimib.triptales.model.User;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserAuthenticationFirebaseDataSource extends BaseUserAuthenticationRemoteDataSource{
 
     private final FirebaseAuth firebaseAuth;
-    private final FirebaseFirestore firestore;
+    private final FirebaseDatabase firebaseDatabase;
     private final FirebaseUser firebaseUser;
 
     public UserAuthenticationFirebaseDataSource(){
         firebaseAuth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
     }
 
@@ -37,17 +39,20 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
         if (firebaseUser == null) {
             return null;
         } else {
-            DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
-            docRef.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        User user = document.toObject(User.class);
+            DatabaseReference userRef = firebaseDatabase.getReference("users").child(firebaseUser.getUid());
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        User user = dataSnapshot.getValue(User.class);
                         userResponseCallback.onSuccessGetLoggedUser(user);
                     } else {
                         userResponseCallback.onFailureGetLoggedUser(UNEXPECTED_ERROR);
                     }
-                } else {
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
                     userResponseCallback.onFailureGetLoggedUser(UNEXPECTED_ERROR);
                 }
             });
@@ -59,7 +64,8 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
     public void logout() {
         if(firebaseUser != null) {
             String uid = firebaseUser.getUid();
-            firestore.collection("users").document(uid).delete().addOnCompleteListener(task -> {
+            DatabaseReference userRef = firebaseDatabase.getReference("users").child(uid);
+            userRef.removeValue().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     firebaseUser.delete().addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
@@ -84,8 +90,8 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null){
                     User user = new User(name, surname, email, firebaseUser.getUid());
-                    DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
-                    docRef.set(user).addOnCompleteListener(task1 -> {
+                    DatabaseReference userRef = firebaseDatabase.getReference("users").child(firebaseUser.getUid());
+                    userRef.setValue(user).addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             userResponseCallback.onSuccessFromAuthentication(user);
                         } else {
@@ -126,27 +132,29 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
                                 String email = firebaseUser.getEmail();
                                 String surname = "";
 
-                                DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
-                                docRef.get().addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        DocumentSnapshot document = task1.getResult();
-                                        if (document.exists()) {
+                                DatabaseReference userRef = firebaseDatabase.getReference("users").child(firebaseUser.getUid());
+                                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
                                             userResponseCallback.onFailureFromAuthentication(USER_ALREADY_EXISTS);
                                         } else {
                                             User user = new User(name, surname, email, firebaseUser.getUid());
-                                            docRef.set(user).addOnCompleteListener(task2 -> {
-                                                if (task2.isSuccessful()) {
+                                            userRef.setValue(user).addOnCompleteListener(task1 -> {
+                                                if (task1.isSuccessful()) {
                                                     userResponseCallback.onSuccessFromAuthentication(user);
                                                 } else {
                                                     userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
                                                 }
                                             });
                                         }
-                                    } else {
-                                        userResponseCallback.onFailureFromAuthentication(getErrorMessage(task1.getException()));
                                     }
-                                }).addOnFailureListener(e -> {
-                                    userResponseCallback.onFailureFromAuthentication(getErrorMessage(e));
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        userResponseCallback.onFailureFromAuthentication(getErrorMessage(databaseError.toException()));
+                                    }
+
                                 });
                             } else {
                                 userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
@@ -179,17 +187,20 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
             if(task.isSuccessful()){
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null){
-                    DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
-                    docRef.get().addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            DocumentSnapshot document = task1.getResult();
-                            if (document.exists()) {
-                                User user = document.toObject(User.class);
+                    DatabaseReference userRef = firebaseDatabase.getReference("users").child(firebaseUser.getUid());
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                User user = dataSnapshot.getValue(User.class);
                                 userResponseCallback.onSuccessFromAuthentication(user);
                             } else {
                                 userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
                             }
-                        } else {
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
                             userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
                         }
                     });
@@ -205,30 +216,33 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
 
     @Override
     public void signInWithGoogle(String idToken) {
-        if (idToken != null){
+        if (idToken != null) {
             AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
             firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                    if(firebaseUser != null){
-                        DocumentReference docRef = firestore.collection("users").document(firebaseUser.getUid());
-                        docRef.get().addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful()) {
-                                DocumentSnapshot document = task1.getResult();
-                                if (document.exists()) {
-                                    User user = document.toObject(User.class);
+                    if (firebaseUser != null) {
+                        DatabaseReference userRef = firebaseDatabase.getReference("users").child(firebaseUser.getUid());
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    User user = dataSnapshot.getValue(User.class);
                                     userResponseCallback.onSuccessFromAuthentication(user);
                                 } else {
                                     User user = new User(firebaseUser.getDisplayName(), "", firebaseUser.getEmail(), firebaseUser.getUid());
-                                    docRef.set(user).addOnCompleteListener(task2 -> {
-                                        if (task2.isSuccessful()) {
+                                    userRef.setValue(user).addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
                                             userResponseCallback.onSuccessFromAuthentication(user);
                                         } else {
                                             userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
                                         }
                                     });
                                 }
-                            } else {
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
                                 userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
                             }
                         });
@@ -240,7 +254,5 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
                 }
             });
         }
-
-
     }
 }
