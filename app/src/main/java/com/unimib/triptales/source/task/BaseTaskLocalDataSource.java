@@ -22,5 +22,4 @@ public abstract class BaseTaskLocalDataSource {
     public abstract void deleteAllTasks(List<Task> tasks);
     public abstract void getAllTasks();
     public abstract void getSelectedTasks();
-    //List<Task> getAllTasksByDiaryId(int diaryId);
 }

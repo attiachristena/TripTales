@@ -5,11 +5,15 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
 
+import android.app.SharedElementCallback;
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.repository.task.ITaskRepository;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,8 +43,6 @@ public class TaskViewModel extends ViewModel {
 
     public MutableLiveData<List<Task>> getSelectedTasksLiveData() { return selectedTasksLiveData; }
 
-    public MutableLiveData<List<Task>> getCheckedTasksLiveData() { return checkedTasksLiveData; }
-
     public MutableLiveData<Boolean> getTaskOverlayVisibility() { return taskOverlayVisibility; }
 
     public MutableLiveData<String> getTaskEvent() { return taskEvent; }
@@ -65,8 +67,9 @@ public class TaskViewModel extends ViewModel {
         tasksLiveData.setValue(taskRepository.getAllTasks());
     }
 
-    public void insertTask(String name) {
-        Task task = new Task(name, false, false);
+    public void insertTask(String name, Context context) {
+        int diaryId = Integer.parseInt(SharedPreferencesUtils.getDiaryId(context));
+        Task task = new Task(name, false, false, diaryId);
         taskRepository.insertTask(task);
         fetchAllTasks();
         taskEvent.setValue(ADDED);

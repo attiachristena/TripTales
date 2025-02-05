@@ -8,9 +8,11 @@ import java.util.List;
 public class TaskLocalDataSource extends BaseTaskLocalDataSource{
 
     private final TaskDao taskDao;
+    private final int diaryId;
 
-    public TaskLocalDataSource(TaskDao taskDao) {
+    public TaskLocalDataSource(TaskDao taskDao, String diaryId) {
         this.taskDao = taskDao;
+        this.diaryId = Integer.parseInt(diaryId);
     }
 
     @Override
@@ -86,7 +88,7 @@ public class TaskLocalDataSource extends BaseTaskLocalDataSource{
     @Override
     public void getAllTasks() {
         try{
-            taskCallback.onSuccessFromLocal(taskDao.getAll());
+            taskCallback.onSuccessFromLocal(taskDao.getAll(diaryId));
         } catch (Exception e){
             taskCallback.onFailureFromLocal(e);
         }
@@ -95,7 +97,7 @@ public class TaskLocalDataSource extends BaseTaskLocalDataSource{
     @Override
     public void getSelectedTasks() {
         try{
-            taskCallback.onSuccessSelectionFromLocal(taskDao.getSelectedTasks());
+            taskCallback.onSuccessSelectionFromLocal(taskDao.getSelectedTasks(diaryId));
         } catch (Exception e){
             taskCallback.onFailureFromLocal(e);
         }

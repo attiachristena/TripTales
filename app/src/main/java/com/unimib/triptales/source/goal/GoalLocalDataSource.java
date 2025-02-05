@@ -8,9 +8,11 @@ import java.util.List;
 public class GoalLocalDataSource extends BaseGoalLocalDataSource{
 
     private final GoalDao goalDao;
+    private final int diaryId;
 
-    public GoalLocalDataSource(GoalDao goalDao) {
+    public GoalLocalDataSource(GoalDao goalDao, String diaryId) {
         this.goalDao = goalDao;
+        this.diaryId = Integer.parseInt(diaryId);
     }
 
     @Override
@@ -106,7 +108,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     @Override
     public void getAllGoals() {
         try{
-            goalCallback.onSuccessFromLocal(goalDao.getAll());
+            goalCallback.onSuccessFromLocal(goalDao.getAll(diaryId));
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -115,7 +117,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     @Override
     public void getSelectedGoals() {
         try{
-            goalCallback.onSuccessSelectionFromLocal(goalDao.getSelectedGoals());
+            goalCallback.onSuccessSelectionFromLocal(goalDao.getSelectedGoals(diaryId));
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -124,7 +126,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     @Override
     public void getCheckedGoals() {
         try{
-            goalCallback.onSuccessCheckedFromLocal(goalDao.getCheckedGoals());
+            goalCallback.onSuccessCheckedFromLocal(goalDao.getCheckedGoals(diaryId));
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }

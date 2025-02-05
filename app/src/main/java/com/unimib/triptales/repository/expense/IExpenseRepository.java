@@ -21,5 +21,4 @@ public interface IExpenseRepository {
     List<Expense> getAllExpenses();
     List<Expense> getSelectedExpenses();
     List<Expense> getFilteredExpenses(String category);
-
 }

@@ -231,7 +231,7 @@ public class TasksFragment extends Fragment {
 
                 if(correct){
                     if(bAdd){
-                        taskViewModel.insertTask(inputTaskName);
+                        taskViewModel.insertTask(inputTaskName, getContext());
                     } else if(bEdit){
                         List<Task> selectedTasks = taskViewModel.getSelectedTasksLiveData().getValue();
                         if(selectedTasks != null && !selectedTasks.isEmpty()){

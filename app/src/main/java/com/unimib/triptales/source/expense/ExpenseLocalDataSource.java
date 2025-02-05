@@ -122,7 +122,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     @Override
     public void getAllExpenses() {
         try{
-            expenseCallback.onSuccessFromLocal(expenseDao.getAllExpenses(diaryId));
+            expenseCallback.onSuccessFromLocal(expenseDao.getAll(diaryId));
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }

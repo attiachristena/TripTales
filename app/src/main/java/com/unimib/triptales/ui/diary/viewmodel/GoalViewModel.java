@@ -5,11 +5,14 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.repository.goal.IGoalRepository;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,8 +69,9 @@ public class GoalViewModel extends ViewModel {
         goalsLiveData.setValue(goalRepository.getAllGoals());
     }
 
-    public void insertGoal(String name, String description) {
-        Goal goal = new Goal(name, description, false, false);
+    public void insertGoal(String name, String description, Context context) {
+        int diaryId = Integer.parseInt(SharedPreferencesUtils.getDiaryId(context));
+        Goal goal = new Goal(name, description, false, false, diaryId);
         goalRepository.insertGoal(goal);
         fetchAllGoals();
         goalEvent.setValue(ADDED);

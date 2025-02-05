@@ -66,7 +66,8 @@ public class ServiceLocator {
 
     public IGoalRepository getGoalRepository(Context context){
         BaseGoalLocalDataSource goalLocalDataSource =
-                new GoalLocalDataSource(AppRoomDatabase.getDatabase(context).goalDao());
+                new GoalLocalDataSource(AppRoomDatabase.getDatabase(context).goalDao(),
+                        SharedPreferencesUtils.getDiaryId(context));
         BaseGoalRemoteDataSource goalRemoteDataSource =
                 new GoalRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
                         SharedPreferencesUtils.getDiaryId(context));
@@ -75,7 +76,8 @@ public class ServiceLocator {
 
     public ITaskRepository getTaskRepository(Context context){
         BaseTaskLocalDataSource taskLocalDataSource =
-                new TaskLocalDataSource(AppRoomDatabase.getDatabase(context).taskDao());
+                new TaskLocalDataSource(AppRoomDatabase.getDatabase(context).taskDao(),
+                        SharedPreferencesUtils.getDiaryId(context));
         BaseTaskRemoteDataSource taskRemoteDataSource =
                 new TaskRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
                         SharedPreferencesUtils.getDiaryId(context));
