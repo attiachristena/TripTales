@@ -24,5 +24,5 @@ public abstract class BaseExpenseRemoteDataSource {
     public abstract void getAllExpenses();
     public abstract void getSelectedExpenses();
     public abstract void getFilteredExpenses(String category);
-    //List<Expense> getAllExpensesByDiaryId(int diaryId);
+    //List<Expense> getAllExpenses(int diaryId);
 }

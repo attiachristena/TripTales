@@ -6,12 +6,16 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.UPDATED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 
+import android.content.Context;
+
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -164,14 +168,17 @@ public class ExpenseViewModel extends ViewModel {
     }
 
     public void insertExpense(String amount, String category, String description,
-                                           String day, String month, String year, String inputCurrency) {
+                              String day, String month, String year, String inputCurrency,
+                              Context context) {
         String completedDate = day+"/"+month+"/"+year;
         String completedAmount;
         if (inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
             completedAmount = amount + inputCurrency;
         else
             completedAmount = inputCurrency + amount;
-        Expense expense = new Expense(completedAmount, category, description, completedDate, false);
+        int diaryId = Integer.parseInt(SharedPreferencesUtils.getDiaryId(context));
+        Expense expense = new Expense(completedAmount, category, description, completedDate,
+                false, diaryId);
         expenseRepository.insertExpense(expense);
         amountSpentLiveData.postValue(countAmount(getAllExpenses(), inputCurrency));
         fetchAllExpenses();

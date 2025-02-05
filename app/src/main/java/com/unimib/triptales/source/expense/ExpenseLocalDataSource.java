@@ -1,7 +1,6 @@
 package com.unimib.triptales.source.expense;
 
 import com.unimib.triptales.R;
-import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
 
@@ -10,9 +9,11 @@ import java.util.List;
 public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
 
     private final ExpenseDao expenseDao;
+    private final int diaryId;
 
-    public ExpenseLocalDataSource(ExpenseDao expenseDao) {
+    public ExpenseLocalDataSource(ExpenseDao expenseDao, String diaryId) {
         this.expenseDao = expenseDao;
+        this.diaryId = Integer.parseInt(diaryId);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     @Override
     public void getAllExpenses() {
         try{
-            expenseCallback.onSuccessFromLocal(expenseDao.getAll());
+            expenseCallback.onSuccessFromLocal(expenseDao.getAllExpenses(diaryId));
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -130,7 +131,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     @Override
     public void getSelectedExpenses() {
         try{
-            expenseCallback.onSuccessSelectionFromLocal(expenseDao.getSelectedExpenses());
+            expenseCallback.onSuccessSelectionFromLocal(expenseDao.getSelectedExpenses(diaryId));
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -139,7 +140,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     @Override
     public void getFilteredExpenses(String category) {
         try{
-            expenseCallback.onSuccessFilterFromLocal(expenseDao.getFilteredExpenses(category));
+            expenseCallback.onSuccessFilterFromLocal(expenseDao.getFilteredExpenses(diaryId, category));
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }

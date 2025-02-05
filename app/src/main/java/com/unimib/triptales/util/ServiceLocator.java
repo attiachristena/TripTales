@@ -85,7 +85,8 @@ public class ServiceLocator {
 
     public IExpenseRepository getExpenseRepository(Context context){
         BaseExpenseLocalDataSource expenseLocalDataSource =
-                new ExpenseLocalDataSource(AppRoomDatabase.getDatabase(context).expenseDao());
+                new ExpenseLocalDataSource(AppRoomDatabase.getDatabase(context).expenseDao(),
+                        SharedPreferencesUtils.getDiaryId(context));
         BaseExpenseRemoteDataSource expenseRemoteDataSource =
                 new ExpenseRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
                         SharedPreferencesUtils.getDiaryId(context));
