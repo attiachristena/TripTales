@@ -27,7 +27,7 @@ public class DiaryLocalDataSource implements BaseDiaryLocalDataSource {
 
     @Override
     public void updateDiaryIsSelected(int diaryId, boolean newIsSelected) {
-        // Aggiorna lo stato "isSelected" del diario dato il suo ID
+        // Aggiorna lo stato "task_isSelected" del diario dato il suo ID
         diaryDao.updateIsSelected(diaryId, newIsSelected);
     }
 

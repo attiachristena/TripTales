@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +24,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.unimib.triptales.R;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.unimib.triptales.util.GeoJSONParser;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -41,9 +50,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private SharedViewModel sharedViewModel;
-    private String userCountry;
-    private List<String> countryList;
+    private DiaryDao diaryDao;
+    private HashMap<String, List<Polygon>> countryPolygons = new HashMap<>();
 
     @Nullable
     @Override
@@ -59,8 +67,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
-        //usare DiaryViewModel per prendere i paesi dei diari salvati
-        //countryPolygonList = diaryViewModel.getAllCountries();
+        diaryDao = AppRoomDatabase.getDatabase(getContext()).diaryDao();
 
         return rootView;
     }
@@ -69,54 +76,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        countryList = new ArrayList<>();
-
-        sharedViewModel.getDiaryCountry().observe(requireActivity(), new Observer<String>() {
-            @Override
-            public void onChanged(String country) {
-                userCountry = country;
-                // usare DiaryViewModel per verificare che il paese non sia già colorato
-                /*CountryPolygon verifica = diaryViewModel.getByCountry(country);
-                if(verifica == null && !country.isEmpty()) {
-                    CountryPolygon countryPolygon = new CountryPolygon(country);
-                    countryPolygonDao.insert(countryPolygon);
-                }*/
-                if(!country.isEmpty()){
-                    countryList.add(country);
-                }
-            }
-        });
-
-        if(countryList != null) {
-            for (String country : countryList) {
-                GeoJSONParser parser = new GeoJSONParser(getContext(), "world_countries");
-                List<List<LatLng>> countryBorders = parser.getCountryBorders(country);
-
-                if(countryBorders != null) {
-                    colorPolygons(countryBorders);
-                }
-            }
-        }
-
-        GeoJSONParser parser = new GeoJSONParser(getContext(), "world_countries");
-        List<List<LatLng>> countryBorders = parser.getCountryBorders(userCountry);
-
-        //CountryPolygon verifica = countryPolygonDao.getByName(userCountry);
-        /*if(verifica == null && countryBorders != null) {
-            colorPolygons(countryBorders);
-        }*/
-
-        if(countryBorders != null) {
-            colorPolygons(countryBorders);
-        }
-
-        /*// Rimuovi un poligono specifico
-        Polygon polygonToRemove = countryPolygons.get("Italy");
-        if (polygonToRemove != null) {
-            polygonToRemove.remove(); // Rimuovi il poligono dalla mappa
-            countryPolygons.remove("Italy"); // Rimuovi dalla mappa
-        }*/
+        updateMap();
 
         /*// Controlla i permessi di localizzazione
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -165,14 +125,53 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public void colorPolygons(List<List<LatLng>> countryBorders){
+    private void updateMap(){
+        String userId = SharedPreferencesUtils.getLoggedUserId();
+        List<String> countryList = diaryDao.getAllCountriesByUserId(userId);
+
+        HashSet<String> countryListSet = new HashSet<>(countryList);
+        HashSet<String> countryPolygonsSet = new HashSet<>(countryPolygons.keySet());
+
+        // aggiunge nuvoi poligoni se il paese non è ancora disegnato
+        for(String country : countryList){
+            if(!countryPolygons.containsKey(country)){
+                colorPolygons(country);
+            }
+        }
+
+        // rimuove i poligoni dei paesi che non sono più nel database
+        for(String country : countryPolygonsSet){
+            if(!countryListSet.contains(country)){
+                if(countryPolygons.containsKey(country)){
+                    List<Polygon> polygons = countryPolygons.get(country);
+
+                    for(Polygon polygon : polygons){
+                        polygon.remove();
+                    }
+
+                    countryPolygons.remove(country);
+                }
+            }
+        }
+    }
+
+    private void colorPolygons(String country){
+        GeoJSONParser parser = new GeoJSONParser(getContext(), "world_countries");
+        List<List<LatLng>> countryBorders = parser.getCountryBorders(country);
+        if(countryBorders == null || countryBorders.isEmpty()) return;
+
+        List<Polygon> coloredPolygons = new ArrayList<>();
+
         for (List<LatLng> polygon : countryBorders) {
             PolygonOptions polygonOptions = new PolygonOptions()
                     .addAll(polygon)
                     .strokeColor(getResources().getColor(R.color.secondary))
                     .fillColor(Color.parseColor("#70F6EEE5"))
                     .strokeWidth(4);
-            mMap.addPolygon(polygonOptions);
+            Polygon newPolygon = mMap.addPolygon(polygonOptions);
+            coloredPolygons.add(newPolygon);
         }
+
+        countryPolygons.put(country, coloredPolygons);
     }
 }

@@ -1,23 +1,29 @@
 package com.unimib.triptales.source.goal;
 
 import com.unimib.triptales.model.Goal;
+import com.unimib.triptales.repository.goal.GoalResponseCallback;
 
 import java.util.List;
 
-public interface BaseGoalLocalDataSource {
+public abstract class BaseGoalLocalDataSource {
+    protected GoalResponseCallback goalCallback;
 
-    long insertGoal(Goal goal);
-    void updateGoal(Goal goal);
-    void updateAllGoals(List<Goal> goals);
-    void updateGoalName(int goalId, String newName);
-    void updateGoalDescription(int goalId, String newDescription);
-    void updateGoalIsSelected(int goalId, boolean newIsSelected);
-    void updateGoalIsChecked(int goalId, boolean newIsChecked);
-    void deleteGoal(Goal goal);
-    void deleteAllGoals(List<Goal> goals);
-    List<Goal> getAllGoals();
+    public void setGoalCallback(GoalResponseCallback goalCallback){
+        this.goalCallback = goalCallback;
+    }
+
+    public abstract void insertGoal(Goal goal);
+    public abstract void updateGoal(Goal goal);
+    public abstract void updateAllGoals(List<Goal> goals);
+    public abstract void updateGoalName(String goalId, String newName);
+    public abstract void updateGoalDescription(String goalId, String newDescription);
+    public abstract void updateGoalIsSelected(String goalId, boolean newIsSelected);
+    public abstract void updateGoalIsChecked(String goalId, boolean newIsChecked);
+    public abstract void deleteGoal(Goal goal);
+    public abstract void deleteAllGoals(List<Goal> goals);
+    public abstract void getAllGoals();
     //List<Goal> getAllGoalsByDiaryId(int diaryId);
-    List<Goal> getSelectedGoals();
-    List<Goal> getCheckedGoals();
+    public abstract void getSelectedGoals();
+    public abstract void getCheckedGoals();
 
 }

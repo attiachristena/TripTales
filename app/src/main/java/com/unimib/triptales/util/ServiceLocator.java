@@ -56,9 +56,11 @@ public class ServiceLocator {
 
     public IExpenseRepository getExpenseRepository(Context context){
         BaseExpenseLocalDataSource expenseLocalDataSource =
-                new ExpenseLocalDataSource(AppRoomDatabase.getDatabase(context).expenseDao());
+                new ExpenseLocalDataSource(AppRoomDatabase.getDatabase(context).expenseDao(),
+                        SharedPreferencesUtils.getDiaryId(context));
         BaseExpenseRemoteDataSource expenseRemoteDataSource =
-                new ExpenseRemoteDataSource();
+                new ExpenseRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
+                        SharedPreferencesUtils.getDiaryId(context));
         return new ExpenseRepository(expenseLocalDataSource, expenseRemoteDataSource);
     }
 
@@ -66,7 +68,8 @@ public class ServiceLocator {
         BaseGoalLocalDataSource goalLocalDataSource =
                 new GoalLocalDataSource(AppRoomDatabase.getDatabase(context).goalDao());
         BaseGoalRemoteDataSource goalRemoteDataSource =
-                new GoalRemoteDataSource();
+                new GoalRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
+                        SharedPreferencesUtils.getDiaryId(context));
         return new GoalRepository(goalLocalDataSource, goalRemoteDataSource);
     }
 
@@ -74,7 +77,8 @@ public class ServiceLocator {
         BaseTaskLocalDataSource taskLocalDataSource =
                 new TaskLocalDataSource(AppRoomDatabase.getDatabase(context).taskDao());
         BaseTaskRemoteDataSource taskRemoteDataSource =
-                new TaskRemoteDataSource();
+                new TaskRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
+                        SharedPreferencesUtils.getDiaryId(context));
         return new TaskRepository(taskLocalDataSource, taskRemoteDataSource);
     }
 

@@ -52,6 +52,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation (libs.material.calendar.view)
+
     implementation("com.google.android.gms:play-services-auth:20.3.0")
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)

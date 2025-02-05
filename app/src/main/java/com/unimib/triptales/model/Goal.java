@@ -1,17 +1,24 @@
 package com.unimib.triptales.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity/*(foreignKeys = @ForeignKey(entity = Diary.class, parentColumns = "id", childColumns = "diaryId", onDelete = CASCADE))*/
 public class Goal {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+
+    @PrimaryKey
+    @NonNull
+    private String id;
+
+    public Goal(){}
 
     public Goal(String name, String description, boolean goal_isSelected, boolean goal_isChecked) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.goal_isSelected = goal_isSelected;
@@ -50,11 +57,12 @@ public class Goal {
         this.goal_isChecked = goal_isChecked;
     }
 
-    public int getId() {
+    @NonNull
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -77,7 +85,7 @@ public class Goal {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Goal goal = (Goal) obj;
-        return id == goal.id;
+        return id.equals(goal.id);
     }
 
     @Override

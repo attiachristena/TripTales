@@ -339,7 +339,7 @@ public class ExpensesFragment extends Fragment {
                     if(bAdd){
                         expenseViewModel.insertExpense(inputAmount, inputCategory,
                                 inputDescription, inputDay, inputMonth, inputYear,
-                                inputCurrency);
+                                inputCurrency, getContext());
                     } else if(bEdit){
                         List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
                         if (selectedExpenses != null && !selectedExpenses.isEmpty()) {

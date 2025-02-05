@@ -8,11 +8,9 @@ import static com.unimib.triptales.util.Constants.UPDATED;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.repository.task.ITaskRepository;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +22,6 @@ public class TaskViewModel extends ViewModel {
     private final MutableLiveData<List<Task>> selectedTasksLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Task>> checkedTasksLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> taskOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> taskEvent = new MutableLiveData<>();
 
@@ -38,10 +35,6 @@ public class TaskViewModel extends ViewModel {
 
     public MutableLiveData<String> getErrorLiveData() {
         return errorLiveData;
-    }
-
-    public MutableLiveData<Boolean> getLoadingLiveData() {
-        return loadingLiveData;
     }
 
     public MutableLiveData<List<Task>> getSelectedTasksLiveData() { return selectedTasksLiveData; }
@@ -69,15 +62,7 @@ public class TaskViewModel extends ViewModel {
     }
 
     public void fetchAllTasks() {
-        loadingLiveData.setValue(true);
-        try {
-            List<Task> tasks = taskRepository.getAllTasks();
-            tasksLiveData.postValue(tasks);
-            loadingLiveData.postValue(false);
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue(e.getMessage());
-        }
+        tasksLiveData.setValue(taskRepository.getAllTasks());
     }
 
     public void insertTask(String name) {
@@ -92,54 +77,23 @@ public class TaskViewModel extends ViewModel {
             updateTaskName(task.getId(), name);
             task.setName(name);
         }
+        fetchAllTasks();
         taskEvent.setValue(UPDATED);
     }
 
-    public void updateTaskName(int taskId, String newName) {
-        loadingLiveData.setValue(true);
-        try {
-            taskRepository.updateTaskName(taskId, newName);
-            fetchAllTasks();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento del nome dell'attività: " + e.getMessage());
-        }
+    public void updateTaskName(String taskId, String newName) {
+        taskRepository.updateTaskName(taskId, newName);
+        fetchAllTasks();
     }
 
-    public void updateTaskIsSelected(int taskId, boolean newIsSelected) {
-        loadingLiveData.setValue(true);
-        try {
-            taskRepository.updateTaskIsSelected(taskId, newIsSelected);
-            fetchAllTasks();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento di isSelected: " + e.getMessage());
-        }
+    public void updateTaskIsSelected(String taskId, boolean newIsSelected) {
+        taskRepository.updateTaskIsSelected(taskId, newIsSelected);
+        fetchAllTasks();
     }
 
-    public void updateTaskIsChecked(int taskId, boolean newIsChecked) {
-        loadingLiveData.setValue(true);
-        try {
-            taskRepository.updateTaskIsChecked(taskId, newIsChecked);
-            fetchAllTasks();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento di isChecked: " + e.getMessage());
-        }
-    }
-
-    public void deleteTask(Task task) {
-        loadingLiveData.setValue(true);
-        try {
-            taskRepository.deleteTask(task);
-            fetchAllTasks();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue("Errore nella rimozione dell'attività: "+e.getMessage());
-        }
+    public void updateTaskIsChecked(String taskId, boolean newIsChecked) {
+        taskRepository.updateTaskIsChecked(taskId, newIsChecked);
+        fetchAllTasks();
     }
 
     public void deleteSelectedTasks() {
@@ -154,53 +108,27 @@ public class TaskViewModel extends ViewModel {
         }
     }
 
-    public List<Task> getAllTasks() {
-        loadingLiveData.setValue(true);
-        List<Task> tasks = new ArrayList<>();
-        try {
-            tasks = taskRepository.getAllTasks();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nella restituzione di tutte le attività: "+e.getMessage());
-        }
-        return tasks;
-    }
-
-    public List<Task> getSelectedTasks() {
-        loadingLiveData.setValue(true);
-        List<Task> tasks = new ArrayList<>();
-        try {
-            tasks = taskRepository.getSelectedTasks();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nella restituzione dell'attività selezionata: "+e.getMessage());
-        }
-        return tasks;
-    }
-
     public void toggleTaskSelection(Task task){
-        boolean isSelected = task.isSelected();
-        task.setSelected(!isSelected);
+        boolean isSelected = task.isTask_isSelected();
+        task.setTask_isSelected(!isSelected);
         updateTaskIsSelected(task.getId(), !isSelected);
-        List<Task> tasks = getSelectedTasks();
-        selectedTasksLiveData.postValue(tasks);
+        selectedTasksLiveData.setValue(taskRepository.getSelectedTasks());
         fetchAllTasks();
     }
 
     public void toggleTaskCheck(Task task){
-        boolean isChecked = task.isChecked();
-        task.setChecked(!isChecked);
+        boolean isChecked = task.isTask_isChecked();
+        task.setTask_isChecked(!isChecked);
         updateTaskIsChecked(task.getId(), !isChecked);
         fetchAllTasks();
     }
 
     public void deselectAllTasks() {
-        List<Task> tasks = getAllTasks();
+        fetchAllTasks();
+        List<Task> tasks = tasksLiveData.getValue();
         if(tasks != null) {
             for (Task t : tasks) {
-                t.setSelected(false);
+                t.setTask_isSelected(false);
                 updateTaskIsSelected(t.getId(), false);
             }
             tasksLiveData.setValue(tasks);

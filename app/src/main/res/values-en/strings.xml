@@ -72,7 +72,7 @@
     <string name="snackbarGoalDeleted">Goal deleted</string>
     <string name="snackbarGoalNotDeleted">Error: goal not deleted</string>
     <string name="searchbar_hint">Search diary by name</string>
-    <string name="nomeStringheParser">NAME_EN</string>
+    <string name="nomeStringheParser">\"NAME_EN\"</string>
     <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>

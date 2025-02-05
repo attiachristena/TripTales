@@ -6,12 +6,16 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.UPDATED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 
+import android.content.Context;
+
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,11 +25,10 @@ public class ExpenseViewModel extends ViewModel {
 
     private final IExpenseRepository expenseRepository;
 
-    private final MutableLiveData<List<Expense>> expensesLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Expense>> expensesLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
     private final MutableLiveData<Double> amountSpentLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> budgetOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<Boolean> expenseOverlayVisibility = new MutableLiveData<>();
@@ -42,10 +45,6 @@ public class ExpenseViewModel extends ViewModel {
 
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
-    }
-
-    public LiveData<Boolean> getLoadingLiveData() {
-        return loadingLiveData;
     }
 
     public LiveData<List<Expense>> getSelectedExpensesLiveData() {
@@ -103,14 +102,7 @@ public class ExpenseViewModel extends ViewModel {
     }
 
     public void fetchAllExpenses() {
-        try {
-            List<Expense> expenses = expenseRepository.getAllExpenses();
-            expensesLiveData.postValue(expenses);
-            loadingLiveData.postValue(false);
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue(e.getMessage());
-        }
+        expensesLiveData.setValue(expenseRepository.getAllExpenses());
     }
 
     public boolean validateInputExpense(String amount, String category, String description,
@@ -176,14 +168,17 @@ public class ExpenseViewModel extends ViewModel {
     }
 
     public void insertExpense(String amount, String category, String description,
-                                           String day, String month, String year, String inputCurrency) {
+                              String day, String month, String year, String inputCurrency,
+                              Context context) {
         String completedDate = day+"/"+month+"/"+year;
         String completedAmount;
         if (inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
             completedAmount = amount + inputCurrency;
         else
             completedAmount = inputCurrency + amount;
-        Expense expense = new Expense(completedAmount, category, description, completedDate, false);
+        int diaryId = Integer.parseInt(SharedPreferencesUtils.getDiaryId(context));
+        Expense expense = new Expense(completedAmount, category, description, completedDate,
+                false, diaryId);
         expenseRepository.insertExpense(expense);
         amountSpentLiveData.postValue(countAmount(getAllExpenses(), inputCurrency));
         fetchAllExpenses();
@@ -214,65 +209,30 @@ public class ExpenseViewModel extends ViewModel {
         expenseEvent.setValue(UPDATED);
     }
 
-    public void updateExpenseCategory(int expenseId, String newCategory) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateExpenseCategory(expenseId, newCategory);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento della categoria della spesa: " + e.getMessage());
-        }
+    public void updateExpenseCategory(String expenseId, String newCategory) {
+        expenseRepository.updateExpenseCategory(expenseId, newCategory);
+        fetchAllExpenses();
     }
 
-    public void updateExpenseDescription(int expenseId, String newDescription) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateExpenseDescription(expenseId, newDescription);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento della descrizione della spesa: " + e.getMessage());
-        }
+    public void updateExpenseDescription(String expenseId, String newDescription) {
+        expenseRepository.updateExpenseDescription(expenseId, newDescription);
+        fetchAllExpenses();
     }
 
-    public void updateExpenseAmount(int expenseId, String newAmount, String currency) {
-        loadingLiveData.setValue(true);
-        try {
-            amountSpentLiveData.postValue(countAmount(getAllExpenses(), currency));
-            expenseRepository.updateExpenseAmount(expenseId, newAmount);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento dell'importo della spesa: " + e.getMessage());
-        }
+    public void updateExpenseAmount(String expenseId, String newAmount, String currency) {
+        amountSpentLiveData.postValue(countAmount(getAllExpenses(), currency));
+        expenseRepository.updateExpenseAmount(expenseId, newAmount);
+        fetchAllExpenses();
     }
 
-    public void updateExpenseDate(int expenseId, String newDate) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateExpenseDate(expenseId, newDate);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento della data della spesa: " + e.getMessage());
-        }
+    public void updateExpenseDate(String expenseId, String newDate) {
+        expenseRepository.updateExpenseDate(expenseId, newDate);
+        fetchAllExpenses();
     }
 
-    public void updateExpenseIsSelected(int expenseId, boolean newIsSelected) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateExpenseIsSelected(expenseId, newIsSelected);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento di isSelected: " + e.getMessage());
-        }
+    public void updateExpenseIsSelected(String expenseId, boolean newIsSelected) {
+        expenseRepository.updateExpenseIsSelected(expenseId, newIsSelected);
+        fetchAllExpenses();
     }
 
     public void deleteSelectedExpenses(String currency) {
@@ -326,7 +286,7 @@ public class ExpenseViewModel extends ViewModel {
 
     public double countAmount(List<Expense> expenseList, String currency){
         double totExpense = 0;
-        if(!expenseList.isEmpty()) {
+        if(expenseList != null && !expenseList.isEmpty() && currency != null) {
             for (Expense e : expenseList) {
                 String amount = e.getAmount();
                 String realAmount;
@@ -351,61 +311,26 @@ public class ExpenseViewModel extends ViewModel {
     }
 
     public List<Expense> getAllExpenses() {
-        loadingLiveData.setValue(true);
-        List<Expense> expenses = new ArrayList<>();
-        try {
-            expenses = expenseRepository.getAllExpenses();
-        } catch (Exception e) {
-            expenses = Collections.emptyList();
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nella restituzione di tutte le spese: "+e.getMessage());
-        }
-        return expenses;
+        fetchAllExpenses();
+        return expensesLiveData.getValue();
     }
-
-    public List<Expense> getSelectedExpenses() {
-        loadingLiveData.setValue(true);
-        List<Expense> expenses;
-        try {
-            expenses = expenseRepository.getSelectedExpenses();
-            selectedExpensesLiveData.postValue(expenseRepository.getSelectedExpenses());
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            expenses = Collections.emptyList();
-            selectedExpensesLiveData.postValue(Collections.emptyList());
-            errorLiveData.postValue
-                    ("Errore nella restituzione delle spese selezionate: "+e.getMessage());
-        }
-        return expenses;
-    }
-
 
     public List<Expense> getFilteredExpenses(String category) {
-        loadingLiveData.setValue(true);
-        List<Expense> expenses = new ArrayList<>();
-        try {
-            expenses = expenseRepository.getFilteredExpenses(category);
-        } catch (Exception e) {
-            expenses = Collections.emptyList();
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nella restituzione delle spese filtrate: "+e.getMessage());
-        }
-        return expenses;
+        filteredExpensesLiveData.setValue(expenseRepository.getFilteredExpenses(category));
+        return filteredExpensesLiveData.getValue();
     }
 
     public void toggleExpenseSelection(Expense expense) {
         boolean isSelected = expense.isExpense_isSelected();
         expense.setExpense_isSelected(!isSelected);
         updateExpenseIsSelected(expense.getId(), !isSelected);
-        List<Expense> selectedExpenses = getSelectedExpenses();
-        selectedExpensesLiveData.postValue(selectedExpenses);
+        selectedExpensesLiveData.setValue(expenseRepository.getSelectedExpenses());
         fetchAllExpenses();
     }
 
     public void deselectAllExpenses() {
-        List<Expense> expenses = getAllExpenses();
+        fetchAllExpenses();
+        List<Expense> expenses = expensesLiveData.getValue();
         if(expenses != null) {
             for (Expense expense : expenses) {
                 expense.setExpense_isSelected(false);
@@ -413,7 +338,6 @@ public class ExpenseViewModel extends ViewModel {
             }
             expensesLiveData.setValue(expenses);
             selectedExpensesLiveData.postValue(Collections.emptyList());
-            expenseRepository.updateAllExpenses(expenses);
         }
     }
 

@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -98,7 +100,7 @@ public class HomepageActivity extends AppCompatActivity {
                         .commit();
             }
         }
-        
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.homeFragment) {
@@ -203,6 +205,7 @@ public class HomepageActivity extends AppCompatActivity {
             if (activeFragment != null && activeFragment.getTag() != null) {
                 intent.putExtra(ACTIVE_FRAGMENT_TAG, activeFragment.getTag());
             }
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             return true;
         }
