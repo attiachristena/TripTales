@@ -116,11 +116,12 @@ public class LoginFragment extends Fragment {
             case INVALID_CREDENTIALS_ERROR:
                 return requireActivity().getString(R.string.error_password_login);
             case INVALID_USER_ERROR:
-                return requireActivity().getString(R.string.error_email_login);
+                return getString(R.string.user_not_logged_in_error);
             default:
-                return requireActivity().getString(R.string.error_unexpected);
+                return getString(R.string.unexpected_error);
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
