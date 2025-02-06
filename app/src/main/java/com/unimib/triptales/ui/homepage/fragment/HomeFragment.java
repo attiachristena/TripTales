@@ -3,7 +3,6 @@ package com.unimib.triptales.ui.homepage.fragment;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,37 +31,31 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.unimib.triptales.R;
-import com.unimib.triptales.adapters.DiaryAdapter;
+import com.unimib.triptales.adapters.DiaryRecyclerAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.database.UserDao;
 import com.unimib.triptales.model.Diary;
-import com.unimib.triptales.model.User;
-import com.unimib.triptales.ui.diary.fragment.CheckpointsFragment;
+import com.unimib.triptales.repository.diary.IDiaryRepository;
+import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
+import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
-import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
-import com.unimib.triptales.util.SharedPreferencesUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.unimib.triptales.util.GeoJSONParser;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 
-public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLongClickListener {
+public class HomeFragment extends Fragment implements DiaryRecyclerAdapter.OnDiaryItemLongClickListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     private RecyclerView recyclerView;
-    private DiaryAdapter diaryAdapter;
+    private DiaryRecyclerAdapter diaryRecyclerAdapter;
     private List<Diary> diaryList = new ArrayList<>();
     private TextView emptyMessage;
     private FloatingActionButton addDiaryButton, deleteDiaryButton, modifyDiaryButton;
@@ -74,8 +66,6 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private EditText inputDayEndDate, inputMonthEndDate, inputYearEndDate;
     private EditText modifyDayStartDate, modifyMonthStartDate, modifyYearStartDate;
     private EditText modifyDayEndDate, modifyMonthEndDate, modifyYearEndDate;
-    private View Country;
-    private View CountryChanges;
 
     private EditText inputDiaryName, modifyDiaryName;
     private ImageView imageViewCover, modifyCoverImage;
@@ -86,33 +76,74 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private final Calendar calendar = Calendar.getInstance();
 
     private ArrayList<Diary> selectedDiaries = new ArrayList<>();
-    private View imageViewSelectedChanges;
-    private String country;
-    private SharedViewModel sharedViewModel;
-    private int id;
-    private String idUser;
     private String budget;
-    AppRoomDatabase database;
-    private DiaryDao diaryDao;
-    private UserDao userDao;
-
+    private com.unimib.triptales.util.ServiceLocator ServiceLocator;
+    private HomeViewModel homeViewModel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getContext());
+        homeViewModel = new ViewModelProvider(requireActivity(),
+                new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
+
 
         initializeViews(view, inflater);
         setupRecyclerView();
         setupButtonListeners();
-        setupDatePicker(inputDayStartDate, inputMonthStartDate, inputYearStartDate);
-        setupDatePicker(inputDayEndDate, inputMonthEndDate, inputYearEndDate);
-        setupDatePicker(modifyDayStartDate, modifyMonthStartDate, modifyYearStartDate);
-        setupDatePicker(modifyDayEndDate, modifyMonthEndDate, modifyYearEndDate);
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        initializeDatabase();
+
+        homeViewModel.getValidationErrorsLiveData().observe(getViewLifecycleOwner(), errors -> {
+            if (errors == null || errors.isEmpty()) return;
+
+            if (errors.containsKey("diaryName")) {
+                inputDiaryName.setError(errors.get("diaryName"));
+            } else {
+                inputDiaryName.setError(null);
+            }
+
+            if (errors.containsKey("startDate")) {
+                inputDayStartDate.setError(errors.get("startDate"));
+            } else {
+                inputDayStartDate.setError(null);
+            }
+
+            if (errors.containsKey("endDate")) {
+                inputDayEndDate.setError(errors.get("endDate"));
+            } else {
+                inputDayEndDate.setError(null);
+            }
+
+            if (errors.containsKey("dateOrder")) {
+                Toast.makeText(getContext(), errors.get("dateOrder"), Toast.LENGTH_LONG).show();
+            }
+
+            if (errors.containsKey("image")) {
+                Toast.makeText(getContext(), errors.get("image"), Toast.LENGTH_LONG).show();
+            }
+
+            if (errors.containsKey("country")) {
+                ((AutoCompleteTextView) overlayAddDiary.findViewById(R.id.VisitedCountry))
+                        .setError(errors.get("country"));
+            }
+        });
+
+        homeViewModel.getDiaryOverlayVisibility().observe(getViewLifecycleOwner(), isVisible -> {
+            if (isVisible != null) {
+                if (isVisible) {
+                    showOverlay(overlayAddDiary);
+                } else {
+                    hideOverlay(overlayAddDiary);
+                }
+            }
+        });
+
+
 
         return view;
     }
+
 
     private void initializeViews(View view, LayoutInflater inflater) {
         initializeOverlays(view, inflater);
@@ -137,8 +168,8 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         recyclerView = view.findViewById(R.id.recycler_view_diaries);
         emptyMessage = view.findViewById(R.id.text_empty_message);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        diaryAdapter = new DiaryAdapter(getContext(), diaryList, this);
-        recyclerView.setAdapter(diaryAdapter);
+        diaryRecyclerAdapter = new DiaryRecyclerAdapter(getContext(), diaryList, this);
+        recyclerView.setAdapter(diaryRecyclerAdapter);
         updateEmptyMessage();
     }
 
@@ -184,65 +215,26 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     }
 
     private void initializeDatabase() {
-        database = AppRoomDatabase.getDatabase(getContext());
-        diaryDao = database.diaryDao();
-        String idUser = getLoggedUserId();
-
-
-
-        // Recupera solo i diari dell'utente corrente
-        diaryList = diaryDao.getAllDiariesByUserId(idUser);
-
-        diaryAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Diari recuperati: " + diaryList.size());
-
-        //load diarys. appdat erecycle view
-    }
-
-    private List<String> extractCountryNamesFromJson(Context context) {
-        List<String> countryNames = new ArrayList<>();
-        try {
-            InputStream inputStream = context.getResources().openRawResource(R.raw.world_countries);
-
-            StringBuilder builder = new StringBuilder();
-            int byteData;
-            while ((byteData = inputStream.read()) != -1) {
-                builder.append((char) byteData);
-            }
-
-            JSONObject jsonObject = new JSONObject(builder.toString());
-            JSONArray features = jsonObject.getJSONArray("features");
-
-            for (int i = 0; i < features.length(); i++) {
-                JSONObject feature = features.getJSONObject(i);
-                JSONObject properties = feature.getJSONObject("properties");
-                String countryName = properties.getString("NAME_IT");
-                countryNames.add(countryName);
-            }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-        return countryNames;
+        homeViewModel.getDiariesLiveData().observe(getViewLifecycleOwner(), diaries -> {
+            diaryList.clear();
+            diaryList.addAll(diaries);
+            diaryRecyclerAdapter.notifyDataSetChanged();
+            updateEmptyMessage();
+        });
     }
 
     private void setupAutoCompleteTextView(View overlayAddDiary, View overlayModifyDiary) {
         AutoCompleteTextView countryAutoComplete = overlayAddDiary.findViewById(R.id.VisitedCountry);
         AutoCompleteTextView countryChangesAutoComplete = overlayModifyDiary.findViewById(R.id.VisitedCountryChanges);
 
-        List<String> countryNames = extractCountryNamesFromJson(requireContext());
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, countryNames);
-
-        countryAutoComplete.setAdapter(adapter);
-        countryChangesAutoComplete.setAdapter(adapter);
+        GeoJSONParser.setupAutoCompleteTextView(requireContext(), countryAutoComplete);
+        GeoJSONParser.setupAutoCompleteTextView(requireContext(), countryChangesAutoComplete);
     }
-
-
-
 
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        diaryAdapter = new DiaryAdapter(getContext(), diaryList, this);
-        recyclerView.setAdapter(diaryAdapter);
+        diaryRecyclerAdapter = new DiaryRecyclerAdapter(getContext(), diaryList, this);
+        recyclerView.setAdapter(diaryRecyclerAdapter);
         updateEmptyMessage();
     }
 
@@ -256,10 +248,10 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             selectedDiaries.remove(selectedDiary);
 
             // Notifica all'adapter che la lista è cambiata
-            diaryAdapter.notifyDataSetChanged();
+            diaryRecyclerAdapter.notifyDataSetChanged();
 
             // Aggiungi questa riga per deselezionare tutti i diari
-            diaryAdapter.clearSelections(); // Deseleziona tutti i diari
+            diaryRecyclerAdapter.clearSelections(); // Deseleziona tutti i diari
 
             // Nascondi l'overlay di modifica e aggiorna i bottoni
             hideOverlay(overlayModifyDiary);
@@ -267,10 +259,45 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
 
 
 
+        buttonSave.setOnClickListener(v -> {
+            homeViewModel.insertDiary(
+                    inputDiaryName.getText().toString(),
+                    inputDayStartDate.getText().toString() + "/" +
+                            inputMonthStartDate.getText().toString() + "/" +
+                            inputYearStartDate.getText().toString(),
+                    inputDayEndDate.getText().toString() + "/" +
+                            inputMonthEndDate.getText().toString() + "/" +
+                            inputYearEndDate.getText().toString(),
+                    selectedImageUri,
+                    budget,
+                    ((AutoCompleteTextView) overlayAddDiary.findViewById(R.id.VisitedCountry)).getText().toString()
+            );
+        });
 
 
-        buttonSave.setOnClickListener(v -> saveDiary());
-        buttonSaveModify.setOnClickListener(v -> modifyDiary());
+        buttonSaveModify.setOnClickListener(v -> {
+            if (selectedDiary != null) {
+                homeViewModel.updateDiary(
+                        selectedDiary,
+                        modifyDiaryName.getText().toString(),
+                        modifyDayStartDate.getText().toString() + "/" +
+                                modifyMonthStartDate.getText().toString() + "/" +
+                                modifyYearStartDate.getText().toString(),
+                        modifyDayEndDate.getText().toString() + "/" +
+                                modifyMonthEndDate.getText().toString() + "/" +
+                                modifyYearEndDate.getText().toString(),
+                        selectedImageUri,
+                        ((AutoCompleteTextView) overlayModifyDiary.findViewById(R.id.VisitedCountryChanges)).getText().toString()
+                );
+
+                selectedDiaries.remove(selectedDiary);
+                diaryRecyclerAdapter.clearSelections();
+                diaryRecyclerAdapter.notifyDataSetChanged();
+                selectedDiary = null;
+                hideOverlay(overlayModifyDiary);
+            }
+        });
+
 
         buttonChooseImage.setOnClickListener(v -> openImagePicker());
         buttonChooseImageChanges.setOnClickListener(v -> openImagePicker());
@@ -282,10 +309,10 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             selectedDiaries.remove(selectedDiary);
 
             // Notifica all'adapter che la lista è cambiata
-            diaryAdapter.notifyDataSetChanged();
+            diaryRecyclerAdapter.notifyDataSetChanged();
 
             // Aggiungi questa riga per deselezionare tutti i diari
-            diaryAdapter.clearSelections(); //
+            diaryRecyclerAdapter.clearSelections(); //
             deleteDiaryButton.setVisibility(View.GONE);
             modifyDiaryButton.setVisibility(View.GONE);
         });
@@ -301,6 +328,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         });
     }
 
+
     private void showOverlay(View overlay) {
         overlay.setVisibility(View.VISIBLE);
         addDiaryButton.setVisibility(View.GONE);
@@ -311,9 +339,14 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private void hideOverlay(View overlay) {
         overlay.setVisibility(View.GONE);
         addDiaryButton.setVisibility(View.VISIBLE);
-        resetDiaryFields();
+
+        if (overlay == overlayAddDiary) {
+            resetDiaryFields(); // Only reset fields when closing the Add Diary overlay
+        }
+
         selectedDiary = null;
     }
+
 
     private void setupDatePicker(EditText dayField, EditText monthField, EditText yearField) {
         View.OnClickListener listener = v -> {
@@ -360,106 +393,38 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         }
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 1 && resultCode == getActivity().RESULT_OK && data != null) {
             Uri selectedUri = data.getData();
-            Uri newUri = saveImageToInternalStorage(selectedUri); // Copia l'immagine
+            Uri newUri = saveImageToInternalStorage(selectedUri); // Copy the image for app use
+
             if (newUri != null) {
-                selectedImageUri = newUri.toString(); // Aggiorna l'URI usato dalla tua app
-                imageViewCover.setImageURI(newUri);
-                imageViewCover.setVisibility(View.VISIBLE);
+                selectedImageUri = newUri.toString(); // Store the new URI
+
+                // Check which overlay is open and update the correct ImageView
+                if (overlayAddDiary.getVisibility() == View.VISIBLE) {
+                    imageViewCover.setImageURI(newUri);
+                    imageViewCover.setVisibility(View.VISIBLE);
+                } else if (overlayModifyDiary.getVisibility() == View.VISIBLE) {
+                    modifyCoverImage.setImageURI(newUri);
+                    modifyCoverImage.setVisibility(View.VISIBLE);
+                }
             }
-
         }
     }
-
-
-    public String getLoggedUserId() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null) {
-            return null;
-        }
-        Log.d(TAG, "Logged user ID: " + firebaseUser.getUid());
-        return firebaseUser.getUid();
-    }
-
-    private void saveDiary() {
-        String diaryName = inputDiaryName.getText().toString();
-        String startDate = inputDayStartDate.getText().toString() + "/" + inputMonthStartDate.getText().toString() + "/" + inputYearStartDate.getText().toString();
-        String endDate = inputDayEndDate.getText().toString() + "/" + inputMonthEndDate.getText().toString() + "/" + inputYearEndDate.getText().toString();
-        String country = ((AutoCompleteTextView) overlayAddDiary.findViewById(R.id.VisitedCountry)).getText().toString();
-
-        if (diaryName.isEmpty() || selectedImageUri == null || startDate.isEmpty() || endDate.isEmpty() || country.isEmpty()) {
-            Toast.makeText(getContext(), "Compila tutti i campi e scegli un'immagine!", Toast.LENGTH_SHORT).show();
-            saveImageToInternalStorage(Uri.parse(selectedImageUri));
-
-        }
-
-
-        // Ottieni l'ID dell'utente corrente (ad esempio, da un sistema di autenticazione)
-        String currentUserId = getLoggedUserId(); // Implementa questo metodo per ottenere l'ID dell'utente
-
-        Diary newDiary = new Diary(id, currentUserId, diaryName, startDate, endDate, selectedImageUri, budget, country);
-        long diaryId = diaryDao.insert(newDiary); // Inserisci il diario nel database
-        newDiary.setId((int) diaryId); // Imposta l'ID generato dal database
-        Log.d(TAG,"Diary saved with ID: " + diaryId);
-
-        diaryList.add(newDiary);
-        diaryAdapter.notifyDataSetChanged();
-        hideOverlay(overlayAddDiary);
-        updateEmptyMessage();
-        Toast.makeText(getContext(), "Diario salvato con successo!", Toast.LENGTH_SHORT).show();
-    }
-
-
-    private void modifyDiary() {
-        if (selectedDiary == null) return;
-
-        String diaryName = modifyDiaryName.getText().toString();
-        String startDate = modifyDayStartDate.getText().toString() + "/" + modifyMonthStartDate.getText().toString() + "/" + modifyYearStartDate.getText().toString();
-        String endDate = modifyDayEndDate.getText().toString() + "/" + modifyMonthEndDate.getText().toString() + "/" + modifyYearEndDate.getText().toString();
-        String country = ((AutoCompleteTextView) overlayModifyDiary.findViewById(R.id.VisitedCountryChanges)).getText().toString();
-
-        if (diaryName.isEmpty() || startDate.isEmpty() || endDate.isEmpty() || country.isEmpty()) {
-            Toast.makeText(getContext(), "Compila tutti i campi!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        selectedDiary.setName(diaryName);
-        selectedDiary.setStartDate(startDate);
-        selectedDiary.setEndDate(endDate);
-        selectedDiary.setCountry(country);
-
-        if (selectedImageUri != null) {
-            selectedDiary.setCoverImageUri(selectedImageUri);
-        }
-
-        // Aggiorna il diario nel database
-        diaryDao.update(selectedDiary);
-
-        // Notifica all'adapter che la lista è cambiata
-        diaryAdapter.notifyDataSetChanged();
-
-        // Nascondi l'overlay di modifica
-        hideOverlay(overlayModifyDiary);
-
-        Toast.makeText(getContext(), "Diario modificato con successo!", Toast.LENGTH_SHORT).show();
-    }
-
 
 
     private void deleteSelectedDiaries() {
         for (Diary diary : selectedDiaries) {
-            diaryDao.delete(diary); // Elimina il diario dal database
+            homeViewModel.deleteDiaries(selectedDiaries);
         }
-        diaryList.removeAll(selectedDiaries); // Rimuovi i diari dalla lista
-        diaryAdapter.notifyDataSetChanged(); // Notifica l'adapter
+        selectedDiaries.clear();
         Toast.makeText(getContext(), "Diari eliminati con successo!", Toast.LENGTH_SHORT).show();
-        selectedDiaries.clear(); // Pulisci la lista dei diari selezionati
     }
+
 
     private void populateModifyOverlay(Diary diary) {
         modifyDiaryName.setText(diary.getName());
@@ -502,6 +467,11 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         inputYearEndDate.setText("");
         imageViewCover.setImageURI(null);
         imageViewCover.setVisibility(View.GONE);
+        // Clear country field
+        AutoCompleteTextView countryAutoComplete = overlayAddDiary.findViewById(R.id.VisitedCountry);
+        if (countryAutoComplete != null) {
+            countryAutoComplete.setText(""); // Reset country input
+        }
 
         modifyDiaryName.setText("");
         modifyDayStartDate.setText("");
@@ -523,24 +493,20 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         }
     }
 
-
     public void onDiaryItemLongClicked(Diary diary) {
-
         if (selectedDiaries.contains(diary)) {
-            selectedDiaries.remove(diary);
+            selectedDiaries.remove(diary); // 🔹 Deselect if already selected
         } else {
-            selectedDiaries.add(diary);
+            selectedDiaries.add(diary); // 🔹 Select if not selected
         }
 
-        // Controlla il numero di diari selezionati
-        if (selectedDiaries.size() > 1) {
-            modifyDiaryButton.setVisibility(View.GONE); // Nascondi il bottone "Modifica"
-        } else {
-            modifyDiaryButton.setVisibility(View.VISIBLE); // Mostra il bottone "Modifica"
-        }
-
-        // Rende visibili o nasconde gli altri bottoni (elimina, ecc.)
+        // 🔹 Show delete button if at least one diary is selected
         deleteDiaryButton.setVisibility(selectedDiaries.isEmpty() ? View.GONE : View.VISIBLE);
+
+        // 🔹 Show modify button ONLY if exactly one diary is selected
+        modifyDiaryButton.setVisibility(selectedDiaries.size() == 1 ? View.VISIBLE : View.GONE);
     }
+
+
 
 }

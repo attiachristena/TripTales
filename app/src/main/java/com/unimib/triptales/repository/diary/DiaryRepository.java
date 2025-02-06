@@ -6,111 +6,178 @@ import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
 import java.util.List;
 
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
+import com.unimib.triptales.source.diary.BaseDiaryRemoteDataSource;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack {
 
-    private final BaseDiaryLocalDataSource localDataSource;
-    private final Executor executor;
+    private final BaseDiaryLocalDataSource diaryLocalDataSource;
+    private final BaseDiaryRemoteDataSource diaryRemoteDataSource;
+    private final MutableLiveData<List<Diary>> diariesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Diary>> selectedDiariesLiveData = new MutableLiveData<>();
 
-    // Costruttore per inizializzare il data source e l'esecutore
-    public DiaryRepository(BaseDiaryLocalDataSource localDataSource) {
-        this.localDataSource = localDataSource;
-        this.executor = Executors.newSingleThreadExecutor();
+    public DiaryRepository(BaseDiaryLocalDataSource diaryLocalDataSource, BaseDiaryRemoteDataSource diaryRemoteDataSource) {
+        this.diaryLocalDataSource = diaryLocalDataSource;
+        this.diaryRemoteDataSource = diaryRemoteDataSource;
+        this.diaryLocalDataSource.setDiaryCallback(this);
+        this.diaryRemoteDataSource.setDiaryCallback(this);
     }
 
+    // Inserisce un nuovo diario
     @Override
-    public void onSuccessFromLocal(List<Diary> diaries) {
-        // Metodo chiamato in caso di successo (può essere lasciato vuoto o usato per logging)
-        System.out.println("Successo: Recuperati " + diaries.size() + " diari dal database locale.");
+    public void insertDiary(Diary diary) {
+        diaryLocalDataSource.insertDiary(diary);
+        diaryRemoteDataSource.insertDiary(diary);
     }
 
+    // Aggiorna un diario intero
     @Override
-    public void onFailureFromLocal(Exception exception) {
-        // Metodo chiamato in caso di errore (può essere lasciato vuoto o usato per logging)
-        System.err.println("Errore dal database locale: " + exception.getMessage());
+    public void updateDiary(Diary diary) {
+        diaryLocalDataSource.updateDiary(diary);
+        diaryRemoteDataSource.updateDiary(diary);
+        List<Diary> updatedDiaries = diaryLocalDataSource.getAllDiariesByUserId(diary.getUserId());
+        diariesLiveData.postValue(updatedDiaries);
     }
 
-    @Override
-    public long insertDiary(Diary diary) {
-        executor.execute(() -> {
-            try {
-                localDataSource.insertDiary(diary);
-            } catch (Exception e) {
-                onFailureFromLocal(e);
-            }
-        });
-        return localDataSource.insertDiary(diary);
-    }
-
+    // Aggiorna solo il nome del diario
     @Override
     public void updateDiaryName(int diaryId, String newName) {
-        executor.execute(() -> {
-            try {
-                localDataSource.updateDiaryName(diaryId, newName);
-            } catch (Exception e) {
-                onFailureFromLocal(e);
-            }
-        });
+        diaryLocalDataSource.updateDiaryName(diaryId, newName);
+        diaryRemoteDataSource.updateDiaryName(diaryId, newName);
     }
 
+    // Aggiorna lo stato di selezione del diario
     @Override
     public void updateDiaryIsSelected(int diaryId, boolean isSelected) {
-        executor.execute(() -> {
-            try {
-                localDataSource.updateDiaryIsSelected(diaryId, isSelected);
-            } catch (Exception e) {
-                onFailureFromLocal(e);
-            }
-        });
+        diaryLocalDataSource.updateDiaryIsSelected(diaryId, isSelected);
+        diaryRemoteDataSource.updateDiaryIsSelected(diaryId, isSelected);
     }
 
+    // Aggiorna la data di partenza
+    @Override
+    public void updateDiaryStartDate(int diaryId, String newStartDate) {
+        diaryLocalDataSource.updateDiaryStartDate(diaryId, newStartDate);
+        diaryRemoteDataSource.updateDiaryStartDate(diaryId, newStartDate);
+    }
+
+    // Aggiorna la data di ritorno
+    @Override
+    public void updateDiaryEndDate(int diaryId, String newEndDate) {
+        diaryLocalDataSource.updateDiaryEndDate(diaryId, newEndDate);
+        diaryRemoteDataSource.updateDiaryEndDate(diaryId, newEndDate);
+    }
+
+    // Aggiorna l'immagine di copertina
+    @Override
+    public void updateDiaryCoverImage(int diaryId, String newCoverImage) {
+        diaryLocalDataSource.updateDiaryCoverImage(diaryId, newCoverImage);
+        diaryRemoteDataSource.updateDiaryCoverImage(diaryId, newCoverImage);
+    }
+
+    // Aggiorna il budget
+    @Override
+    public void updateDiaryBudget(int diaryId, String newBudget) {
+        diaryLocalDataSource.updateDiaryBudget(diaryId, newBudget);
+        diaryRemoteDataSource.updateDiaryBudget(diaryId, newBudget);
+    }
+
+    // Aggiorna il paese
+    @Override
+    public void updateDiaryCountry(int diaryId, String newCountry) {
+        diaryLocalDataSource.updateDiaryCountry(diaryId, newCountry);
+        diaryRemoteDataSource.updateDiaryCountry(diaryId, newCountry);
+    }
+
+    // Elimina un diario
     @Override
     public void deleteDiary(Diary diary) {
-        executor.execute(() -> {
-            try {
-                localDataSource.deleteDiary(diary);
-            } catch (Exception e) {
-                onFailureFromLocal(e);
-            }
-        });
+        diaryLocalDataSource.deleteDiary(diary);
+        diaryRemoteDataSource.deleteDiary(diary);
     }
 
+    // Elimina più diari
     @Override
     public void deleteAllDiaries(List<Diary> diaries) {
-        executor.execute(() -> {
-            try {
-                localDataSource.deleteAllDiaries(diaries);
-            } catch (Exception e) {
-                onFailureFromLocal(e);
-            }
-        });
+        diaryLocalDataSource.deleteAllDiaries(diaries);
+        diaryRemoteDataSource.deleteAllDiaries(diaries);
     }
 
+    // Ottiene tutti i diari
     @Override
-    public void getAllDiaries(DiaryResponseCallBack callBack) {
-        executor.execute(() -> {
-            try {
-                List<Diary> diaries = localDataSource.getAllDiaries();
-                callBack.onSuccessFromLocal(diaries);
-            } catch (Exception e) {
-                callBack.onFailureFromLocal(e);
-            }
-        });
+    public List<Diary> getAllDiaries() {
+        diaryLocalDataSource.getAllDiaries();
+        diaryRemoteDataSource.getAllDiaries();
+        return diariesLiveData.getValue();
     }
 
+    // Ottiene i diari selezionati
     @Override
-    public void getSelectedDiaries(DiaryResponseCallBack callBack) {
-        executor.execute(() -> {
-            try {
-                List<Diary> diaries = localDataSource.getSelectedDiaries();
-                callBack.onSuccessFromLocal(diaries);
-            } catch (Exception e) {
-                callBack.onFailureFromLocal(e);
-            }
-        });
+    public LiveData<List<Diary>> getSelectedDiaries() {
+        diaryLocalDataSource.getSelectedDiaries();
+        diaryRemoteDataSource.getSelectedDiaries();
+        return selectedDiariesLiveData;
+    }
+
+    // Ottiene tutti i diari di un utente
+    @Override
+    public List<Diary> getAllDiariesByUserId(String userId) {
+        return diaryLocalDataSource.getAllDiariesByUserId(userId);
+    }
+
+    // Ottiene tutti i paesi visitati da un utente
+    @Override
+    public List<String> getAllCountriesByUserId(String userId) {
+        return diaryLocalDataSource.getAllCountriesByUserId(userId);
+    }
+
+    // Callback: Successo da database locale
+    @Override
+    public void onSuccessFromLocal(List<Diary> diaries) {
+        diariesLiveData.postValue(diaries);
+    }
+
+    // Callback: Successo da database remoto
+    @Override
+    public void onSuccessFromRemote(List<Diary> diaries) {
+        diariesLiveData.postValue(diaries);
+    }
+
+    // Callback: Fallimento da database remoto
+    @Override
+    public void onFailureFromRemote(Exception exception) {
+        // Log dell'errore o notifica all'utente
+    }
+
+    // Callback: Successo selezione da database remoto
+    @Override
+    public void onSuccessSelectionFromRemote(List<Diary> diaries) {
+        selectedDiariesLiveData.postValue(diaries);
+    }
+
+    // Callback: Fallimento da database locale
+    @Override
+    public void onFailureFromLocal(Exception exception) {
+        // Log dell'errore o notifica all'utente
+    }
+
+    // Callback: Successo generico da database locale
+    @Override
+    public void onSuccessFromLocal() {
+        // Azioni opzionali dopo un'operazione di successo
+    }
+
+    // Callback: Successo selezione da database locale
+    @Override
+    public void onSuccessSelectionFromLocal(List<Diary> diaries) {
+        selectedDiariesLiveData.postValue(diaries);
+    }
+
+    // Callback: Successo generico da database remoto
+    @Override
+    public void onSuccessFromRemote() {
+        // Azioni opzionali dopo un'operazione di successo
     }
 }

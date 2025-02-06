@@ -96,7 +96,7 @@ public class Diary {
 
     // Getter e setter per i campi
     public int getId() {
-        return id;
+        return (id);
     }
 
     public void setId(int id) {

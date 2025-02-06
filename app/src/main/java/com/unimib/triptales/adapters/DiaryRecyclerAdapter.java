@@ -23,14 +23,14 @@
 
     import java.util.ArrayList;
 
-    public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder> {
+    public class DiaryRecyclerAdapter extends RecyclerView.Adapter<DiaryRecyclerAdapter.DiaryViewHolder> {
 
         private Context context;
         private List<Diary> diaries;
         private OnDiaryItemLongClickListener listener;
 
         // Constructor
-        public DiaryAdapter(Context context, List<Diary> diaries, OnDiaryItemLongClickListener listener) {
+        public DiaryRecyclerAdapter(Context context, List<Diary> diaries, OnDiaryItemLongClickListener listener) {
             this.context = context;
             this.diaries = diaries;
             this.listener = listener;
@@ -47,20 +47,21 @@
         public void onBindViewHolder(@NonNull DiaryViewHolder holder, int position) {
             Diary diary = diaries.get(position);
 
-            // Mostra lo stato selezionato usando il colore del bordo e del background
+            // Imposta il colore del bordo e dello sfondo in base allo stato di selezione
             if (diary.isSelected()) {
                 holder.cardView.setStrokeColor(context.getResources().getColor(R.color.brown));
                 holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.orange));
             } else {
                 holder.cardView.setStrokeColor(context.getResources().getColor(R.color.transparent));
-                holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.white)); // Colore di default
+                holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.white));
             }
 
             // Click prolungato per selezionare/deselezionare la carta
             holder.itemView.setOnLongClickListener(v -> {
-                diary.setSelected(!diary.isSelected());
-                notifyItemChanged(position); // Aggiorna visivamente la carta
-                listener.onDiaryItemLongClicked(diary); // Notifica il listener
+                boolean newSelectionState = !diary.isSelected();
+                diary.setSelected(newSelectionState);
+                notifyDataSetChanged(); // ⚡ Aggiorna tutta la lista per evitare problemi di selezione visiva
+                listener.onDiaryItemLongClicked(diary);
                 return true;
             });
 
@@ -74,9 +75,10 @@
             holder.textViewDates.setText(startMonthAndYear);
 
             // Imposta l'immagine di copertina (se disponibile) o l'immagine di fallback
-            holder.imageViewDiary.setImageResource(R.drawable.default_cover);
             if (diary.getCoverImageUri() != null) {
                 holder.imageViewDiary.setImageURI(Uri.parse(diary.getCoverImageUri()));
+            } else {
+                holder.imageViewDiary.setImageResource(R.drawable.default_cover);
             }
 
             // Calcola la durata del viaggio e la mostra come numero di giorni
@@ -97,6 +99,7 @@
                 context.startActivity(intent);
             });
         }
+
 
         @Override
         public int getItemCount() {
