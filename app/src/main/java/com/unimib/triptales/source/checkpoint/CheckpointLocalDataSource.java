@@ -42,10 +42,6 @@ public class CheckpointLocalDataSource implements BaseCheckpointLocalDataSource 
         checkpointDao.updateCheckpointLongitude(checkpointId, newLongitude);
     }
 
-    public void updateCheckpointIsSelected(int checkpointId, boolean newIsSelected) {
-        checkpointDao.updateCheckpointIsSelected(checkpointId, newIsSelected);
-    }
-
 
     public void updateAllCheckpoints(List<Checkpoint> checkpoints) {
         checkpointDao.updateAllCheckpoints(checkpoints);
@@ -65,22 +61,9 @@ public class CheckpointLocalDataSource implements BaseCheckpointLocalDataSource 
         return checkpointDao.getAllCheckpoints();
     }
 
-    @Override
-    public List<Checkpoint> getSelectedCheckpoints() {
-        return Collections.emptyList();
-    }
 
     public Checkpoint getCheckpointById(int id) {
         return checkpointDao.getCheckpointById(id);
-    }
-
-
-    public List<Checkpoint> getSelectedCheckpoint() {
-        return checkpointDao.getSelectedCheckpoint();
-    }
-
-    public void updateIsSelected(int id, boolean isSelected) {
-        checkpointDao.updateIsSelected(id, isSelected);
     }
 
     public void deleteCheckpointById(List<Integer> ids) {
@@ -91,10 +74,8 @@ public class CheckpointLocalDataSource implements BaseCheckpointLocalDataSource 
         return checkpointDao.searchCheckpointsByName(query);
     }
 
-
-
-
-
-
+    public List<Checkpoint> getCheckpointsByDiaryId(int diaryId) {
+        return checkpointDao.getCheckpointsByDiaryId(diaryId);
+    }
 
 }

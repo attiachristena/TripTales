@@ -9,11 +9,11 @@ import java.util.List;
 public class CheckpointRepository implements ICheckpointRepository{
 
     private final BaseCheckpointLocalDataSource checkpointLocalDataSource;
-    private final BaseCheckpointRemoteDataSource checkpointRemoteDataSource;
+    // private final BaseCheckpointRemoteDataSource checkpointRemoteDataSource;
 
-    public CheckpointRepository(BaseCheckpointLocalDataSource checkpointLocalDataSource, BaseCheckpointRemoteDataSource checkpointRemoteDataSource) {
+    public CheckpointRepository(BaseCheckpointLocalDataSource checkpointLocalDataSource) {
         this.checkpointLocalDataSource = checkpointLocalDataSource;
-        this.checkpointRemoteDataSource = checkpointRemoteDataSource;
+        //this.checkpointRemoteDataSource = checkpointRemoteDataSource;
     }
 
     public long insertCheckpoint(Checkpoint checkpoint) {
@@ -48,9 +48,6 @@ public class CheckpointRepository implements ICheckpointRepository{
         checkpointLocalDataSource.updateCheckpointLongitude(checkpointId, newLongitude);
     }
 
-    public void updateCheckpointIsSelected(int checkpointId, boolean newIsSelected) {
-        checkpointLocalDataSource.updateCheckpointIsSelected(checkpointId, newIsSelected);
-    }
 
     public void deleteCheckpoint(Checkpoint checkpoint) {
         checkpointLocalDataSource.deleteCheckpoint(checkpoint);
@@ -64,12 +61,12 @@ public class CheckpointRepository implements ICheckpointRepository{
         return checkpointLocalDataSource.getAllCheckpoints();
     }
 
-    public List<Checkpoint> getSelectedCheckpoints() {
-        return checkpointLocalDataSource.getSelectedCheckpoints();
-    }
-
     public List<Checkpoint> searchCheckpointsByName(String query) {
         return checkpointLocalDataSource.searchCheckpointsByName(query);
+    }
+
+    public List<Checkpoint> getCheckpointsByDiaryId(int diaryId) {
+        return checkpointLocalDataSource.getCheckpointsByDiaryId(diaryId);
     }
 
 

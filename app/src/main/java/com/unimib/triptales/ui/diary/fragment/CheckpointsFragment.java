@@ -48,6 +48,7 @@ import com.unimib.triptales.ui.diary.CheckpointDiaryActivity;
 import com.unimib.triptales.ui.diary.viewmodel.CheckpointViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,6 +56,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class CheckpointsFragment extends Fragment implements OnMapReadyCallback {
 
@@ -146,6 +148,8 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
         // Carica le tappe salvate
         checkpointViewModel.getCheckpoints().observe(getViewLifecycleOwner(), this::loadSavedCheckpoints);
+        checkpointViewModel.loadCheckpoints(getContext());
+
 
         // Inizializza le viste
         checkpointsMap = rootView.findViewById(R.id.mappaTappe);
@@ -342,22 +346,29 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                             Snackbar.LENGTH_SHORT).show();
                 }
 
-                if (!checkpointViewModel.isPosizioneGiàSalvata(latLng)){
-                    if (imageUri != null) {
-                        checkpointViewModel.insertCheckpoint(checkpointNameSave, checkpointDateSave, imageUri, latLng);
-                        checkpointsLayout.removeView(add_checkpoint);
+                if (!checkpointViewModel.isPosizioneGiàSalvata(latLng)) {
 
-                        // Resetta i parametri
-                        checkpointName.setText("");
-                        checkpointDate.setText("");
-                        selectedImageUriMappa = null;
-                        previewImage.setImageURI(null);
-                        textPreviewImage.setVisibility(View.VISIBLE);
-                        searchView.setVisibility(View.VISIBLE);
-                        checkpointsMap.setVisibility(View.VISIBLE);
+                    String diaryIdStr = SharedPreferencesUtils.getDiaryId(getContext());
+                    if (diaryIdStr != null) {
+                        int diaryId = Integer.parseInt(diaryIdStr);
 
-                        Snackbar.make(getContext(), checkpointsLayout, "La tappa è stata aggiunta con successo",
-                                Snackbar.LENGTH_SHORT).show();
+                        if (imageUri != null) {
+                            checkpointViewModel.insertCheckpoint(checkpointNameSave, checkpointDateSave, imageUri, latLng, getContext());
+                            checkpointsLayout.removeView(add_checkpoint);
+
+                            // Resetta i parametri
+                            checkpointName.setText("");
+                            checkpointDate.setText("");
+                            selectedImageUriMappa = null;
+                            previewImage.setImageURI(null);
+                            textPreviewImage.setVisibility(View.VISIBLE);
+                            searchView.setVisibility(View.VISIBLE);
+                            checkpointsMap.setVisibility(View.VISIBLE);
+
+                            Snackbar.make(getContext(), checkpointsLayout, "La tappa è stata aggiunta con successo",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+
                     } else {
                         Snackbar.make(getContext(), checkpointsLayout, "Errore nel salvataggio dell'immagine",
                                 Snackbar.LENGTH_SHORT).show();
@@ -515,8 +526,8 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                     imageUri = Uri.parse(currentCheckpoint.getImmagineUri());
                 }
 
-                checkpointViewModel.updateCheckpoint(selectedCheckpoints.get(0).getId(), editName,
-                        editDate, imageUri);
+               checkpointViewModel.updateCheckpoint(selectedCheckpoints.get(0).getId(), editName,
+                      editDate, imageUri, getContext());
 
                 checkpointViewModel.clearSelectedCheckpoints();
 
@@ -539,7 +550,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
             List<Checkpoint> selectedCheckpoints = checkpointViewModel.getSelectedCheckpoints().getValue();
 
             if (selectedCheckpoints != null && !selectedCheckpoints.isEmpty()) {
-                checkpointViewModel.deleteSelectedCheckpoints(selectedCheckpoints);
+               checkpointViewModel.deleteSelectedCheckpoints(selectedCheckpoints, getContext());
 
                 // Rimuove le card dal container
                 for (MaterialCardView card : tappeSelezionate) {
@@ -608,13 +619,24 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     }
 
 
-    // Metodo per caricare le tappe salvate
     private void loadSavedCheckpoints(List<Checkpoint> checkpoints) {
         if (googleMap != null) {
-            checkpointContainer.removeAllViews(); // Per non duplicare le tappe già presenti
+            checkpointContainer.removeAllViews();
             googleMap.clear();
 
-            for (Checkpoint checkpoint : checkpoints) {
+            // Get current diary ID from SharedPreferences
+            String currentDiaryIdStr = SharedPreferencesUtils.getDiaryId(getContext());
+            if (currentDiaryIdStr == null) {
+                return;
+            }
+            int currentDiaryId = Integer.parseInt(currentDiaryIdStr);
+
+            // Filter checkpoints for the current diary
+            List<Checkpoint> currentDiaryCheckpoints = checkpoints.stream()
+                    .filter(checkpoint -> checkpoint.getDiaryId() == currentDiaryId)
+                    .collect(Collectors.toList());
+
+            for (Checkpoint checkpoint : currentDiaryCheckpoints) {
                 LatLng location = new LatLng(checkpoint.getLatitude(), checkpoint.getLongitude());
                 addCheckpointToMap(checkpoint.getNome(), location);
                 addCheckpointToList(checkpoint.getNome(), checkpoint.getData(), checkpoint.getImmagineUri(), checkpoint);
@@ -623,9 +645,11 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         .title(checkpoint.getNome()));
             }
 
-            if (!checkpoints.isEmpty()) {
-                LatLng lastPosition = new LatLng(checkpoints.get(checkpoints.size() - 1).getLatitude(),
-                        checkpoints.get(checkpoints.size() - 1).getLongitude());
+            if (!currentDiaryCheckpoints.isEmpty()) {
+                LatLng lastPosition = new LatLng(
+                        currentDiaryCheckpoints.get(currentDiaryCheckpoints.size() - 1).getLatitude(),
+                        currentDiaryCheckpoints.get(currentDiaryCheckpoints.size() - 1).getLongitude()
+                );
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastPosition, 15));
             }
         }

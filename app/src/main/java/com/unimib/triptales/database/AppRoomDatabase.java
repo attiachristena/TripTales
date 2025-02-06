@@ -10,7 +10,9 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 
+import com.unimib.triptales.model.CardItem;
 import com.unimib.triptales.model.Checkpoint;
+import com.unimib.triptales.model.CheckpointDiary;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
@@ -22,7 +24,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {User.class, Diary.class, Checkpoint.class, Goal.class, Task.class, Expense.class}, version = DATABASE_VERSION)
+@Database(entities = {User.class, Diary.class, Checkpoint.class, Goal.class, Task.class, Expense.class,
+CheckpointDiary.class, CardItem.class}, version = DATABASE_VERSION)
 @TypeConverters({UriConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract UserDao userDao();
@@ -31,6 +34,8 @@ public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract GoalDao goalDao();
     public abstract TaskDao taskDao();
     public abstract ExpenseDao expenseDao();
+    public abstract CheckpointDiaryDao checkpointDiaryDao();
+    public abstract CardItemDao cardItemDao();
 
     public static volatile AppRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors();

@@ -85,8 +85,12 @@ public class ServiceLocator {
     public ICheckpointRepository getCheckpointRepository(Context context){
         BaseCheckpointLocalDataSource checkpointLocalDataSource =
                 new CheckpointLocalDataSource(AppRoomDatabase.getDatabase(context).checkpointDao());
+        /*
         BaseCheckpointRemoteDataSource checkpointRemoteDataSource =
-                new CheckpointRemoteDataSource();
-        return new CheckpointRepository(checkpointLocalDataSource, checkpointRemoteDataSource);
+                new CheckpointRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
+                        SharedPreferencesUtils.getDiaryId(context));
+
+         */
+        return new CheckpointRepository(checkpointLocalDataSource);
     }
 }

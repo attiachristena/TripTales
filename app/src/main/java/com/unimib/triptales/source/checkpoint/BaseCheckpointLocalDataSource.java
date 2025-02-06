@@ -14,12 +14,11 @@ public interface BaseCheckpointLocalDataSource {
     void updateCheckpointImageUri(int checkpointId, String newImageUri);
     void updateCheckpointLatitude(int checkpointId, double newLatitude);
     void updateCheckpointLongitude(int checkpointId, double newLongitude);
-    void updateCheckpointIsSelected(int checkpointId, boolean newIsSelected);
     void deleteCheckpoint(Checkpoint checkpoint);
     void deleteAllCheckpoints(List<Checkpoint> checkpoints);
     List<Checkpoint> getAllCheckpoints();
-    List<Checkpoint> getSelectedCheckpoints();
     List<Checkpoint> searchCheckpointsByName(String query);
+    List<Checkpoint> getCheckpointsByDiaryId(int diaryId);
 
     public interface Callback<T> {
         void onResult(T result);

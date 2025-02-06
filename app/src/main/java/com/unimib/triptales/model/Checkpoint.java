@@ -2,15 +2,29 @@
 package com.unimib.triptales.model;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 
 import java.util.Objects;
 
-@Entity
+@Entity(
+        tableName = "Checkpoint",
+        foreignKeys = @ForeignKey(
+                entity = Diary.class,
+                parentColumns = "id",
+                childColumns = "diary_id",
+                onDelete = ForeignKey.CASCADE
+        ),
+        indices = {@Index(value = "diary_id")}
+)
 public class Checkpoint {
     @PrimaryKey(autoGenerate = true)
     public int id;
+
+    @ColumnInfo(name = "diary_id")
+    public int diaryId;
 
     @ColumnInfo(name = "nome")
     public String nome;
@@ -27,10 +41,8 @@ public class Checkpoint {
     @ColumnInfo(name = "longitude")
     public double longitude;
 
-    @ColumnInfo(name = "tappa_isSelected")
-    public boolean tappa_isSelected;
-
-    public Checkpoint(String nome, String data, String immagineUri, double latitude, double longitude) {
+    public Checkpoint(int diaryId, String nome, String data, String immagineUri, double latitude, double longitude) {
+        this.diaryId = diaryId;
         this.nome = nome;
         this.data = data;
         this.immagineUri = immagineUri;
@@ -44,6 +56,14 @@ public class Checkpoint {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getDiaryId() {
+        return diaryId;
+    }
+
+    public void setDiaryId(int diaryId) {
+        this.diaryId = diaryId;
     }
 
     public String getNome() {
@@ -84,14 +104,6 @@ public class Checkpoint {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
-    }
-
-    public boolean isTappa_isSelected() {
-        return tappa_isSelected;
-    }
-
-    public void setTappa_isSelected(boolean tappa_isSelected) {
-        this.tappa_isSelected = tappa_isSelected;
     }
 
     @Override

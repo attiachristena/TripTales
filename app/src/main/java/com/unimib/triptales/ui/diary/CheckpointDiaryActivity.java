@@ -70,18 +70,15 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
         overlayView.setVisibility(View.GONE); // Nasconde inizialmente l'overlay
         rootLayout.addView(overlayView);
 
-        // Inizializza il RecyclerView
         carouselRecyclerView = findViewById(R.id.carouselRecyclerViewCheckpointDiary);
         carouselRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Inizializza l'adapter
         adapter = new CardItemAdapter(cardItems);
         carouselRecyclerView.setAdapter(adapter);
 
-        // Aggiungi un'immagine di esempio (puoi rimuovere questa riga dopo il test)
-        cardItems.add(new CardItem("Immagine 1", "26 gennaio", "Sottotitolo", "@drawable/ic_launcher_background" ));
-        cardItems.add(new CardItem("Immagine 2", "26 gennaio", "Sottotitolo", "@drawable/ic_launcher_background" ));
-        adapter.notifyDataSetChanged();
+        //cardItems.add(new CardItem("Immagine 1", "26 gennaio", "Sottotitolo", "@drawable/ic_launcher_background" ));
+        //cardItems.add(new CardItem("Immagine 2", "26 gennaio", "Sottotitolo", "@drawable/ic_launcher_background" ));
+        //adapter.notifyDataSetChanged();
 
 
         addCheckpointDiaryImage = findViewById(R.id.addCheckpointDiaryImage);
@@ -172,7 +169,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             Uri selectedImageUri = data.getData();
 
             // Aggiungi l'immagine alla lista
-            cardItems.add(new CardItem(imageTitle.getText().toString(), dateImage.getText().toString(), imageDescrpition.getText().toString(), selectedImageUri.toString()));
+            //cardItems.add(new CardItem(imageTitle.getText().toString(), dateImage.getText().toString(), imageDescrpition.getText().toString(), selectedImageUri.toString()));
             adapter.notifyDataSetChanged();
         }
     }

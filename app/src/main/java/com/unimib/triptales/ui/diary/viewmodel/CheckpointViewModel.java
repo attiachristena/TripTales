@@ -20,6 +20,7 @@ import com.unimib.triptales.repository.checkpoint.CheckpointRepository;
 import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
 import com.unimib.triptales.source.checkpoint.BaseCheckpointLocalDataSource;
 import com.unimib.triptales.source.checkpoint.BaseCheckpointRemoteDataSource;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +50,6 @@ public class CheckpointViewModel extends ViewModel {
 
     public CheckpointViewModel(ICheckpointRepository checkpointRepository) {
         this.checkpointRepository = checkpointRepository;
-        loadCheckpoints();
     }
 
     public LiveData<List<Checkpoint>> getCheckpoints() {
@@ -95,8 +95,6 @@ public class CheckpointViewModel extends ViewModel {
     }
 
 
-
-
     public void clearSelectedCheckpoints() {
         selectedCheckpoints.setValue(new ArrayList<>());
     }
@@ -106,26 +104,46 @@ public class CheckpointViewModel extends ViewModel {
         return operationStatus;
     }
 
-    public void loadCheckpoints() {
-        executorService.execute(() -> {
-            List<Checkpoint> checkpoints = checkpointRepository.getAllCheckpoints();
-            List<Checkpoint> selectedCheckpoints = checkpointRepository.getSelectedCheckpoints();
 
-            checkpointsLiveData.postValue(checkpoints);
-            selectedCheckpointsLiveData.postValue(selectedCheckpoints);
+    public void loadCheckpoints(Context context) {
+        executorService.execute(() -> {
+            String diaryIdStr = SharedPreferencesUtils.getDiaryId(context);
+            if (diaryIdStr == null) {
+                checkpointsLiveData.postValue(new ArrayList<>());
+                return;
+            }
+
+            int diaryId = Integer.parseInt(diaryIdStr);
+            List<Checkpoint> checkpoints = checkpointRepository.getCheckpointsByDiaryId(diaryId);
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                checkpointsLiveData.setValue(checkpoints);
+            });
         });
     }
 
-    public void insertCheckpoint(String nome, String data, Uri imageUri, LatLng latLng) {
+
+    public void insertCheckpoint(String nome, String data, Uri imageUri, LatLng latLng, Context context) {
         if (isPosizioneGiàSalvata(latLng)) {
             // Posizione già salvata, quindi non procedere
             return;
         }
 
-        Checkpoint nuovaCheckpoint = new Checkpoint(nome, data, imageUri.toString(), latLng.latitude, latLng.longitude);
+        // Recupera l'ID del diario dai SharedPreferences
+        String diaryIdStr = SharedPreferencesUtils.getDiaryId(context);
+        if (diaryIdStr == null) {
+            operationStatus.postValue(false);
+            return;
+        }
+
+        int diaryId = Integer.parseInt(diaryIdStr);
+
+        // Creazione del nuovo checkpoint con l'ID del diario
+        Checkpoint nuovaCheckpoint = new Checkpoint(diaryId, nome, data, imageUri.toString(), latLng.latitude, latLng.longitude);
+
         try {
             long insertedId = checkpointRepository.insertCheckpoint(nuovaCheckpoint);
-            loadCheckpoints();
+            loadCheckpoints(context);
             operationStatus.postValue(insertedId > 0);
         } catch (Exception e) {
             operationStatus.postValue(false);
@@ -147,7 +165,8 @@ public class CheckpointViewModel extends ViewModel {
     }
 
 
-    public void updateCheckpoint(int checkpointId, String newName, String newDate, Uri newImageUri) {
+
+    public void updateCheckpoint(int checkpointId, String newName, String newDate, Uri newImageUri, Context context) {
         executorService.execute(() -> {
             try {
                 if (newName != null) {
@@ -159,7 +178,7 @@ public class CheckpointViewModel extends ViewModel {
                 if (newImageUri != null) {
                     checkpointRepository.updateCheckpointImageUri(checkpointId, newImageUri.toString());
                 }
-                loadCheckpoints();
+                loadCheckpoints(context);
                 operationStatus.postValue(true);
             } catch (Exception e) {
                 operationStatus.postValue(false);
@@ -167,25 +186,28 @@ public class CheckpointViewModel extends ViewModel {
         });
     }
 
-    /* public void deleteCheckpoints(List<Checkpoint> checkpoints) {
+
+
+     public void deleteCheckpoints(List<Checkpoint> checkpoints, Context context) {
         executorService.execute(() -> {
             try {
                 checkpointRepository.deleteAllCheckpoints(checkpoints);
-                loadCheckpoints();
+                loadCheckpoints(context);
                 operationStatus.postValue(true);
             } catch (Exception e) {
                 operationStatus.postValue(false);
             }
         });
-    } */
+    }
 
-    public void deleteSelectedCheckpoints(List<Checkpoint> selectedCheckpoints) {
+
+    public void deleteSelectedCheckpoints(List<Checkpoint> selectedCheckpoints, Context context) {
         executorService.execute(() -> {
             try {
                 for (Checkpoint checkpoint : selectedCheckpoints) {
                     checkpointRepository.deleteCheckpoint(checkpoint);  // Passa ogni checkpoint singolarmente
                 }
-                loadCheckpoints();  // Ricarica i checkpoint dopo la cancellazione
+                loadCheckpoints(context);  // Ricarica i checkpoint dopo la cancellazione
                 operationStatus.postValue(true);
             } catch (Exception e) {
                 operationStatus.postValue(false);
@@ -193,7 +215,7 @@ public class CheckpointViewModel extends ViewModel {
         });
     }
 
-
+    /*
     public void setCheckpointSelection(int checkpointId, boolean isSelected) {
         executorService.execute(() -> {
             try {
@@ -205,6 +227,7 @@ public class CheckpointViewModel extends ViewModel {
             }
         });
     }
+     */
 
     @Override
     protected void onCleared() {

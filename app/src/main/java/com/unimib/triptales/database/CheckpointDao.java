@@ -38,8 +38,6 @@ public interface CheckpointDao {
     @Query("UPDATE Checkpoint SET longitude = :newLongitude WHERE id = :checkpointId")
     void updateCheckpointLongitude(int checkpointId, double newLongitude);
 
-    @Query("UPDATE Checkpoint SET tappa_isSelected = :newIsSelected WHERE id = :checkpointId")
-    void updateCheckpointIsSelected(int checkpointId, boolean newIsSelected);
 
     @Query("SELECT * FROM Checkpoint ORDER BY data DESC")
     List<Checkpoint> getAllCheckpoints();
@@ -56,15 +54,13 @@ public interface CheckpointDao {
     @Query("DELETE FROM Checkpoint")
     void deleteAllCheckpoints();
 
-    @Query("SELECT * FROM Checkpoint WHERE tappa_isSelected = 1")
-    List<Checkpoint> getSelectedCheckpoint();
-
-    @Query("UPDATE Checkpoint SET tappa_isSelected = :isSelected WHERE id = :id")
-    void updateIsSelected(int id, boolean isSelected);
-
     @Query("SELECT nome FROM Checkpoint WHERE id = :id")
     String getName(int id);
 
     @Query("SELECT * FROM Checkpoint WHERE nome LIKE '%' || :searchTerm || '%'")
     List<Checkpoint> searchCheckpointsByName(String searchTerm);
+
+    @Query("SELECT * FROM Checkpoint WHERE diary_id = :diaryId")
+    List<Checkpoint> getCheckpointsByDiaryId(int diaryId);
+
 }
