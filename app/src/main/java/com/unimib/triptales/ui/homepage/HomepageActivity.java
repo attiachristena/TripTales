@@ -117,26 +117,14 @@ public class HomepageActivity extends AppCompatActivity {
 
     private void switchFragment(Fragment fragment, String tag){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(fragment instanceof MapFragment){
-            Fragment existingMapFragment = getSupportFragmentManager().findFragmentByTag(tag);
-            if(existingMapFragment != null){
-                transaction.remove(existingMapFragment);
-            }
-            mapFragment = new MapFragment();
-            transaction.hide(activeFragment).add(R.id.fragment_container, mapFragment, tag);
-            activeFragment = mapFragment;
-            transaction.commit();
+        if(!fragment.isAdded()){
+            transaction.hide(activeFragment)
+                    .add(R.id.fragment_container, fragment, tag);
         }else{
-            //per non creare nuova la mappa basta togliere l'if sopra e lasciare solo contenuto else!
-            if(!fragment.isAdded()){
-                transaction.hide(activeFragment)
-                        .add(R.id.fragment_container, fragment, tag);
-            }else{
-                transaction.hide(activeFragment).show(fragment);
-            }
-            activeFragment = fragment;
-            transaction.commit();
+            transaction.hide(activeFragment).show(fragment);
         }
+        activeFragment = fragment;
+        transaction.commit();
     }
 
     private void updateBottomNavigation(){

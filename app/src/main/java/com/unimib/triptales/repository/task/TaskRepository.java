@@ -20,7 +20,8 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     private final BaseTaskRemoteDataSource taskRemoteDataSource;
     private final MutableLiveData<List<Task>> tasksLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Task>> selectedTasksLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> deleteRemoteLiveData = new MutableLiveData<>(false);
+    private boolean remoteDelete = false;
+    private boolean localDelete = false;
 
     public TaskRepository(BaseTaskLocalDataSource taskLocalDataSource, BaseTaskRemoteDataSource taskRemoteDataSource) {
         this.taskLocalDataSource = taskLocalDataSource;
@@ -86,24 +87,30 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
 
     @Override
     public void onSuccessDeleteFromRemote() {
-        deleteRemoteLiveData.setValue(true);
+        remoteDelete = true;
     }
 
     @Override
     public void onSuccessFromRemote(List<Task> tasks) {
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            if(Boolean.TRUE.equals(deleteRemoteLiveData.getValue())) {
+            if(remoteDelete || !localDelete){
                 for (Task task : tasks) {
                     taskLocalDataSource.insertTask(task);
                 }
                 taskLocalDataSource.getAllTasks();
-                deleteRemoteLiveData.postValue(false);
+                remoteDelete = false;
+                localDelete = false;
             }
         });
     }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
+
+    @Override
+    public void onSuccessDeleteFromLocal() {
+        localDelete = true;
+    }
 
     @Override
     public void onSuccessFromLocal(List<Task> tasks) {

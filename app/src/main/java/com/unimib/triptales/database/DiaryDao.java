@@ -33,6 +33,12 @@ public interface DiaryDao {
     @Query("UPDATE Diary SET isSelected = :newIsSelected WHERE id = :diaryId")
     void updateIsSelected(int diaryId, boolean newIsSelected);
 
+    @Query("UPDATE Diary SET diary_budget = :newBudget WHERE id = :diaryId")
+    void updateBudget(int diaryId, String newBudget);
+
+    @Query("SELECT diary_budget FROM Diary WHERE id = :diaryId")
+    String getBudget(int diaryId);
+
     @Query("SELECT * FROM Diary")
     List<Diary> getAllDiaries();
 
@@ -48,8 +54,5 @@ public interface DiaryDao {
     @Transaction
     @Query("SELECT * FROM Diary WHERE id = :diaryId")
     LiveData<CompleteDiary> getCompleteDiary(int diaryId);
-
-    @Query("UPDATE Diary SET diary_budget = :newBudget WHERE id = :diaryId")
-    void updateBudget(int diaryId, String newBudget);
 
 }

@@ -23,6 +23,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -73,12 +74,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
 
         mMap = googleMap;
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_gray_style));
         updateMap();
 
-        /*// Controlla i permessi di localizzazione
+        // Controlla i permessi di localizzazione
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Richiedi i permessi
@@ -88,9 +90,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         // Permessi concessi: abilita la posizione dell'utente
-        enableUserLocation();*/
+        enableUserLocation();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mMap != null) {
+            updateMap();
+        }
+    }
 
     private void enableUserLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -103,8 +112,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (location != null) {
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(userLocation).title("You are here"));
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(userLocation).zoom(15).build();
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    //CameraPosition cameraPosition = new CameraPosition.Builder().target(userLocation).zoom(15).build();
+                    //mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 } else {
                     Toast.makeText(getContext(), "Unable to get location", Toast.LENGTH_SHORT).show();
                 }
@@ -165,9 +174,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (List<LatLng> polygon : countryBorders) {
             PolygonOptions polygonOptions = new PolygonOptions()
                     .addAll(polygon)
-                    .strokeColor(getResources().getColor(R.color.secondary))
-                    .fillColor(Color.parseColor("#70F6EEE5"))
-                    .strokeWidth(4);
+                    .strokeColor(getResources().getColor(R.color.black))
+                    .fillColor(getResources().getColor(R.color.primary))
+                    .strokeWidth(1);
             Polygon newPolygon = mMap.addPolygon(polygonOptions);
             coloredPolygons.add(newPolygon);
         }

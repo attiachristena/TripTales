@@ -64,6 +64,7 @@ public class TaskLocalDataSource extends BaseTaskLocalDataSource{
     public void deleteTask(Task task) {
         try{
             taskDao.delete(task);
+            taskCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             taskCallback.onFailureFromLocal(e);
         }
@@ -73,6 +74,7 @@ public class TaskLocalDataSource extends BaseTaskLocalDataSource{
     public void deleteAllTasks(List<Task> tasks) {
         try{
             taskDao.deleteAll(tasks);
+            taskCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             taskCallback.onFailureFromLocal(e);
         }

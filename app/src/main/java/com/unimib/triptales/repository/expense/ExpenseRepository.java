@@ -22,7 +22,8 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     private final MutableLiveData<List<Expense>> expensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> deleteRemoteLiveData = new MutableLiveData<>(false);
+    private boolean remoteDelete = false;
+    private boolean localDelete = false;
 
     public ExpenseRepository(BaseExpenseLocalDataSource expenseLocalDataSource, BaseExpenseRemoteDataSource expenseRemoteDataSource) {
         this.expenseLocalDataSource = expenseLocalDataSource;
@@ -94,24 +95,30 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
 
     @Override
     public void onSuccessDeleteFromRemote() {
-        deleteRemoteLiveData.setValue(true);
+        remoteDelete = true;
     }
 
     @Override
     public void onSuccessFromRemote(List<Expense> expenses) {
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            if(Boolean.TRUE.equals(deleteRemoteLiveData.getValue())) {
+            if(remoteDelete || !localDelete){
                 for (Expense expense : expenses) {
                     expenseLocalDataSource.insertExpense(expense);
                 }
                 expenseLocalDataSource.getAllExpenses();
-                deleteRemoteLiveData.postValue(false);
+                remoteDelete = false;
+                localDelete = false;
             }
         });
     }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
+
+    @Override
+    public void onSuccessDeleteFromLocal() {
+        localDelete = true;
+    }
 
     @Override
     public void onSuccessFromLocal(List<Expense> expenses) {

@@ -96,6 +96,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void deleteExpense(Expense expense) {
         try{
             expenseDao.delete(expense);
+            expenseCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -105,6 +106,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void deleteAllExpenses(List<Expense> expenses) {
         try{
             expenseDao.deleteAll(expenses);
+            expenseCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }

@@ -9,6 +9,7 @@ public interface TaskResponseCallback {
     void onSuccessFromRemote(List<Task> tasks);
     void onFailureFromRemote(Exception exception);
 
+    void onSuccessDeleteFromLocal();
     void onSuccessFromLocal(List<Task> tasks);
     void onSuccessSelectionFromLocal(List<Task> tasks);
     void onFailureFromLocal(Exception exception);

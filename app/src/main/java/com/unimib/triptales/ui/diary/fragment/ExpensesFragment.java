@@ -46,6 +46,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.ExpensesRecyclerAdapter;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.ui.diary.DiaryActivity;
@@ -53,6 +55,7 @@ import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.Constants;
 import com.unimib.triptales.util.ServiceLocator;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.List;
 
@@ -94,6 +97,8 @@ public class ExpensesFragment extends Fragment {
     private String inputFilterCategory;
     private boolean bEdit;
     private boolean bAdd;
+
+    private DiaryDao diaryDao;
     // serve per il budget non cancellare!
     private TextInputLayout currencyTextInputLayout;
 
@@ -121,6 +126,8 @@ public class ExpensesFragment extends Fragment {
             expenseViewModel.toggleExpenseSelection(expense);
         });
 
+        diaryDao = AppRoomDatabase.getDatabase(getContext()).diaryDao();
+
         return rootView;
     }
 
@@ -131,8 +138,36 @@ public class ExpensesFragment extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
         expenseRootLayout = view.findViewById(R.id.rootLayoutSpese);
         noExpensesTextView = view.findViewById(R.id.noSpeseString);
+        //
+        budgetTextView = view.findViewById(R.id.totBudget);
+        progressTextView = view.findViewById(R.id.progressText);
+        progressIndicator = view.findViewById(R.id.budgetProgressIndicator);
+        //
         bEdit = false;
         bAdd = false;
+
+        //Da modificare quando viene implementato diaryViewModel
+        String diaryBudget = diaryDao.getBudget(Integer.parseInt(SharedPreferencesUtils.getDiaryId(getContext())));
+        if(diaryBudget != null) {
+            if (diaryBudget.charAt(diaryBudget.length() - 1) == CURRENCY_EUR.charAt(0)) {
+                budget = Integer.parseInt(diaryBudget.substring(0, diaryBudget.length() - 1));
+                inputCurrency = CURRENCY_EUR;
+            } else {
+                budget = Integer.parseInt(diaryBudget.substring(1));
+                char tmp = diaryBudget.charAt(0);
+                if(tmp == CURRENCY_GBP.charAt(0)){
+                    inputCurrency = CURRENCY_GBP;
+                } else if(tmp == CURRENCY_JPY.charAt(0)){
+                    inputCurrency = CURRENCY_JPY;
+                } else if(tmp == CURRENCY_USD.charAt(0)) {
+                    inputCurrency = CURRENCY_USD;
+                }
+            }
+            budgetTextView.setText(diaryBudget);
+            amountSpent = expenseViewModel.countAmount(expenseViewModel.getAllExpenses(), inputCurrency);
+            updateProgressIndicator(amountSpent, budget, 0);
+        }
+        //
 
         expenseViewModel.getExpensesLiveData().observe(getViewLifecycleOwner(), expenses -> {
             if(expenses != null) {
@@ -141,13 +176,13 @@ public class ExpensesFragment extends Fragment {
                 if (expenses.isEmpty()) {
                     noExpensesTextView.setVisibility(View.VISIBLE);
                     // da aggiungere quando viene salvato il budget
-                    /*currencyTextInputLayout.setEnabled(true);*/
+                    currencyTextInputLayout.setEnabled(true);
                 } else {
                     noExpensesTextView.setVisibility(View.GONE);
                     // da aggiungere quando viene salvato il budget
-                /*currencyTextInputLayout.setEnabled(false);
-                currencyTextInputLayout.setBoxBackgroundColor
-                        (ContextCompat.getColor(requireContext(), R.color.background_overlays));*/
+                    currencyTextInputLayout.setEnabled(false);
+                    currencyTextInputLayout.setBoxBackgroundColor
+                        (ContextCompat.getColor(requireContext(), R.color.background_overlays));
                 }
             }
         });
@@ -176,11 +211,11 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        progressTextView = view.findViewById(R.id.progressText);
+        //progressTextView = view.findViewById(R.id.progressText);
         numberEditText = view.findViewById(R.id.inputBudget);
         currencyAutoCompleteTextView = view.findViewById(R.id.inputCurrency);
-        budgetTextView = view.findViewById(R.id.totBudget);
-        progressIndicator = view.findViewById(R.id.budgetProgressIndicator);
+        //budgetTextView = view.findViewById(R.id.totBudget);
+        //progressIndicator = view.findViewById(R.id.budgetProgressIndicator);
         totExpenseTextView = view.findViewById(R.id.totSpesa);
 
         ArrayAdapter<String> budgetAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, CURRENCIES);
@@ -194,7 +229,9 @@ public class ExpensesFragment extends Fragment {
                 boolean correct = expenseViewModel.validateInputBudget(inputBudget, inputCurrency);
                 if (correct) {
                     budget = Integer.parseInt(inputBudget);
-                    budgetTextView.setText(expenseViewModel.generateTextAmount(inputBudget, inputCurrency));
+                    String completeBudget = expenseViewModel.generateTextAmount(inputBudget, inputCurrency);
+                    diaryDao.updateBudget(Integer.parseInt(SharedPreferencesUtils.getDiaryId(getContext())), completeBudget);
+                    budgetTextView.setText(completeBudget);
                     // aggiungere un MutableLiveData<int> budgetLiveData a DiaryViewModel e
                     // poi gestire .observe aggiornando il progress indicator
                     // si può mettere nell'.observe anche tutto questo codice (in teoria)

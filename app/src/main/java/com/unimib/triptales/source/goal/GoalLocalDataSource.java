@@ -82,6 +82,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void deleteGoal(Goal goal) {
         try{
             goalDao.delete(goal);
+            goalCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -91,6 +92,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void deleteAllGoals(List<Goal> goals) {
         try{
             goalDao.deleteAll(goals);
+            goalCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
