@@ -26,28 +26,8 @@ public class Checkpoint {
     @ColumnInfo(name = "diary_id")
     public int diaryId;
 
-    @ColumnInfo(name = "nome")
-    public String nome;
-
-    @ColumnInfo(name = "data")
-    public String data;
-
-    @ColumnInfo(name = "immagine_uri")
-    public String immagineUri; // Percorso dell'immagine come stringa
-
-    @ColumnInfo(name = "latitude")
-    public double latitude;
-
-    @ColumnInfo(name = "longitude")
-    public double longitude;
-
-    public Checkpoint(int diaryId, String nome, String data, String immagineUri, double latitude, double longitude) {
+    public Checkpoint(int diaryId) {
         this.diaryId = diaryId;
-        this.nome = nome;
-        this.data = data;
-        this.immagineUri = immagineUri;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
     // Getters e Setters
     public int getId() {
@@ -64,46 +44,6 @@ public class Checkpoint {
 
     public void setDiaryId(int diaryId) {
         this.diaryId = diaryId;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    public String getImmagineUri() {
-        return immagineUri;
-    }
-
-    public void setImmagineUri(String immagineUri) {
-        this.immagineUri = immagineUri;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     @Override

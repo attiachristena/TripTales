@@ -12,16 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.unimib.triptales.R;
-import com.unimib.triptales.model.CardItem;
+import com.unimib.triptales.model.ImageCardItem;
 
 import java.util.List;
 
-public class CardItemAdapter extends RecyclerView.Adapter<CardItemAdapter.CardItemViewHolder> {
-    private List<CardItem> cardItems;
+public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdapter.CardItemViewHolder> {
+    private List<ImageCardItem> imageCardItems;
 
     // Costruttore
-    public CardItemAdapter(List<CardItem> cardItems) {
-        this.cardItems = cardItems;
+    public ImageCardItemAdapter(List<ImageCardItem> imageCardItems) {
+        this.imageCardItems = imageCardItems;
     }
 
     // ViewHolder definito come classe interna
@@ -50,17 +50,22 @@ public class CardItemAdapter extends RecyclerView.Adapter<CardItemAdapter.CardIt
 
     @Override
     public void onBindViewHolder(@NonNull CardItemViewHolder holder, int position) {
-        CardItem cardItem = cardItems.get(position);
-        holder.title.setText(cardItem.getTitle());
-        holder.description.setText(cardItem.getDescription());
-        holder.date.setText(cardItem.getDate());
+        ImageCardItem imageCardItem = imageCardItems.get(position);
+        holder.title.setText(imageCardItem.getTitle());
+        holder.description.setText(imageCardItem.getDescription());
+        holder.date.setText(imageCardItem.getDate());
         Glide.with(holder.itemView.getContext())
-                .load(Uri.parse(cardItem.getImageUri()))
+                .load(Uri.parse(imageCardItem.getImageUri()))
                 .into(holder.postImage);
     }
 
     @Override
     public int getItemCount() {
-        return cardItems.size();
+        return imageCardItems.size();
+    }
+
+    public void setImageCardItems(List<ImageCardItem> imageCardItems) {
+        this.imageCardItems = imageCardItems;
+        notifyDataSetChanged();
     }
 }

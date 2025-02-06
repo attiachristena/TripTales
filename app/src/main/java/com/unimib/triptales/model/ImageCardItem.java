@@ -5,7 +5,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 @Entity(
-        tableName = "CardItem",
+        tableName = "ImageCardItem",
         foreignKeys = @ForeignKey(
                 entity = CheckpointDiary.class,
                 parentColumns = "id",
@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey;
                 onDelete = ForeignKey.CASCADE
         )
 )
-public class CardItem {
+public class ImageCardItem {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -23,7 +23,7 @@ public class CardItem {
     private String date;
     private String imageUri;
 
-    public CardItem(String title, String date, String description, String imageUri, int checkpointDiaryId) {
+    public ImageCardItem(String title, String date, String description, String imageUri, int checkpointDiaryId) {
         this.title = title;
         this.date = date;
         this.description = description;

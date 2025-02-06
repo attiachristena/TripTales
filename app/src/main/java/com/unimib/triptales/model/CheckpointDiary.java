@@ -11,20 +11,40 @@ import androidx.room.PrimaryKey;
         foreignKeys = @ForeignKey(
                 entity = Checkpoint.class,
                 parentColumns = "id",
-                childColumns = "checkpoint_id",
+                childColumns = "diary_id",
                 onDelete = ForeignKey.CASCADE
         ),
-        indices = {@Index(value = "checkpoint_id")}
+        indices = {@Index(value = "diary_id")}
 )
 public class CheckpointDiary {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @ColumnInfo(name = "checkpoint_id")
-    private int checkpointId; // Riferimento al Checkpoint
+    @ColumnInfo(name = "diary_id")
+    private int diaryId; // Riferimento al Diary
 
-    public CheckpointDiary(int checkpointId) {
-        this.checkpointId = checkpointId;
+    @ColumnInfo(name = "nome")
+    public String nome;
+
+    @ColumnInfo(name = "data")
+    public String data;
+
+    @ColumnInfo(name = "immagine_uri")
+    public String immagineUri;
+
+    @ColumnInfo(name = "latitude")
+    public double latitude;
+
+    @ColumnInfo(name = "longitude")
+    public double longitude;
+
+    public CheckpointDiary(int diaryId, String nome, String data, String immagineUri, double latitude, double longitude) {
+        this.diaryId = diaryId;
+        this.nome = nome;
+        this.data = data;
+        this.immagineUri = immagineUri;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     // Getter e Setter
@@ -36,12 +56,56 @@ public class CheckpointDiary {
         this.id = id;
     }
 
-    public int getCheckpointId() {
-        return checkpointId;
+    public int getDiaryId() {
+        return diaryId;
     }
 
-    public void setCheckpointId(int checkpointId) {
-        this.checkpointId = checkpointId;
+//    public int getCheckpointId() {
+//        return diaryId;
+//    }
+
+    public void setCheckpointId(int diaryId) {
+        this.diaryId = diaryId;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getImmagineUri() {
+        return immagineUri;
+    }
+
+    public void setImmagineUri(String immagineUri) {
+        this.immagineUri = immagineUri;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
 }

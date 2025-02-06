@@ -5,10 +5,14 @@ import android.content.Context;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.repository.checkpoint.CheckpointRepository;
 import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
+import com.unimib.triptales.repository.checkpointDiary.CheckpointDiaryRepository;
+import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
 import com.unimib.triptales.repository.expense.ExpenseRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.repository.goal.GoalRepository;
 import com.unimib.triptales.repository.goal.IGoalRepository;
+import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
+import com.unimib.triptales.repository.imageCardItem.ImageCardItemRepository;
 import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.repository.task.TaskRepository;
 import com.unimib.triptales.repository.user.IUserRepository;
@@ -17,6 +21,8 @@ import com.unimib.triptales.source.checkpoint.BaseCheckpointLocalDataSource;
 import com.unimib.triptales.source.checkpoint.BaseCheckpointRemoteDataSource;
 import com.unimib.triptales.source.checkpoint.CheckpointLocalDataSource;
 import com.unimib.triptales.source.checkpoint.CheckpointRemoteDataSource;
+import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryLocalDataSource;
+import com.unimib.triptales.source.checkpointDiary.CheckpointDiaryLocalDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseRemoteDataSource;
 import com.unimib.triptales.source.expense.ExpenseLocalDataSource;
@@ -25,6 +31,8 @@ import com.unimib.triptales.source.goal.BaseGoalLocalDataSource;
 import com.unimib.triptales.source.goal.BaseGoalRemoteDataSource;
 import com.unimib.triptales.source.goal.GoalLocalDataSource;
 import com.unimib.triptales.source.goal.GoalRemoteDataSource;
+import com.unimib.triptales.source.imageCardItem.BaseImageCardItemLocalDataSource;
+import com.unimib.triptales.source.imageCardItem.ImageCardItemLocalDataSource;
 import com.unimib.triptales.source.task.BaseTaskLocalDataSource;
 import com.unimib.triptales.source.task.BaseTaskRemoteDataSource;
 import com.unimib.triptales.source.task.TaskLocalDataSource;
@@ -82,15 +90,22 @@ public class ServiceLocator {
         return new TaskRepository(taskLocalDataSource, taskRemoteDataSource);
     }
 
-    public ICheckpointRepository getCheckpointRepository(Context context){
-        BaseCheckpointLocalDataSource checkpointLocalDataSource =
-                new CheckpointLocalDataSource(AppRoomDatabase.getDatabase(context).checkpointDao());
+    public ICheckpointDiaryRepository getCheckpointDiaryRepository(Context context){
+        BaseCheckpointDiaryLocalDataSource checkpointDiaryLocalDataSource =
+                new CheckpointDiaryLocalDataSource(AppRoomDatabase.getDatabase(context).checkpointDiaryDao());
         /*
         BaseCheckpointRemoteDataSource checkpointRemoteDataSource =
                 new CheckpointRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
                         SharedPreferencesUtils.getDiaryId(context));
 
          */
-        return new CheckpointRepository(checkpointLocalDataSource);
+        return new CheckpointDiaryRepository(checkpointDiaryLocalDataSource);
     }
+
+    public IImageCardItemRepository getImageCardItemRepository(Context context){
+        BaseImageCardItemLocalDataSource imageCardItemLocalDataSource =
+                new ImageCardItemLocalDataSource(AppRoomDatabase.getDatabase(context).imageCardItemDao());
+        return new ImageCardItemRepository(imageCardItemLocalDataSource);
+    }
+
 }

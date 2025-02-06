@@ -16,6 +16,12 @@
         <item name="cornerFamily">rounded</item>
     </style>
 
+    <style name="bottomRoundedImage" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">24dp</item>
+        <item name="cornerSizeBottomRight">24dp</item>
+    </style>
+
     <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
         <item name="android:maxWidth">10000dp</item>
         <item name="queryBackground">@null</item>
