@@ -40,6 +40,8 @@ import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import org.w3c.dom.Text;
 
+import java.util.Objects;
+
 public class DiaryActivity extends AppCompatActivity {
 
     TabLayout tabLayout;
@@ -102,15 +104,14 @@ public class DiaryActivity extends AppCompatActivity {
             View customView = LayoutInflater.from(this).inflate(R.layout.tab_custom, null);
             TextView tabText = customView.findViewById(R.id.tabText);
 
-            if (position == 0) tabText.setText("Tappe");
-            else if (position == 1) tabText.setText("Spese");
-            else if (position == 2) tabText.setText("Obiettivi");
-            else tabText.setText("Attività");
+            if (position == 0) tabText.setText(R.string.tabTappe);
+            else if (position == 1) tabText.setText(R.string.tabSpese);
+            else if (position == 2) tabText.setText(R.string.tabObiettivi);
+            else tabText.setText(R.string.tabCheckList);
 
             tab.setCustomView(customView);
         }).attach();
 
-        // TabLayout listener for ViewPager2 synchronization
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -118,22 +119,17 @@ public class DiaryActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // No need to implement
-            }
+            public void onTabUnselected(TabLayout.Tab tab) {}
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // No need to implement
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-        // Sync ViewPager2 with TabLayout
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
+                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
             }
         });
 
@@ -150,58 +146,5 @@ public class DiaryActivity extends AppCompatActivity {
 
     public void setViewPagerSwipeEnabled(boolean enabled) {
         viewPager2.setUserInputEnabled(enabled);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_app_bar, menu);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_home) {
-            SharedPreferencesUtils.clearDiaryId(getApplicationContext());
-            Intent intent = new Intent(DiaryActivity.this, HomepageActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intent);
-            finish();
-            return true;
-        }
-
-        View buttonAccount = toolbar.findViewById(R.id.action_account);
-
-        if (id == R.id.action_account) {
-            PopupMenu popupMenu = new PopupMenu(DiaryActivity.this, buttonAccount);
-            popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
-
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.action_logout) {
-                        Intent intent = new Intent(DiaryActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-            popupMenu.show();
-        }
-
-        if (id == android.R.id.home) {
-            Intent intent = new Intent(DiaryActivity.this, SettingsActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

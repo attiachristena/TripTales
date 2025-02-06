@@ -1,6 +1,7 @@
 package com.unimib.triptales.repository.expense;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,6 +22,7 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     private final MutableLiveData<List<Expense>> expensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> deleteRemoteLiveData = new MutableLiveData<>(false);
 
     public ExpenseRepository(BaseExpenseLocalDataSource expenseLocalDataSource, BaseExpenseRemoteDataSource expenseRemoteDataSource) {
         this.expenseLocalDataSource = expenseLocalDataSource;
@@ -91,23 +93,25 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     }
 
     @Override
-    public void onSuccessFromRemote() {}
+    public void onSuccessDeleteFromRemote() {
+        deleteRemoteLiveData.setValue(true);
+    }
 
     @Override
     public void onSuccessFromRemote(List<Expense> expenses) {
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            for(Expense expense : expenses){
-                expenseLocalDataSource.insertExpense(expense);
+            if(Boolean.TRUE.equals(deleteRemoteLiveData.getValue())) {
+                for (Expense expense : expenses) {
+                    expenseLocalDataSource.insertExpense(expense);
+                }
+                expenseLocalDataSource.getAllExpenses();
+                deleteRemoteLiveData.postValue(false);
             }
-            expenseLocalDataSource.getAllExpenses();
         });
     }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
-
-    @Override
-    public void onSuccessFromLocal() {}
 
     @Override
     public void onSuccessFromLocal(List<Expense> expenses) {

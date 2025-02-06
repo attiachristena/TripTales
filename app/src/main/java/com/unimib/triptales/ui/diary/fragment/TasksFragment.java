@@ -114,11 +114,13 @@ public class TasksFragment extends Fragment {
         taskViewModel.getTasksLiveData().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
-                tasksRecyclerAdapter.setTasksList(tasks);
-                if(tasks.isEmpty()){
-                    noTasksTextView.setVisibility(View.VISIBLE);
-                } else {
-                    noTasksTextView.setVisibility(View.GONE);
+                if(tasks != null) {
+                    tasksRecyclerAdapter.setTasksList(tasks);
+                    if (tasks.isEmpty()) {
+                        noTasksTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        noTasksTextView.setVisibility(View.GONE);
+                    }
                 }
             }
         });

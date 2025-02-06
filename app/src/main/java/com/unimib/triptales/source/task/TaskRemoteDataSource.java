@@ -2,12 +2,13 @@ package com.unimib.triptales.source.task;
 
 import static com.unimib.triptales.util.Constants.UNEXPECTED_ERROR;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.model.Task;
 
 import java.util.ArrayList;
@@ -33,7 +34,6 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
     public void insertTask(Task task) {
         if (task != null) {
             databaseReference.child(task.getId()).setValue(task)
-                    .addOnSuccessListener(aVoid -> taskCallback.onSuccessFromRemote())
                     .addOnFailureListener(e -> taskCallback.onFailureFromRemote(e));
         } else {
             taskCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -45,7 +45,6 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
         if(tasks != null) {
             for(Task t : tasks) {
                 databaseReference.child(t.getId()).setValue(t)
-                        .addOnSuccessListener(aVoid -> taskCallback.onSuccessFromRemote())
                         .addOnFailureListener(e -> taskCallback.onFailureFromRemote(e));
             }
         } else {
@@ -60,7 +59,6 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
             updates.put("name", newName);
 
             databaseReference.child(taskId).updateChildren(updates)
-                    .addOnSuccessListener(aVoid -> taskCallback.onSuccessFromRemote())
                     .addOnFailureListener(e -> taskCallback.onFailureFromRemote(e));
         } else {
             taskCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -73,7 +71,6 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
         updates.put("task_isSelected", newIsSelected);
 
         databaseReference.child(taskId).updateChildren(updates)
-                .addOnSuccessListener(aVoid -> taskCallback.onSuccessFromRemote())
                 .addOnFailureListener(e -> taskCallback.onFailureFromRemote(e));
     }
 
@@ -83,7 +80,6 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
         updates.put("task_isChecked", newIsChecked);
 
         databaseReference.child(taskId).updateChildren(updates)
-                .addOnSuccessListener(aVoid -> taskCallback.onSuccessFromRemote())
                 .addOnFailureListener(e -> taskCallback.onFailureFromRemote(e));
     }
 
@@ -91,7 +87,7 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
     public void deleteTask(Task task) {
         if(task != null){
             databaseReference.child(task.getId()).removeValue()
-                    .addOnSuccessListener(aVoid -> taskCallback.onSuccessFromRemote())
+                    .addOnSuccessListener(aVoid -> taskCallback.onSuccessDeleteFromRemote())
                     .addOnFailureListener(e -> taskCallback.onFailureFromRemote(e));
         } else {
             taskCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -111,7 +107,7 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
     public void getAllTasks() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Task> taskList = new ArrayList<>();
                 for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
                     Task task = taskSnapshot.getValue(Task.class);
@@ -123,7 +119,7 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 taskCallback.onFailureFromRemote(new Exception(error.getMessage()));
             }
         });

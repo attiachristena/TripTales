@@ -17,6 +17,7 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     private final MutableLiveData<List<Goal>> goalsLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Goal>> selectedGoalsLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Goal>> checkedGoalsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> deleteRemoteLiveData = new MutableLiveData<>(false);
 
     public GoalRepository(BaseGoalLocalDataSource goalLocalDataSource, BaseGoalRemoteDataSource goalRemoteDataSource) {
         this.goalLocalDataSource = goalLocalDataSource;
@@ -99,23 +100,25 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     }
 
     @Override
-    public void onSuccessFromRemote() {}
+    public void onSuccessDeleteFromRemote() {
+        deleteRemoteLiveData.setValue(true);
+    }
 
     @Override
     public void onSuccessFromRemote(List<Goal> goals) {
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            for(Goal goal : goals){
-                goalLocalDataSource.insertGoal(goal);
+            if(Boolean.TRUE.equals(deleteRemoteLiveData.getValue())) {
+                for (Goal goal : goals) {
+                    goalLocalDataSource.insertGoal(goal);
+                }
+                goalLocalDataSource.getAllGoals();
+                deleteRemoteLiveData.postValue(false);
             }
-            goalLocalDataSource.getAllGoals();
         });
     }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
-
-    @Override
-    public void onSuccessFromLocal() {}
 
     @Override
     public void onSuccessFromLocal(List<Goal> goals) {

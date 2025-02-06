@@ -35,7 +35,6 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
     public void insertExpense(Expense expense) {
         if (expense != null) {
             databaseReference.child(expense.getId()).setValue(expense)
-                    .addOnSuccessListener(aVoid -> expenseCallback.onSuccessFromRemote())
                     .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
         } else {
             expenseCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -46,7 +45,6 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
     public void updateExpense(Expense expense) {
         if(expense != null) {
             databaseReference.child(expense.getId()).setValue(expense)
-                    .addOnSuccessListener(aVoid -> expenseCallback.onSuccessFromRemote())
                     .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
         } else {
             expenseCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -60,7 +58,6 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
             updates.put("category", newCategory);
 
             databaseReference.child(expenseId).updateChildren(updates)
-                .addOnSuccessListener(aVoid -> expenseCallback.onSuccessFromRemote())
                     .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
         } else {
             expenseCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -74,7 +71,6 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
             updates.put("description", newDescription);
 
             databaseReference.child(expenseId).updateChildren(updates)
-                    .addOnSuccessListener(aVoid -> expenseCallback.onSuccessFromRemote())
                     .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
         } else {
             expenseCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -88,7 +84,6 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
             updates.put("amount", newAmount);
 
             databaseReference.child(expenseId).updateChildren(updates)
-                    .addOnSuccessListener(aVoid -> expenseCallback.onSuccessFromRemote())
                     .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
         } else {
             expenseCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -102,7 +97,6 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
             updates.put("date", newDate);
 
             databaseReference.child(expenseId).updateChildren(updates)
-                    .addOnSuccessListener(aVoid -> expenseCallback.onSuccessFromRemote())
                     .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
         } else {
             expenseCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
@@ -115,7 +109,6 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
         updates.put("expense_isSelected", newIsSelected);
 
         databaseReference.child(expenseId).updateChildren(updates)
-                .addOnSuccessListener(aVoid -> expenseCallback.onSuccessFromRemote())
                 .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
     }
 
@@ -123,7 +116,7 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
     public void deleteExpense(Expense expense) {
         if(expense != null){
             databaseReference.child(expense.getId()).removeValue()
-                    .addOnSuccessListener(aVoid -> expenseCallback.onSuccessFromRemote())
+                    .addOnSuccessListener(aVoid -> expenseCallback.onSuccessDeleteFromRemote())
                     .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
         } else {
             expenseCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
