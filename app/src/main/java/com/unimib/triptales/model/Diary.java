@@ -1,23 +1,21 @@
 package com.unimib.triptales.model;
 
-import static androidx.room.ForeignKey.CASCADE;
-
-import android.net.Uri;
-
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.Relation;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 @Entity
 public class Diary {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+
+    @PrimaryKey
+    @NonNull
+    private String id;
 
     private String userId; // ID dell'utente proprietario del diario
 
@@ -36,14 +34,21 @@ public class Diary {
     @ColumnInfo(name = "diary_budget")
     private String budget;
 
-    private boolean isSelected;
+    @ColumnInfo(name = "diary_isSelected")
+    private boolean diary_isSelected;
 
     @ColumnInfo(name = "diary_country")
     private String country;
 
+    @ColumnInfo(name = "diary_timestamp")
+    private long timestamp;
+
+    public Diary(){}
+
     // Costruttore completo
-    public Diary(int id, String userId, String name, String startDate, String endDate, String coverImageUri, String budget, String country) {
-        this.id = id;
+    public Diary(String userId, String name, String startDate, String endDate, String coverImageUri,
+                 String budget, String country, long timestamp) {
+        this.id = UUID.randomUUID().toString();
         this.userId = userId;
         this.name = name;
         this.startDate = startDate;
@@ -51,7 +56,8 @@ public class Diary {
         this.coverImageUri = coverImageUri;
         this.budget = budget;
         this.country = country;
-        this.isSelected = false;
+        this.timestamp = timestamp;
+        this.diary_isSelected = false;
     }
 
     // Metodi per calcolare la durata del viaggio
@@ -95,11 +101,12 @@ public class Diary {
     }
 
     // Getter e setter per i campi
-    public int getId() {
+    @NonNull
+    public String getId() {
         return (id);
     }
 
-    public void setId(int id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -151,12 +158,12 @@ public class Diary {
         this.budget = budget;
     }
 
-    public boolean isSelected() {
-        return isSelected;
+    public boolean isDiary_isSelected() {
+        return diary_isSelected;
     }
 
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
+    public void setDiary_isSelected(boolean isSelected) {
+        this.diary_isSelected = isSelected;
     }
 
     public String getCountry() {
@@ -166,4 +173,8 @@ public class Diary {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    public long getTimestamp() { return timestamp;}
+
+    public void setTimestamp(long timestamp) { this.timestamp = timestamp;}
 }

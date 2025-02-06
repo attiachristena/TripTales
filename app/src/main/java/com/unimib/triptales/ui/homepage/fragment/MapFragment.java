@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +25,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.DiaryDao;
-import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import com.unimib.triptales.util.GeoJSONParser;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
@@ -127,7 +121,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void updateMap(){
         String userId = SharedPreferencesUtils.getLoggedUserId();
-        List<String> countryList = diaryDao.getAllCountriesByUserId(userId);
+        List<String> countryList = diaryDao.getAllCountries(userId);
 
         HashSet<String> countryListSet = new HashSet<>(countryList);
         HashSet<String> countryPolygonsSet = new HashSet<>(countryPolygons.keySet());

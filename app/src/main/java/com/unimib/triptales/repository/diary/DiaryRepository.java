@@ -1,5 +1,6 @@
 package com.unimib.triptales.repository.diary;
 
+import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
 
@@ -18,6 +19,10 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
     private final BaseDiaryRemoteDataSource diaryRemoteDataSource;
     private final MutableLiveData<List<Diary>> diariesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Diary>> selectedDiariesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> countriesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
+    private boolean remoteDelete = false;
+    private boolean localDelete = false;
 
     public DiaryRepository(BaseDiaryLocalDataSource diaryLocalDataSource, BaseDiaryRemoteDataSource diaryRemoteDataSource) {
         this.diaryLocalDataSource = diaryLocalDataSource;
@@ -38,55 +43,59 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
     public void updateDiary(Diary diary) {
         diaryLocalDataSource.updateDiary(diary);
         diaryRemoteDataSource.updateDiary(diary);
-        List<Diary> updatedDiaries = diaryLocalDataSource.getAllDiariesByUserId(diary.getUserId());
-        diariesLiveData.postValue(updatedDiaries);
+    }
+
+    public void updateAllDiaries(List<Diary> diaries){
+        for(Diary diary : diaries){
+            updateDiary(diary);
+        }
     }
 
     // Aggiorna solo il nome del diario
     @Override
-    public void updateDiaryName(int diaryId, String newName) {
+    public void updateDiaryName(String diaryId, String newName) {
         diaryLocalDataSource.updateDiaryName(diaryId, newName);
         diaryRemoteDataSource.updateDiaryName(diaryId, newName);
     }
 
     // Aggiorna lo stato di selezione del diario
     @Override
-    public void updateDiaryIsSelected(int diaryId, boolean isSelected) {
+    public void updateDiaryIsSelected(String diaryId, boolean isSelected) {
         diaryLocalDataSource.updateDiaryIsSelected(diaryId, isSelected);
         diaryRemoteDataSource.updateDiaryIsSelected(diaryId, isSelected);
     }
 
     // Aggiorna la data di partenza
     @Override
-    public void updateDiaryStartDate(int diaryId, String newStartDate) {
+    public void updateDiaryStartDate(String diaryId, String newStartDate) {
         diaryLocalDataSource.updateDiaryStartDate(diaryId, newStartDate);
         diaryRemoteDataSource.updateDiaryStartDate(diaryId, newStartDate);
     }
 
     // Aggiorna la data di ritorno
     @Override
-    public void updateDiaryEndDate(int diaryId, String newEndDate) {
+    public void updateDiaryEndDate(String diaryId, String newEndDate) {
         diaryLocalDataSource.updateDiaryEndDate(diaryId, newEndDate);
         diaryRemoteDataSource.updateDiaryEndDate(diaryId, newEndDate);
     }
 
     // Aggiorna l'immagine di copertina
     @Override
-    public void updateDiaryCoverImage(int diaryId, String newCoverImage) {
+    public void updateDiaryCoverImage(String diaryId, String newCoverImage) {
         diaryLocalDataSource.updateDiaryCoverImage(diaryId, newCoverImage);
         diaryRemoteDataSource.updateDiaryCoverImage(diaryId, newCoverImage);
     }
 
     // Aggiorna il budget
     @Override
-    public void updateDiaryBudget(int diaryId, String newBudget) {
+    public void updateDiaryBudget(String diaryId, String newBudget) {
         diaryLocalDataSource.updateDiaryBudget(diaryId, newBudget);
         diaryRemoteDataSource.updateDiaryBudget(diaryId, newBudget);
     }
 
     // Aggiorna il paese
     @Override
-    public void updateDiaryCountry(int diaryId, String newCountry) {
+    public void updateDiaryCountry(String diaryId, String newCountry) {
         diaryLocalDataSource.updateDiaryCountry(diaryId, newCountry);
         diaryRemoteDataSource.updateDiaryCountry(diaryId, newCountry);
     }
@@ -105,6 +114,8 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
         diaryRemoteDataSource.deleteAllDiaries(diaries);
     }
 
+
+
     // Ottiene tutti i diari
     @Override
     public List<Diary> getAllDiaries() {
@@ -115,46 +126,46 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
 
     // Ottiene i diari selezionati
     @Override
-    public LiveData<List<Diary>> getSelectedDiaries() {
+    public List<Diary> getSelectedDiaries() {
         diaryLocalDataSource.getSelectedDiaries();
-        diaryRemoteDataSource.getSelectedDiaries();
-        return selectedDiariesLiveData;
-    }
-
-    // Ottiene tutti i diari di un utente
-    @Override
-    public List<Diary> getAllDiariesByUserId(String userId) {
-        return diaryLocalDataSource.getAllDiariesByUserId(userId);
+        return selectedDiariesLiveData.getValue();
     }
 
     // Ottiene tutti i paesi visitati da un utente
     @Override
-    public List<String> getAllCountriesByUserId(String userId) {
-        return diaryLocalDataSource.getAllCountriesByUserId(userId);
+    public List<String> getAllCountries(String userId) {
+        diaryLocalDataSource.getAllCountries(userId);
+        return countriesLiveData.getValue();
+    }
+
+    @Override
+    public LiveData<Boolean> getLoading() {
+        return loadingLiveData;
     }
 
     // Callback: Successo da database locale
     @Override
     public void onSuccessFromLocal(List<Diary> diaries) {
-        diariesLiveData.postValue(diaries);
+        diariesLiveData.setValue(diaries);
+        for(Diary diary : diaries){
+            diaryRemoteDataSource.insertDiary(diary);
+        }
     }
 
-    // Callback: Successo da database remoto
     @Override
-    public void onSuccessFromRemote(List<Diary> diaries) {
-        diariesLiveData.postValue(diaries);
+    public void onSuccessDeleteFromLocal() {
+        localDelete = true;
     }
 
-    // Callback: Fallimento da database remoto
     @Override
-    public void onFailureFromRemote(Exception exception) {
-        // Log dell'errore o notifica all'utente
+    public void onSuccessCountriesFromLocal(List<String> countries) {
+        countriesLiveData.setValue(countries);
     }
 
-    // Callback: Successo selezione da database remoto
+    // Callback: Successo selezione da database locale
     @Override
-    public void onSuccessSelectionFromRemote(List<Diary> diaries) {
-        selectedDiariesLiveData.postValue(diaries);
+    public void onSuccessSelectionFromLocal(List<Diary> diaries) {
+        selectedDiariesLiveData.setValue(diaries);
     }
 
     // Callback: Fallimento da database locale
@@ -163,21 +174,32 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
         // Log dell'errore o notifica all'utente
     }
 
-    // Callback: Successo generico da database locale
+    // Callback: Successo da database remoto
     @Override
-    public void onSuccessFromLocal() {
-        // Azioni opzionali dopo un'operazione di successo
-    }
-
-    // Callback: Successo selezione da database locale
-    @Override
-    public void onSuccessSelectionFromLocal(List<Diary> diaries) {
-        selectedDiariesLiveData.postValue(diaries);
+    public void onSuccessFromRemote(List<Diary> diaries) {
+        loadingLiveData.setValue(true);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            if(remoteDelete || !localDelete){
+                for(Diary diary : diaries){
+                    diaryLocalDataSource.insertDiary(diary);
+                }
+                diaryLocalDataSource.getAllDiaries();
+                remoteDelete = false;
+                localDelete = false;
+                loadingLiveData.postValue(false);
+            }
+        });
     }
 
     // Callback: Successo generico da database remoto
     @Override
-    public void onSuccessFromRemote() {
-        // Azioni opzionali dopo un'operazione di successo
+    public void onSuccessDeleteFromRemote() {
+        remoteDelete = true;
+    }
+
+    // Callback: Fallimento da database remoto
+    @Override
+    public void onFailureFromRemote(Exception exception) {
+        // Log dell'errore o notifica all'utente
     }
 }

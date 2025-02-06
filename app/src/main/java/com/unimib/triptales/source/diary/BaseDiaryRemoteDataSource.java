@@ -15,21 +15,14 @@ public abstract class BaseDiaryRemoteDataSource {
 
     public abstract void insertDiary(Diary diary);
     public abstract void updateDiary(Diary diary);
-    public abstract void updateDiaryName(int diaryId, String newName);
-    public abstract void updateDiaryIsSelected(int diaryId, boolean newIsSelected);
+    public abstract void updateDiaryName(String diaryId, String newName);
+    public abstract void updateDiaryStartDate(String diaryId, String newStartDate);
+    public abstract void updateDiaryEndDate(String diaryId, String newEndDate);
+    public abstract void updateDiaryCoverImage(String diaryId, String newCoverImage);
+    public abstract void updateDiaryBudget(String diaryId, String newBudget);
+    public abstract void updateDiaryCountry(String diaryId, String newCountry);
+    public abstract void updateDiaryIsSelected(String diaryId, boolean newIsSelected);
     public abstract void deleteDiary(Diary diary);
     public abstract void deleteAllDiaries(List<Diary> diaries);
     public abstract void getAllDiaries();
-    public abstract void getSelectedDiaries();
-    public abstract void getAllDiariesByUserId(String userId);
-
-    public abstract void updateDiaryStartDate(int diaryId, String newStartDate);
-
-    public abstract void updateDiaryEndDate(int diaryId, String newEndDate);
-
-    public abstract void updateDiaryCoverImage(int diaryId, String newCoverImage);
-
-    public abstract void updateDiaryBudget(int diaryId, String newBudget);
-
-    public abstract void updateDiaryCountry(int diaryId, String newCountry);
 }

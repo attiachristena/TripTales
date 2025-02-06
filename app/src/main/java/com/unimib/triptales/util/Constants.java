@@ -38,6 +38,8 @@ public class Constants {
     public static final String EDIT_GOAL = "EDIT_GOAL";
     public static final String ADD_TASK = "ADD_TASK";
     public static final String EDIT_TASK = "EDIT_TASK";
+    public static final String ADD_DIARY = "ADD_DIARY";
+    public static final String EDIT_DIARY = "EDIT_DIARY";
 
     public static final String ACTIVE_FRAGMENT_TAG = "active_fragment";
 

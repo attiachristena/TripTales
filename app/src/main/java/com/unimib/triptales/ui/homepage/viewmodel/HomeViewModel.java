@@ -3,10 +3,19 @@ package com.unimib.triptales.ui.homepage.viewmodel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.google.firebase.database.ServerValue;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
+import com.unimib.triptales.util.SharedPreferencesUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.unimib.triptales.util.Constants.ADDED;
+import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.INVALID_DELETE;
+import static com.unimib.triptales.util.Constants.UPDATED;
 import static com.unimib.triptales.util.SharedPreferencesUtils.getLoggedUserId;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,16 +25,14 @@ import java.util.*;
 
 public class HomeViewModel extends ViewModel {
     private final IDiaryRepository diaryRepository;
+
     private final MutableLiveData<List<Diary>> diariesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Diary>> selectedDiariesLiveData = new MutableLiveData<>();
-    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<String> budgetLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> countriesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> diaryEvent = new MutableLiveData<>();
     private final MutableLiveData<Boolean> diaryOverlayVisibility = new MutableLiveData<>();
-    private final MutableLiveData<Map<String, String>> validationErrorsLiveData = new MutableLiveData<>(); // ✅ FIXED: Initialized correctly
-
-
-
-
 
     public HomeViewModel(IDiaryRepository repository) {
         this.diaryRepository = repository;
@@ -35,159 +42,166 @@ public class HomeViewModel extends ViewModel {
     public LiveData<List<Diary>> getDiariesLiveData() {
         return diariesLiveData;
     }
-
+    public LiveData<List<Diary>> getSelectedDiariesLiveData() { return selectedDiariesLiveData;}
+    public LiveData<String> getErrorLiveData() {
+        return errorLiveData;
+    }
+    public MutableLiveData<String> getDiaryEvent() {
+        return diaryEvent;
+    }
     public LiveData<Boolean> getDiaryOverlayVisibility() {
         return diaryOverlayVisibility;
-    }
-
-    public LiveData<Map<String, String>> getValidationErrorsLiveData() {
-        return validationErrorsLiveData;
     }
 
     public void setDiaryOverlayVisibility(boolean visible) {
         diaryOverlayVisibility.postValue(visible);
     }
 
+    public MutableLiveData<String> getBudgetLiveData() {
+        return budgetLiveData;
+    }
+
+    public MutableLiveData<List<String>> getCountriesLiveData() {
+        return countriesLiveData;
+    }
+
     public void loadDiaries() {
-        try {
-            String userId = getLoggedUserId();
-            if (userId != null) {
-                List<Diary> diaries = diaryRepository.getAllDiariesByUserId(userId);
-                setDiariesLiveData(diaries != null ? diaries : new ArrayList<>());
-            } else {
-                setDiariesLiveData(new ArrayList<>());
-                setErrorMessage("Utente non autenticato");
-            }
-        } catch (Exception e) {
-            setErrorMessage("Errore nel caricamento dei diari: " + e.getMessage());
-        }
+        diariesLiveData.setValue(diaryRepository.getAllDiaries());
     }
 
-    public LiveData<List<Diary>> getSelectedDiariesLiveData() {
-        return selectedDiariesLiveData;
+    public LiveData<Boolean> getLoading(){
+        return diaryRepository.getLoading();
     }
 
-    // Metodo per aggiornare la lista dei diari selezionati
-    public void updateSelectedDiaries(List<Diary> selectedDiaries) {
-        selectedDiariesLiveData.setValue(selectedDiaries);
+    public void loadCountries(String userId) {
+        countriesLiveData.setValue(diaryRepository.getAllCountries(userId));
     }
 
     public void insertDiary(String diaryName, String startDate, String endDate,
                             String imageUri, String budget, String country) {
-        if (!validateDiaryInput(diaryName, startDate, endDate, imageUri, country)) {
-            return; // Stop if validation fails
-        }
-
-        try {
-            String currentUserId = getLoggedUserId();
-            if (currentUserId == null) {
-                setErrorMessage("Utente non autenticato");
-                return;
-            }
-
-            Diary newDiary = new Diary(0, currentUserId, diaryName, startDate, endDate, imageUri, budget, country);
+        String userId = SharedPreferencesUtils.getLoggedUserId();
+        if(validateDiaryInput(diaryName, startDate, endDate, imageUri, country)) {
+            Diary newDiary = new Diary(userId, diaryName, startDate, endDate, imageUri,
+                    budget, country, System.currentTimeMillis());
             diaryRepository.insertDiary(newDiary);
-            addDiaryToLiveData(newDiary);
-
-            diaryEvent.setValue("Diario aggiunto con successo!");
-            diaryOverlayVisibility.setValue(false);
-        } catch (Exception e) {
-            setErrorMessage("Errore durante l'inserimento del diario: " + e.getMessage());
-        }
-    }
-
-    private void addDiaryToLiveData(Diary newDiary) {
-        try {
-            List<Diary> currentList = diariesLiveData.getValue();
-            if (currentList == null) {
-                currentList = new ArrayList<>();
-            }
-            currentList.add(newDiary);
-            diariesLiveData.setValue(currentList);
-        } catch (Exception e) {
-            setErrorMessage("Errore nell'aggiornamento dei dati: " + e.getMessage());
+            loadDiaries();
+            diaryEvent.setValue(ADDED);
         }
     }
 
     public void updateDiary(Diary diary, String diaryName, String startDate, String endDate,
                             String imageUri, String country) {
-        if (diary == null) {
-            setErrorMessage("Nessun diario selezionato per la modifica");
-            return;
-        }
-
-        if (!validateDiaryInput(diaryName, startDate, endDate, imageUri, country)) {
-            return;
-        }
-
-        try {
+        if(!diary.getName().equals(diaryName)){
+            updateDiaryName(diary.getId(), diaryName);
             diary.setName(diaryName);
+        }
+        if(!diary.getStartDate().equals(startDate)){
+            updateDiaryStartDate(diary.getId(), startDate);
             diary.setStartDate(startDate);
+        }
+        if(!diary.getEndDate().equals(endDate)){
+            updateDiaryEndDate(diary.getId(), endDate);
             diary.setEndDate(endDate);
+        }
+        if(!diary.getCoverImageUri().equals(imageUri)){
+            updateDiaryCoverImage(diary.getId(), imageUri);
             diary.setCoverImageUri(imageUri);
+        }
+        if(!diary.getCountry().equals(country)){
+            updateDiaryCountry(diary.getId(), country);
             diary.setCountry(country);
+        }
+        diaryEvent.setValue(UPDATED);
+    }
 
-            diaryRepository.updateDiary(diary);
-            diaryEvent.setValue("Diario aggiornato con successo!");
+    public void updateDiaryName(String diaryId, String newName){
+        diaryRepository.updateDiaryName(diaryId, newName);
+        loadDiaries();
+    }
 
-            diaryOverlayVisibility.setValue(false);
-        } catch (Exception e) {
-            setErrorMessage("Errore durante l'aggiornamento del diario: " + e.getMessage());
+    public void updateDiaryIsSelected(String diaryId, boolean newIsSelected){
+        diaryRepository.updateDiaryIsSelected(diaryId, newIsSelected);
+        loadDiaries();
+    }
+
+    public void updateDiaryStartDate(String diaryId, String newStartDate){
+        diaryRepository.updateDiaryStartDate(diaryId, newStartDate);
+        loadDiaries();
+    }
+
+    public void updateDiaryEndDate(String diaryId, String newEndDate){
+        diaryRepository.updateDiaryEndDate(diaryId, newEndDate);
+        loadDiaries();
+    }
+
+    public void updateDiaryCoverImage(String diaryId, String newCoverImage){
+        diaryRepository.updateDiaryCoverImage(diaryId, newCoverImage);
+        loadDiaries();
+    }
+
+    public void updateDiaryBudget(String diaryId, String budget){
+        diaryRepository.updateDiaryBudget(diaryId, budget);
+        budgetLiveData.setValue(budget);
+        loadDiaries();
+    }
+
+    public void updateDiaryCountry(String diaryId, String country){
+        diaryRepository.updateDiaryCountry(diaryId, country);
+        loadDiaries();
+    }
+
+    public void deleteSelectedDiaries(){
+        List<Diary> selectedDiaries = getSelectedDiariesLiveData().getValue();
+        if(selectedDiaries != null && !selectedDiaries.isEmpty()){
+            diaryRepository.deleteAllDiaries(selectedDiaries);
+            selectedDiariesLiveData.postValue(Collections.emptyList());
+            loadDiaries();
+            diaryEvent.setValue(DELETED);
+        } else {
+            diaryEvent.setValue(INVALID_DELETE);
         }
     }
 
+    public void toggleDiarySelection(Diary diary){
+        boolean isSelected = diary.isDiary_isSelected();
+        diary.setDiary_isSelected(!isSelected);
+        updateDiaryIsSelected(diary.getId(), !isSelected);
+        selectedDiariesLiveData.setValue(diaryRepository.getSelectedDiaries());
+        loadDiaries();
+    }
 
-    public void deleteDiaries(List<Diary> diaries) {
-        if (diaries == null || diaries.isEmpty()) {
-            diaryEvent.setValue("Nessun diario selezionato per l'eliminazione");
-            return;
-        }
-
-        try {
-            for (Diary diary : diaries) {
-                diary.setSelected(false);
-                diaryRepository.updateDiary(diary); // Ensure selection is cleared before deletion
-                diaryRepository.deleteDiary(diary);
+    public void deselectAllDiaries(){
+        loadDiaries();
+        List<Diary> diaries = diariesLiveData.getValue();
+        if(diaries != null){
+            for(Diary diary : diaries){
+                diary.setDiary_isSelected(false);
+                updateDiaryIsSelected(diary.getId(), false);
             }
-            removeDiariesFromLiveData(diaries);
-            diaryEvent.setValue("Diario eliminato con successo!");
-        } catch (Exception e) {
-            setErrorMessage("Errore durante l'eliminazione dei diari: " + e.getMessage());
+            diariesLiveData.setValue(diaries);
+            selectedDiariesLiveData.postValue(Collections.emptyList());
+            diaryRepository.updateAllDiaries(diaries);
         }
     }
-
-    private void removeDiariesFromLiveData(List<Diary> diariesToRemove) {
-        try {
-            List<Diary> currentList = diariesLiveData.getValue();
-            if (currentList == null || currentList.isEmpty()) {
-                return; // Nothing to remove
-            }
-            currentList.removeAll(diariesToRemove);
-            setDiariesLiveData(currentList);
-        } catch (Exception e) {
-            setErrorMessage("Errore nella rimozione dei diari: " + e.getMessage());
-        }
-    }
-
 
     private boolean validateDiaryInput(String diaryName, String startDate, String endDate, String imageUri, String country) {
-        Map<String, String> errors = new HashMap<>();
-
-        if (diaryName.isEmpty()) errors.put("diaryName", "Inserisci il nome del diario");
-        if (startDate.isEmpty()) errors.put("startDate", "Inserisci la data di partenza");
-        if (endDate.isEmpty()) errors.put("endDate", "Inserisci la data di ritorno");
-        if (!startDate.isEmpty() && !endDate.isEmpty() && !validateDateOrder(startDate, endDate)) {
-            errors.put("dateOrder", "La data di partenza deve essere prima della data di ritorno");
+        boolean correct = true;
+        if(diaryName.isEmpty()){
+            errorLiveData.setValue("Inserisci il nome del diario");
+        } else if(startDate.isEmpty()){
+            errorLiveData.setValue("Inserisci la data di partenza");
+        } else if(endDate.isEmpty()){
+            errorLiveData.setValue("Inserisci la data di ritorno");
+        } else if(!validateDateOrder(startDate, endDate)){
+            errorLiveData.setValue("La data di partenza deve essere prima della data di ritorno");
+        } else if(imageUri == null || imageUri.isEmpty()){
+            errorLiveData.setValue("Seleziona un'immagine per il diario");
+        } else if(country.isEmpty()){
+            errorLiveData.setValue("Seleziona un paese");
         }
-        if (imageUri == null || imageUri.isEmpty()) errors.put("image", "Seleziona un'immagine per il diario");
-        if (country.isEmpty()) errors.put("country", "Seleziona un paese");
 
-        if (!errors.isEmpty()) {
-            validationErrorsLiveData.setValue(errors);
-            return false;
-        }
-
-        return true;
+        if(errorLiveData.getValue() != null) correct = false;
+        return correct;
     }
 
     private boolean validateDateOrder(String startDate, String endDate) {
@@ -197,13 +211,5 @@ public class HomeViewModel extends ViewModel {
         } catch (ParseException e) {
             return false;
         }
-    }
-
-    private void setDiariesLiveData(List<Diary> diaries) {
-        diariesLiveData.setValue(diaries);
-    }
-
-    private void setErrorMessage(String message) {
-        errorMessage.setValue(message);
     }
 }

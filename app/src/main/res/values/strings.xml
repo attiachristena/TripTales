@@ -124,7 +124,6 @@
     <string name="password_reset_email_sent">Email for reset password sent</string>
     <string name="registrati_con_google">Registrati con Google</string>
 
-
     <string name="nome_user_momentaneo">Nome Cognome</string>
     <string name="modalita_scura">Modalità scura</string>
     <string name="notiche">Notifiche</string>
@@ -173,6 +172,10 @@
     <string name="snackbarTaskUpdated">Attività aggiornata</string>
     <string name="snackbarTaskDeleted">Attività rimossa</string>
     <string name="snackbarTaskNotDeleted">Errore: attività non rimossa</string>
+    <string name="snackbarDiaryAdded">Diario aggiunto</string>
+    <string name="snackbarDiaryUpdated">Diario aggiornato</string>
+    <string name="snackbarDiaryDeleted">Diario rimosso</string>
+    <string name="snackbarDiaryNotDeleted">Errore: diario non rimosso</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>

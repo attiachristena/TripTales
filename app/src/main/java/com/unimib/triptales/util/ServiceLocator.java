@@ -98,7 +98,8 @@ public class ServiceLocator {
 
     public IDiaryRepository getDiaryRepository(Context context) {
         BaseDiaryLocalDataSource diaryLocalDataSource =
-                new DiaryLocalDataSource(AppRoomDatabase.getDatabase(context).diaryDao());
+                new DiaryLocalDataSource(AppRoomDatabase.getDatabase(context).diaryDao(),
+                        SharedPreferencesUtils.getLoggedUserId());
         BaseDiaryRemoteDataSource diaryRemoteDataSource =
                 new DiaryRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
         return new DiaryRepository(diaryLocalDataSource, diaryRemoteDataSource);

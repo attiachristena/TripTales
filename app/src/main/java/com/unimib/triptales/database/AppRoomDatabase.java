@@ -22,10 +22,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {User.class, Diary.class, Checkpoint.class, Goal.class, Task.class, Expense.class}, version = DATABASE_VERSION)
+@Database(entities = {Diary.class, Checkpoint.class, Goal.class, Task.class, Expense.class}, version = DATABASE_VERSION)
 @TypeConverters({UriConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
-    public abstract UserDao userDao();
     public abstract DiaryDao diaryDao();
     public abstract CheckpointDao checkpointDao();
     public abstract GoalDao goalDao();

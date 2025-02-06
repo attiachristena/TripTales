@@ -14,13 +14,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.material.navigation.NavigationBarView;
 import com.unimib.triptales.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.unimib.triptales.ui.homepage.fragment.CalendarFragment;
@@ -30,7 +27,6 @@ import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
-import java.util.Map;
 import java.util.Objects;
 
 
