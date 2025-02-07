@@ -35,8 +35,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.DiaryAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.CheckpointDao;
 import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.database.UserDao;
+import com.unimib.triptales.model.Checkpoint;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.User;
 import com.unimib.triptales.ui.diary.fragment.CheckpointsFragment;
@@ -95,7 +97,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     AppRoomDatabase database;
     private DiaryDao diaryDao;
     private UserDao userDao;
-
+    private CheckpointDao checkpointDao;
 
     @Nullable
     @Override
@@ -186,6 +188,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private void initializeDatabase() {
         database = AppRoomDatabase.getDatabase(getContext());
         diaryDao = database.diaryDao();
+        checkpointDao = database.checkpointDao();
         String idUser = getLoggedUserId();
 
 
@@ -406,6 +409,14 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
         long diaryId = diaryDao.insert(newDiary); // Inserisci il diario nel database
         newDiary.setId((int) diaryId); // Imposta l'ID generato dal database
         Log.d(TAG,"Diary saved with ID: " + diaryId);
+
+        if (diaryId > 0) {
+            newDiary.setId((int) diaryId);
+            Log.d(TAG, "Diary saved with ID: " + diaryId);
+
+            Checkpoint newCheckpoint = new Checkpoint((int) diaryId, diaryName, startDate, endDate, selectedImageUri);
+            checkpointDao.insertCheckpoint(newCheckpoint);
+        }
 
         diaryList.add(newDiary);
         diaryAdapter.notifyDataSetChanged();

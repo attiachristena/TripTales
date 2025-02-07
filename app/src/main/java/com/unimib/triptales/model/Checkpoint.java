@@ -2,40 +2,48 @@
 package com.unimib.triptales.model;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 
 import java.util.Objects;
 
-@Entity
+@Entity(
+        tableName = "Checkpoint",
+        foreignKeys = @ForeignKey(
+                entity = Diary.class,
+                parentColumns = "id",
+                childColumns = "diary_id",
+                onDelete = ForeignKey.CASCADE
+        ),
+        indices = {@Index(value = "diary_id")}
+)
 public class Checkpoint {
     @PrimaryKey(autoGenerate = true)
     public int id;
+    
+    @ColumnInfo(name = "name")
+    public String name;
 
-    @ColumnInfo(name = "nome")
-    public String nome;
+    @ColumnInfo(name = "start_date")
+    public String startDate;
 
-    @ColumnInfo(name = "data")
-    public String data;
+    @ColumnInfo(name = "end_date")
+    public String endDate;
 
-    @ColumnInfo(name = "immagine_uri")
-    public String immagineUri; // Percorso dell'immagine come stringa
+    @ColumnInfo(name = "image_uri")
+    public String imageUri;
 
-    @ColumnInfo(name = "latitude")
-    public double latitude;
+    @ColumnInfo(name = "diary_id")
+    public int diaryId;
 
-    @ColumnInfo(name = "longitude")
-    public double longitude;
-
-    @ColumnInfo(name = "tappa_isSelected")
-    public boolean tappa_isSelected;
-
-    public Checkpoint(String nome, String data, String immagineUri, double latitude, double longitude) {
-        this.nome = nome;
-        this.data = data;
-        this.immagineUri = immagineUri;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public Checkpoint(int diaryId, String name, String startDate, String endDate, String imageUri) {
+        this.diaryId = diaryId;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.imageUri = imageUri;
     }
     // Getters e Setters
     public int getId() {
@@ -46,52 +54,28 @@ public class Checkpoint {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public int getDiaryId() {
+        return diaryId;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setDiaryId(int diaryId) {
+        this.diaryId = diaryId;
     }
 
-    public String getData() {
-        return data;
+    public String getName() {
+        return name;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public String getImmagineUri() {
-        return immagineUri;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setImmagineUri(String immagineUri) {
-        this.immagineUri = immagineUri;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public boolean isTappa_isSelected() {
-        return tappa_isSelected;
-    }
-
-    public void setTappa_isSelected(boolean tappa_isSelected) {
-        this.tappa_isSelected = tappa_isSelected;
+    public String getImageUri(){
+        return imageUri;
     }
 
     @Override
