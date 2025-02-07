@@ -334,21 +334,24 @@ public class HomeFragment extends Fragment {
             else
                 imageUri = null;
 
-            if(bAdd) {
-                homeViewModel.insertDiary(name, startDate, endDate, imageUri, null, country);
-            } else if(bEdit){
-                List<Diary> selectedDiary = homeViewModel.getSelectedDiariesLiveData().getValue();
-                if(selectedDiary != null && !selectedDiary.isEmpty()){
-                    Diary currentDiary = selectedDiary.get(0);
-                    if(imageUri == null){
-                        imageUri = currentDiary.getCoverImageUri();
+            boolean correct = homeViewModel.validateDiaryInput(name, startDate, endDate, imageUri, country);
+            if(correct) {
+                if (bAdd) {
+                    homeViewModel.insertDiary(name, startDate, endDate, imageUri, null, country);
+                } else if (bEdit) {
+                    List<Diary> selectedDiary = homeViewModel.getSelectedDiariesLiveData().getValue();
+                    if (selectedDiary != null && !selectedDiary.isEmpty()) {
+                        Diary currentDiary = selectedDiary.get(0);
+                        if (imageUri == null) {
+                            imageUri = currentDiary.getCoverImageUri();
+                        }
+                        homeViewModel.updateDiary(currentDiary, name, startDate, endDate, imageUri, country);
+                        homeViewModel.deselectAllDiaries();
                     }
-                    homeViewModel.updateDiary(currentDiary, name, startDate, endDate, imageUri, country);
-                    homeViewModel.deselectAllDiaries();
                 }
+                selectedImageUri = null;
+                homeViewModel.setDiaryOverlayVisibility(false);
             }
-            selectedImageUri = null;
-            homeViewModel.setDiaryOverlayVisibility(false);
         });
 
         // gestione delle spese selezionate
