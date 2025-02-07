@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -30,7 +32,11 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.DiaryDao;
 
+import com.unimib.triptales.repository.diary.IDiaryRepository;
+import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
+import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
 import com.unimib.triptales.util.GeoJSONParser;
+import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
@@ -45,8 +51,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private DiaryDao diaryDao;
     private HashMap<String, List<Polygon>> countryPolygons = new HashMap<>();
+    private HomeViewModel homeViewModel;
 
     @Nullable
     @Override
@@ -62,7 +68,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
-        diaryDao = AppRoomDatabase.getDatabase(getContext()).diaryDao();
+        IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getContext());
+        homeViewModel = new ViewModelProvider(requireActivity(),
+                new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
 
         return rootView;
     }
@@ -72,7 +80,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         mMap = googleMap;
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_gray_style));
-        updateMap();
+        updateMap(homeViewModel.getAllCountries(SharedPreferencesUtils.getLoggedUserId()));
+
+        homeViewModel.getCountriesLiveData().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> countryList) {
+                updateMap(countryList);
+            }
+        });
 
         // Controlla i permessi di localizzazione
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -91,7 +106,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
         if(mMap != null) {
-            updateMap();
+            //updateMap();
         }
     }
 
@@ -128,9 +143,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void updateMap(){
-        String userId = SharedPreferencesUtils.getLoggedUserId();
-        List<String> countryList = diaryDao.getAllCountries(userId);
+    private void updateMap(List<String> countryList){
+        //String userId = SharedPreferencesUtils.getLoggedUserId();
+        //List<String> countryList = homeViewModel.getAllCountries(userId);
 
         HashSet<String> countryListSet = new HashSet<>(countryList);
         HashSet<String> countryPolygonsSet = new HashSet<>(countryPolygons.keySet());

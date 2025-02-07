@@ -80,8 +80,9 @@ public class HomeViewModel extends ViewModel {
         diaryRepository.getRemoteDiaries();
     }
 
-    public void loadCountries(String userId) {
+    public List<String> getAllCountries(String userId) {
         countriesLiveData.setValue(diaryRepository.getAllCountries(userId));
+        return  countriesLiveData.getValue();
     }
 
     public void insertDiary(String diaryName, String startDate, String endDate,
@@ -93,6 +94,7 @@ public class HomeViewModel extends ViewModel {
             diaryRepository.insertDiary(newDiary);
             loadDiaries();
             diaryEvent.setValue(ADDED);
+            countriesLiveData.setValue(diaryRepository.getAllCountries(userId));
         }
     }
 
@@ -158,6 +160,7 @@ public class HomeViewModel extends ViewModel {
 
     public void updateDiaryCountry(String diaryId, String country){
         diaryRepository.updateDiaryCountry(diaryId, country);
+        countriesLiveData.setValue(diaryRepository.getAllCountries(SharedPreferencesUtils.getLoggedUserId()));
         loadDiaries();
     }
 
@@ -167,6 +170,7 @@ public class HomeViewModel extends ViewModel {
             diaryRepository.deleteAllDiaries(selectedDiaries);
             selectedDiariesLiveData.postValue(Collections.emptyList());
             loadDiaries();
+            countriesLiveData.setValue(diaryRepository.getAllCountries(SharedPreferencesUtils.getLoggedUserId()));
             diaryEvent.setValue(DELETED);
         } else {
             diaryEvent.setValue(INVALID_DELETE);

@@ -109,6 +109,7 @@ public class ServiceLocator {
         BaseDiaryRemoteDataSource diaryRemoteDataSource =
                 new DiaryRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
         return new DiaryRepository(diaryLocalDataSource, diaryRemoteDataSource);
+    }
 
     public IImageCardItemRepository getImageCardItemRepository(Context context){
         BaseImageCardItemLocalDataSource imageCardItemLocalDataSource =
