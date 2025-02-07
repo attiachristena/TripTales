@@ -20,7 +20,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void insertExpense(Expense expense) {
         try{
             expenseDao.insert(expense);
-            expenseCallback.onSuccessFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -30,7 +29,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void updateExpense(Expense expense) {
         try{
             expenseDao.update(expense);
-            expenseCallback.onSuccessFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -53,7 +51,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_attractions_24);
             }
             expenseDao.updateCategory(expenseId, newCategory);
-            expenseCallback.onSuccessFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -63,7 +60,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void updateExpenseDescription(String expenseId, String newDescription) {
         try{
             expenseDao.updateDescription(expenseId, newDescription);
-            expenseCallback.onSuccessFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -73,7 +69,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void updateExpenseAmount(String expenseId, String newAmount) {
         try{
             expenseDao.updateAmount(expenseId, newAmount);
-            expenseCallback.onSuccessFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -83,7 +78,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void updateExpenseDate(String expenseId, String newDate) {
         try{
             expenseDao.updateDate(expenseId, newDate);
-            expenseCallback.onSuccessFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -93,7 +87,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void updateExpenseIsSelected(String expenseId, boolean newIsSelected) {
         try{
             expenseDao.updateIsSelected(expenseId, newIsSelected);
-            expenseCallback.onSuccessFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -103,7 +96,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void deleteExpense(Expense expense) {
         try{
             expenseDao.delete(expense);
-            expenseCallback.onSuccessFromLocal();
+            expenseCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -113,7 +106,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void deleteAllExpenses(List<Expense> expenses) {
         try{
             expenseDao.deleteAll(expenses);
-            expenseCallback.onSuccessFromLocal();
+            expenseCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -122,7 +115,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     @Override
     public void getAllExpenses() {
         try{
-            expenseCallback.onSuccessFromLocal(expenseDao.getAllExpenses(diaryId));
+            expenseCallback.onSuccessFromLocal(expenseDao.getAll(diaryId));
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }

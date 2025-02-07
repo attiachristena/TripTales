@@ -250,7 +250,7 @@ public class GoalsFragment extends Fragment {
 
                 if(correct){
                     if(bAdd){
-                        goalViewModel.insertGoal(inputGoalName, inputGoalDescription);
+                        goalViewModel.insertGoal(inputGoalName, inputGoalDescription, getContext());
                     } else if(bEdit){
                         List<Goal> selectedGoals = goalViewModel.getSelectedGoalsLiveData().getValue();
                         if(selectedGoals != null && !selectedGoals.isEmpty()){

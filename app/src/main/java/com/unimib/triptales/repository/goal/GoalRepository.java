@@ -2,6 +2,7 @@ package com.unimib.triptales.repository.goal;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.source.goal.BaseGoalLocalDataSource;
@@ -16,6 +17,8 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     private final MutableLiveData<List<Goal>> goalsLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Goal>> selectedGoalsLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Goal>> checkedGoalsLiveData = new MutableLiveData<>();
+    private boolean remoteDelete = false;
+    private boolean localDelete = false;
 
     public GoalRepository(BaseGoalLocalDataSource goalLocalDataSource, BaseGoalRemoteDataSource goalRemoteDataSource) {
         this.goalLocalDataSource = goalLocalDataSource;
@@ -88,33 +91,48 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     @Override
     public List<Goal> getSelectedGoals() {
         goalLocalDataSource.getSelectedGoals();
-        goalRemoteDataSource.getSelectedGoals();
         return selectedGoalsLiveData.getValue();
     }
 
     @Override
     public List<Goal> getCheckedGoals() {
         goalLocalDataSource.getCheckedGoals();
-        goalRemoteDataSource.getCheckedGoals();
         return checkedGoalsLiveData.getValue();
     }
 
+    @Override
+    public void onSuccessDeleteFromRemote() {
+        remoteDelete = true;
+    }
 
     @Override
-    public void onSuccessFromRemote() {}
-
-    @Override
-    public void onSuccessFromRemote(List<Goal> goals) {}
+    public void onSuccessFromRemote(List<Goal> goals) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            if(remoteDelete || !localDelete){
+                for (Goal goal : goals) {
+                    goalLocalDataSource.insertGoal(goal);
+                }
+                goalLocalDataSource.getAllGoals();
+                remoteDelete = false;
+                localDelete = false;
+            }
+        });
+    }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
 
     @Override
-    public void onSuccessFromLocal() {}
+    public void onSuccessDeleteFromLocal() {
+        localDelete = true;
+    }
 
     @Override
     public void onSuccessFromLocal(List<Goal> goals) {
         goalsLiveData.setValue(goals);
+        for(Goal goal : goals){
+            goalRemoteDataSource.insertGoal(goal);
+        }
     }
 
     @Override

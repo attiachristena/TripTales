@@ -11,6 +11,7 @@ import androidx.room.Update;
 
 import com.unimib.triptales.model.Diary;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Dao
@@ -47,6 +48,9 @@ public interface DiaryDao {
 
     @Query("UPDATE Diary SET diary_budget = :newBudget WHERE id = :diaryId")
     void updateBudget(String diaryId, String newBudget);
+
+    @Query("SELECT diary_budget FROM Diary WHERE id = :diaryId")
+    String getBudget(String diaryId);
 
     @Query("SELECT * FROM Diary WHERE userId = :userId ORDER BY diary_timestamp DESC")
     List<Diary> getAllDiaries(String userId);

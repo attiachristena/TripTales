@@ -8,16 +8,17 @@ import java.util.List;
 public class GoalLocalDataSource extends BaseGoalLocalDataSource{
 
     private final GoalDao goalDao;
+    private final int diaryId;
 
-    public GoalLocalDataSource(GoalDao goalDao) {
+    public GoalLocalDataSource(GoalDao goalDao, String diaryId) {
         this.goalDao = goalDao;
+        this.diaryId = Integer.parseInt(diaryId);
     }
 
     @Override
     public void insertGoal(Goal goal) {
         try{
             goalDao.insert(goal);
-            goalCallback.onSuccessFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -27,7 +28,6 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void updateGoal(Goal goal) {
         try{
             goalDao.update(goal);
-            goalCallback.onSuccessFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -37,7 +37,6 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void updateAllGoals(List<Goal> goals) {
         try{
             goalDao.updateAll(goals);
-            goalCallback.onSuccessFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -47,7 +46,6 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void updateGoalName(String goalId, String newName) {
         try{
             goalDao.updateName(goalId, newName);
-            goalCallback.onSuccessFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -57,7 +55,6 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void updateGoalDescription(String goalId, String newDescription) {
         try{
             goalDao.updateDescription(goalId, newDescription);
-            goalCallback.onSuccessFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -67,7 +64,6 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void updateGoalIsSelected(String goalId, boolean newIsSelected) {
         try{
             goalDao.updateIsSelected(goalId, newIsSelected);
-            goalCallback.onSuccessFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -77,7 +73,6 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void updateGoalIsChecked(String goalId, boolean newIsChecked) {
         try{
             goalDao.updateIsChecked(goalId, newIsChecked);
-            goalCallback.onSuccessFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -87,7 +82,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void deleteGoal(Goal goal) {
         try{
             goalDao.delete(goal);
-            goalCallback.onSuccessFromLocal();
+            goalCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -97,7 +92,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void deleteAllGoals(List<Goal> goals) {
         try{
             goalDao.deleteAll(goals);
-            goalCallback.onSuccessFromLocal();
+            goalCallback.onSuccessDeleteFromLocal();
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -106,7 +101,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     @Override
     public void getAllGoals() {
         try{
-            goalCallback.onSuccessFromLocal(goalDao.getAll());
+            goalCallback.onSuccessFromLocal(goalDao.getAll(diaryId));
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -115,7 +110,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     @Override
     public void getSelectedGoals() {
         try{
-            goalCallback.onSuccessSelectionFromLocal(goalDao.getSelectedGoals());
+            goalCallback.onSuccessSelectionFromLocal(goalDao.getSelectedGoals(diaryId));
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -124,7 +119,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     @Override
     public void getCheckedGoals() {
         try{
-            goalCallback.onSuccessCheckedFromLocal(goalDao.getCheckedGoals());
+            goalCallback.onSuccessCheckedFromLocal(goalDao.getCheckedGoals(diaryId));
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
