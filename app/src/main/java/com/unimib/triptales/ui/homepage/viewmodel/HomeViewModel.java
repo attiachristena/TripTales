@@ -146,6 +146,10 @@ public class HomeViewModel extends ViewModel {
         loadDiaries();
     }
 
+    public String getBudget(String diaryId){
+        return diaryRepository.getBudget(diaryId);
+    }
+
     public void updateDiaryBudget(String diaryId, String budget){
         diaryRepository.updateDiaryBudget(diaryId, budget);
         budgetLiveData.setValue(budget);

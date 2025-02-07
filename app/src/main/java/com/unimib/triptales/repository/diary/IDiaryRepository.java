@@ -26,4 +26,5 @@ public interface IDiaryRepository {
         List<Diary> getSelectedDiaries();
         List<String> getAllCountries(String userId);
         LiveData<Boolean> getLoading();
+        String getBudget(String diaryId);
 }

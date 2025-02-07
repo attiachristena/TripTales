@@ -8,6 +8,7 @@ public interface DiaryResponseCallBack {
     void onSuccessFromLocal(List<Diary> diaries);
     void onFailureFromLocal(Exception exception);
     void onSuccessDeleteFromLocal();
+    void onSuccessBudgetFromLocal(String budget);
     void onSuccessCountriesFromLocal(List<String> countries);
     void onSuccessSelectionFromLocal(List<Diary> diaries);
 

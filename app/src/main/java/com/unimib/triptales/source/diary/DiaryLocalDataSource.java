@@ -156,4 +156,12 @@ public class DiaryLocalDataSource extends BaseDiaryLocalDataSource {
             diaryCallback.onFailureFromLocal(e);
         }
     }
+
+    public void getBudget(String diaryId){
+        try{
+            diaryCallback.onSuccessBudgetFromLocal(diaryDao.getBudget(diaryId));
+        } catch (Exception e){
+            diaryCallback.onFailureFromLocal(e);
+        }
+    }
 }

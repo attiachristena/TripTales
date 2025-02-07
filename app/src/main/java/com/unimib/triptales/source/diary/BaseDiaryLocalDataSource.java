@@ -26,4 +26,5 @@ public abstract class BaseDiaryLocalDataSource {
     public abstract void getAllDiaries();
     public abstract void getSelectedDiaries();
     public abstract void getAllCountries(String userId);
+    public abstract void getBudget(String diaryId);
 }

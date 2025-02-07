@@ -20,9 +20,9 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
     private final BaseDiaryLocalDataSource diaryLocalDataSource;
     private final BaseDiaryRemoteDataSource diaryRemoteDataSource;
     private final MutableLiveData<List<Diary>> diariesLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<Diary>> remoteDiariesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Diary>> selectedDiariesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<String>> countriesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> budgetLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
     private boolean remoteDelete = false;
     private boolean localDelete = false;
@@ -149,6 +149,12 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
         return loadingLiveData;
     }
 
+    public String getBudget(String diaryId){
+        diaryLocalDataSource.getBudget(diaryId);
+        return budgetLiveData.getValue();
+    }
+
+
     // Callback: Successo da database locale
     @Override
     public void onSuccessFromLocal(List<Diary> diaries) {
@@ -172,6 +178,10 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
     @Override
     public void onSuccessSelectionFromLocal(List<Diary> diaries) {
         selectedDiariesLiveData.setValue(diaries);
+    }
+
+    public void onSuccessBudgetFromLocal(String budget){
+        budgetLiveData.setValue(budget);
     }
 
     // Callback: Fallimento da database locale
