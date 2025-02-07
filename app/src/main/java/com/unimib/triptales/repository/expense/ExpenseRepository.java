@@ -1,8 +1,12 @@
 package com.unimib.triptales.repository.expense;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Result;
 import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
@@ -18,6 +22,8 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     private final MutableLiveData<List<Expense>> expensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
+    private boolean remoteDelete = false;
+    private boolean localDelete = false;
 
     public ExpenseRepository(BaseExpenseLocalDataSource expenseLocalDataSource, BaseExpenseRemoteDataSource expenseRemoteDataSource) {
         this.expenseLocalDataSource = expenseLocalDataSource;
@@ -79,31 +85,47 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
 
     public List<Expense> getSelectedExpenses() {
         expenseLocalDataSource.getSelectedExpenses();
-        expenseRemoteDataSource.getSelectedExpenses();
         return selectedExpensesLiveData.getValue();
     }
 
     public List<Expense> getFilteredExpenses(String category) {
         expenseLocalDataSource.getFilteredExpenses(category);
-        expenseRemoteDataSource.getFilteredExpenses(category);
         return filteredExpensesLiveData.getValue();
     }
 
     @Override
-    public void onSuccessFromRemote() {}
+    public void onSuccessDeleteFromRemote() {
+        remoteDelete = true;
+    }
 
     @Override
-    public void onSuccessFromRemote(List<Expense> expenses) {}
+    public void onSuccessFromRemote(List<Expense> expenses) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            if(remoteDelete || !localDelete){
+                for (Expense expense : expenses) {
+                    expenseLocalDataSource.insertExpense(expense);
+                }
+                expenseLocalDataSource.getAllExpenses();
+                remoteDelete = false;
+                localDelete = false;
+            }
+        });
+    }
 
     @Override
     public void onFailureFromRemote(Exception exception) {}
 
     @Override
-    public void onSuccessFromLocal() {}
+    public void onSuccessDeleteFromLocal() {
+        localDelete = true;
+    }
 
     @Override
     public void onSuccessFromLocal(List<Expense> expenses) {
         expensesLiveData.setValue(expenses);
+        for(Expense expense : expenses){
+            expenseRemoteDataSource.insertExpense(expense);
+        }
     }
 
     @Override

@@ -16,18 +16,15 @@ import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.model.Task;
-import com.unimib.triptales.model.User;
 import com.unimib.triptales.util.Constants;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 @Database(entities = {User.class, Diary.class, Goal.class, Task.class, Expense.class,
 CheckpointDiary.class, ImageCardItem.class}, version = DATABASE_VERSION)
 @TypeConverters({UriConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
-    public abstract UserDao userDao();
     public abstract DiaryDao diaryDao();
     public abstract GoalDao goalDao();
     public abstract TaskDao taskDao();

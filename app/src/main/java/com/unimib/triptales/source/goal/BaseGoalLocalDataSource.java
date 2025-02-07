@@ -22,7 +22,6 @@ public abstract class BaseGoalLocalDataSource {
     public abstract void deleteGoal(Goal goal);
     public abstract void deleteAllGoals(List<Goal> goals);
     public abstract void getAllGoals();
-    //List<Goal> getAllGoalsByDiaryId(int diaryId);
     public abstract void getSelectedGoals();
     public abstract void getCheckedGoals();
 

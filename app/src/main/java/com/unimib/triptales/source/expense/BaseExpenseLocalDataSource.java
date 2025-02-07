@@ -24,6 +24,4 @@ public abstract class BaseExpenseLocalDataSource {
     public abstract void getAllExpenses();
     public abstract void getSelectedExpenses();
     public abstract void getFilteredExpenses(String category);
-    //List<Expense> getAllExpenses(int diaryId);
-
 }

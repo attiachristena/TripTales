@@ -38,16 +38,12 @@ public interface GoalDao {
     @Delete
     void deleteAll(List<Goal> goals);
 
-    @Query("SELECT * FROM Goal")
-    List<Goal> getAll();
+    @Query("SELECT * FROM Goal WHERE diaryId = :diaryId ORDER BY goal_timestamp DESC")
+    List<Goal> getAll(String diaryId);
 
-    //Recupero delle spese di un determinato diario
-    /*@Query("SELECT * FROM Goal WHERE diaryId = :diaryId")
-    List<Goal> getAllByDiaryId(int diaryId);*/
+    @Query("SELECT * FROM Goal WHERE goal_isSelected = 1 AND diaryId = :diaryId")
+    List<Goal> getSelectedGoals(String diaryId);
 
-    @Query("SELECT * FROM Goal WHERE goal_isSelected = 1")
-    List<Goal> getSelectedGoals();
-
-    @Query("SELECT * FROM Goal WHERE goal_isChecked = 1")
-    List<Goal> getCheckedGoals();
+    @Query("SELECT * FROM Goal WHERE goal_isChecked = 1 AND diaryId = :diaryId")
+    List<Goal> getCheckedGoals(String diaryId);
 }
