@@ -5,7 +5,7 @@ import com.unimib.triptales.model.CheckpointDiary;
 import java.util.List;
 
 public interface ICheckpointDiaryRepository {
-    List<CheckpointDiary> getCheckpointDiariesByDiaryId(int diaryId);
+    List<CheckpointDiary> getCheckpointDiariesByDiaryId(String diaryId);
     List<CheckpointDiary> getAllCheckpointDiaries();
     long insertCheckpointDiary(CheckpointDiary checkpointDiary);
     void updateCheckpointDiary(CheckpointDiary checkpointDiary);

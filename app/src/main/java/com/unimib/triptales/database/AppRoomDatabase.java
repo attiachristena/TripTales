@@ -10,11 +10,11 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 
-import com.unimib.triptales.model.ImageCardItem;
 import com.unimib.triptales.model.CheckpointDiary;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
+import com.unimib.triptales.model.ImageCardItem;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.util.Constants;
 

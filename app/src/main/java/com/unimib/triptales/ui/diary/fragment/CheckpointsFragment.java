@@ -349,8 +349,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
                     String diaryIdStr = SharedPreferencesUtils.getDiaryId(getContext());
                     if (diaryIdStr != null) {
-                        int diaryId = Integer.parseInt(diaryIdStr);
-
                         if (imageUri != null) {
                             checkpointDiaryViewModel.insertCheckpoint(checkpointNameSave, checkpointDateSave, imageUri, latLng, getContext());
                             checkpointsLayout.removeView(add_checkpoint);
@@ -628,17 +626,15 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         if (currentDiaryIdStr == null) {
             return;
         }
-        int currentDiaryId = Integer.parseInt(currentDiaryIdStr);
 
         List<CheckpointDiary> currentDiaryCheckpoints = checkpoints.stream()
-                .filter(checkpoint -> checkpoint.getDiaryId() == currentDiaryId)
+                .filter(checkpoint -> checkpoint.getDiaryId().equals(currentDiaryIdStr))
                 .collect(Collectors.toList());
 
         for (CheckpointDiary checkpoint : currentDiaryCheckpoints) {
             addCheckpointToList(checkpoint.getNome(), checkpoint.getData(), checkpoint.getImmagineUri(), checkpoint);
         }
 
-        // Aggiorna la mappa solo se è inizializzata
         if (googleMap != null) {
             googleMap.clear();
             for (CheckpointDiary checkpoint : currentDiaryCheckpoints) {

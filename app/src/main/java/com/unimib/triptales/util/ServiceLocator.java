@@ -3,7 +3,6 @@ package com.unimib.triptales.util;
 import android.content.Context;
 
 import com.unimib.triptales.database.AppRoomDatabase;
-
 import com.unimib.triptales.repository.diary.DiaryRepository;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.CheckpointDiaryRepository;
@@ -48,7 +47,7 @@ public class ServiceLocator {
     private ServiceLocator() {}
 
     public static ServiceLocator getINSTANCE() {
-        if (INSTANCE == null){
+        if (INSTANCE == null) {
             synchronized (ServiceLocator.class) {
                 if (INSTANCE == null)
                     INSTANCE = new ServiceLocator();
@@ -57,13 +56,13 @@ public class ServiceLocator {
         return INSTANCE;
     }
 
-    public IUserRepository getUserRepository(){
+    public IUserRepository getUserRepository() {
         BaseUserAuthenticationRemoteDataSource userAuthRemoteDataSource =
                 new UserAuthenticationFirebaseDataSource();
         return new UserRepository(userAuthRemoteDataSource);
     }
 
-    public IExpenseRepository getExpenseRepository(Context context){
+    public IExpenseRepository getExpenseRepository(Context context) {
         BaseExpenseLocalDataSource expenseLocalDataSource =
                 new ExpenseLocalDataSource(AppRoomDatabase.getDatabase(context).expenseDao(),
                         SharedPreferencesUtils.getDiaryId(context));
@@ -72,7 +71,7 @@ public class ServiceLocator {
         return new ExpenseRepository(expenseLocalDataSource, expenseRemoteDataSource);
     }
 
-    public IGoalRepository getGoalRepository(Context context){
+    public IGoalRepository getGoalRepository(Context context) {
         BaseGoalLocalDataSource goalLocalDataSource =
                 new GoalLocalDataSource(AppRoomDatabase.getDatabase(context).goalDao(),
                         SharedPreferencesUtils.getDiaryId(context));
@@ -81,7 +80,7 @@ public class ServiceLocator {
         return new GoalRepository(goalLocalDataSource, goalRemoteDataSource);
     }
 
-    public ITaskRepository getTaskRepository(Context context){
+    public ITaskRepository getTaskRepository(Context context) {
         BaseTaskLocalDataSource taskLocalDataSource =
                 new TaskLocalDataSource(AppRoomDatabase.getDatabase(context).taskDao(),
                         SharedPreferencesUtils.getDiaryId(context));
@@ -90,7 +89,7 @@ public class ServiceLocator {
         return new TaskRepository(taskLocalDataSource, taskRemoteDataSource);
     }
 
-    public ICheckpointDiaryRepository getCheckpointDiaryRepository(Context context){
+    public ICheckpointDiaryRepository getCheckpointDiaryRepository(Context context) {
         BaseCheckpointDiaryLocalDataSource checkpointDiaryLocalDataSource =
                 new CheckpointDiaryLocalDataSource(AppRoomDatabase.getDatabase(context).checkpointDiaryDao());
         /*
@@ -102,6 +101,13 @@ public class ServiceLocator {
         return new CheckpointDiaryRepository(checkpointDiaryLocalDataSource);
     }
 
+    public IImageCardItemRepository getImageCardItemRepository(Context context) {
+        BaseImageCardItemLocalDataSource imageCardItemLocalDataSource =
+                new ImageCardItemLocalDataSource(AppRoomDatabase.getDatabase(context).imageCardItemDao());
+        return new ImageCardItemRepository(imageCardItemLocalDataSource);
+
+    }
+
     public IDiaryRepository getDiaryRepository(Context context) {
         BaseDiaryLocalDataSource diaryLocalDataSource =
                 new DiaryLocalDataSource(AppRoomDatabase.getDatabase(context).diaryDao(),
@@ -110,12 +116,4 @@ public class ServiceLocator {
                 new DiaryRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
         return new DiaryRepository(diaryLocalDataSource, diaryRemoteDataSource);
     }
-
-    public IImageCardItemRepository getImageCardItemRepository(Context context){
-        BaseImageCardItemLocalDataSource imageCardItemLocalDataSource =
-                new ImageCardItemLocalDataSource(AppRoomDatabase.getDatabase(context).imageCardItemDao());
-        return new ImageCardItemRepository(imageCardItemLocalDataSource);
-
-    }
-
 }
