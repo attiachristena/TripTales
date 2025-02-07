@@ -45,10 +45,10 @@ public interface CheckpointDiaryDao {
     @Delete
     void deleteCheckpointDiary(CheckpointDiary checkpointDiary);
 
-    @Query("DELETE FROM Checkpoint WHERE id IN (:ids)")
+    @Query("DELETE FROM Diary WHERE id IN (:ids)")
     void deleteCheckpointDiaryById(List<Integer> ids);
 
-    @Query("DELETE FROM Checkpoint")
+    @Query("DELETE FROM Diary")
     void deleteAllCheckpointDiaries();
 
     @Query("SELECT nome FROM CheckpointDiary WHERE id = :id")

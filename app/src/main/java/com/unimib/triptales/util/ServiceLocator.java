@@ -3,8 +3,7 @@ package com.unimib.triptales.util;
 import android.content.Context;
 
 import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.repository.checkpoint.CheckpointRepository;
-import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
+
 import com.unimib.triptales.repository.diary.DiaryRepository;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.CheckpointDiaryRepository;
@@ -19,10 +18,6 @@ import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.repository.task.TaskRepository;
 import com.unimib.triptales.repository.user.IUserRepository;
 import com.unimib.triptales.repository.user.UserRepository;
-import com.unimib.triptales.source.checkpoint.BaseCheckpointLocalDataSource;
-import com.unimib.triptales.source.checkpoint.BaseCheckpointRemoteDataSource;
-import com.unimib.triptales.source.checkpoint.CheckpointLocalDataSource;
-import com.unimib.triptales.source.checkpoint.CheckpointRemoteDataSource;
 import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
 import com.unimib.triptales.source.diary.BaseDiaryRemoteDataSource;
 import com.unimib.triptales.source.diary.DiaryLocalDataSource;

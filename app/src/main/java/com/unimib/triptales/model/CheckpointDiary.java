@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey;
 @Entity(
         tableName = "CheckpointDiary",
         foreignKeys = @ForeignKey(
-                entity = Checkpoint.class,
+                entity = Diary.class,
                 parentColumns = "id",
                 childColumns = "diary_id",
                 onDelete = ForeignKey.CASCADE

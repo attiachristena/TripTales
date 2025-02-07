@@ -52,15 +52,20 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.DiaryRecyclerAdapter;
 import com.unimib.triptales.adapters.DiaryAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.CheckpointDao;
 import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.database.UserDao;
-import com.unimib.triptales.model.Checkpoint;
 import com.unimib.triptales.model.Diary;
+import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
 import com.unimib.triptales.util.GeoJSONParser;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -101,7 +106,6 @@ public class HomeFragment extends Fragment {
     AppRoomDatabase database;
     private DiaryDao diaryDao;
     private UserDao userDao;
-    private CheckpointDao checkpointDao;
 
     @Nullable
     @Override
@@ -163,6 +167,7 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
