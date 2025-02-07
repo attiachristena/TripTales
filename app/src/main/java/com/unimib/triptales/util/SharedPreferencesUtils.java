@@ -13,6 +13,8 @@ public class SharedPreferencesUtils {
     private static final String PREF_NAME = "TripTalesPrefs";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_DIARY_ID = "current_diary_id";
+    private static final String KEY_IS_APP_FIRST_RUN = "isAppFirstRun";
+    private static final String KEY_FIRST_ACCESS = "firstAccess";
     private final Context context;
 
     public SharedPreferencesUtils(Context context){
@@ -53,6 +55,19 @@ public class SharedPreferencesUtils {
     public static boolean isLoggedIn(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(KEY_IS_LOGGED_IN, false);
+    }
+
+    public static boolean isFirstAccess(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(KEY_FIRST_ACCESS, true); // Default: true se non esiste
+    }
+
+    // Metodo per impostare il flag dopo il primo accesso
+    public static void setFirstAccessComplete(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(KEY_FIRST_ACCESS, false); // Imposta il flag come "non è il primo accesso"
+        editor.apply();
     }
 
     // Salva il diaryId nelle SharedPreferences

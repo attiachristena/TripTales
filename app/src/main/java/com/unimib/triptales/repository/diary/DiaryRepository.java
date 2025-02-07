@@ -1,5 +1,7 @@
 package com.unimib.triptales.repository.diary;
 
+import android.content.Context;
+
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
@@ -18,6 +20,7 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
     private final BaseDiaryLocalDataSource diaryLocalDataSource;
     private final BaseDiaryRemoteDataSource diaryRemoteDataSource;
     private final MutableLiveData<List<Diary>> diariesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Diary>> remoteDiariesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Diary>> selectedDiariesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<String>> countriesLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
@@ -120,8 +123,11 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
     @Override
     public List<Diary> getAllDiaries() {
         diaryLocalDataSource.getAllDiaries();
-        diaryRemoteDataSource.getAllDiaries();
         return diariesLiveData.getValue();
+    }
+
+    public void getRemoteDiaries(){
+        diaryRemoteDataSource.getAllDiaries();
     }
 
     // Ottiene i diari selezionati

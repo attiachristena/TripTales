@@ -145,7 +145,6 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LayoutInflater inflater = LayoutInflater.from(view.getContext());
         emptyMessage = view.findViewById(R.id.text_empty_message);
         bAdd = false;
         bEdit = false;
@@ -156,14 +155,15 @@ public class HomeFragment extends Fragment {
         homeViewModel.getLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                int currentCount = observationCount.incrementAndGet();
-                List<Diary> diaries = homeViewModel.getDiariesLiveData().getValue();
-                if(diaries != null){
-                    homeViewModel.loadDiaries();
-                }
-
-                if (currentCount >= maxObservations) {
-                    homeViewModel.getLoading().removeObserver(this);
+                if(!aBoolean) {
+                    int currentCount = observationCount.incrementAndGet();
+                    List<Diary> diaries = homeViewModel.getDiariesLiveData().getValue();
+                    if (diaries != null) {
+                        homeViewModel.loadDiaries();
+                    }
+                    if (currentCount >= maxObservations) {
+                        homeViewModel.getLoading().removeObserver(this);
+                    }
                 }
             }
         });

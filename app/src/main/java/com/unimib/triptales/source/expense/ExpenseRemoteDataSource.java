@@ -21,15 +21,11 @@ import java.util.Map;
 public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
     private final DatabaseReference databaseReference;
 
-    public ExpenseRemoteDataSource(String userId, String diaryId) {
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    public ExpenseRemoteDataSource(String userId) {
         this.databaseReference = FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(userId)
-                .child("diaries")
-                .child(diaryId)
                 .child("expenses");
-        //databaseReference.keepSynced(true);
     }
 
     public void insertExpense(Expense expense) {

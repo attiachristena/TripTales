@@ -1,5 +1,7 @@
 package com.unimib.triptales.repository.diary;
 
+import android.content.Context;
+
 import com.unimib.triptales.model.Diary;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public interface IDiaryRepository {
         void deleteDiary(Diary diary);
         void deleteAllDiaries(List<Diary> diaries);
         List<Diary> getAllDiaries();
+        void getRemoteDiaries();
         List<Diary> getSelectedDiaries();
         List<String> getAllCountries(String userId);
         LiveData<Boolean> getLoading();

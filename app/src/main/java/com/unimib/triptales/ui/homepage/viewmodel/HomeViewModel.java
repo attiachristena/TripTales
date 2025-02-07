@@ -17,6 +17,9 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
 import static com.unimib.triptales.util.SharedPreferencesUtils.getLoggedUserId;
+
+import android.content.Context;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -71,6 +74,10 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<Boolean> getLoading(){
         return diaryRepository.getLoading();
+    }
+
+    public void loadRemoteDiaries(){
+        diaryRepository.getRemoteDiaries();
     }
 
     public void loadCountries(String userId) {

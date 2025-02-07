@@ -20,15 +20,11 @@ import java.util.Map;
 public class GoalRemoteDataSource extends BaseGoalRemoteDataSource{
     private final DatabaseReference databaseReference;
 
-    public GoalRemoteDataSource(String userId, String diaryId) {
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    public GoalRemoteDataSource(String userId) {
         this.databaseReference = FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(userId)
-                .child("diaries")
-                .child(diaryId)
                 .child("goals");
-        //databaseReference.keepSynced(true);
     }
 
     @Override

@@ -19,15 +19,11 @@ import java.util.Map;
 public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
     private final DatabaseReference databaseReference;
 
-    public TaskRemoteDataSource(String userId, String diaryId) {
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    public TaskRemoteDataSource(String userId) {
         this.databaseReference = FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(userId)
-                .child("diaries")
-                .child(diaryId)
                 .child("tasks");
-        //databaseReference.keepSynced(true);
     }
 
     @Override
