@@ -61,7 +61,7 @@ public class TasksFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_check_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_tasks, container, false);
         ITaskRepository taskRepository = ServiceLocator.getINSTANCE().getTaskRepository(getContext());
         taskViewModel = new ViewModelProvider(requireActivity(),
                 new ViewModelFactory(taskRepository)).get(TaskViewModel.class);
@@ -114,11 +114,13 @@ public class TasksFragment extends Fragment {
         taskViewModel.getTasksLiveData().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
-                tasksRecyclerAdapter.setTasksList(tasks);
-                if(tasks.isEmpty()){
-                    noTasksTextView.setVisibility(View.VISIBLE);
-                } else {
-                    noTasksTextView.setVisibility(View.GONE);
+                if(tasks != null) {
+                    tasksRecyclerAdapter.setTasksList(tasks);
+                    if (tasks.isEmpty()) {
+                        noTasksTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        noTasksTextView.setVisibility(View.GONE);
+                    }
                 }
             }
         });
@@ -231,7 +233,7 @@ public class TasksFragment extends Fragment {
 
                 if(correct){
                     if(bAdd){
-                        taskViewModel.insertTask(inputTaskName);
+                        taskViewModel.insertTask(inputTaskName, getContext());
                     } else if(bEdit){
                         List<Task> selectedTasks = taskViewModel.getSelectedTasksLiveData().getValue();
                         if(selectedTasks != null && !selectedTasks.isEmpty()){

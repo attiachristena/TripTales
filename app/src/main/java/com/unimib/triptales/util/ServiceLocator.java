@@ -5,6 +5,8 @@ import android.content.Context;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.repository.checkpoint.CheckpointRepository;
 import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
+import com.unimib.triptales.repository.diary.DiaryRepository;
+import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.CheckpointDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
 import com.unimib.triptales.repository.expense.ExpenseRepository;
@@ -21,6 +23,10 @@ import com.unimib.triptales.source.checkpoint.BaseCheckpointLocalDataSource;
 import com.unimib.triptales.source.checkpoint.BaseCheckpointRemoteDataSource;
 import com.unimib.triptales.source.checkpoint.CheckpointLocalDataSource;
 import com.unimib.triptales.source.checkpoint.CheckpointRemoteDataSource;
+import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
+import com.unimib.triptales.source.diary.BaseDiaryRemoteDataSource;
+import com.unimib.triptales.source.diary.DiaryLocalDataSource;
+import com.unimib.triptales.source.diary.DiaryRemoteDataSource;
 import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryLocalDataSource;
 import com.unimib.triptales.source.checkpointDiary.CheckpointDiaryLocalDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
@@ -67,26 +73,25 @@ public class ServiceLocator {
                 new ExpenseLocalDataSource(AppRoomDatabase.getDatabase(context).expenseDao(),
                         SharedPreferencesUtils.getDiaryId(context));
         BaseExpenseRemoteDataSource expenseRemoteDataSource =
-                new ExpenseRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
-                        SharedPreferencesUtils.getDiaryId(context));
+                new ExpenseRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
         return new ExpenseRepository(expenseLocalDataSource, expenseRemoteDataSource);
     }
 
     public IGoalRepository getGoalRepository(Context context){
         BaseGoalLocalDataSource goalLocalDataSource =
-                new GoalLocalDataSource(AppRoomDatabase.getDatabase(context).goalDao());
-        BaseGoalRemoteDataSource goalRemoteDataSource =
-                new GoalRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
+                new GoalLocalDataSource(AppRoomDatabase.getDatabase(context).goalDao(),
                         SharedPreferencesUtils.getDiaryId(context));
+        BaseGoalRemoteDataSource goalRemoteDataSource =
+                new GoalRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
         return new GoalRepository(goalLocalDataSource, goalRemoteDataSource);
     }
 
     public ITaskRepository getTaskRepository(Context context){
         BaseTaskLocalDataSource taskLocalDataSource =
-                new TaskLocalDataSource(AppRoomDatabase.getDatabase(context).taskDao());
-        BaseTaskRemoteDataSource taskRemoteDataSource =
-                new TaskRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
+                new TaskLocalDataSource(AppRoomDatabase.getDatabase(context).taskDao(),
                         SharedPreferencesUtils.getDiaryId(context));
+        BaseTaskRemoteDataSource taskRemoteDataSource =
+                new TaskRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
         return new TaskRepository(taskLocalDataSource, taskRemoteDataSource);
     }
 
@@ -102,10 +107,19 @@ public class ServiceLocator {
         return new CheckpointDiaryRepository(checkpointDiaryLocalDataSource);
     }
 
+    public IDiaryRepository getDiaryRepository(Context context) {
+        BaseDiaryLocalDataSource diaryLocalDataSource =
+                new DiaryLocalDataSource(AppRoomDatabase.getDatabase(context).diaryDao(),
+                        SharedPreferencesUtils.getLoggedUserId());
+        BaseDiaryRemoteDataSource diaryRemoteDataSource =
+                new DiaryRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
+        return new DiaryRepository(diaryLocalDataSource, diaryRemoteDataSource);
+
     public IImageCardItemRepository getImageCardItemRepository(Context context){
         BaseImageCardItemLocalDataSource imageCardItemLocalDataSource =
                 new ImageCardItemLocalDataSource(AppRoomDatabase.getDatabase(context).imageCardItemDao());
         return new ImageCardItemRepository(imageCardItemLocalDataSource);
+
     }
 
 }

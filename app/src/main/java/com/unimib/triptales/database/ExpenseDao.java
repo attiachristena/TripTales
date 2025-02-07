@@ -46,19 +46,15 @@ public interface ExpenseDao {
             "                 SUBSTR(expense_date, 7, 4) || '-' || \n" +
             "                 SUBSTR(expense_date, 4, 2) || '-' || \n" +
             "                 SUBSTR(expense_date, 1, 2)) DESC")
-    List<Expense> getAllExpenses(int diaryId);
+    List<Expense> getAll(String diaryId);
 
     @Query("SELECT * FROM Expense WHERE expense_isSelected = 1 AND diaryId = :diaryId")
-    List<Expense> getSelectedExpenses(int diaryId);
+    List<Expense> getSelectedExpenses(String diaryId);
 
     @Query("SELECT * FROM Expense WHERE expense_category = :category AND diaryId = :diaryId ORDER BY STRFTIME('%Y-%m-%d', \n" +
             "                 SUBSTR(expense_date, 7, 4) || '-' || \n" +
             "                 SUBSTR(expense_date, 4, 2) || '-' || \n" +
             "                 SUBSTR(expense_date, 1, 2)) DESC")
-    List<Expense> getFilteredExpenses(int diaryId, String category);
-
-    /*//Recupero delle spese di un determinato diario
-    @Query("SELECT * FROM Expense WHERE diaryId = :diaryId")
-    List<Expense> getAllByDiaryId(int diaryId);*/
+    List<Expense> getFilteredExpenses(String diaryId, String category);
 }
 

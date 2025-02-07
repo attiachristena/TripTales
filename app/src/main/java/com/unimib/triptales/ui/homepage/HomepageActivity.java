@@ -10,27 +10,28 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.material.navigation.NavigationBarView;
 import com.unimib.triptales.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.unimib.triptales.repository.diary.IDiaryRepository;
+import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.ui.homepage.fragment.CalendarFragment;
 import com.unimib.triptales.ui.homepage.fragment.HomeFragment;
 import com.unimib.triptales.ui.homepage.fragment.MapFragment;
+import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
 import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
+import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
-import java.util.Map;
 import java.util.Objects;
 
 
@@ -48,6 +49,14 @@ public class HomepageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
+        IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getApplicationContext());
+        HomeViewModel homeViewModel = new ViewModelProvider(this,
+                new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
+
+        if (SharedPreferencesUtils.isFirstAccess(getApplicationContext())) {
+            homeViewModel.loadRemoteDiaries();
+            SharedPreferencesUtils.setFirstAccessComplete(getApplicationContext());
+        }
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -117,26 +126,14 @@ public class HomepageActivity extends AppCompatActivity {
 
     private void switchFragment(Fragment fragment, String tag){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(fragment instanceof MapFragment){
-            Fragment existingMapFragment = getSupportFragmentManager().findFragmentByTag(tag);
-            if(existingMapFragment != null){
-                transaction.remove(existingMapFragment);
-            }
-            mapFragment = new MapFragment();
-            transaction.hide(activeFragment).add(R.id.fragment_container, mapFragment, tag);
-            activeFragment = mapFragment;
-            transaction.commit();
+        if(!fragment.isAdded()){
+            transaction.hide(activeFragment)
+                    .add(R.id.fragment_container, fragment, tag);
         }else{
-            //per non creare nuova la mappa basta togliere l'if sopra e lasciare solo contenuto else!
-            if(!fragment.isAdded()){
-                transaction.hide(activeFragment)
-                        .add(R.id.fragment_container, fragment, tag);
-            }else{
-                transaction.hide(activeFragment).show(fragment);
-            }
-            activeFragment = fragment;
-            transaction.commit();
+            transaction.hide(activeFragment).show(fragment);
         }
+        activeFragment = fragment;
+        transaction.commit();
     }
 
     private void updateBottomNavigation(){

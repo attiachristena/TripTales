@@ -5,10 +5,11 @@ import com.unimib.triptales.model.Task;
 import java.util.List;
 
 public interface TaskResponseCallback {
-    void onSuccessFromRemote();
+    void onSuccessDeleteFromRemote();
     void onSuccessFromRemote(List<Task> tasks);
     void onFailureFromRemote(Exception exception);
-    void onSuccessFromLocal();
+
+    void onSuccessDeleteFromLocal();
     void onSuccessFromLocal(List<Task> tasks);
     void onSuccessSelectionFromLocal(List<Task> tasks);
     void onFailureFromLocal(Exception exception);

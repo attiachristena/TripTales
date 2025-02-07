@@ -17,6 +17,13 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="19dp">
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/cerca_diario_per_nome"
+            app:iconifiedByDefault="false"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_diaries"
             android:layout_width="match_parent"

@@ -5,9 +5,12 @@ import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -16,14 +19,28 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.ViewPagerAdapter;
+import com.unimib.triptales.repository.expense.IExpenseRepository;
+import com.unimib.triptales.repository.goal.IGoalRepository;
+import com.unimib.triptales.repository.task.ITaskRepository;
+import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.GoalViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
+import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
+
+import org.w3c.dom.Text;
+
+import java.util.Objects;
 
 public class DiaryActivity extends AppCompatActivity {
 
@@ -43,6 +60,21 @@ public class DiaryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary);
+
+        IExpenseRepository expenseRepository = ServiceLocator.getINSTANCE().getExpenseRepository(getApplicationContext());
+        ExpenseViewModel expenseViewModel = new ViewModelProvider(this,
+                new ViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
+        expenseViewModel.fetchAllExpenses();
+
+        IGoalRepository goalRepository = ServiceLocator.getINSTANCE().getGoalRepository(getApplicationContext());
+        GoalViewModel goalViewModel = new ViewModelProvider(this,
+                new ViewModelFactory(goalRepository)).get(GoalViewModel.class);
+        goalViewModel.fetchAllGoals();
+
+        ITaskRepository taskRepository = ServiceLocator.getINSTANCE().getTaskRepository(getApplicationContext());
+        TaskViewModel taskViewModel = new ViewModelProvider(this,
+                new ViewModelFactory(taskRepository)).get(TaskViewModel.class);
+        taskViewModel.fetchAllTasks();
 
         // Recupera i dati dall'Intent
         Intent intent = getIntent();
@@ -68,12 +100,18 @@ public class DiaryActivity extends AppCompatActivity {
         viewPager2.setAdapter(viewPagerAdapter);
         rootLayoutDiary = findViewById(R.id.rootLayoutDiary);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+            View customView = LayoutInflater.from(this).inflate(R.layout.tab_custom, null);
+            TextView tabText = customView.findViewById(R.id.tabText);
 
-        ActionBar actionBar = getSupportActionBar();
+            if (position == 0) tabText.setText(R.string.tabTappe);
+            else if (position == 1) tabText.setText(R.string.tabSpese);
+            else if (position == 2) tabText.setText(R.string.tabObiettivi);
+            else tabText.setText(R.string.tabCheckList);
 
-        // TabLayout listener for ViewPager2 synchronization
+            tab.setCustomView(customView);
+        }).attach();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -81,80 +119,32 @@ public class DiaryActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // No need to implement
-            }
+            public void onTabUnselected(TabLayout.Tab tab) {}
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // No need to implement
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-        // Sync ViewPager2 with TabLayout
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
+                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
+            }
+        });
+
+        TextView diaryNameTextView = findViewById(R.id.diaryName);
+        diaryNameTextView.setText(diaryName);
+        ImageButton diaryBackButton = findViewById(R.id.backButtonDiary);
+        diaryBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
     }
 
     public void setViewPagerSwipeEnabled(boolean enabled) {
         viewPager2.setUserInputEnabled(enabled);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_app_bar, menu);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_home) {
-            SharedPreferencesUtils.clearDiaryId(getApplicationContext());
-            Intent intent = new Intent(DiaryActivity.this, HomepageActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intent);
-            finish();
-            return true;
-        }
-
-        View buttonAccount = toolbar.findViewById(R.id.action_account);
-
-        if (id == R.id.action_account) {
-            PopupMenu popupMenu = new PopupMenu(DiaryActivity.this, buttonAccount);
-            popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
-
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.action_logout) {
-                        Intent intent = new Intent(DiaryActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-            popupMenu.show();
-        }
-
-        if (id == android.R.id.home) {
-            Intent intent = new Intent(DiaryActivity.this, SettingsActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

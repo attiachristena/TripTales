@@ -4,19 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
+import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.repository.goal.IGoalRepository;
 import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
 import com.unimib.triptales.repository.task.ITaskRepository;
+import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.checkpoint.CheckpointDiaryViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.checkpoint.ImageCardItemViewModel;
-
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private final IExpenseRepository expenseRepository;
     private final IGoalRepository goalRepository;
     private final ITaskRepository taskRepository;
+    private final ICheckpointRepository checkpointRepository;
+    private final IDiaryRepository diaryRepository;
     private final ICheckpointDiaryRepository checkpointDiaryRepository;
     private final IImageCardItemRepository imageCardItemRepository;
 
@@ -24,6 +28,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = expenseRepository;
         this.goalRepository = null;
         this.taskRepository = null;
+        this.checkpointRepository = null;
+        diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
     }
@@ -32,6 +38,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = goalRepository;
         this.taskRepository = null;
+        this.checkpointRepository = null;
+        diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
     }
@@ -40,6 +48,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = taskRepository;
+        this.checkpointRepository = null;
+        diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
     }
@@ -48,6 +58,15 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = null;
+        this.checkpointRepository = checkpointRepository;
+        diaryRepository = null;
+    }
+    public ViewModelFactory(IDiaryRepository diaryRepository){
+        this.expenseRepository = null;
+        this.goalRepository = null;
+        this.taskRepository = null;
+        this.checkpointRepository = null;
+        this.diaryRepository = diaryRepository;
         this.checkpointDiaryRepository = checkpointDiaryRepository;
         this.imageCardItemRepository = null;
     }
@@ -78,7 +97,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ImageCardItemViewModel.class)) {
             return (T) new ImageCardItemViewModel(imageCardItemRepository);
         }
+        if(modelClass.isAssignableFrom(HomeViewModel.class)){
+            return (T) new HomeViewModel(diaryRepository);
+        }
+
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
+
 
 }

@@ -21,7 +21,7 @@ public class Expense {
     private String id;
 
     @ColumnInfo(name = "diaryId")
-    private int diaryId;
+    private String diaryId;
 
     @ColumnInfo(name = "expense_amount")
     private String amount;
@@ -44,7 +44,7 @@ public class Expense {
     public Expense(){}
 
     public Expense(String amount, String category, String description, String date, boolean expense_isSelected,
-                   int diaryId) {
+                   String diaryId) {
         this.id = UUID.randomUUID().toString();
         this.amount = amount;
         setCategory(category);
@@ -54,11 +54,11 @@ public class Expense {
         this.diaryId = diaryId;
     }
 
-    public int getDiaryId() {
+    public String getDiaryId() {
         return diaryId;
     }
 
-    public void setDiaryId(int diaryId) {
+    public void setDiaryId(String diaryId) {
         this.diaryId = diaryId;
     }
 
