@@ -2,6 +2,7 @@ package com.unimib.triptales.repository.imageCardItem;
 
 import androidx.lifecycle.LiveData;
 
+import com.unimib.triptales.database.CheckpointDiaryDao;
 import com.unimib.triptales.database.ImageCardItemDao;
 import com.unimib.triptales.model.ImageCardItem;
 import com.unimib.triptales.source.imageCardItem.BaseImageCardItemLocalDataSource;
@@ -10,12 +11,14 @@ import java.util.List;
 
 public class ImageCardItemRepository implements IImageCardItemRepository {
     private BaseImageCardItemLocalDataSource imageCardItemLocalDataSource;
+    private CheckpointDiaryDao checkpointDiaryDao;
+    private ImageCardItemDao imageCardItemDao;
 
     public ImageCardItemRepository(BaseImageCardItemLocalDataSource imageCardItemLocalDataSource) {
         this.imageCardItemLocalDataSource = imageCardItemLocalDataSource;
     }
 
-    public LiveData<List<ImageCardItem>> getAllImageCardItems() {
+    public List<ImageCardItem> getAllImageCardItems() {
         return imageCardItemLocalDataSource.getAllImageCardItems();
     }
 
@@ -39,7 +42,7 @@ public class ImageCardItemRepository implements IImageCardItemRepository {
         imageCardItemLocalDataSource.deleteImageCardItemById(id);
     }
 
-    public LiveData<ImageCardItem> getImageCardItemById(int id) {
+    public List<ImageCardItem> getImageCardItemById(int id) {
         return imageCardItemLocalDataSource.getImageCardItemById(id);
     }
 
@@ -58,6 +61,19 @@ public class ImageCardItemRepository implements IImageCardItemRepository {
     public void updateImageCardItemImageUri(int id, String imageUri) {
         imageCardItemLocalDataSource.updateImageCardItemImageUri(id, imageUri);
     }
+
+    public List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId) {
+        return imageCardItemLocalDataSource.getImageCardItemByCheckpointDiaryId(checkpointDiaryId);
+    }
+
+    public List<ImageCardItem> getSelectedImageCardItems() {
+        return imageCardItemLocalDataSource.getSelectedImageCardItems();
+    }
+
+    public void updateImageCardItemIsSelected(int id, boolean isSelected) {
+        imageCardItemLocalDataSource.updateImageCardItemIsSelected(id, isSelected);
+    }
+
 
     public interface RepositoryCallback<T> {
         void onSuccess(T result);

@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.diary.viewmodel;
+package com.unimib.triptales.ui.diary.viewmodel.checkpoint;
 
 import android.content.Context;
 import android.location.Address;
@@ -123,8 +123,11 @@ public class CheckpointDiaryViewModel extends ViewModel {
 
         try {
             long insertedId = checkpointDiaryRepository.insertCheckpointDiary(nuovaCheckpoint);
-            loadCheckpoints(context);
-            operationStatus.postValue(insertedId > 0);
+            if (insertedId > 0) {
+                SharedPreferencesUtils.saveCheckpointDiaryId(context, (int)insertedId);
+                loadCheckpoints(context);
+                operationStatus.postValue(true);
+            }
         } catch (Exception e) {
             operationStatus.postValue(false);
         }

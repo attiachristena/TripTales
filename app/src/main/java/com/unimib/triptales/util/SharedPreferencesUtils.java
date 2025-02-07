@@ -71,19 +71,25 @@ public class SharedPreferencesUtils {
     // Metodo per salvare l'ID del CheckpointDiary
     public static void saveCheckpointDiaryId(Context context, int id) {
         Log.d("SharedPrefs", "Attempting to save ID: " + id);
+
+        // Validate id before saving
+        if (id <= 0) {
+            Log.e("SharedPrefs", "Attempted to save invalid ID: " + id);
+            return;
+        }
+
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(KEY_CHECKPOINT_DIARY_ID, id);
         boolean success = editor.commit();
-        Log.d("SharedPrefs", "Save success: " + success);
+        Log.d("SharedPrefs", "Save success: " + success + " for ID: " + id);
     }
 
+
     // Metodo per ottenere l'ID del CheckpointDiary salvato
-    public static String getCheckpointDiaryId(Context context) {
+    public static int getCheckpointDiaryId(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        int id = prefs.getInt(KEY_CHECKPOINT_DIARY_ID, -1);
-        Log.d("SharedPrefs", "Retrieved ID: " + id);
-        return id != -1 ? String.valueOf(id) : null;
+        return prefs.getInt(KEY_CHECKPOINT_DIARY_ID, -1);
     }
 
     // Recupera il diaryId salvato

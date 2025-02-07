@@ -12,7 +12,7 @@ public interface BaseCheckpointDiaryLocalDataSource {
 
     List<CheckpointDiary> getCheckpointDiariesByDiaryId(int diaryId);
     List<CheckpointDiary> getAllCheckpointDiaries();
-    void insertCheckpointDiary(CheckpointDiary checkpointDiary);
+    long insertCheckpointDiary(CheckpointDiary checkpointDiary);
     void updateCheckpointDiary(CheckpointDiary checkpointDiary);
     void deleteCheckpointDiary(CheckpointDiary checkpointDiary);
     void deleteAllCheckpointDiaries();

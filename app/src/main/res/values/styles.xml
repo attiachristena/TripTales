@@ -18,8 +18,8 @@
 
     <style name="bottomRoundedImage" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeBottomLeft">24dp</item>
-        <item name="cornerSizeBottomRight">24dp</item>
+        <item name="cornerSizeBottomLeft">20dp</item>
+        <item name="cornerSizeBottomRight">20dp</item>
     </style>
 
     <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">

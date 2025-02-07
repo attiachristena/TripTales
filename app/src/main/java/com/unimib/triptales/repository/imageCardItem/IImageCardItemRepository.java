@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IImageCardItemRepository {
 
-    LiveData<List<ImageCardItem>> getAllImageCardItems();
+    List<ImageCardItem> getAllImageCardItems();
     void insertImageCardItem(ImageCardItem imageCardItem);
     void updateImageCardItem(ImageCardItem imageCardItem);
     void deleteImageCardItem(ImageCardItem imageCardItem);
@@ -18,7 +18,10 @@ public interface IImageCardItemRepository {
     void updateImageCardItemDescription(int id, String description);
     void updateImageCardItemDate(int id, String date);
     void updateImageCardItemImageUri(int id, String imageUri);
-    LiveData<ImageCardItem> getImageCardItemById(int id);
+    List<ImageCardItem> getImageCardItemById(int id);
+    List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId);
+    List<ImageCardItem> getSelectedImageCardItems();
+    void updateImageCardItemIsSelected(int id, boolean isSelected);
 
     interface RepositoryCallback<T> {
         void onSuccess(T result);

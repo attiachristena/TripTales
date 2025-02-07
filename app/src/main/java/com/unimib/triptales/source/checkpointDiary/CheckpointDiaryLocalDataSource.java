@@ -23,8 +23,8 @@ public class CheckpointDiaryLocalDataSource implements BaseCheckpointDiaryLocalD
     }
 
     @Override
-    public void insertCheckpointDiary(CheckpointDiary checkpointDiary) {
-        checkpointDiaryDao.insertCheckpointDiary(checkpointDiary);
+    public long insertCheckpointDiary(CheckpointDiary checkpointDiary) {
+        return checkpointDiaryDao.insertCheckpointDiary(checkpointDiary);
     }
 
     @Override

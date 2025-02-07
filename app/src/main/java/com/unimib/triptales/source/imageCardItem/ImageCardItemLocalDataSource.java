@@ -15,7 +15,7 @@ public class ImageCardItemLocalDataSource implements BaseImageCardItemLocalDataS
     }
 
     @Override
-    public LiveData<List<ImageCardItem>> getAllImageCardItems() {
+    public List<ImageCardItem> getAllImageCardItems() {
         return imageCardItemDao.getAllImageCardItems();
     }
 
@@ -45,7 +45,7 @@ public class ImageCardItemLocalDataSource implements BaseImageCardItemLocalDataS
     }
 
     @Override
-    public LiveData<ImageCardItem> getImageCardItemById(int id) {
+    public List<ImageCardItem> getImageCardItemById(int id) {
         return imageCardItemDao.getImageCardItemById(id);
     }
 
@@ -67,6 +67,21 @@ public class ImageCardItemLocalDataSource implements BaseImageCardItemLocalDataS
     @Override
     public void updateImageCardItemImageUri(int id, String imageUri) {
         imageCardItemDao.updateImageCardItemImageUri(id, imageUri);
+    }
+
+    @Override
+    public List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId) {
+        return imageCardItemDao.getImageCardItemByCheckpointDiaryId(checkpointDiaryId);
+    }
+
+    @Override
+    public List<ImageCardItem> getSelectedImageCardItems() {
+        return imageCardItemDao.getSelectedImageCardItems();
+    }
+
+    @Override
+    public void updateImageCardItemIsSelected(int id, boolean isSelected) {
+        imageCardItemDao.updateImageCardItemIsSelected(id, isSelected);
     }
 
 }

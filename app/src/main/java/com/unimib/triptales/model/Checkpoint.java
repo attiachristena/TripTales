@@ -22,12 +22,28 @@ import java.util.Objects;
 public class Checkpoint {
     @PrimaryKey(autoGenerate = true)
     public int id;
+    
+    @ColumnInfo(name = "name")
+    public String name;
+
+    @ColumnInfo(name = "start_date")
+    public String startDate;
+
+    @ColumnInfo(name = "end_date")
+    public String endDate;
+
+    @ColumnInfo(name = "image_uri")
+    public String imageUri;
 
     @ColumnInfo(name = "diary_id")
     public int diaryId;
 
-    public Checkpoint(int diaryId) {
+    public Checkpoint(int diaryId, String name, String startDate, String endDate, String imageUri) {
         this.diaryId = diaryId;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.imageUri = imageUri;
     }
     // Getters e Setters
     public int getId() {
@@ -44,6 +60,22 @@ public class Checkpoint {
 
     public void setDiaryId(int diaryId) {
         this.diaryId = diaryId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public String getImageUri(){
+        return imageUri;
     }
 
     @Override

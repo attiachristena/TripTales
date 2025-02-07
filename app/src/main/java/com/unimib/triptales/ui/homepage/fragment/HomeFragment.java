@@ -414,7 +414,7 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             newDiary.setId((int) diaryId);
             Log.d(TAG, "Diary saved with ID: " + diaryId);
 
-            Checkpoint newCheckpoint = new Checkpoint((int) diaryId); // Usa l'ID corretto del diario
+            Checkpoint newCheckpoint = new Checkpoint((int) diaryId, diaryName, startDate, endDate, selectedImageUri);
             checkpointDao.insertCheckpoint(newCheckpoint);
         }
 

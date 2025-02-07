@@ -1,7 +1,5 @@
 package com.unimib.triptales.ui.diary.fragment;
 
-import static android.content.Intent.getIntent;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,7 +43,7 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.model.CheckpointDiary;
 import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
 import com.unimib.triptales.ui.diary.CheckpointDiaryActivity;
-import com.unimib.triptales.ui.diary.viewmodel.CheckpointDiaryViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.checkpoint.CheckpointDiaryViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
@@ -602,6 +600,8 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         });
     }
 
+
+    // Metodo per caricare le tappe salvate nella mappa
     private void loadCheckpointsOnExpandedMap() {
         checkpointDiaryViewModel.getMapCheckpoints().observe(getViewLifecycleOwner(), tappe -> {
             if (tappe != null && !tappe.isEmpty()) {
@@ -609,7 +609,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                 CheckpointDiary lastCheckpoint = tappe.get(tappe.size() - 1);
                 LatLng lastPosition = new LatLng(lastCheckpoint.getLatitude(), lastCheckpoint.getLongitude());
 
-                // Aggiunge i marker alla mappa
                 for (CheckpointDiary checkpoint : tappe) {
                     LatLng latLng = new LatLng(checkpoint.getLatitude(), checkpoint.getLongitude());
                     expandedMap.addMarker(new MarkerOptions().position(latLng).title(checkpoint.getNome()));
@@ -621,6 +620,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     }
 
 
+    // Metodo per caricare le tappe salvate nel dispositivo
     private void loadSavedCheckpoints(List<CheckpointDiary> checkpoints) {
         checkpointContainer.removeAllViews();
 

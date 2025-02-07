@@ -24,8 +24,7 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository {
     }
 
     public long insertCheckpointDiary(CheckpointDiary checkpointDiary) {
-        checkpointDiaryLocalDataSource.insertCheckpointDiary(checkpointDiary);
-        return 0;
+        return checkpointDiaryLocalDataSource.insertCheckpointDiary(checkpointDiary);
     }
 
     public void updateCheckpointDiary(CheckpointDiary checkpointDiary) {

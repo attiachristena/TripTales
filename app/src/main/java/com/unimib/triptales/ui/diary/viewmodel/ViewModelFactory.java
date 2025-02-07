@@ -9,6 +9,8 @@ import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.repository.goal.IGoalRepository;
 import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
 import com.unimib.triptales.repository.task.ITaskRepository;
+import com.unimib.triptales.ui.diary.viewmodel.checkpoint.CheckpointDiaryViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.checkpoint.ImageCardItemViewModel;
 
 
 public class ViewModelFactory implements ViewModelProvider.Factory {

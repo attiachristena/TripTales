@@ -17,8 +17,8 @@
 
     <ImageButton
         android:id="@+id/backToTappaFragment"
-        android:layout_width="43dp"
-        android:layout_height="43dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/edit_text_background"
@@ -75,39 +75,35 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="0dp" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/descrizioneTappa"
-        android:layout_width="370dp"
-        android:layout_height="99dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/edit_text_background"
-        android:backgroundTint="@color/background_overlays"
-        android:fontFamily="@font/poppins_regular"
-        android:gravity="start"
-        android:hint="Inserisici una breve descrizione della checkpoint!"
-        android:textColorHint="@color/primary"
-        android:textSize="17sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/immagineTappaItem" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/carouselRecyclerViewCheckpointDiary"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/i_tuoi_ricordi"
+        app:layout_constraintTop_toBottomOf="@+id/immagineTappaItem"
+        android:gravity="center"
+        android:fontFamily="@font/poppins_bold"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/imageCardItemRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="30dp"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         android:padding="8dp"
         android:scrollbars="vertical"
+        android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descrizioneTappa" />
+        app:layout_constraintTop_toBottomOf="@+id/immagineTappaItem" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addCheckpointDiaryImage"
