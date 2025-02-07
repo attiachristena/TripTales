@@ -3,6 +3,7 @@ package com.unimib.triptales.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -13,8 +14,9 @@ public class SharedPreferencesUtils {
     private static final String PREF_NAME = "TripTalesPrefs";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_DIARY_ID = "current_diary_id";
-    private static final String KEY_IS_APP_FIRST_RUN = "isAppFirstRun";
     private static final String KEY_FIRST_ACCESS = "firstAccess";
+    private static final String PREFS_NAME = "TriptalesPrefs";
+    private static final String KEY_CHECKPOINT_DIARY_ID = "checkpoint_diary_id";
     private final Context context;
 
     public SharedPreferencesUtils(Context context){
@@ -78,11 +80,37 @@ public class SharedPreferencesUtils {
         editor.apply();
     }
 
+    // Metodo per salvare l'ID del CheckpointDiary
+    public static void saveCheckpointDiaryId(Context context, int id) {
+        Log.d("SharedPrefs", "Attempting to save ID: " + id);
+
+        // Validate id before saving
+        if (id <= 0) {
+            Log.e("SharedPrefs", "Attempted to save invalid ID: " + id);
+            return;
+        }
+
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(KEY_CHECKPOINT_DIARY_ID, id);
+        boolean success = editor.commit();
+        Log.d("SharedPrefs", "Save success: " + success + " for ID: " + id);
+    }
+
+
+    // Metodo per ottenere l'ID del CheckpointDiary salvato
+    public static int getCheckpointDiaryId(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(KEY_CHECKPOINT_DIARY_ID, -1);
+    }
+
     // Recupera il diaryId salvato
     public static String getDiaryId(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(KEY_DIARY_ID, null); // Ritorna null se non esiste
     }
+
+
 
     // Rimuove il diaryId (es. logout)
     public static void clearDiaryId(Context context) {

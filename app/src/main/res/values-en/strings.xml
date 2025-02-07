@@ -211,4 +211,6 @@
     <string name="snackbarDiaryDeleted">Diary deleted</string>
     <string name="snackbarDiaryNotDeleted">Error: diary not deleted</string>
 
+    <string name="i_tuoi_ricordi">Your memories…</string>
+
 </resources>

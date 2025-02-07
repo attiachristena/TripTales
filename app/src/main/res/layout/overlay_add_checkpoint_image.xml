@@ -3,7 +3,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="20dp"
-    android:layout_height="700dp"
+    android:layout_height="630dp"
     android:layout_marginTop="80dp"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
@@ -15,8 +15,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:backgroundTint="@color/background_overlays"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/background_overlays">
 
 
         <TextView
@@ -72,7 +72,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="45dp"
-            android:layout_marginTop="38dp"
+            android:layout_marginTop="19dp"
             android:layout_marginEnd="35dp"
             android:background="@drawable/edit_text_background"
             android:fontFamily="@font/poppins_regular"
@@ -87,7 +87,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="54dp"
-            android:layout_marginTop="47dp"
+            android:layout_marginTop="25dp"
             android:layout_marginEnd="45dp"
             android:background="@drawable/edit_text_background"
             android:backgroundTint="@color/primary"
@@ -134,9 +134,9 @@
             android:layout_below="@id/addDateCheckpointDiary"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="132dp"
-            android:layout_marginEnd="14dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="85dp"
+            android:layout_marginEnd="13dp"
             android:scaleType="centerCrop"
             android:visibility="visible"
             app:shapeAppearance="@style/roundedImage" />
@@ -158,8 +158,6 @@
 
 
     </RelativeLayout>
-
-
 
 
 </com.google.android.material.card.MaterialCardView>

@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
+import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.repository.goal.IGoalRepository;
+import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
 import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.checkpoint.CheckpointDiaryViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.checkpoint.ImageCardItemViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private final IExpenseRepository expenseRepository;
@@ -17,6 +21,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final ITaskRepository taskRepository;
     private final ICheckpointRepository checkpointRepository;
     private final IDiaryRepository diaryRepository;
+    private final ICheckpointDiaryRepository checkpointDiaryRepository;
+    private final IImageCardItemRepository imageCardItemRepository;
 
     public ViewModelFactory(IExpenseRepository expenseRepository){
         this.expenseRepository = expenseRepository;
@@ -24,6 +30,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.taskRepository = null;
         this.checkpointRepository = null;
         diaryRepository = null;
+        this.checkpointDiaryRepository = null;
+        this.imageCardItemRepository = null;
     }
 
     public ViewModelFactory(IGoalRepository goalRepository){
@@ -32,6 +40,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.taskRepository = null;
         this.checkpointRepository = null;
         diaryRepository = null;
+        this.checkpointDiaryRepository = null;
+        this.imageCardItemRepository = null;
     }
 
     public ViewModelFactory(ITaskRepository taskRepository){
@@ -40,9 +50,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.taskRepository = taskRepository;
         this.checkpointRepository = null;
         diaryRepository = null;
+        this.checkpointDiaryRepository = null;
+        this.imageCardItemRepository = null;
     }
 
-    public ViewModelFactory(ICheckpointRepository checkpointRepository){
+    public ViewModelFactory(ICheckpointDiaryRepository checkpointDiaryRepository){
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = null;
@@ -55,6 +67,16 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.taskRepository = null;
         this.checkpointRepository = null;
         this.diaryRepository = diaryRepository;
+        this.checkpointDiaryRepository = checkpointDiaryRepository;
+        this.imageCardItemRepository = null;
+    }
+
+    public ViewModelFactory(IImageCardItemRepository imageCardItemRepository){
+        this.expenseRepository = null;
+        this.goalRepository = null;
+        this.taskRepository = null;
+        this.checkpointDiaryRepository = null;
+        this.imageCardItemRepository = imageCardItemRepository;
     }
 
     @NonNull
@@ -69,8 +91,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(TaskViewModel.class)) {
             return (T) new TaskViewModel(taskRepository);
         }
-        if (modelClass.isAssignableFrom(CheckpointViewModel.class)) {
-            return (T) new CheckpointViewModel(checkpointRepository);
+        if (modelClass.isAssignableFrom(CheckpointDiaryViewModel.class)) {
+            return (T) new CheckpointDiaryViewModel(checkpointDiaryRepository);
+        }
+        if (modelClass.isAssignableFrom(ImageCardItemViewModel.class)) {
+            return (T) new ImageCardItemViewModel(imageCardItemRepository);
         }
         if(modelClass.isAssignableFrom(HomeViewModel.class)){
             return (T) new HomeViewModel(diaryRepository);

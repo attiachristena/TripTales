@@ -1,43 +1,53 @@
 package com.unimib.triptales.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity(
-        tableName = "checkpoint_diary",
+        tableName = "CheckpointDiary",
         foreignKeys = @ForeignKey(
                 entity = Checkpoint.class,
                 parentColumns = "id",
-                childColumns = "checkpoint_id",
+                childColumns = "diary_id",
                 onDelete = ForeignKey.CASCADE
         ),
-        indices = {@Index(value = "checkpoint_id")}
+        indices = {@Index(value = "diary_id")}
 )
 public class CheckpointDiary {
-    @PrimaryKey(autoGenerate = true) // Aggiungi un ID univoco per ogni record
-    private int id; // ID univoco per ogni diario di checkpoint
-    private int checkpointId; // Riferimento al checkpoint
-    private String nomeTappa;
-    private String dataTappa;
-    private String descrizione;
-    private String immagineTappaUri;
-    private List<CardItem> immaginiDiario;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
 
-    public CheckpointDiary(int checkpointId, String nomeTappa, String dataTappa, String descrizione, String immagineTappaUri) {
-        this.checkpointId = checkpointId;  // Riferimento al checkpoint
-        this.nomeTappa = nomeTappa;
-        this.dataTappa = dataTappa;
-        this.descrizione = descrizione;
-        this.immagineTappaUri = immagineTappaUri;
-        this.immaginiDiario = new ArrayList<>();
+    @ColumnInfo(name = "diary_id")
+    private int diaryId; // Riferimento al Diary
+
+    @ColumnInfo(name = "nome")
+    public String nome;
+
+    @ColumnInfo(name = "data")
+    public String data;
+
+    @ColumnInfo(name = "immagine_uri")
+    public String immagineUri;
+
+    @ColumnInfo(name = "latitude")
+    public double latitude;
+
+    @ColumnInfo(name = "longitude")
+    public double longitude;
+
+    public CheckpointDiary(int diaryId, String nome, String data, String immagineUri, double latitude, double longitude) {
+        this.diaryId = diaryId;
+        this.nome = nome;
+        this.data = data;
+        this.immagineUri = immagineUri;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    // Getter e setter per l'ID
+    // Getter e Setter
     public int getId() {
         return id;
     }
@@ -46,56 +56,56 @@ public class CheckpointDiary {
         this.id = id;
     }
 
-    public int getCheckpointId() {
-        return checkpointId;
+    public int getDiaryId() {
+        return diaryId;
     }
 
-    public void setCheckpointId(int checkpointId) {
-        this.checkpointId = checkpointId;
+//    public int getCheckpointId() {
+//        return diaryId;
+//    }
+
+    public void setCheckpointId(int diaryId) {
+        this.diaryId = diaryId;
     }
 
-    public String getNomeTappa() {
-        return nomeTappa;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNomeTappa(String nomeTappa) {
-        this.nomeTappa = nomeTappa;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getDataTappa() {
-        return dataTappa;
+    public String getData() {
+        return data;
     }
 
-    public void setDataTappa(String dataTappa) {
-        this.dataTappa = dataTappa;
+    public void setData(String data) {
+        this.data = data;
     }
 
-    public String getDescrizione() {
-        return descrizione;
+    public String getImmagineUri() {
+        return immagineUri;
     }
 
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
+    public void setImmagineUri(String immagineUri) {
+        this.immagineUri = immagineUri;
     }
 
-    public String getImmagineTappaUri() {
-        return immagineTappaUri;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setImmagineTappaUri(String immagineTappaUri) {
-        this.immagineTappaUri = immagineTappaUri;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public List<CardItem> getImmaginiDiario() {
-        return immaginiDiario;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setImmaginiDiario(List<CardItem> immaginiDiario) {
-        this.immaginiDiario = immaginiDiario;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    // Metodo per aggiungere un'immagine al diario
-    public void aggiungiImmagineDiario(CardItem immagine) {
-        this.immaginiDiario.add(immagine);
-    }
 }

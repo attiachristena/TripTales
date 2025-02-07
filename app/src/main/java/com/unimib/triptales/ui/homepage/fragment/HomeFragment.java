@@ -50,6 +50,12 @@ import com.unimib.triptales.util.ServiceLocator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.DiaryRecyclerAdapter;
+import com.unimib.triptales.adapters.DiaryAdapter;
+import com.unimib.triptales.database.AppRoomDatabase;
+import com.unimib.triptales.database.CheckpointDao;
+import com.unimib.triptales.database.DiaryDao;
+import com.unimib.triptales.database.UserDao;
+import com.unimib.triptales.model.Checkpoint;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
@@ -85,6 +91,17 @@ public class HomeFragment extends Fragment {
     private AutoCompleteTextView countryAutoComplete;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private RecyclerView recyclerViewDiaries;
+    private ArrayList<Diary> selectedDiaries = new ArrayList<>();
+    private View imageViewSelectedChanges;
+    private String country;
+    private SharedViewModel sharedViewModel;
+    private int id;
+    private String idUser;
+    private String budget;
+    AppRoomDatabase database;
+    private DiaryDao diaryDao;
+    private UserDao userDao;
+    private CheckpointDao checkpointDao;
 
     @Nullable
     @Override
@@ -552,7 +569,6 @@ public class HomeFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
