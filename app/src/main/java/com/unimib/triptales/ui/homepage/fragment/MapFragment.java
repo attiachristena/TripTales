@@ -102,14 +102,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         enableUserLocation();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(mMap != null) {
-            //updateMap();
-        }
-    }
-
     private void enableUserLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
