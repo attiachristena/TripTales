@@ -117,11 +117,11 @@
     <string name="inserisci_nome_diario">Inserisci il nome del diario</string>
     <string name="paese_visitato">Il paese visitato</string>
 
-    <string name="error_unexpected">Unexpected error</string>
-    <string name="error_google_login">Google Login Error</string>
-    <string name="error_email_required">Email Required Error</string>
-    <string name="error_email_invalid">Invalid Email Error</string>
-    <string name="password_reset_email_sent">Email for reset password sent</string>
+    <string name="error_unexpected">Errore imprevisto</string>
+    <string name="error_google_login">Errore di accesso con Google</string>
+    <string name="error_email_required">Errore: email obbligatoria</string>
+    <string name="error_email_invalid">Errore: email non valida</string>
+    <string name="password_reset_email_sent">Email per il reset della password inviata</string>
     <string name="registrati_con_google">Registrati con Google</string>
 
     <string name="nome_user_momentaneo">Nome Cognome</string>
@@ -209,6 +209,25 @@
     <string name="user_not_logged_in_error">Utente non registrato</string>
     <string name="unexpected_error">Errore inaspettato</string>
     <string name="error_password_login">Password errata. Per favore, ritenta.</string>
+
+    <string name="inserisci_vecchia_password">Inserisci la vecchia password</string>
+    <string name="inserisci_nuova_password">Inserisci la nuova password</string>
+    <string name="password_aggiornata">"Password aggiornata con successo"</string>
+    <string name="errore_aggiornamento_password">Errore durante l\'aggiornamento della password: </string>
+    <string name="autenticazione_fallita">"Autenticazione fallita: "</string>
+
+    <string name="profilo_aggiornato">Profilo aggiornato con successo</string>
+    <string name="aggiornamento_fallito">Aggiornamento fallito</string>
+    <string name="utente_non_autenticated">Utente non autenticato</string>
+
+    <string name="action_back">Back</string>
+    <string name="conferma_logout">Conferma Logout</string>
+    <string name="conferma_uscire_da_account">Vuoi uscire dal tuo account?</string>
+    <string name="esci">Esci</string>
+    <string name="dati_non_disponibili">Dati non disponibili</string>
+    <string name="errore_nel_recupero_dati">Errore nel recupero dei dati</string>
+
     <string name="i_tuoi_ricordi">I tuoi ricordi...</string>
     <string name="cerca_diario_per_paese">Cerca diario per paese visitato</string>
+
 </resources>
