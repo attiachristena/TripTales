@@ -7,12 +7,16 @@ import static com.unimib.triptales.util.Constants.EDIT_DIARY;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,6 +36,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -53,6 +58,7 @@ import com.unimib.triptales.util.GeoJSONParser;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -122,7 +128,7 @@ public class HomeFragment extends Fragment {
                         Uri selectedUri = result.getData().getData();
 
                         if(selectedUri != null){
-                            Uri newUri = saveImageToInternalStorage(selectedUri);
+                            Uri newUri = saveImageToPublicStorage(selectedUri);
 
                             if (newUri != null) {
                                 selectedImageUri = newUri.toString();
@@ -144,6 +150,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        requestPermissions();
 
         emptyMessage = view.findViewById(R.id.text_empty_message);
         bAdd = false;
@@ -502,23 +509,53 @@ public class HomeFragment extends Fragment {
         imagePickerLauncher.launch(intent);
     }
 
-    private Uri saveImageToInternalStorage(Uri sourceUri) {
+    private void requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                    100);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Android 10-12
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    100);
+        } else { // Android 9 o inferiore
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    100);
+        }
+    }
+
+
+    private Uri saveImageToPublicStorage(Uri sourceUri) {
+        Bitmap bitmap;
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), sourceUri);
-            File storageDir = getContext().getFilesDir();
-            String fileName = "diary_" + System.currentTimeMillis() + ".jpg";
-            File imageFile = new File(storageDir, fileName);
-
-            try (FileOutputStream out = new FileOutputStream(imageFile)) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            }
-
-            return Uri.fromFile(imageFile); // Restituisci un URI accessibile dalla tua app
+            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), sourceUri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "diary_" + System.currentTimeMillis() + ".jpg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/TripTales");
+
+        Uri imageUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        try {
+            if (imageUri != null) {
+                OutputStream out = getContext().getContentResolver().openOutputStream(imageUri);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.close();
+                return imageUri; // Restituisce l'URI pubblico
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
+
 
     private void populateModifyOverlay() {
         List<Diary> selectedDiary = homeViewModel.getSelectedDiariesLiveData().getValue();
