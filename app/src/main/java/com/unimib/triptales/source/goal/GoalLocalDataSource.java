@@ -8,11 +8,11 @@ import java.util.List;
 public class GoalLocalDataSource extends BaseGoalLocalDataSource{
 
     private final GoalDao goalDao;
-    private final int diaryId;
+    private final String diaryId;
 
     public GoalLocalDataSource(GoalDao goalDao, String diaryId) {
         this.goalDao = goalDao;
-        this.diaryId = Integer.parseInt(diaryId);
+        this.diaryId = diaryId;
     }
 
     @Override

@@ -39,11 +39,11 @@ public interface GoalDao {
     void deleteAll(List<Goal> goals);
 
     @Query("SELECT * FROM Goal WHERE diaryId = :diaryId")
-    List<Goal> getAll(int diaryId);
+    List<Goal> getAll(String diaryId);
 
     @Query("SELECT * FROM Goal WHERE goal_isSelected = 1 AND diaryId = :diaryId")
-    List<Goal> getSelectedGoals(int diaryId);
+    List<Goal> getSelectedGoals(String diaryId);
 
     @Query("SELECT * FROM Goal WHERE goal_isChecked = 1 AND diaryId = :diaryId")
-    List<Goal> getCheckedGoals(int diaryId);
+    List<Goal> getCheckedGoals(String diaryId);
 }

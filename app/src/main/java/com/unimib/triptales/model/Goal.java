@@ -19,7 +19,7 @@ public class Goal {
     private String id;
 
     @ColumnInfo(name = "diaryId")
-    private int diaryId;
+    private String diaryId;
 
     @ColumnInfo(name = "goal_name")
     private String name;
@@ -36,7 +36,7 @@ public class Goal {
     public Goal(){}
 
     public Goal(String name, String description, boolean goal_isSelected, boolean goal_isChecked,
-                int diaryId) {
+                String diaryId) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
@@ -54,9 +54,9 @@ public class Goal {
         this.id = id;
     }
 
-    public int getDiaryId() { return diaryId; }
+    public String getDiaryId() { return diaryId; }
 
-    public void setDiaryId(int diaryId) { this.diaryId = diaryId; }
+    public void setDiaryId(String diaryId) { this.diaryId = diaryId; }
 
     public String getName() {
         return name;

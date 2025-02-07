@@ -69,7 +69,7 @@ public class GoalViewModel extends ViewModel {
     }
 
     public void insertGoal(String name, String description, Context context) {
-        int diaryId = Integer.parseInt(SharedPreferencesUtils.getDiaryId(context));
+        String diaryId = SharedPreferencesUtils.getDiaryId(context);
         Goal goal = new Goal(name, description, false, false, diaryId);
         goalRepository.insertGoal(goal);
         fetchAllGoals();

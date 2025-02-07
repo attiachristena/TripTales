@@ -176,7 +176,7 @@ public class ExpenseViewModel extends ViewModel {
             completedAmount = amount + inputCurrency;
         else
             completedAmount = inputCurrency + amount;
-        int diaryId = Integer.parseInt(SharedPreferencesUtils.getDiaryId(context));
+        String diaryId = SharedPreferencesUtils.getDiaryId(context);
         Expense expense = new Expense(completedAmount, category, description, completedDate,
                 false, diaryId);
         expenseRepository.insertExpense(expense);

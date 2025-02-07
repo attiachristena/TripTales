@@ -9,11 +9,11 @@ import java.util.List;
 public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
 
     private final ExpenseDao expenseDao;
-    private final int diaryId;
+    private final String diaryId;
 
     public ExpenseLocalDataSource(ExpenseDao expenseDao, String diaryId) {
         this.expenseDao = expenseDao;
-        this.diaryId = Integer.parseInt(diaryId);
+        this.diaryId = diaryId;
     }
 
     @Override

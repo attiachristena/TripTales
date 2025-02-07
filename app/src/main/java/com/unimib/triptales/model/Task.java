@@ -19,7 +19,7 @@ public class Task {
     private String id;
 
     @ColumnInfo(name = "diaryId")
-    private int diaryId;
+    private String diaryId;
 
     @ColumnInfo(name = "task_name")
     private String name;
@@ -32,7 +32,7 @@ public class Task {
 
     public Task(){}
 
-    public Task(String name, boolean task_isSelected, boolean task_isChecked, int diaryId) {
+    public Task(String name, boolean task_isSelected, boolean task_isChecked, String diaryId) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.task_isSelected = task_isSelected;
@@ -49,11 +49,11 @@ public class Task {
         this.id = id;
     }
 
-    public int getDiaryId() {
+    public String getDiaryId() {
         return diaryId;
     }
 
-    public void setDiaryId(int diaryId) {
+    public void setDiaryId(String diaryId) {
         this.diaryId = diaryId;
     }
 

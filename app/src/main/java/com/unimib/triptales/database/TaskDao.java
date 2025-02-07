@@ -33,8 +33,8 @@ public interface TaskDao {
     void deleteAll(List<Task> tasks);
 
     @Query("SELECT * FROM Task WHERE diaryId = :diaryId")
-    List<Task> getAll(int diaryId);
+    List<Task> getAll(String diaryId);
 
     @Query("SELECT * FROM Task WHERE task_isSelected = 1 AND diaryId = :diaryId")
-    List<Task> getSelectedTasks(int diaryId);
+    List<Task> getSelectedTasks(String diaryId);
 }

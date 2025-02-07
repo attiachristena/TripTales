@@ -8,11 +8,11 @@ import java.util.List;
 public class TaskLocalDataSource extends BaseTaskLocalDataSource{
 
     private final TaskDao taskDao;
-    private final int diaryId;
+    private final String diaryId;
 
     public TaskLocalDataSource(TaskDao taskDao, String diaryId) {
         this.taskDao = taskDao;
-        this.diaryId = Integer.parseInt(diaryId);
+        this.diaryId = diaryId;
     }
 
     @Override

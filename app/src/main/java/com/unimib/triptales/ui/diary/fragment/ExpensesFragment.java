@@ -147,7 +147,7 @@ public class ExpensesFragment extends Fragment {
         bAdd = false;
 
         //Da modificare quando viene implementato diaryViewModel
-        String diaryBudget = diaryDao.getBudget(Integer.parseInt(SharedPreferencesUtils.getDiaryId(getContext())));
+        String diaryBudget = diaryDao.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
         if(diaryBudget != null) {
             if (diaryBudget.charAt(diaryBudget.length() - 1) == CURRENCY_EUR.charAt(0)) {
                 budget = Integer.parseInt(diaryBudget.substring(0, diaryBudget.length() - 1));
@@ -230,7 +230,7 @@ public class ExpensesFragment extends Fragment {
                 if (correct) {
                     budget = Integer.parseInt(inputBudget);
                     String completeBudget = expenseViewModel.generateTextAmount(inputBudget, inputCurrency);
-                    diaryDao.updateBudget(Integer.parseInt(SharedPreferencesUtils.getDiaryId(getContext())), completeBudget);
+                    diaryDao.updateBudget(SharedPreferencesUtils.getDiaryId(getContext()), completeBudget);
                     budgetTextView.setText(completeBudget);
                     // aggiungere un MutableLiveData<int> budgetLiveData a DiaryViewModel e
                     // poi gestire .observe aggiornando il progress indicator
