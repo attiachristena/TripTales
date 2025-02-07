@@ -207,4 +207,22 @@
     <string name="unexpected_error">Unexpected error</string>
     <string name="error_password_login">Wrong password. Please, retry.</string>
 
+    <string name="inserisci_vecchia_password">Enter the old password</string>
+    <string name="inserisci_nuova_password">Enter the new password</string>
+    <string name="password_aggiornata">"Password successfully updated"</string>
+    <string name="errore_aggiornamento_password">Error updating password: </string>
+    <string name="autenticazione_fallita">"Authentication failed: "</string>
+
+
+    <string name="profilo_aggiornato">Profile updated successfully</string>
+    <string name="aggiornamento_fallito">Update failed</string>
+    <string name="utente_non_autenticated">User not authenticated</string>
+
+    <string name="action_back">Back</string>
+    <string name="conferma_logout">Confirm Logout</string>
+    <string name="conferma_uscire_da_account">Do you want to log out of your account?</string>
+    <string name="esci">Logout</string>
+    <string name="dati_non_disponibili">Data not available</string>
+    <string name="errore_nel_recupero_dati">Error retrieving data</string>
+
 </resources>

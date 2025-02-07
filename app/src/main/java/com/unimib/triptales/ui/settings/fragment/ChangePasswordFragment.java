@@ -21,6 +21,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.unimib.triptales.R;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ChangePasswordFragment extends Fragment {
 
     private FirebaseAuth firebaseAuth;
@@ -55,15 +58,18 @@ public class ChangePasswordFragment extends Fragment {
         String newPassword = newPasswordEditText.getText().toString().trim();
 
         if (TextUtils.isEmpty(oldPassword)) {
-            oldPasswordEditText.setError("Inserisci la vecchia password");
+            oldPasswordEditText.setError(getString(R.string.inserisci_vecchia_password));
             return;
         }
         if (TextUtils.isEmpty(newPassword)) {
-            newPasswordEditText.setError("Inserisci la nuova password");
+            newPasswordEditText.setError(getString(R.string.inserisci_nuova_password));
             return;
         }
-        if (newPassword.length() < 6) {
-            newPasswordEditText.setError("La nuova password deve contenere almeno 6 caratteri");
+
+        //if(oldPassword = firebaseUser.getPassword() )
+
+        if (!isPasswordOk(newPasswordEditText.getText().toString())) {
+            newPasswordEditText.setError(getString(R.string.error_password_login));
             return;
         }
 
@@ -83,13 +89,13 @@ public class ChangePasswordFragment extends Fragment {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(getContext(), "Password aggiornata con successo", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), getString(R.string.password_aggiornata), Toast.LENGTH_SHORT).show();
                                         resetFields();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getContext(), "Errore durante l'aggiornamento della password: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getContext(), getString(R.string.errore_aggiornamento_password) + e.getMessage(), Toast.LENGTH_LONG).show();
                                         changePasswordButton.setEnabled(true);
                                     }
                                 });
@@ -97,10 +103,20 @@ public class ChangePasswordFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Autenticazione fallita: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getString(R.string.autenticazione_fallita) + e.getMessage(), Toast.LENGTH_LONG).show();
                         changePasswordButton.setEnabled(true);
                     }
                 });
+    }
+
+    private boolean isPasswordOk(String password) {
+        Pattern pattern;
+        Matcher matcher;
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{4,}$";
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
     }
 
     private void resetFields() {
