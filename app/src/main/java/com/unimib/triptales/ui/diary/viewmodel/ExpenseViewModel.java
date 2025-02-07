@@ -25,9 +25,9 @@ public class ExpenseViewModel extends ViewModel {
 
     private final IExpenseRepository expenseRepository;
 
-    private MutableLiveData<List<Expense>> expensesLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Expense>> expensesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Double> amountSpentLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> budgetOverlayVisibility = new MutableLiveData<>();

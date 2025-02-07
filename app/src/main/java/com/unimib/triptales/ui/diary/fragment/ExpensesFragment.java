@@ -125,7 +125,7 @@ public class ExpensesFragment extends Fragment {
         if(tmp != null){
             budgetTextView.setText(tmp);
             amountSpent = expenseViewModel.countAmount(expenseViewModel.getAllExpenses(), inputCurrency);
-            updateProgressIndicator(amountSpent, budget, 0);
+            //updateProgressIndicator(amountSpent, budget, 0);
             inputCurrency = getInputCurrency(tmp);
         }
 
@@ -134,9 +134,8 @@ public class ExpensesFragment extends Fragment {
         recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewExpenses.setAdapter(expensesRecyclerAdapter);
 
-        expensesRecyclerAdapter.setOnExpenseClickListener((expense) -> {
-            expenseViewModel.toggleExpenseSelection(expense);
-        });
+        expensesRecyclerAdapter.setOnExpenseClickListener((expense) ->
+                expenseViewModel.toggleExpenseSelection(expense));
 
         return rootView;
     }
@@ -177,19 +176,11 @@ public class ExpensesFragment extends Fragment {
         editBudgetButton = view.findViewById(R.id.editBudget);
         ImageButton budgetBackButton = view.findViewById(R.id.backButtonBudget);
 
-        editBudgetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expenseViewModel.setBudgetOverlayVisibility(true);
-            }
-        });
+        editBudgetButton.setOnClickListener(view1 ->
+                expenseViewModel.setBudgetOverlayVisibility(true));
 
-        budgetBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expenseViewModel.setBudgetOverlayVisibility(false);
-            }
-        });
+        budgetBackButton.setOnClickListener(view12 ->
+                expenseViewModel.setBudgetOverlayVisibility(false));
 
         numberEditText = view.findViewById(R.id.inputBudget);
         currencyAutoCompleteTextView = view.findViewById(R.id.inputCurrency);
@@ -198,66 +189,54 @@ public class ExpensesFragment extends Fragment {
         ArrayAdapter<String> budgetAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, CURRENCIES);
         currencyAutoCompleteTextView.setAdapter(budgetAdapter);
 
-        homeViewModel.getBudgetLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String diaryBudget) {
-                if(diaryBudget != null) {
-                    if(inputCurrency.equals(CURRENCY_EUR)){
-                        budget = Integer.parseInt(diaryBudget.substring(0, diaryBudget.length() - 1));
-                    } else {
-                        budget = Integer.parseInt(diaryBudget.substring(1));
-                    }
-                    budgetTextView.setText(diaryBudget);
-                    amountSpent = expenseViewModel.countAmount(expenseViewModel.getAllExpenses(), inputCurrency);
-                    updateProgressIndicator(amountSpent, budget, 0);
-                    if(totExpenseTextView.getVisibility() == View.VISIBLE) {
-                        expenseViewModel.filterExpenses(inputFilterCategory, inputCurrency);
-                    }
-                    updateCurrencyIcon();
-                }
-            }
-        });
-
-        saveBudgetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputBudget = numberEditText.getText().toString().trim();
-                String tmp = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
-                if(tmp != null){
-                    String tmp2 = expenseViewModel.generateTextAmount(String.valueOf(budget), inputCurrency);
-                    inputCurrency = getInputCurrency(tmp2);
+        homeViewModel.getBudgetLiveData().observe(getViewLifecycleOwner(), diaryBudget -> {
+            if(diaryBudget != null) {
+                if(inputCurrency.equals(CURRENCY_EUR)){
+                    budget = Integer.parseInt(diaryBudget.substring(0, diaryBudget.length() - 1));
                 } else {
-                    inputCurrency = currencyAutoCompleteTextView.getText().toString().trim();
+                    budget = Integer.parseInt(diaryBudget.substring(1));
                 }
-                boolean correct = expenseViewModel.validateInputBudget(inputBudget, inputCurrency);
-                if (correct) {
-                    budget = Integer.parseInt(inputBudget);
-                    String completeBudget = expenseViewModel.generateTextAmount(inputBudget, inputCurrency);
-                    homeViewModel.updateDiaryBudget(SharedPreferencesUtils.getDiaryId(getContext()), completeBudget);
-                    expenseViewModel.setBudgetOverlayVisibility(false);
+                budgetTextView.setText(diaryBudget);
+                amountSpent = expenseViewModel.countAmount(expenseViewModel.getAllExpenses(), inputCurrency);
+                //updateProgressIndicator(amountSpent, budget, 0);
+                if(totExpenseTextView.getVisibility() == View.VISIBLE) {
+                    expenseViewModel.filterExpenses(inputFilterCategory, inputCurrency);
                 }
+                updateCurrencyIcon();
             }
         });
 
-        expenseViewModel.getBudgetOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean visible) {
-                if (visible) {
-                    disableSwipeAndButtons();
-                    showOverlay(BUDGET);
-                } else {
-                    enableSwipeAndButtons(view);
-                    hideOverlay(BUDGET);
-                }
+        saveBudgetButton.setOnClickListener(saveBudget -> {
+            inputBudget = numberEditText.getText().toString().trim();
+            String tmp = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
+            if(tmp != null){
+                String tmp2 = expenseViewModel.generateTextAmount(String.valueOf(budget), inputCurrency);
+                inputCurrency = getInputCurrency(tmp2);
+            } else {
+                inputCurrency = currencyAutoCompleteTextView.getText().toString().trim();
+            }
+            boolean correct = expenseViewModel.validateInputBudget(inputBudget, inputCurrency);
+            if (correct) {
+                budget = Integer.parseInt(inputBudget);
+                String completeBudget = expenseViewModel.generateTextAmount(inputBudget, inputCurrency);
+                homeViewModel.updateDiaryBudget(SharedPreferencesUtils.getDiaryId(getContext()), completeBudget);
+                expenseViewModel.setBudgetOverlayVisibility(false);
             }
         });
 
-        expenseViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String errorMessage) {
-                if(errorMessage != null){
-                    Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
-                }
+        expenseViewModel.getBudgetOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if (visible) {
+                disableSwipeAndButtons();
+                showOverlay(BUDGET);
+            } else {
+                enableSwipeAndButtons(view);
+                hideOverlay(BUDGET);
+            }
+        });
+
+        expenseViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if(errorMessage != null){
+                Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -269,25 +248,19 @@ public class ExpensesFragment extends Fragment {
         editExpenseButton = view.findViewById(R.id.modificaSpesa);
         deleteExpenseButton = view.findViewById(R.id.eliminaSpesa);
 
-        addExpenseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bAdd = true;
-                expenseViewModel.setExpenseOverlayVisibility(true);
-            }
+        addExpenseButton.setOnClickListener(view14 -> {
+            bAdd = true;
+            expenseViewModel.setExpenseOverlayVisibility(true);
         });
 
         ImageButton expenseBackButton = view.findViewById(R.id.backSpesaButton);
 
-        expenseBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(bEdit){
-                    editExpenseButton.setVisibility(View.VISIBLE);
-                    deleteExpenseButton.setVisibility(View.VISIBLE);
-                }
-                expenseViewModel.setExpenseOverlayVisibility(false);
+        expenseBackButton.setOnClickListener(expenseBackButtonListener -> {
+            if(bEdit){
+                editExpenseButton.setVisibility(View.VISIBLE);
+                deleteExpenseButton.setVisibility(View.VISIBLE);
             }
+            expenseViewModel.setExpenseOverlayVisibility(false);
         });
 
         Button saveExpenseButton = view.findViewById(R.id.salvaSpesa);
@@ -298,25 +271,22 @@ public class ExpensesFragment extends Fragment {
         monthEditText = view.findViewById(R.id.inputMonth);
         yearEditText = view.findViewById(R.id.inputYear);
 
-        expenseViewModel.getExpenseOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean visible) {
-                if (visible) {
-                    disableSwipeAndButtons();
-                    if(bAdd) {
-                        showOverlay(ADD_EXPENSE);
-                    } else if(bEdit){
-                        showOverlay(EDIT_EXPENSE);
-                        editExpenseButton.setVisibility(View.GONE);
-                        deleteExpenseButton.setVisibility(View.GONE);
-                    }
-                } else {
-                    enableSwipeAndButtons(view);
-                    if(bAdd){
-                        hideOverlay(ADD_EXPENSE);
-                    } else if(bEdit){
-                        hideOverlay(EDIT_EXPENSE);
-                    }
+        expenseViewModel.getExpenseOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if (visible) {
+                disableSwipeAndButtons();
+                if(bAdd) {
+                    showOverlay(ADD_EXPENSE);
+                } else if(bEdit){
+                    showOverlay(EDIT_EXPENSE);
+                    editExpenseButton.setVisibility(View.GONE);
+                    deleteExpenseButton.setVisibility(View.GONE);
+                }
+            } else {
+                enableSwipeAndButtons(view);
+                if(bAdd){
+                    hideOverlay(ADD_EXPENSE);
+                } else if(bEdit){
+                    hideOverlay(EDIT_EXPENSE);
                 }
             }
         });
@@ -355,35 +325,32 @@ public class ExpensesFragment extends Fragment {
                 android.R.layout.simple_dropdown_item_1line, CATEGORIES);
         categoryAutoCompleteTextView.setAdapter(categoryAdapter);
 
-        saveExpenseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String inputAmount = amountEditText.getText().toString().trim();
-                String inputCategory = categoryAutoCompleteTextView.getText().toString().trim();
-                String inputDescription = descriptionEditText.getText().toString().trim();
-                String inputDay = dayEditText.getText().toString().trim();
-                String inputMonth = monthEditText.getText().toString().trim();
-                String inputYear = yearEditText.getText().toString().trim();
+        saveExpenseButton.setOnClickListener(saveExpenseButtonListener -> {
+            String inputAmount = amountEditText.getText().toString().trim();
+            String inputCategory = categoryAutoCompleteTextView.getText().toString().trim();
+            String inputDescription = descriptionEditText.getText().toString().trim();
+            String inputDay = dayEditText.getText().toString().trim();
+            String inputMonth = monthEditText.getText().toString().trim();
+            String inputYear = yearEditText.getText().toString().trim();
 
-                boolean correct = expenseViewModel.validateInputExpense(inputAmount, inputCategory,
-                        inputDescription, inputDay, inputMonth, inputYear);
+            boolean correct = expenseViewModel.validateInputExpense(inputAmount, inputCategory,
+                    inputDescription, inputDay, inputMonth, inputYear);
 
-                if(correct){
-                    if(bAdd){
-                        expenseViewModel.insertExpense(inputAmount, inputCategory,
-                                inputDescription, inputDay, inputMonth, inputYear,
-                                inputCurrency, getContext());
-                    } else if(bEdit){
-                        List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
-                        if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
-                            Expense currentExpense = selectedExpenses.get(0);
-                            expenseViewModel.updateExpense(currentExpense, inputCurrency, inputAmount,
-                                    inputCategory, inputDescription, inputDay, inputMonth, inputYear);
-                            expenseViewModel.deselectAllExpenses();
-                        }
+            if(correct){
+                if(bAdd){
+                    expenseViewModel.insertExpense(inputAmount, inputCategory,
+                            inputDescription, inputDay, inputMonth, inputYear,
+                            inputCurrency, getContext());
+                } else if(bEdit){
+                    List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
+                    if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
+                        Expense currentExpense = selectedExpenses.get(0);
+                        expenseViewModel.updateExpense(currentExpense, inputCurrency, inputAmount,
+                                inputCategory, inputDescription, inputDay, inputMonth, inputYear);
+                        expenseViewModel.deselectAllExpenses();
                     }
-                    expenseViewModel.setExpenseOverlayVisibility(false);
                 }
+                expenseViewModel.setExpenseOverlayVisibility(false);
             }
         });
 
@@ -409,41 +376,35 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        expenseViewModel.getExpenseEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String message) {
-                if(message != null){
-                    switch (message) {
-                        case ADDED:
-                            Toast.makeText(requireActivity(), R.string.snackbarExpenseAdded, Toast.LENGTH_SHORT).show();
-                            break;
-                        case UPDATED:
-                            Toast.makeText(requireActivity(), R.string.snackbarExpenseUpdated, Toast.LENGTH_SHORT).show();
-                            break;
-                        case DELETED:
-                            Toast.makeText(requireActivity(), R.string.snackbarExpenseDeleted, Toast.LENGTH_SHORT).show();
-                            break;
-                        case INVALID_DELETE:
-                            Toast.makeText(requireActivity(), R.string.snackbarExpenseNotDeleted, Toast.LENGTH_SHORT).show();
-                            break;
-                    }
+        expenseViewModel.getExpenseEvent().observe(getViewLifecycleOwner(), message -> {
+            if(message != null){
+                switch (message) {
+                    case ADDED:
+                        Toast.makeText(requireActivity(), R.string.snackbarExpenseAdded,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case UPDATED:
+                        Toast.makeText(requireActivity(), R.string.snackbarExpenseUpdated,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case DELETED:
+                        Toast.makeText(requireActivity(), R.string.snackbarExpenseDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case INVALID_DELETE:
+                        Toast.makeText(requireActivity(), R.string.snackbarExpenseNotDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         });
 
-        deleteExpenseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expenseViewModel.deleteSelectedExpenses(inputCurrency);
-            }
-        });
+        deleteExpenseButton.setOnClickListener(deleteExpenseButtonListener ->
+                expenseViewModel.deleteSelectedExpenses(inputCurrency));
 
-        editExpenseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bEdit = true;
-                expenseViewModel.setExpenseOverlayVisibility(true);
-            }
+        editExpenseButton.setOnClickListener(editExpenseButtonListener -> {
+            bEdit = true;
+            expenseViewModel.setExpenseOverlayVisibility(true);
         });
 
         // gestione del filtro delle spese
@@ -459,30 +420,19 @@ public class ExpensesFragment extends Fragment {
         filterCategoryEditText = view.findViewById(R.id.inputCategoryFilter);
         filterCategoryEditText.setAdapter(categoryAdapter);
 
-        filterBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expenseViewModel.setFilterOverlayVisibility(false);
-            }
-        });
+        filterBackButton.setOnClickListener(filterBackButtonListener ->
+                expenseViewModel.setFilterOverlayVisibility(false));
 
-        filterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expenseViewModel.setFilterOverlayVisibility(true);
-            }
-        });
+        filterButton.setOnClickListener(filterButtonListener ->
+                expenseViewModel.setFilterOverlayVisibility(true));
 
-        expenseViewModel.getFilterOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean visible) {
-                if(visible){
-                    disableSwipeAndButtons();
-                    showOverlay(FILTER);
-                } else {
-                    enableSwipeAndButtons(view);
-                    hideOverlay(FILTER);
-                }
+        expenseViewModel.getFilterOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if(visible){
+                disableSwipeAndButtons();
+                showOverlay(FILTER);
+            } else {
+                enableSwipeAndButtons(view);
+                hideOverlay(FILTER);
             }
         });
 
@@ -495,57 +445,53 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        saveCategoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputFilterCategory = filterCategoryEditText.getText().toString().trim();
-                expenseViewModel.filterExpenses(inputFilterCategory, inputCurrency);
-                expenseViewModel.setFilterOverlayVisibility(false);
-                closeFilterButton.setVisibility(View.VISIBLE);
-                filterTextView.setVisibility(View.VISIBLE);
-                totExpenseTextView.setVisibility(View.VISIBLE);
-                addExpenseButton.setEnabled(false);
-            }
+        saveCategoryButton.setOnClickListener(saveCategoryButtonListener -> {
+            inputFilterCategory = filterCategoryEditText.getText().toString().trim();
+            expenseViewModel.filterExpenses(inputFilterCategory, inputCurrency);
+            expenseViewModel.setFilterOverlayVisibility(false);
+            closeFilterButton.setVisibility(View.VISIBLE);
+            filterTextView.setVisibility(View.VISIBLE);
+            totExpenseTextView.setVisibility(View.VISIBLE);
+            addExpenseButton.setEnabled(false);
         });
 
-        closeFilterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // da gestire expenseList, sarebbe da togliere? da dove prendo gli elementi?
-                expensesRecyclerAdapter.setExpenseList(expenseList);
-                closeFilterButton.setVisibility(View.GONE);
-                filterTextView.setVisibility(View.GONE);
-                totExpenseTextView.setVisibility(View.GONE);
-                addExpenseButton.setEnabled(true);
-            }
+        closeFilterButton.setOnClickListener(closeFilterButtonListener -> {
+            expensesRecyclerAdapter.setExpenseList(expenseViewModel.getAllExpenses());
+            closeFilterButton.setVisibility(View.GONE);
+            filterTextView.setVisibility(View.GONE);
+            totExpenseTextView.setVisibility(View.GONE);
+            addExpenseButton.setEnabled(true);
         });
 
         // gestione modifica progress indicator
-        expenseViewModel.getAmountSpentLiveData().observe(getViewLifecycleOwner(), new Observer<Double>() {
-            @Override
-            public void onChanged(Double spent) {
-                int progressPercentage = (int) ((spent / (float) budget) * 100);
-                if(progressPercentage > 100)
-                    progressIndicator.setIndicatorColor(ContextCompat.getColor(requireContext(), R.color.error));
-                else
-                    progressIndicator.setIndicatorColor(ContextCompat.getColor(requireContext(), R.color.secondary));
-                progressIndicator.setProgress(progressPercentage);
-                String formattedText = spent + " / " + budget + " spesi" + " (" + progressPercentage + "%)";
-                progressTextView.setText(formattedText);
-            }
+        expenseViewModel.getAmountSpentLiveData().observe(getViewLifecycleOwner(), spent -> {
+            int progressPercentage = (int) ((amountSpent / (float) budget) * 100);
+            if(progressPercentage > 100)
+                progressIndicator.setIndicatorColor
+                        (ContextCompat.getColor(requireContext(), R.color.error));
+            else
+                progressIndicator.setIndicatorColor
+                        (ContextCompat.getColor(requireContext(), R.color.secondary));
+            progressIndicator.setProgress(progressPercentage);
+            String formattedText = amountSpent + " / " + budget + " spesi"
+                    + " (" + progressPercentage + "%)";
+            progressTextView.setText(formattedText);
         });
     }
 
-    public void updateProgressIndicator(double expense, int budget, int add){
-        if(add == 1)
-            amountSpent = amountSpent + expense;
+    public void updateProgressIndicator(double expense, int budget){
+        /*if(add == 1)
+            amountSpent = amountSpent + expense;*/
         int progressPercentage = (int) ((amountSpent / (float) budget) * 100);
         if(progressPercentage > 100)
-            progressIndicator.setIndicatorColor(ContextCompat.getColor(requireContext(), R.color.error));
+            progressIndicator.setIndicatorColor
+                    (ContextCompat.getColor(requireContext(), R.color.error));
         else
-            progressIndicator.setIndicatorColor(ContextCompat.getColor(requireContext(), R.color.secondary));
+            progressIndicator.setIndicatorColor
+                    (ContextCompat.getColor(requireContext(), R.color.secondary));
         progressIndicator.setProgress(progressPercentage);
-        String formattedText = amountSpent + " / " + budget + " spesi" + " (" + progressPercentage + "%)";
+        String formattedText = amountSpent + " / " + budget + " spesi"
+                + " (" + progressPercentage + "%)";
         progressTextView.setText(formattedText);
     }
 

@@ -50,10 +50,7 @@ import com.unimib.triptales.util.ServiceLocator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.DiaryRecyclerAdapter;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.model.Diary;
-import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
 
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
@@ -87,7 +84,6 @@ public class HomeFragment extends Fragment {
     private boolean bAdd;
     private AutoCompleteTextView countryAutoComplete;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
-    private RecyclerView recyclerViewDiaries;
 
     @Nullable
     @Override
@@ -115,7 +111,7 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        recyclerViewDiaries = view.findViewById(R.id.recycler_view_diaries);
+        RecyclerView recyclerViewDiaries = view.findViewById(R.id.recycler_view_diaries);
         diaryRecyclerAdapter = new DiaryRecyclerAdapter(getContext());
         recyclerViewDiaries.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerViewDiaries.setAdapter(diaryRecyclerAdapter);

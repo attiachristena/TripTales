@@ -1,8 +1,5 @@
 package com.unimib.triptales.repository.expense;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.unimib.triptales.model.Expense;
 
 import java.util.List;
