@@ -209,6 +209,6 @@
     <string name="user_not_logged_in_error">Utente non registrato</string>
     <string name="unexpected_error">Errore inaspettato</string>
     <string name="error_password_login">Password errata. Per favore, ritenta.</string>
-    <string name="cerca_diario_per_nome">Cerca diario per nome</string>
     <string name="i_tuoi_ricordi">I tuoi ricordi...</string>
+    <string name="cerca_diario_per_paese">Cerca diario per paese visitato</string>
 </resources>
