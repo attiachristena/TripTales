@@ -2,7 +2,6 @@ package com.unimib.triptales.ui.homepage.fragment;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -29,8 +29,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.unimib.triptales.R;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.DiaryDao;
 
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
@@ -51,7 +49,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private HashMap<String, List<Polygon>> countryPolygons = new HashMap<>();
+    private final HashMap<String, List<Polygon>> countryPolygons = new HashMap<>();
     private HomeViewModel homeViewModel;
 
     @Nullable
@@ -154,11 +152,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if(!countryListSet.contains(country)){
                 if(countryPolygons.containsKey(country)){
                     List<Polygon> polygons = countryPolygons.get(country);
-
-                    for(Polygon polygon : polygons){
-                        polygon.remove();
+                    if(polygons != null) {
+                        for (Polygon polygon : polygons) {
+                            polygon.remove();
+                        }
                     }
-
                     countryPolygons.remove(country);
                 }
             }
@@ -175,8 +173,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (List<LatLng> polygon : countryBorders) {
             PolygonOptions polygonOptions = new PolygonOptions()
                     .addAll(polygon)
-                    .strokeColor(getResources().getColor(R.color.black))
-                    .fillColor(getResources().getColor(R.color.primary))
+                    .strokeColor(ContextCompat.getColor(requireContext(), R.color.black))
+                    .fillColor(ContextCompat.getColor(requireContext(), R.color.primary))
                     .strokeWidth(1);
             Polygon newPolygon = mMap.addPolygon(polygonOptions);
             coloredPolygons.add(newPolygon);

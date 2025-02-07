@@ -115,7 +115,9 @@
     <string name="data_arrivo">Data arrivo</string>
     <string name="scegli_immagine">Scegli un’immagine</string>
     <string name="inserisci_nome_diario">Inserisci il nome del diario</string>
-    <string name="paese_visitato">Il paese visitato</string>
+    <string name="paese_visitato">Inserisci il paese visitato</string>
+    <string name="files" translatable="false">Files</string>
+    <string name="immagineSelezionata">Immagine selezionata</string>
 
     <string name="error_unexpected">Unexpected error</string>
     <string name="error_google_login">Google Login Error</string>
@@ -176,6 +178,21 @@
     <string name="snackbarDiaryUpdated">Diario aggiornato</string>
     <string name="snackbarDiaryDeleted">Diario rimosso</string>
     <string name="snackbarDiaryNotDeleted">Errore: diario non rimosso</string>
+    <string name="errorFilterExpenses">Scegli una categoria</string>
+    <string name="errorFilterCategory">Nessuna spesa trovata per la categoria specificata</string>
+    <string name="errorAmount">Inserisci un importo</string>
+    <string name="errorDescription">Inserisci una descrizione</string>
+    <string name="errorDay">Inserisci un giorno</string>
+    <string name="errorInputDay">Giorno inserito non corretto</string>
+    <string name="errorMonth">Inserisci un mese</string>
+    <string name="errorInputMonth">Mese inserito non corretto</string>
+    <string name="errorYear">Inserisci un anno</string>
+    <string name="errorInputYear">Anno inserito non corretto</string>
+    <string name="errorBudget">Inserisci un budget</string>
+    <string name="errorCurrency">Scegli una valuta</string>
+    <string name="errorInputBudget">Inserisci un numero più basso</string>
+    <string name="errorGoalName">Inserisci il nome dell\'obiettivo</string>
+    <string name="errorTaskName">Inserisci il nome dell\'attività</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>

@@ -5,12 +5,12 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
 
-import android.app.SharedElementCallback;
 import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.unimib.triptales.R;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.util.SharedPreferencesUtils;
@@ -24,7 +24,6 @@ public class TaskViewModel extends ViewModel {
 
     private final MutableLiveData<List<Task>> tasksLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Task>> selectedTasksLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<Task>> checkedTasksLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> taskOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> taskEvent = new MutableLiveData<>();
@@ -54,7 +53,7 @@ public class TaskViewModel extends ViewModel {
     public boolean validateInputTask(String name){
         boolean correct = true;
         if (name.isEmpty()) {
-            errorLiveData.setValue("Inserisci il nome dell'attività");
+            errorLiveData.setValue(String.valueOf(R.string.errorTaskName));
         } else {
             errorLiveData.setValue(null);
         }
@@ -69,7 +68,8 @@ public class TaskViewModel extends ViewModel {
 
     public void insertTask(String name, Context context) {
         String diaryId = SharedPreferencesUtils.getDiaryId(context);
-        Task task = new Task(name, false, false, diaryId, System.currentTimeMillis());
+        Task task = new Task(name, false, false, diaryId,
+                System.currentTimeMillis());
         taskRepository.insertTask(task);
         fetchAllTasks();
         taskEvent.setValue(ADDED);

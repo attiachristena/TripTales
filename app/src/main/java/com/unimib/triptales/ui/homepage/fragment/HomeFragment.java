@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment {
     private EditText inputDayStartDate, inputMonthStartDate, inputYearStartDate;
     private EditText inputDayEndDate, inputMonthEndDate, inputYearEndDate;
     private EditText inputDiaryName;
-    private ImageView imageViewCover, modifyCoverImage;
+    private ImageView imageViewCover;
     private Button buttonChooseImage, buttonSave;
     private ImageButton closeAddOverlayButton;
     private String selectedImageUri;
@@ -176,93 +176,79 @@ public class HomeFragment extends Fragment {
         });
 
         //aggiorna l'adapter e gestisce l'emptyMessage
-        homeViewModel.getDiariesLiveData().observe(getViewLifecycleOwner(), new Observer<List<Diary>>() {
-            @Override
-            public void onChanged(List<Diary> diaries) {
-                if(diaries != null){
-                    diaryRecyclerAdapter.setDiaries(diaries);
-                    if (diaries.isEmpty()) {
-                        emptyMessage.setVisibility(View.VISIBLE);
-                    } else {
-                        emptyMessage.setVisibility(View.GONE);
-                    }
+        homeViewModel.getDiariesLiveData().observe(getViewLifecycleOwner(), diaries -> {
+            if(diaries != null){
+                diaryRecyclerAdapter.setDiaries(diaries);
+                if (diaries.isEmpty()) {
+                    emptyMessage.setVisibility(View.VISIBLE);
+                } else {
+                    emptyMessage.setVisibility(View.GONE);
                 }
             }
         });
 
         // mostra eventuali errori
-        homeViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String errorMessage) {
-                if(errorMessage != null){
-                    Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
-                }
+        homeViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if(errorMessage != null){
+                Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
         // mostra feedback all'utente su aggiunta, modifica e rimozione di un diario
-        homeViewModel.getDiaryEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String message) {
-                if(message != null){
-                    switch (message) {
-                        case ADDED:
-                            Toast.makeText(requireActivity(), R.string.snackbarDiaryAdded, Toast.LENGTH_SHORT).show();
-                            break;
-                        case UPDATED:
-                            Toast.makeText(requireActivity(), R.string.snackbarDiaryUpdated, Toast.LENGTH_SHORT).show();
-                            break;
-                        case DELETED:
-                            Toast.makeText(requireActivity(), R.string.snackbarDiaryDeleted, Toast.LENGTH_SHORT).show();
-                            break;
-                        case INVALID_DELETE:
-                            Toast.makeText(requireActivity(), R.string.snackbarDiaryNotDeleted, Toast.LENGTH_SHORT).show();
-                            break;
-                    }
+        homeViewModel.getDiaryEvent().observe(getViewLifecycleOwner(), message -> {
+            if(message != null){
+                switch (message) {
+                    case ADDED:
+                        Toast.makeText(requireActivity(), R.string.snackbarDiaryAdded,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case UPDATED:
+                        Toast.makeText(requireActivity(), R.string.snackbarDiaryUpdated,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case DELETED:
+                        Toast.makeText(requireActivity(), R.string.snackbarDiaryDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case INVALID_DELETE:
+                        Toast.makeText(requireActivity(), R.string.snackbarDiaryNotDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         });
 
-        addDiaryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bAdd = true;
-                homeViewModel.setDiaryOverlayVisibility(true);
-            }
+        addDiaryButton.setOnClickListener(addDiaryButtonListener -> {
+            bAdd = true;
+            homeViewModel.setDiaryOverlayVisibility(true);
         });
 
-        closeAddOverlayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(bEdit){
-                    modifyDiaryButton.setVisibility(View.VISIBLE);
-                    deleteDiaryButton.setVisibility(View.VISIBLE);
-                }
-                homeViewModel.setDiaryOverlayVisibility(false);
+        closeAddOverlayButton.setOnClickListener(closeAddOverlayButton -> {
+            if(bEdit){
+                modifyDiaryButton.setVisibility(View.VISIBLE);
+                deleteDiaryButton.setVisibility(View.VISIBLE);
             }
+            homeViewModel.setDiaryOverlayVisibility(false);
         });
 
         // gestione dell'overlay per aggiungere o modificare un diario
-        homeViewModel.getDiaryOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean visible) {
-                if(visible){
-                    addDiaryButton.setVisibility(View.GONE);
-                    if(bAdd){
-                        showOverlay(ADD_DIARY);
-                    } else if(bEdit){
-                        showOverlay(EDIT_DIARY);
-                        modifyDiaryButton.setVisibility(View.GONE);
-                        deleteDiaryButton.setVisibility(View.GONE);
-                    }
-                } else {
-                    Constants.hideKeyboard(view, requireActivity());
-                    addDiaryButton.setVisibility(View.VISIBLE);
-                    if(bAdd){
-                        hideOverlay(ADD_DIARY);
-                    }else if(bEdit){
-                        hideOverlay(EDIT_DIARY);
-                    }
+        homeViewModel.getDiaryOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if(visible){
+                addDiaryButton.setVisibility(View.GONE);
+                if(bAdd){
+                    showOverlay(ADD_DIARY);
+                } else if(bEdit){
+                    showOverlay(EDIT_DIARY);
+                    modifyDiaryButton.setVisibility(View.GONE);
+                    deleteDiaryButton.setVisibility(View.GONE);
+                }
+            } else {
+                Constants.hideKeyboard(view, requireActivity());
+                addDiaryButton.setVisibility(View.VISIBLE);
+                if(bAdd){
+                    hideOverlay(ADD_DIARY);
+                }else if(bEdit){
+                    hideOverlay(EDIT_DIARY);
                 }
             }
         });
@@ -328,44 +314,41 @@ public class HomeFragment extends Fragment {
             public void afterTextChanged(Editable editable) {}
         });
 
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = inputDiaryName.getText().toString();
-                String dayStartDate = inputDayStartDate.getText().toString();
-                String monthStartDate =  inputMonthStartDate.getText().toString();
-                String yearStartDate = inputYearStartDate.getText().toString();
-                String dayEndDate = inputDayEndDate.getText().toString();
-                String monthEndDate = inputMonthEndDate.getText().toString();
-                String yearEndDate = inputYearEndDate.getText().toString();
-                String country = ((AutoCompleteTextView)
-                        overlayAddModifyDiary.findViewById(R.id.VisitedCountry)).getText().toString();
+        buttonSave.setOnClickListener(buttonSaveListener -> {
+            String name = inputDiaryName.getText().toString();
+            String dayStartDate = inputDayStartDate.getText().toString();
+            String monthStartDate =  inputMonthStartDate.getText().toString();
+            String yearStartDate = inputYearStartDate.getText().toString();
+            String dayEndDate = inputDayEndDate.getText().toString();
+            String monthEndDate = inputMonthEndDate.getText().toString();
+            String yearEndDate = inputYearEndDate.getText().toString();
+            String country = ((AutoCompleteTextView)
+                    overlayAddModifyDiary.findViewById(R.id.VisitedCountry)).getText().toString();
 
-                String startDate = dayStartDate + "/" + monthStartDate + "/" + yearStartDate;
-                String endDate = dayEndDate + "/" + monthEndDate + "/" + yearEndDate;
+            String startDate = dayStartDate + "/" + monthStartDate + "/" + yearStartDate;
+            String endDate = dayEndDate + "/" + monthEndDate + "/" + yearEndDate;
 
-                String imageUri;
-                if(selectedImageUri != null && !selectedImageUri.isEmpty())
-                    imageUri = selectedImageUri;
-                else
-                    imageUri = null;
+            String imageUri;
+            if(selectedImageUri != null && !selectedImageUri.isEmpty())
+                imageUri = selectedImageUri;
+            else
+                imageUri = null;
 
-                if(bAdd) {
-                    homeViewModel.insertDiary(name, startDate, endDate, imageUri, null, country);
-                } else if(bEdit){
-                    List<Diary> selectedDiary = homeViewModel.getSelectedDiariesLiveData().getValue();
-                    if(selectedDiary != null && !selectedDiary.isEmpty()){
-                        Diary currentDiary = selectedDiary.get(0);
-                        if(imageUri == null){
-                            imageUri = currentDiary.getCoverImageUri();
-                        }
-                        homeViewModel.updateDiary(currentDiary, name, startDate, endDate, imageUri, country);
-                        homeViewModel.deselectAllDiaries();
+            if(bAdd) {
+                homeViewModel.insertDiary(name, startDate, endDate, imageUri, null, country);
+            } else if(bEdit){
+                List<Diary> selectedDiary = homeViewModel.getSelectedDiariesLiveData().getValue();
+                if(selectedDiary != null && !selectedDiary.isEmpty()){
+                    Diary currentDiary = selectedDiary.get(0);
+                    if(imageUri == null){
+                        imageUri = currentDiary.getCoverImageUri();
                     }
+                    homeViewModel.updateDiary(currentDiary, name, startDate, endDate, imageUri, country);
+                    homeViewModel.deselectAllDiaries();
                 }
-                selectedImageUri = null;
-                homeViewModel.setDiaryOverlayVisibility(false);
             }
+            selectedImageUri = null;
+            homeViewModel.setDiaryOverlayVisibility(false);
         });
 
         // gestione delle spese selezionate
@@ -391,19 +374,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        deleteDiaryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                homeViewModel.deleteSelectedDiaries();
-            }
-        });
+        deleteDiaryButton.setOnClickListener(deleteDiaryButtonListener ->
+                homeViewModel.deleteSelectedDiaries());
 
-        modifyDiaryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bEdit = true;
-                homeViewModel.setDiaryOverlayVisibility(true);
-            }
+        modifyDiaryButton.setOnClickListener(modifyDiaryButtonListener -> {
+            bEdit = true;
+            homeViewModel.setDiaryOverlayVisibility(true);
         });
 
         buttonChooseImage.setOnClickListener(v -> openImagePicker());
@@ -419,7 +395,8 @@ public class HomeFragment extends Fragment {
 
     private void initializeOverlays(View view, LayoutInflater inflater) {
         ConstraintLayout rootLayoutHome = view.findViewById(R.id.root_layout_home);
-        overlayAddModifyDiary = inflater.inflate(R.layout.overlay_add_diary, rootLayoutHome, false);
+        overlayAddModifyDiary = inflater.inflate(R.layout.overlay_add_edit_diary, rootLayoutHome,
+                false);
         rootLayoutHome.addView(overlayAddModifyDiary);
         overlayAddModifyDiary.setVisibility(View.GONE);
     }
@@ -488,8 +465,10 @@ public class HomeFragment extends Fragment {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     requireContext(),
                     (view, year, month, dayOfMonth) -> {
-                        dayField.setText(String.format(Locale.getDefault(), "%02d", dayOfMonth));
-                        monthField.setText(String.format(Locale.getDefault(), "%02d", month + 1));
+                        dayField.setText(String.format(Locale.getDefault(), "%02d",
+                                dayOfMonth));
+                        monthField.setText(String.format(Locale.getDefault(), "%02d",
+                                month + 1));
                         yearField.setText(String.format(Locale.getDefault(), "%04d", year));
                     },
                     calendar.get(Calendar.YEAR),
@@ -520,7 +499,8 @@ public class HomeFragment extends Fragment {
                     100);
         } else { // Android 9 o inferiore
             ActivityCompat.requestPermissions(requireActivity(),
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     100);
         }
     }
@@ -529,18 +509,22 @@ public class HomeFragment extends Fragment {
     private Uri saveImageToPublicStorage(Uri sourceUri) {
         Bitmap bitmap;
         try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), sourceUri);
+            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),
+                    sourceUri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
 
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, "diary_" + System.currentTimeMillis() + ".jpg");
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "diary_" + System.currentTimeMillis()
+                + ".jpg");
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/TripTales");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES +
+                "/TripTales");
 
-        Uri imageUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Uri imageUri = getContext().getContentResolver()
+                .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         try {
             if (imageUri != null) {
@@ -595,7 +579,8 @@ public class HomeFragment extends Fragment {
         imageViewCover.setImageURI(null);
         imageViewCover.setVisibility(View.GONE);
         // Clear country field
-        AutoCompleteTextView countryAutoComplete = overlayAddModifyDiary.findViewById(R.id.VisitedCountry);
+        AutoCompleteTextView countryAutoComplete =
+                overlayAddModifyDiary.findViewById(R.id.VisitedCountry);
         if (countryAutoComplete != null) {
             countryAutoComplete.setText(""); // Reset country input
         }

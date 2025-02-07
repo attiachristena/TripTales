@@ -22,7 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,7 +62,6 @@ import java.util.List;
 public class ExpensesFragment extends Fragment {
 
     private int budget;
-    private double amountSpent;
     private TextView progressTextView;
     private String inputBudget;
     private ImageButton editBudgetButton;
@@ -91,7 +89,6 @@ public class ExpensesFragment extends Fragment {
     private String inputCurrency;
     private AutoCompleteTextView currencyAutoCompleteTextView;
     private TextView noExpensesTextView;
-    private List<Expense> expenseList;
     private ExpenseViewModel expenseViewModel;
     private HomeViewModel homeViewModel;
     private ExpensesRecyclerAdapter expensesRecyclerAdapter;
@@ -121,13 +118,7 @@ public class ExpensesFragment extends Fragment {
         progressIndicator = rootView.findViewById(R.id.budgetProgressIndicator);
 
         expenseViewModel.deselectAllExpenses();
-        String tmp = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
-        if(tmp != null){
-            budgetTextView.setText(tmp);
-            amountSpent = expenseViewModel.countAmount(expenseViewModel.getAllExpenses(), inputCurrency);
-            //updateProgressIndicator(amountSpent, budget, 0);
-            inputCurrency = getInputCurrency(tmp);
-        }
+        expenseViewModel.loadAmountSpent();
 
         RecyclerView recyclerViewExpenses = rootView.findViewById(R.id.recyclerViewExpenses);
         expensesRecyclerAdapter = new ExpensesRecyclerAdapter(getContext());
@@ -150,9 +141,25 @@ public class ExpensesFragment extends Fragment {
         bEdit = false;
         bAdd = false;
 
+        String tmp = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
+        if(tmp != null){
+            inputCurrency = expenseViewModel.getInputCurrency(tmp);
+            if(inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
+                budget = Integer.parseInt(tmp.substring(0, tmp.length()-1));
+            else
+                budget = Integer.parseInt(tmp.substring(1));
+            budgetTextView.setText(tmp);
+            double spent;
+            if(expenseViewModel.getAmountSpentLiveData().getValue() != null) {
+                spent = expenseViewModel.getAmountSpentLiveData().getValue();
+            } else {
+                spent = 0;
+            }
+            updateProgressIndicator(spent, budget);
+        }
+
         expenseViewModel.getExpensesLiveData().observe(getViewLifecycleOwner(), expenses -> {
             if(expenses != null) {
-                expenseList = expenses;
                 expensesRecyclerAdapter.setExpenseList(expenses);
                 if (expenses.isEmpty()) {
                     noExpensesTextView.setVisibility(View.VISIBLE);
@@ -197,10 +204,15 @@ public class ExpensesFragment extends Fragment {
                     budget = Integer.parseInt(diaryBudget.substring(1));
                 }
                 budgetTextView.setText(diaryBudget);
-                amountSpent = expenseViewModel.countAmount(expenseViewModel.getAllExpenses(), inputCurrency);
-                //updateProgressIndicator(amountSpent, budget, 0);
+                double spent;
+                if(expenseViewModel.getAmountSpentLiveData().getValue() != null) {
+                    spent = expenseViewModel.getAmountSpentLiveData().getValue();
+                } else {
+                    spent = 0;
+                }
+                updateProgressIndicator(spent, budget);
                 if(totExpenseTextView.getVisibility() == View.VISIBLE) {
-                    expenseViewModel.filterExpenses(inputFilterCategory, inputCurrency);
+                    expenseViewModel.filterExpenses(inputFilterCategory);
                 }
                 updateCurrencyIcon();
             }
@@ -208,10 +220,10 @@ public class ExpensesFragment extends Fragment {
 
         saveBudgetButton.setOnClickListener(saveBudget -> {
             inputBudget = numberEditText.getText().toString().trim();
-            String tmp = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
-            if(tmp != null){
-                String tmp2 = expenseViewModel.generateTextAmount(String.valueOf(budget), inputCurrency);
-                inputCurrency = getInputCurrency(tmp2);
+            String viewModelBudget = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
+            if(viewModelBudget != null){
+                String completeBudget = expenseViewModel.generateTextAmount(String.valueOf(budget), inputCurrency);
+                inputCurrency = expenseViewModel.getInputCurrency(completeBudget);
             } else {
                 inputCurrency = currencyAutoCompleteTextView.getText().toString().trim();
             }
@@ -400,7 +412,7 @@ public class ExpensesFragment extends Fragment {
         });
 
         deleteExpenseButton.setOnClickListener(deleteExpenseButtonListener ->
-                expenseViewModel.deleteSelectedExpenses(inputCurrency));
+                expenseViewModel.deleteSelectedExpenses());
 
         editExpenseButton.setOnClickListener(editExpenseButtonListener -> {
             bEdit = true;
@@ -439,15 +451,15 @@ public class ExpensesFragment extends Fragment {
         expenseViewModel.getFilteredExpensesLiveData().observe(getViewLifecycleOwner(), filteredExpenses -> {
             if (filteredExpenses != null) {
                 expensesRecyclerAdapter.setExpenseList(filteredExpenses);
-                String tmp = String.valueOf(expenseViewModel.countAmount(filteredExpenses, inputCurrency));
-                String totalAmountText = expenseViewModel.generateTextAmount(tmp, inputCurrency);
+                String amountFilteredExpenses = String.valueOf(expenseViewModel.countAmount(filteredExpenses));
+                String totalAmountText = expenseViewModel.generateTextAmount(amountFilteredExpenses, inputCurrency);
                 totExpenseTextView.setText(totalAmountText);
             }
         });
 
         saveCategoryButton.setOnClickListener(saveCategoryButtonListener -> {
             inputFilterCategory = filterCategoryEditText.getText().toString().trim();
-            expenseViewModel.filterExpenses(inputFilterCategory, inputCurrency);
+            expenseViewModel.filterExpenses(inputFilterCategory);
             expenseViewModel.setFilterOverlayVisibility(false);
             closeFilterButton.setVisibility(View.VISIBLE);
             filterTextView.setVisibility(View.VISIBLE);
@@ -464,25 +476,12 @@ public class ExpensesFragment extends Fragment {
         });
 
         // gestione modifica progress indicator
-        expenseViewModel.getAmountSpentLiveData().observe(getViewLifecycleOwner(), spent -> {
-            int progressPercentage = (int) ((amountSpent / (float) budget) * 100);
-            if(progressPercentage > 100)
-                progressIndicator.setIndicatorColor
-                        (ContextCompat.getColor(requireContext(), R.color.error));
-            else
-                progressIndicator.setIndicatorColor
-                        (ContextCompat.getColor(requireContext(), R.color.secondary));
-            progressIndicator.setProgress(progressPercentage);
-            String formattedText = amountSpent + " / " + budget + " spesi"
-                    + " (" + progressPercentage + "%)";
-            progressTextView.setText(formattedText);
-        });
+        expenseViewModel.getAmountSpentLiveData().observe(getViewLifecycleOwner(), spent ->
+                updateProgressIndicator(spent, budget));
     }
 
-    public void updateProgressIndicator(double expense, int budget){
-        /*if(add == 1)
-            amountSpent = amountSpent + expense;*/
-        int progressPercentage = (int) ((amountSpent / (float) budget) * 100);
+    public void updateProgressIndicator(double spent, int budget){
+        int progressPercentage = (int) ((spent / (float) budget) * 100);
         if(progressPercentage > 100)
             progressIndicator.setIndicatorColor
                     (ContextCompat.getColor(requireContext(), R.color.error));
@@ -490,7 +489,7 @@ public class ExpensesFragment extends Fragment {
             progressIndicator.setIndicatorColor
                     (ContextCompat.getColor(requireContext(), R.color.secondary));
         progressIndicator.setProgress(progressPercentage);
-        String formattedText = amountSpent + " / " + budget + " spesi"
+        String formattedText = spent + " / " + budget + " spesi"
                 + " (" + progressPercentage + "%)";
         progressTextView.setText(formattedText);
     }
@@ -578,28 +577,11 @@ public class ExpensesFragment extends Fragment {
         yearEditText.setText("");
     }
 
-    private String getInputCurrency(String diaryBudget){
-        String inputCurrency = "";
-        if (diaryBudget.charAt(diaryBudget.length() - 1) == CURRENCY_EUR.charAt(0)) {
-            inputCurrency = CURRENCY_EUR;
-        } else {
-            char tmp = diaryBudget.charAt(0);
-            if(tmp == CURRENCY_GBP.charAt(0)){
-                inputCurrency = CURRENCY_GBP;
-            } else if(tmp == CURRENCY_JPY.charAt(0)){
-                inputCurrency = CURRENCY_JPY;
-            } else if(tmp == CURRENCY_USD.charAt(0)) {
-                inputCurrency = CURRENCY_USD;
-            }
-        }
-        return inputCurrency;
-    }
-
     private void populateExpenseFields() {
         List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
         if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
             Expense currentExpense = selectedExpenses.get(0);
-            String tmp = expenseViewModel.extractRealAmount(currentExpense, inputCurrency);
+            String tmp = expenseViewModel.extractRealAmount(currentExpense);
             amountEditText.setText(tmp);
             categoryAutoCompleteTextView.setText(currentExpense.getCategory(), false);
             descriptionEditText.setText(currentExpense.getDescription());

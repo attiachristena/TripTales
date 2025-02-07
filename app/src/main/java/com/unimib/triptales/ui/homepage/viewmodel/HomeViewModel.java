@@ -4,21 +4,16 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.firebase.database.ServerValue;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.unimib.triptales.util.Constants.ADDED;
 import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
-import static com.unimib.triptales.util.SharedPreferencesUtils.getLoggedUserId;
-
-import android.content.Context;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
