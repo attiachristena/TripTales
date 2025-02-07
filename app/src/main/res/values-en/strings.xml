@@ -206,6 +206,13 @@
     <string name="user_not_logged_in_error">User not signed up</string>
     <string name="unexpected_error">Unexpected error</string>
     <string name="error_password_login">Wrong password. Please, retry.</string>
+    <string name="snackbarDiaryAdded">Diary added</string>
+    <string name="snackbarDiaryUpdated">Diary updated</string>
+    <string name="snackbarDiaryDeleted">Diary deleted</string>
+    <string name="snackbarDiaryNotDeleted">Error: diary not deleted</string>
+    <string name="i_tuoi_ricordi">Your memories…</string>
+    <string name="cerca_diario_per_paese">Find diary by visited country</string>
+
 
     <string name="inserisci_vecchia_password">Enter the old password</string>
     <string name="inserisci_nuova_password">Enter the new password</string>

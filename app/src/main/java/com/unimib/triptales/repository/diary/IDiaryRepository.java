@@ -1,22 +1,30 @@
 package com.unimib.triptales.repository.diary;
 
+import android.content.Context;
+
 import com.unimib.triptales.model.Diary;
 
 import java.util.List;
+import androidx.lifecycle.LiveData;
 
 
 public interface IDiaryRepository {
-    long insertDiary(Diary diary);
-
-    void updateDiaryName(int diaryId, String newName);
-
-    void updateDiaryIsSelected(int diaryId, boolean isSelected);
-
-    void deleteDiary(Diary diary);
-
-    void deleteAllDiaries(List<Diary> diaries);
-
-    void getAllDiaries(DiaryResponseCallBack callBack);
-
-    void getSelectedDiaries(DiaryResponseCallBack callBack);
+        void insertDiary(Diary diary);
+        void updateDiary(Diary diary);
+        void updateAllDiaries(List<Diary> diaries);
+        void updateDiaryName(String diaryId, String newName);
+        void updateDiaryStartDate(String diaryId, String newStartDate);
+        void updateDiaryEndDate(String diaryId, String newEndDate);
+        void updateDiaryCoverImage(String diaryId, String newCoverImage);
+        void updateDiaryBudget(String diaryId, String newBudget);
+        void updateDiaryCountry(String diaryId, String newCountry);
+        void updateDiaryIsSelected(String diaryId, boolean newIsSelected);
+        void deleteDiary(Diary diary);
+        void deleteAllDiaries(List<Diary> diaries);
+        List<Diary> getAllDiaries();
+        void getRemoteDiaries();
+        List<Diary> getSelectedDiaries();
+        List<String> getAllCountries(String userId);
+        LiveData<Boolean> getLoading();
+        String getBudget(String diaryId);
 }

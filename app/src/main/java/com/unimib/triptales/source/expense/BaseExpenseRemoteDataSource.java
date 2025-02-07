@@ -22,7 +22,4 @@ public abstract class BaseExpenseRemoteDataSource {
     public abstract void deleteExpense(Expense expense);
     public abstract void deleteAllExpenses(List<Expense> expenses);
     public abstract void getAllExpenses();
-    public abstract void getSelectedExpenses();
-    public abstract void getFilteredExpenses(String category);
-    //List<Expense> getAllExpenses(int diaryId);
 }

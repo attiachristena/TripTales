@@ -1,20 +1,30 @@
 package com.unimib.triptales.source.diary;
 
 import com.unimib.triptales.model.Diary;
+import com.unimib.triptales.repository.diary.DiaryResponseCallBack;
 
 import java.util.List;
 
-public interface BaseDiaryLocalDataSource {
-    long insertDiary(Diary diary);
-    void updateDiaryName(int diaryId, String newName);
+public abstract class BaseDiaryLocalDataSource {
+    protected DiaryResponseCallBack diaryCallback;
 
-    void updateDiaryIsSelected(int diaryId, boolean newIsSelected);
-    void deleteDiary(Diary diary);
-    void deleteAllDiaries(List<Diary> diaries);
-    List<Diary> getAllDiaries();
-    List<Diary> getSelectedDiaries();
+    public void setDiaryCallback(DiaryResponseCallBack diaryCallback){
+        this.diaryCallback = diaryCallback;
+    }
 
-    List<Diary> getAllDiariesByUserId(String userId);
-    //List<Diary> getAllDiariesByUserId(int Id);
-
+    public abstract void insertDiary(Diary diary);
+    public abstract void updateDiary(Diary diary);
+    public abstract void updateDiaryName(String diaryId, String newName);
+    public abstract void updateDiaryStartDate(String diaryId, String newStartDate);
+    public abstract void updateDiaryEndDate(String diaryId, String newEndDate);
+    public abstract void updateDiaryCoverImage(String diaryId, String newCoverImage);
+    public abstract void updateDiaryBudget(String diaryId, String newBudget);
+    public abstract void updateDiaryCountry(String diaryId, String newCountry);
+    public abstract void updateDiaryIsSelected(String diaryId, boolean newIsSelected);
+    public abstract void deleteDiary(Diary diary);
+    public abstract void deleteAllDiaries(List<Diary> diaries);
+    public abstract void getAllDiaries();
+    public abstract void getSelectedDiaries();
+    public abstract void getAllCountries(String userId);
+    public abstract void getBudget(String diaryId);
 }

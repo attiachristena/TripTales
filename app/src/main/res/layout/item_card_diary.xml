@@ -9,9 +9,9 @@
         android:id="@+id/cardViewDiary"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
+        android:layout_margin="2dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
+        app:cardElevation="6dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,7 @@
                 android:shadowRadius="5"
                 android:text="Paese"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/imageViewDiary"
                 app:layout_constraintEnd_toEndOf="@id/imageViewDiary"
@@ -66,9 +66,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:shadowColor="#A6000000"
                     android:text="Data Inizio"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <!-- TextView per la durata del viaggio con icona calendario -->
                 <TextView
@@ -84,7 +86,7 @@
                     android:shadowRadius="5"
                     android:text="Numero giorni"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

@@ -16,7 +16,6 @@ public interface IGoalRepository {
     void deleteGoal(Goal goal);
     void deleteAllGoals(List<Goal> goals);
     List<Goal> getAllGoals();
-    //List<Goal> getAllGoalsByDiaryId(int diaryId);
     List<Goal> getSelectedGoals();
     List<Goal> getCheckedGoals();
 }

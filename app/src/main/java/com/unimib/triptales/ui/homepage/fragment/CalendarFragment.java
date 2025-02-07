@@ -104,7 +104,7 @@ public class CalendarFragment extends Fragment {
 
     private void loadCalendarData(String userId) {
         new Thread(() -> {
-            List<Diary> diaries = diaryDao.getAllDiariesByUserId(userId);
+            List<Diary> diaries = diaryDao.getAllDiaries(userId);
 
             // Passa i dati al main thread
             requireActivity().runOnUiThread(() -> updateCalendar(diaries));
