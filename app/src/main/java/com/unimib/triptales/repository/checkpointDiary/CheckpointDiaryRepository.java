@@ -15,7 +15,7 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository {
         this.checkpointDiaryLocalDataSource = checkpointDiaryLocalDataSource;
     }
 
-    public List<CheckpointDiary> getCheckpointDiariesByDiaryId(int diaryId) {
+    public List<CheckpointDiary> getCheckpointDiariesByDiaryId(String diaryId) {
         return checkpointDiaryLocalDataSource.getCheckpointDiariesByDiaryId(diaryId);
     }
 

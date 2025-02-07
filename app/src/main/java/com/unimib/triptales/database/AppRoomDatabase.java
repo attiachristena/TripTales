@@ -10,19 +10,20 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 
-import com.unimib.triptales.model.ImageCardItem;
 import com.unimib.triptales.model.CheckpointDiary;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
+import com.unimib.triptales.model.ImageCardItem;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.util.Constants;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Diary.class, Goal.class, Task.class, Expense.class,
-CheckpointDiary.class, ImageCardItem.class}, version = DATABASE_VERSION)
+@Database(entities = {Diary.class, CheckpointDiary.class, Goal.class, Task.class,
+        Expense.class, ImageCardItem.class}, version = DATABASE_VERSION)
+
 @TypeConverters({UriConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract DiaryDao diaryDao();

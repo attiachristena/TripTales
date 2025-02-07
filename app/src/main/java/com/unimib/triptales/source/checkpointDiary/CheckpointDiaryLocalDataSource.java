@@ -13,7 +13,7 @@ public class CheckpointDiaryLocalDataSource implements BaseCheckpointDiaryLocalD
     }
 
     @Override
-    public List<CheckpointDiary> getCheckpointDiariesByDiaryId(int diaryId) {
+    public List<CheckpointDiary> getCheckpointDiariesByDiaryId(String diaryId) {
         return checkpointDiaryDao.getCheckpointDiaryById(diaryId);
     }
 
