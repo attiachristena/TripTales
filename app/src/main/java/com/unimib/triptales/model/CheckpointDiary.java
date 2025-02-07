@@ -21,7 +21,7 @@ public class CheckpointDiary {
     private int id;
 
     @ColumnInfo(name = "diary_id")
-    private int diaryId; // Riferimento al Diary
+    private String diaryId; // Riferimento al Diary
 
     @ColumnInfo(name = "nome")
     public String nome;
@@ -38,7 +38,7 @@ public class CheckpointDiary {
     @ColumnInfo(name = "longitude")
     public double longitude;
 
-    public CheckpointDiary(int diaryId, String nome, String data, String immagineUri, double latitude, double longitude) {
+    public CheckpointDiary(String diaryId, String nome, String data, String immagineUri, double latitude, double longitude) {
         this.diaryId = diaryId;
         this.nome = nome;
         this.data = data;
@@ -56,7 +56,7 @@ public class CheckpointDiary {
         this.id = id;
     }
 
-    public int getDiaryId() {
+    public String getDiaryId() {
         return diaryId;
     }
 
@@ -64,9 +64,6 @@ public class CheckpointDiary {
 //        return diaryId;
 //    }
 
-    public void setCheckpointId(int diaryId) {
-        this.diaryId = diaryId;
-    }
 
     public String getNome() {
         return nome;

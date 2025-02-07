@@ -94,8 +94,7 @@ public class CheckpointDiaryViewModel extends ViewModel {
                 return;
             }
 
-            int diaryId = Integer.parseInt(diaryIdStr);
-            List<CheckpointDiary> checkpoints = checkpointDiaryRepository.getCheckpointDiariesByDiaryId(diaryId);
+            List<CheckpointDiary> checkpoints = checkpointDiaryRepository.getCheckpointDiariesByDiaryId(diaryIdStr);
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 checkpointDiariesLiveData.setValue(checkpoints);
@@ -116,10 +115,8 @@ public class CheckpointDiaryViewModel extends ViewModel {
             return;
         }
 
-        int diaryId = Integer.parseInt(diaryIdStr);
-
         // Creazione del nuovo checkpoint con l'ID del diario
-        CheckpointDiary nuovaCheckpoint = new CheckpointDiary(diaryId, nome, data, imageUri.toString(), latLng.latitude, latLng.longitude);
+        CheckpointDiary nuovaCheckpoint = new CheckpointDiary(diaryIdStr, nome, data, imageUri.toString(), latLng.latitude, latLng.longitude);
 
         try {
             long insertedId = checkpointDiaryRepository.insertCheckpointDiary(nuovaCheckpoint);

@@ -50,24 +50,13 @@ import com.unimib.triptales.util.ServiceLocator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.DiaryRecyclerAdapter;
-import com.unimib.triptales.adapters.DiaryAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.database.DiaryDao;
-import com.unimib.triptales.database.UserDao;
 import com.unimib.triptales.model.Diary;
-import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
 import com.unimib.triptales.util.GeoJSONParser;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
@@ -96,16 +85,13 @@ public class HomeFragment extends Fragment {
     private AutoCompleteTextView countryAutoComplete;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private RecyclerView recyclerViewDiaries;
-    private ArrayList<Diary> selectedDiaries = new ArrayList<>();
     private View imageViewSelectedChanges;
     private String country;
-    private SharedViewModel sharedViewModel;
     private int id;
     private String idUser;
     private String budget;
     AppRoomDatabase database;
     private DiaryDao diaryDao;
-    private UserDao userDao;
 
     @Nullable
     @Override
@@ -153,7 +139,7 @@ public class HomeFragment extends Fragment {
 
                             if (newUri != null) {
                                 selectedImageUri = newUri.toString();
-                        }
+                            }
 
                             // Controlla quale overlay è aperto e aggiorna l'immagine corretta
                             if (overlayAddModifyDiary.getVisibility() == View.VISIBLE) {
@@ -167,7 +153,6 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

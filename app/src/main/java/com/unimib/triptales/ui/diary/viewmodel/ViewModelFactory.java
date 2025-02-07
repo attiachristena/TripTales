@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.unimib.triptales.repository.checkpoint.ICheckpointRepository;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
@@ -19,7 +18,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final IExpenseRepository expenseRepository;
     private final IGoalRepository goalRepository;
     private final ITaskRepository taskRepository;
-    private final ICheckpointRepository checkpointRepository;
     private final IDiaryRepository diaryRepository;
     private final ICheckpointDiaryRepository checkpointDiaryRepository;
     private final IImageCardItemRepository imageCardItemRepository;
@@ -28,7 +26,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = expenseRepository;
         this.goalRepository = null;
         this.taskRepository = null;
-        this.checkpointRepository = null;
         diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
@@ -38,7 +35,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = goalRepository;
         this.taskRepository = null;
-        this.checkpointRepository = null;
         diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
@@ -48,7 +44,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = taskRepository;
-        this.checkpointRepository = null;
         diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
@@ -58,16 +53,17 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = null;
-        this.checkpointRepository = checkpointRepository;
+        this.checkpointDiaryRepository = checkpointDiaryRepository;
+        this.imageCardItemRepository = null;
         diaryRepository = null;
     }
+
     public ViewModelFactory(IDiaryRepository diaryRepository){
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = null;
-        this.checkpointRepository = null;
         this.diaryRepository = diaryRepository;
-        this.checkpointDiaryRepository = checkpointDiaryRepository;
+        this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
     }
 
@@ -77,6 +73,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.taskRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = imageCardItemRepository;
+        diaryRepository = null;
     }
 
     @NonNull

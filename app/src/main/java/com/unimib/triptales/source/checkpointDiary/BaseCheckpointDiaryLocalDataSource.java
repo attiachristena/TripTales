@@ -10,7 +10,7 @@ public interface BaseCheckpointDiaryLocalDataSource {
         void onResult(T result);
     }
 
-    List<CheckpointDiary> getCheckpointDiariesByDiaryId(int diaryId);
+    List<CheckpointDiary> getCheckpointDiariesByDiaryId(String diaryId);
     List<CheckpointDiary> getAllCheckpointDiaries();
     long insertCheckpointDiary(CheckpointDiary checkpointDiary);
     void updateCheckpointDiary(CheckpointDiary checkpointDiary);

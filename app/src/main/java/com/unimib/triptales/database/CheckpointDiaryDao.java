@@ -55,7 +55,7 @@ public interface CheckpointDiaryDao {
     String getName(int id);
 
     @Query("SELECT * FROM CheckpointDiary WHERE diary_id = :diaryId")
-    List<CheckpointDiary> getCheckpointDiaryById(int diaryId);
+    List<CheckpointDiary> getCheckpointDiaryById(String diaryId);
 
     @Query("SELECT * FROM CheckpointDiary WHERE diary_id = :diaryId")
     LiveData<List<CheckpointDiary>> getCheckpointDiaryByCheckpointId(int diaryId);
