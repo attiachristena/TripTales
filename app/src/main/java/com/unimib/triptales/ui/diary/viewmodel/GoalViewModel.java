@@ -70,7 +70,7 @@ public class GoalViewModel extends ViewModel {
 
     public void insertGoal(String name, String description, Context context) {
         String diaryId = SharedPreferencesUtils.getDiaryId(context);
-        Goal goal = new Goal(name, description, false, false, diaryId);
+        Goal goal = new Goal(name, description, false, false, diaryId, System.currentTimeMillis());
         goalRepository.insertGoal(goal);
         fetchAllGoals();
         goalEvent.setValue(ADDED);
@@ -124,6 +124,7 @@ public class GoalViewModel extends ViewModel {
     public void getCheckedGoals() {
         checkedGoalsLiveData.setValue(goalRepository.getCheckedGoals());
         checkedGoalsLiveData.getValue();
+        fetchAllGoals();
     }
 
     public void toggleGoalSelection(Goal goal){

@@ -126,7 +126,7 @@ public class GoalRemoteDataSource extends BaseGoalRemoteDataSource{
 
     @Override
     public void getAllGoals() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("timestamp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Goal> goalList = new ArrayList<>();

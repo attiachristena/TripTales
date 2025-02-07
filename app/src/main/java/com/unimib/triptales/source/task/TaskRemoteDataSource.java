@@ -105,7 +105,7 @@ public class TaskRemoteDataSource extends BaseTaskRemoteDataSource{
 
     @Override
     public void getAllTasks() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("timestamp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Task> taskList = new ArrayList<>();

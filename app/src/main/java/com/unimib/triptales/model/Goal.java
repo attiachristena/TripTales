@@ -33,16 +33,20 @@ public class Goal {
     @ColumnInfo(name = "goal_isChecked")
     private boolean goal_isChecked;
 
+    @ColumnInfo(name = "goal_timestamp")
+    private long timestamp;
+
     public Goal(){}
 
     public Goal(String name, String description, boolean goal_isSelected, boolean goal_isChecked,
-                String diaryId) {
+                String diaryId, long timestamp) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.goal_isSelected = goal_isSelected;
         this.goal_isChecked = goal_isChecked;
         this.diaryId = diaryId;
+        this.timestamp = timestamp;
     }
 
     @NonNull
@@ -89,6 +93,10 @@ public class Goal {
     public void setGoal_isChecked(boolean goal_isChecked) {
         this.goal_isChecked = goal_isChecked;
     }
+
+    public long getTimestamp() { return timestamp; }
+
+    public void setTimestamp(long timestamp) { this.timestamp = timestamp;}
 
     @Override
     public boolean equals(Object obj) {

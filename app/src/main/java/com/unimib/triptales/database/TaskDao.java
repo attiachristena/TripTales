@@ -32,7 +32,7 @@ public interface TaskDao {
     @Delete
     void deleteAll(List<Task> tasks);
 
-    @Query("SELECT * FROM Task WHERE diaryId = :diaryId")
+    @Query("SELECT * FROM Task WHERE diaryId = :diaryId ORDER BY task_timestamp DESC")
     List<Task> getAll(String diaryId);
 
     @Query("SELECT * FROM Task WHERE task_isSelected = 1 AND diaryId = :diaryId")

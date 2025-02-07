@@ -30,14 +30,18 @@ public class Task {
     @ColumnInfo(name = "task_isChecked")
     private boolean task_isChecked;
 
+    @ColumnInfo(name = "task_timestamp")
+    private long timestamp;
+
     public Task(){}
 
-    public Task(String name, boolean task_isSelected, boolean task_isChecked, String diaryId) {
+    public Task(String name, boolean task_isSelected, boolean task_isChecked, String diaryId, long timestamp) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.task_isSelected = task_isSelected;
         this.task_isChecked = task_isChecked;
         this.diaryId = diaryId;
+        this.timestamp = timestamp;
     }
 
     @NonNull
@@ -80,6 +84,10 @@ public class Task {
     public void setTask_isChecked(boolean task_isChecked) {
         this.task_isChecked = task_isChecked;
     }
+
+    public long getTimestamp() { return timestamp; }
+
+    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
 
     @Override
     public boolean equals(Object obj) {

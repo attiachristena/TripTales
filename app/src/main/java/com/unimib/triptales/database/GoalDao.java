@@ -38,7 +38,7 @@ public interface GoalDao {
     @Delete
     void deleteAll(List<Goal> goals);
 
-    @Query("SELECT * FROM Goal WHERE diaryId = :diaryId")
+    @Query("SELECT * FROM Goal WHERE diaryId = :diaryId ORDER BY goal_timestamp DESC")
     List<Goal> getAll(String diaryId);
 
     @Query("SELECT * FROM Goal WHERE goal_isSelected = 1 AND diaryId = :diaryId")

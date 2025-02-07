@@ -69,7 +69,7 @@ public class TaskViewModel extends ViewModel {
 
     public void insertTask(String name, Context context) {
         String diaryId = SharedPreferencesUtils.getDiaryId(context);
-        Task task = new Task(name, false, false, diaryId);
+        Task task = new Task(name, false, false, diaryId, System.currentTimeMillis());
         taskRepository.insertTask(task);
         fetchAllTasks();
         taskEvent.setValue(ADDED);
