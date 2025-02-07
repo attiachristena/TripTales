@@ -3,7 +3,6 @@ package com.unimib.triptales.ui.homepage.fragment;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,16 +34,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.DiaryAdapter;
 import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.CheckpointDao;
 import com.unimib.triptales.database.DiaryDao;
 import com.unimib.triptales.database.UserDao;
-import com.unimib.triptales.model.Checkpoint;
 import com.unimib.triptales.model.Diary;
-import com.unimib.triptales.model.User;
-import com.unimib.triptales.ui.diary.fragment.CheckpointsFragment;
 import com.unimib.triptales.ui.homepage.viewmodel.SharedViewModel;
-import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
-import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +90,6 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     AppRoomDatabase database;
     private DiaryDao diaryDao;
     private UserDao userDao;
-    private CheckpointDao checkpointDao;
 
     @Nullable
     @Override
@@ -188,7 +180,6 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
     private void initializeDatabase() {
         database = AppRoomDatabase.getDatabase(getContext());
         diaryDao = database.diaryDao();
-        checkpointDao = database.checkpointDao();
         String idUser = getLoggedUserId();
 
 
@@ -414,8 +405,6 @@ public class HomeFragment extends Fragment implements DiaryAdapter.OnDiaryItemLo
             newDiary.setId((int) diaryId);
             Log.d(TAG, "Diary saved with ID: " + diaryId);
 
-            Checkpoint newCheckpoint = new Checkpoint((int) diaryId, diaryName, startDate, endDate, selectedImageUri);
-            checkpointDao.insertCheckpoint(newCheckpoint);
         }
 
         diaryList.add(newDiary);

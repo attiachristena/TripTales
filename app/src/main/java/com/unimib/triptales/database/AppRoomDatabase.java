@@ -11,7 +11,6 @@ import androidx.room.TypeConverters;
 
 
 import com.unimib.triptales.model.ImageCardItem;
-import com.unimib.triptales.model.Checkpoint;
 import com.unimib.triptales.model.CheckpointDiary;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.model.Expense;
@@ -24,13 +23,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {User.class, Diary.class, Checkpoint.class, Goal.class, Task.class, Expense.class,
+@Database(entities = {User.class, Diary.class, Goal.class, Task.class, Expense.class,
 CheckpointDiary.class, ImageCardItem.class}, version = DATABASE_VERSION)
 @TypeConverters({UriConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract DiaryDao diaryDao();
-    public abstract CheckpointDao checkpointDao();
     public abstract GoalDao goalDao();
     public abstract TaskDao taskDao();
     public abstract ExpenseDao expenseDao();
