@@ -155,18 +155,13 @@ public class IntroActivity extends AppCompatActivity {
         }
         dots[position].setTextColor(getResources().getColor(R.color.light_brown2,getApplicationContext().getTheme()));
 
-        if(position==1){
-            for(int i=0; i < dots.length; i++ ){
-                dots[i].setTextColor(getResources().getColor(R.color.pink2, getApplicationContext().getTheme()));
-            }
-            dots[1].setTextColor(getResources().getColor(R.color.magenta,getApplicationContext().getTheme()));
-        } else if (position==2) {
+
+        if (position==2) {
             for(int i=0; i < dots.length; i++ ){
                 dots[i].setTextColor(getResources().getColor(R.color.light_orange3, getApplicationContext().getTheme()));
             }
             dots[2].setTextColor(getResources().getColor(R.color.orange,getApplicationContext().getTheme()));
         }
-
 
     }
 
