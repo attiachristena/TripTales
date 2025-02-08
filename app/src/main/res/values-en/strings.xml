@@ -244,5 +244,6 @@
     <string name="esci">Logout</string>
     <string name="dati_non_disponibili">Data not available</string>
     <string name="errore_nel_recupero_dati">Error retrieving data</string>
+    <string name="seleziona_lingua">Select language</string>
 
 </resources>
