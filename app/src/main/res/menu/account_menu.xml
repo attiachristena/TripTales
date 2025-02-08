@@ -5,10 +5,6 @@
         android:title="@string/modifica_password"
         android:enabled="true" />
     <item
-        android:id="@+id/action_modifica_email"
-        android:title="@string/modifica_email"
-        android:enabled="true" />
-    <item
         android:id="@+id/action_elimina_profilo"
         android:title="@string/elimina_profilo"
         android:enabled="true" />

@@ -54,9 +54,11 @@
         }
 
         public void setDiaries(List<Diary> diaries) {
-            this.diaries = diaries;
+            this.diaries.clear();
+            this.diaries.addAll(diaries);
             notifyDataSetChanged();
         }
+
 
         public void setOnDiaryLongClicked(OnDiaryLongClickListener listener){
             this.onDiaryLongClicked = listener;

@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -59,6 +61,7 @@ import com.unimib.triptales.util.GeoJSONParser;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -387,6 +390,21 @@ public class HomeFragment extends Fragment {
 
         buttonChooseImage.setOnClickListener(v -> openImagePicker());
 
+        SearchView searchView = view.findViewById(R.id.search_view_diaries);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterDiariesByCountry(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterDiariesByCountry(newText);
+                return false;
+            }
+        });
     }
 
     private void initializeViews(View view, LayoutInflater inflater) {
@@ -505,6 +523,24 @@ public class HomeFragment extends Fragment {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     100);
+        }
+    }
+
+    private void filterDiariesByCountry(String countryQuery) {
+        List<Diary> allDiaries = homeViewModel.getDiariesLiveData().getValue();
+        if (allDiaries != null) {
+            List<Diary> filteredDiaries = new ArrayList<>();
+
+            for (Diary diary : allDiaries) {
+                String diaryCountry = diary.getCountry();
+
+                if (diaryCountry != null && countryQuery != null &&
+                        diaryCountry.toLowerCase().startsWith(countryQuery.toLowerCase())) { // <-- Usa startsWith() per corrispondenza esatta all'inizio
+                    filteredDiaries.add(diary);
+                }
+            }
+
+            diaryRecyclerAdapter.setDiaries(filteredDiaries);
         }
     }
 
