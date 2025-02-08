@@ -161,6 +161,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.loadDiaries();
         final int maxObservations = 10;
         final AtomicInteger observationCount = new AtomicInteger(0);
+        selectedImageUri = "uriIniziale";
 
         homeViewModel.getLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
@@ -331,17 +332,16 @@ public class HomeFragment extends Fragment {
             String startDate = dayStartDate + "/" + monthStartDate + "/" + yearStartDate;
             String endDate = dayEndDate + "/" + monthEndDate + "/" + yearEndDate;
 
-            String imageUri;
-            if(selectedImageUri != null && !selectedImageUri.isEmpty())
-                imageUri = selectedImageUri;
-            else
-                imageUri = null;
-
-            boolean correct = homeViewModel.validateDiaryInput(name, startDate, endDate, imageUri, country);
+            boolean correct = homeViewModel.validateDiaryInput(name, startDate, endDate, selectedImageUri, country);
             if(correct) {
                 if (bAdd) {
-                    homeViewModel.insertDiary(name, startDate, endDate, imageUri, null, country);
+                    homeViewModel.insertDiary(name, startDate, endDate, selectedImageUri, null, country);
                 } else if (bEdit) {
+                    String imageUri;
+                    if(selectedImageUri != null && !selectedImageUri.isEmpty())
+                        imageUri = selectedImageUri;
+                    else
+                        imageUri = null;
                     List<Diary> selectedDiary = homeViewModel.getSelectedDiariesLiveData().getValue();
                     if (selectedDiary != null && !selectedDiary.isEmpty()) {
                         Diary currentDiary = selectedDiary.get(0);
