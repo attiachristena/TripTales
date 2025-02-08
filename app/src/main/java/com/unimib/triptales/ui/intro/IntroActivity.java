@@ -37,22 +37,19 @@ public class IntroActivity extends AppCompatActivity {
         public void onPageSelected(int position) {
             setDotIndicator(position);
 
-            if (position > 0){
-                backButton.setVisibility(View.VISIBLE);
-                if(position == 3){
-                    nextButton.setVisibility(View.INVISIBLE);
-                    startButton.setVisibility(View.VISIBLE);
-                }else{
-                    nextButton.setVisibility(View.VISIBLE);
-                    startButton.setVisibility(View.INVISIBLE);
-                }
-            }else{
+            if(position == 0){
                 nextButton.setVisibility(View.VISIBLE);
                 startButton.setVisibility(View.INVISIBLE);
                 backButton.setVisibility(View.INVISIBLE);
+            } else if (position == 1) {
+                backButton.setVisibility(View.VISIBLE);
+                nextButton.setVisibility(View.VISIBLE);
+                startButton.setVisibility(View.INVISIBLE);
+            } else if (position == 2) {
+                backButton.setVisibility(View.VISIBLE);
+                nextButton.setVisibility(View.INVISIBLE);
+                startButton.setVisibility(View.VISIBLE);
             }
-
-
 
 
             if(position == 0){
@@ -60,25 +57,13 @@ public class IntroActivity extends AppCompatActivity {
                 backButton.setBackgroundColor(getResources().getColor(R.color.light_brown3,getApplicationContext().getTheme()));
 
             } else if (position == 1) {
-                nextButton.setBackgroundColor(getResources().getColor(R.color.magenta,getApplicationContext().getTheme()));
-                backButton.setBackgroundColor(getResources().getColor(R.color.magenta,getApplicationContext().getTheme()));
-
-            } else if (position == 2) {
                 nextButton.setBackgroundColor(getResources().getColor(R.color.light_brown2,getApplicationContext().getTheme()));
                 backButton.setBackgroundColor(getResources().getColor(R.color.light_brown2,getApplicationContext().getTheme()));
 
-            } else if (position == 3) {
+            } else if (position == 2) {
                 nextButton.setBackgroundColor(getResources().getColor(R.color.orange2,getApplicationContext().getTheme()));
                 backButton.setBackgroundColor(getResources().getColor(R.color.orange2,getApplicationContext().getTheme()));
             }
-
-            /*if(position == 3){
-                nextButton.setText("Finish");
-
-            }else{
-                nextButton.setText("Next");
-            }
-            */
 
 
         }
@@ -125,7 +110,7 @@ public class IntroActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                if(getItem(0) == 3){
+                if(getItem(0) == 2){
                     Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
@@ -156,7 +141,7 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     public void setDotIndicator(int position){
-        dots = new TextView[4];
+        dots = new TextView[3];
         dotIndicator.removeAllViews();
 
         for(int i=0; i < dots.length; i++ ){
@@ -173,11 +158,11 @@ public class IntroActivity extends AppCompatActivity {
                 dots[i].setTextColor(getResources().getColor(R.color.pink2, getApplicationContext().getTheme()));
             }
             dots[1].setTextColor(getResources().getColor(R.color.magenta,getApplicationContext().getTheme()));
-        } else if (position==3) {
+        } else if (position==2) {
             for(int i=0; i < dots.length; i++ ){
                 dots[i].setTextColor(getResources().getColor(R.color.light_orange3, getApplicationContext().getTheme()));
             }
-            dots[3].setTextColor(getResources().getColor(R.color.orange,getApplicationContext().getTheme()));
+            dots[2].setTextColor(getResources().getColor(R.color.orange,getApplicationContext().getTheme()));
         }
 
 

@@ -104,8 +104,6 @@
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
     <string name="intro1_title">Welcome to TripTales. Your Personal Travel Journal</string>
     <string name="intro1_body">Tell your journey, capture your memories and discover the world your own way</string>
-    <string name="intro2_title">Plan your trip, explore the world, treasure every stage</string>
-    <string name="intro2_body">Here you can plan your adventures, note down every discovery and relive every moment.</string>
     <string name="intro3_title">Explore without internet connection, plan without stress</string>
     <string name="intro3_body">Download maps and create your itinerary without needing to be online</string>
     <string name="intro4_title">Travel with peace of mind: we help you remember every detail</string>
