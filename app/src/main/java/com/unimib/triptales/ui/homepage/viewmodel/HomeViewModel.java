@@ -192,7 +192,8 @@ public class HomeViewModel extends ViewModel {
         }
     }
 
-    public boolean validateDiaryInput(String diaryName, String startDate, String endDate, String imageUri, String country) {
+    public boolean validateDiaryInput(String diaryName, String startDate, String endDate,
+                                      String imageUri, String country, boolean bAdd) {
         boolean correct = true;
         if(startDate.equals("//")) startDate = "";
         if(endDate.equals("//")) endDate = "";
@@ -206,7 +207,7 @@ public class HomeViewModel extends ViewModel {
             errorLiveData.setValue("Inserisci la data di ritorno");
         } else if(!validateDateOrder(startDate, endDate)){
             errorLiveData.setValue("Le date inserite non sono valide");
-        } else if(imageUri == null || imageUri.isEmpty()){
+        } else if(bAdd && (imageUri == null || imageUri.isEmpty())){
             errorLiveData.setValue("Seleziona un'immagine per il diario");
         }
 

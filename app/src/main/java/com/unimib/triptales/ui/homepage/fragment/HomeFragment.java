@@ -161,7 +161,6 @@ public class HomeFragment extends Fragment {
         homeViewModel.loadDiaries();
         final int maxObservations = 10;
         final AtomicInteger observationCount = new AtomicInteger(0);
-        selectedImageUri = "uriIniziale";
 
         homeViewModel.getLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
@@ -332,10 +331,12 @@ public class HomeFragment extends Fragment {
             String startDate = dayStartDate + "/" + monthStartDate + "/" + yearStartDate;
             String endDate = dayEndDate + "/" + monthEndDate + "/" + yearEndDate;
 
-            boolean correct = homeViewModel.validateDiaryInput(name, startDate, endDate, selectedImageUri, country);
+            boolean correct = homeViewModel.validateDiaryInput(name, startDate, endDate,
+                    selectedImageUri, country, bAdd);
             if(correct) {
                 if (bAdd) {
-                    homeViewModel.insertDiary(name, startDate, endDate, selectedImageUri, null, country);
+                    homeViewModel.insertDiary(name, startDate, endDate, selectedImageUri,
+                            null, country);
                 } else if (bEdit) {
                     String imageUri;
                     if(selectedImageUri != null && !selectedImageUri.isEmpty())
