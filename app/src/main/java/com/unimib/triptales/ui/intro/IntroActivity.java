@@ -140,6 +140,7 @@ public class IntroActivity extends AppCompatActivity {
 
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("FirstTimeInstall", "Yes");
+                    editor.putString("FirstTimeLanguage", "Yes");
                     editor.apply();
                 }
             }

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.os.LocaleListCompat;
 
 import com.unimib.triptales.R;
+import com.unimib.triptales.ui.login.LoginActivity;
 
 public class SelectLanguageActivity extends AppCompatActivity {
 
@@ -26,16 +27,16 @@ public class SelectLanguageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         applySavedLanguage();
-
         setContentView(R.layout.activity_select_language);
 
         nextButton = findViewById(R.id.nextButton);
         autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
 
-        setupLanguageDropdown();
+        SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
+        String firstTimeLanguage = preferences.getString("FirstTimeLanguage", "");
 
+        setupLanguageDropdown();
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -58,6 +59,13 @@ public class SelectLanguageActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        if (firstTimeLanguage.equals("Yes")) {
+            Intent intent = new Intent(SelectLanguageActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     private void setupLanguageDropdown() {
