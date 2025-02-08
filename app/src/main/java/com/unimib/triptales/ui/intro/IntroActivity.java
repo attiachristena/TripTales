@@ -22,7 +22,7 @@ public class IntroActivity extends AppCompatActivity {
     ViewPager slideViewPager;
     LinearLayout dotIndicator;
     OnBoardingAdapter viewPagerAdapter;
-    Button backButton, nextButton, startButton;
+    Button backButton, nextButton, startButton, backButtonToActivity;
     TextView[] dots;
 
 
@@ -38,14 +38,17 @@ public class IntroActivity extends AppCompatActivity {
             setDotIndicator(position);
 
             if(position == 0){
+                backButtonToActivity.setVisibility(View.VISIBLE);
                 nextButton.setVisibility(View.VISIBLE);
                 startButton.setVisibility(View.INVISIBLE);
                 backButton.setVisibility(View.INVISIBLE);
             } else if (position == 1) {
+                backButtonToActivity.setVisibility(View.INVISIBLE);
                 backButton.setVisibility(View.VISIBLE);
                 nextButton.setVisibility(View.VISIBLE);
                 startButton.setVisibility(View.INVISIBLE);
             } else if (position == 2) {
+                backButtonToActivity.setVisibility(View.INVISIBLE);
                 backButton.setVisibility(View.VISIBLE);
                 nextButton.setVisibility(View.INVISIBLE);
                 startButton.setVisibility(View.VISIBLE);
@@ -84,7 +87,16 @@ public class IntroActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         nextButton = findViewById(R.id.nextButton);
         startButton = findViewById(R.id.startButton);
+        backButtonToActivity = findViewById(R.id.backButtonToActivity);
 
+        slideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
+        dotIndicator = (LinearLayout) findViewById(R.id.dotIndicator);
+        viewPagerAdapter = new OnBoardingAdapter(this);
+        slideViewPager.setAdapter(viewPagerAdapter);
+        setDotIndicator(0);
+        slideViewPager.addOnPageChangeListener(viewPagerListener);
+
+        backButtonToActivity.setVisibility(View.VISIBLE);
 
         SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
         String FirstTime = preferences.getString("FirstTimeInstall","");
@@ -101,13 +113,22 @@ public class IntroActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                if(getItem(0)<3){
+                if(getItem(0)<2){
                     slideViewPager.setCurrentItem(getItem(1), true);
                 }
             }
         });
 
-
+        backButtonToActivity.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(getItem(0) == 0) {
+                    Intent intent = new Intent(IntroActivity.this, SelectLanguageActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
 
         startButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -124,14 +145,7 @@ public class IntroActivity extends AppCompatActivity {
             }
         });
 
-        slideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
-        dotIndicator = (LinearLayout) findViewById(R.id.dotIndicator);
 
-        viewPagerAdapter = new OnBoardingAdapter(this);
-        slideViewPager.setAdapter(viewPagerAdapter);
-
-        setDotIndicator(0);
-        slideViewPager.addOnPageChangeListener(viewPagerListener);
 
 
 
