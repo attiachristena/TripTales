@@ -22,23 +22,130 @@ public class ImageCardItemViewModel extends ViewModel {
     private final IImageCardItemRepository imageCardItemRepository;
     private final MutableLiveData<List<ImageCardItem>> imageCardItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ImageCardItem>> selectedImageCardItems = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<Boolean> operationStatus = new MutableLiveData<>();;
+    private final MutableLiveData<Boolean> operationStatus = new MutableLiveData<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    int checkpointDiaryIdStr;
-
-    public void setCheckpointDiaryId(int diaryId) {
-        this.checkpointDiaryIdStr = diaryId;
-        fetchAllImageCardItems();
-    }
-
+    private int checkpointDiaryIdStr = -1;  // Initialize to -1
 
     public ImageCardItemViewModel(IImageCardItemRepository imageCardItemRepository) {
         this.imageCardItemRepository = imageCardItemRepository;
     }
 
+    public LiveData<List<ImageCardItem>> getImageCardItemsLiveData() {
+        return imageCardItemsLiveData;
+    }
 
     public LiveData<List<ImageCardItem>> getSelectedImageCardItems() {
         return selectedImageCardItems;
+    }
+
+    public LiveData<Boolean> getOperationStatus() {
+        return operationStatus;
+    }
+
+    public void setCheckpointDiaryId(int diaryId) {
+        if (diaryId <= 0) {
+            return;
+        }
+        this.checkpointDiaryIdStr = diaryId;
+        fetchAllImageCardItems();
+    }
+
+    public void insertImageCardItem(String title, String description, String date, Uri imageUri, Context context) {
+        if (checkpointDiaryIdStr <= 0) {
+            checkpointDiaryIdStr = SharedPreferencesUtils.getCheckpointDiaryId(context);
+        }
+
+        if (checkpointDiaryIdStr <= 0) {
+            operationStatus.postValue(false);
+            return;
+        }
+
+        ImageCardItem imageCardItem = new ImageCardItem(title, description, date, imageUri.toString(), false, checkpointDiaryIdStr);
+        imageCardItemRepository.insertImageCardItem(imageCardItem);
+        fetchAllImageCardItems();
+    }
+
+    public void fetchAllImageCardItems() {
+        if (checkpointDiaryIdStr <= 0) {
+            Log.e("ImageCardItemViewModel", "Invalid checkpoint diary ID: " + checkpointDiaryIdStr);
+            return;
+        }
+
+        executorService.execute(() -> {
+            List<ImageCardItem> items = imageCardItemRepository.getImageCardItemByCheckpointDiaryId(checkpointDiaryIdStr);
+            Log.d("ImageCardItemViewModel", "Fetched items: " + items.size() + " for checkpoint ID: " + checkpointDiaryIdStr);
+            imageCardItemsLiveData.postValue(items);
+        });
+    }
+
+    public void deleteImageCardItem(ImageCardItem imageCardItem, Context context) {
+        executorService.execute(() -> {
+            try {
+                imageCardItemRepository.deleteImageCardItem(imageCardItem);
+                fetchAllImageCardItems();
+                operationStatus.postValue(true);
+            } catch (Exception e) {
+                Log.e("ImageCardItemViewModel", "Errore durante la cancellazione della card: " + e.getMessage());
+                operationStatus.postValue(false);
+            }
+        });
+    }
+
+    public void deleteSelectedImageCardItems(List<ImageCardItem> selectedImageCardItems, Context context) {
+        executorService.execute(() -> {
+            try {
+                for (ImageCardItem item : selectedImageCardItems) {
+                    imageCardItemRepository.deleteImageCardItem(item);
+                }
+                fetchAllImageCardItems();
+                operationStatus.postValue(true);
+            } catch (Exception e) {
+                Log.e("ImageCardItemViewModel", "Errore durante la cancellazione delle card: " + e.getMessage());
+                operationStatus.postValue(false);
+            }
+        });
+    }
+
+    public void updateImageCardItem(int cardId, String newTitle, String newDescription, String newDate, Uri newImageUri, Context context) {
+        executorService.execute(() -> {
+            try {
+                if (newTitle != null) {
+                    imageCardItemRepository.updateImageCardItemTitle(cardId, newTitle);
+                }
+                if (newDescription != null) {
+                    imageCardItemRepository.updateImageCardItemDescription(cardId, newDescription);
+                }
+                if (newDate != null) {
+                    imageCardItemRepository.updateImageCardItemDate(cardId, newDate);
+                }
+                if (newImageUri != null) {
+                    imageCardItemRepository.updateImageCardItemImageUri(cardId, newImageUri.toString());
+                }
+                fetchAllImageCardItems();
+                operationStatus.postValue(true);
+            } catch (Exception e) {
+                Log.e("ImageCardItemViewModel", "Errore durante l'aggiornamento della card: " + e.getMessage());
+                operationStatus.postValue(false);
+            }
+        });
+    }
+
+    public void toggleImageCardItemSelection(ImageCardItem imageCardItem) {
+        if (imageCardItem == null) return;
+
+        List<ImageCardItem> currentSelection = selectedImageCardItems.getValue();
+        if (currentSelection == null) {
+            currentSelection = new ArrayList<>();
+        }
+
+        List<ImageCardItem> updatedSelection = new ArrayList<>(currentSelection);
+        boolean wasRemoved = updatedSelection.removeIf(c -> c.getId() == imageCardItem.getId());
+
+        if (!wasRemoved) {
+            updatedSelection.add(imageCardItem);
+        }
+
+        selectedImageCardItems.setValue(updatedSelection);
     }
 
     public boolean isImageCardItemSelected(ImageCardItem imageCardItem) {
@@ -47,39 +154,19 @@ public class ImageCardItemViewModel extends ViewModel {
         return currentSelection.stream().anyMatch(c -> c.getId() == imageCardItem.getId());
     }
 
-    public void fetchAllImageCardItems() {
-        imageCardItemsLiveData.setValue(imageCardItemRepository.getImageCardItemById(checkpointDiaryIdStr));
+    public void clearSelectedImageCardItems() {
+        selectedImageCardItems.setValue(new ArrayList<>());
     }
 
-    public void insertImageCardItem(String title, String description, String date, Uri imageUri, Context context) {
-        if (checkpointDiaryIdStr == 0) {
-            checkpointDiaryIdStr = SharedPreferencesUtils.getCheckpointDiaryId(context);
-        }
-
-        if (checkpointDiaryIdStr == -1) {
-            operationStatus.postValue(false);
-            return;
-        }
-
-        ImageCardItem imageCardItem = new ImageCardItem(title, description, date,
-                imageUri.toString(), false, checkpointDiaryIdStr);
-
-        imageCardItemRepository.insertImageCardItem(imageCardItem);
-        imageCardItemsLiveData.postValue(imageCardItemRepository.getImageCardItemById(checkpointDiaryIdStr));
-        fetchAllImageCardItems();
-        imageCardItemsLiveData.getValue();
+    public void resetParam(String title, String description, String date){
+        title = "";
+        description = "";
+        date = "";
     }
 
-
-    public void deleteImageCardItem(ImageCardItem imageCardItem, Context context) {
-        imageCardItemRepository.deleteImageCardItem(imageCardItem);
-    }
-
-    public void updateImageCardItem(ImageCardItem imageCardItem, Context context) {
-        imageCardItemRepository.updateImageCardItem(imageCardItem);
-    }
-
-    public LiveData<List<ImageCardItem>> getImageCardItemsLiveData() {
-        return imageCardItemsLiveData;
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        executorService.shutdown();
     }
 }

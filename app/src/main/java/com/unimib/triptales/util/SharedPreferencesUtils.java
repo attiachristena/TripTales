@@ -16,7 +16,7 @@ public class SharedPreferencesUtils {
     private static final String KEY_DIARY_ID = "current_diary_id";
     private static final String KEY_FIRST_ACCESS = "firstAccess";
     private static final String PREFS_NAME = "TriptalesPrefs";
-    private static final String KEY_CHECKPOINT_DIARY_ID = "checkpoint_diary_id";
+    private static final String CHECKPOINT_DIARY_ID_KEY = "checkpoint_diary_id";
     private final Context context;
 
     public SharedPreferencesUtils(Context context){
@@ -80,28 +80,17 @@ public class SharedPreferencesUtils {
         editor.apply();
     }
 
-    // Metodo per salvare l'ID del CheckpointDiary
     public static void saveCheckpointDiaryId(Context context, int id) {
-        Log.d("SharedPrefs", "Attempting to save ID: " + id);
-
-        // Validate id before saving
-        if (id <= 0) {
-            Log.e("SharedPrefs", "Attempted to save invalid ID: " + id);
-            return;
-        }
-
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(KEY_CHECKPOINT_DIARY_ID, id);
-        boolean success = editor.commit();
-        Log.d("SharedPrefs", "Save success: " + success + " for ID: " + id);
+        SharedPreferences prefs = context.getSharedPreferences("TripTales", Context.MODE_PRIVATE);
+        prefs.edit().putInt(CHECKPOINT_DIARY_ID_KEY, id).apply();
+        Log.d("SharedPreferencesUtils", "Saved checkpoint diary ID: " + id);
     }
 
-
-    // Metodo per ottenere l'ID del CheckpointDiary salvato
     public static int getCheckpointDiaryId(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return prefs.getInt(KEY_CHECKPOINT_DIARY_ID, -1);
+        SharedPreferences prefs = context.getSharedPreferences("TripTales", Context.MODE_PRIVATE);
+        int id = prefs.getInt(CHECKPOINT_DIARY_ID_KEY, -1);
+        Log.d("SharedPreferencesUtils", "Retrieved checkpoint diary ID: " + id);
+        return id;
     }
 
     // Recupera il diaryId salvato

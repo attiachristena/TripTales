@@ -7,13 +7,12 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/main"
-    android:clickable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.diary.CheckpointDiaryActivity">
-
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ui.diary.CheckpointDiaryActivity">
 
     <ImageButton
         android:id="@+id/backToTappaFragment"
@@ -75,8 +74,8 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="0dp" />
 
-
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -91,19 +90,16 @@
         android:id="@+id/imageCardItemRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="64dp"
-        android:layout_marginEnd="30dp"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:scrollbars="vertical"
-        android:visibility="visible"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/immagineTappaItem" />
+    android:layout_marginTop="12dp"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:nestedScrollingEnabled="false"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addCheckpointDiaryImage"
@@ -122,11 +118,11 @@
         app:tint="@color/black" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/deleteCheckpointDiaryImage"
+        android:id="@+id/deleteCheckpointDiaryImageButton"
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/background_dark"
         android:elevation="4dp"
@@ -134,27 +130,28 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/addCheckpointDiaryImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.976"
+        app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="@color/light_gray"
         app:tint="@color/white" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/editCheckpointDiaryImage"
+        android:id="@+id/editCheckpointDiaryImageButton"
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/background_dark"
         android:elevation="4dp"
         android:src="@drawable/baseline_pen"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/deleteCheckpointDiaryImage"
+        app:layout_constraintBottom_toTopOf="@+id/deleteCheckpointDiaryImageButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.976"
+        app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="@color/light_gray"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>

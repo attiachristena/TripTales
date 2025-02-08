@@ -103,19 +103,13 @@ public class CheckpointDiaryViewModel extends ViewModel {
     }
 
     public void insertCheckpoint(String nome, String data, Uri imageUri, LatLng latLng, Context context) {
-        if (isPosizioneGiàSalvata(latLng)) {
-            // Posizione già salvata, quindi non procedere
-            return;
-        }
 
-        // Recupera l'ID del diario dai SharedPreferences
         String diaryIdStr = SharedPreferencesUtils.getDiaryId(context);
         if (diaryIdStr == null) {
             operationStatus.postValue(false);
             return;
         }
 
-        // Creazione del nuovo checkpoint con l'ID del diario
         CheckpointDiary nuovaCheckpoint = new CheckpointDiary(diaryIdStr, nome, data, imageUri.toString(), latLng.latitude, latLng.longitude);
 
         try {
@@ -130,14 +124,10 @@ public class CheckpointDiaryViewModel extends ViewModel {
         }
     }
 
-    public boolean isPosizioneGiàSalvata(LatLng latLng) {
-        List<CheckpointDiary> tappeSalvate = checkpointDiaryRepository.getAllCheckpointDiaries();
-        for (CheckpointDiary checkpointDiary : tappeSalvate) {
-            if (checkpointDiary.getLatitude() == latLng.latitude && checkpointDiary.getLongitude() == latLng.longitude) {
-                return true;
-            }
-        }
-        return false;
+    public void resetParameters(String nome, String data, Uri imageUri) {
+        nome = "";
+        data = "";
+        imageUri = null;
     }
 
     public void updateCheckpointDiary(int checkpointId, String newName, String newDate, Uri newImageUri, Context context) {

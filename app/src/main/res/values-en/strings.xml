@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">TripTales</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="tabTappe">Stages</string>
+    <string name="tabTappe">Checkpoints</string>
     <string name="tabSpese">Expenses</string>
     <string name="tabObiettivi">Goals</string>
     <string name="tabCheckList">CheckList</string>
@@ -211,6 +211,7 @@
     <string name="snackbarDiaryDeleted">Diary deleted</string>
     <string name="snackbarDiaryNotDeleted">Error: diary not deleted</string>
 
-    <string name="i_tuoi_ricordi">Your memories…</string>
+    <string name="i_tuoi_ricordi">Your travel memories…</string>
+    <string name="modifica_il_tuo_ricordo">Edit your travel memory</string>
 
 </resources>

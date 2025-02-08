@@ -173,7 +173,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
             }
         });
 
-        // Dopo aver cercato una località, aggiorna la mappa e aggiunge il marker
         checkpointDiaryViewModel.getSearchedLocationWithName().observe(getViewLifecycleOwner(), pair -> {
             if (pair != null) {
                 LatLng latLng = pair.first;
@@ -184,14 +183,12 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
             }
         });
 
-        // Gestione errori nella ricerca
         checkpointDiaryViewModel.getSearchError().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Inizializzazione della mappa e gestione dei click su di essa
         checkpointsMap.onCreate(savedInstanceState);
         checkpointsMap.getMapAsync(googleMap -> {
             this.googleMap = googleMap;
@@ -340,30 +337,22 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                     return;
                 }
 
-                if(checkpointDiaryViewModel.isPosizioneGiàSalvata(latLng)){
-                    Snackbar.make(getContext(), checkpointsLayout, "Questa posizione è già associata a una tappa",
-                            Snackbar.LENGTH_SHORT).show();
-                }
+                String diaryIdStr = SharedPreferencesUtils.getDiaryId(getContext());
 
-                if (!checkpointDiaryViewModel.isPosizioneGiàSalvata(latLng)) {
+                if (diaryIdStr != null) {
+                    if (imageUri != null) {
+                        checkpointDiaryViewModel.insertCheckpoint(checkpointNameSave, checkpointDateSave, imageUri, latLng, getContext());
+                        checkpointsLayout.removeView(add_checkpoint);
+                        checkpointsLayout.removeView(add_checkpoint);
 
-                    String diaryIdStr = SharedPreferencesUtils.getDiaryId(getContext());
-                    if (diaryIdStr != null) {
-                        if (imageUri != null) {
-                            checkpointDiaryViewModel.insertCheckpoint(checkpointNameSave, checkpointDateSave, imageUri, latLng, getContext());
-                            checkpointsLayout.removeView(add_checkpoint);
-                            checkpointsLayout.removeView(add_checkpoint);
+                        checkpointDiaryViewModel.resetParameters(checkpointNameSave, checkpointDateSave, imageUri);
 
-                            // Resetta i parametri
-                            checkpointName.setText("");
-                            checkpointDate.setText("");
-                            selectedImageUriMappa = null;
-                            previewImage.setImageURI(null);
-                            textPreviewImage.setVisibility(View.VISIBLE);
-                            searchView.setVisibility(View.VISIBLE);
-                            checkpointsMap.setVisibility(View.VISIBLE);
+                        previewImage.setImageURI(null);
+                        textPreviewImage.setVisibility(View.VISIBLE);
+                        searchView.setVisibility(View.VISIBLE);
+                        checkpointsMap.setVisibility(View.VISIBLE);
 
-                            Snackbar.make(getContext(), checkpointsLayout, "La tappa è stata aggiunta con successo",
+                        Snackbar.make(getContext(), checkpointsLayout, "La tappa è stata aggiunta con successo",
                                     Snackbar.LENGTH_SHORT).show();
                         }
 
@@ -371,7 +360,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         Snackbar.make(getContext(), checkpointsLayout, "Errore nel salvataggio dell'immagine",
                                 Snackbar.LENGTH_SHORT).show();
                     }
-                }
             } else {
                 Snackbar.make(getContext(), checkpointsLayout, "Nome della tappa vuoto",
                         Snackbar.LENGTH_SHORT).show();
@@ -403,6 +391,8 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         TextView checkpointNameCard = cardView.findViewById(R.id.checkpointNameCard);
         TextView checkpointDateCard = cardView.findViewById(R.id.checkpointDateCard);
         ImageView checkpointImageCard = cardView.findViewById(R.id.checkpointCardImage);
+
+        int checkpointId = checkpoint.getId();
 
         cardView.setTag(checkpoint);
         checkpointNameCard.setText(nome);
@@ -439,8 +429,9 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
 
         cardView.setOnClickListener(v -> {
+            CheckpointDiary checkpointFromTag = (CheckpointDiary) cardView.getTag();
             Intent intent = new Intent(getContext(), CheckpointDiaryActivity.class);
-            intent.putExtra("checkpointDiaryId", checkpointId);  // Usa l'ID che hai già
+            intent.putExtra("checkpointDiaryId", checkpointFromTag.getId());
             intent.putExtra("nomeTappa", nome);
             intent.putExtra("dataTappa", data);
             intent.putExtra("immagineTappaUri", immagine);

@@ -64,6 +64,10 @@ public class ImageCardItem {
         return imageUri;
     }
 
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
     public String getDate() {
         return date;
     }

@@ -62,8 +62,8 @@
                 android:layout_below="@+id/mappaTappe"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="1dp"
-                android:layout_marginTop="23dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="1dp"
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
@@ -108,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_below="@+id/mappaTappe"
-                android:layout_marginTop="77dp">
+                android:layout_marginTop="66dp">
 
                 <LinearLayout
                     android:id="@+id/checkpointsCardContainer"
