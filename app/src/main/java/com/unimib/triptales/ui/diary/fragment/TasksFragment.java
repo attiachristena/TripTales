@@ -3,6 +3,7 @@ package com.unimib.triptales.ui.diary.fragment;
 import static com.unimib.triptales.util.Constants.ADDED;
 import static com.unimib.triptales.util.Constants.ADD_TASK;
 import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.DELETE_TASK;
 import static com.unimib.triptales.util.Constants.EDIT_TASK;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
@@ -51,6 +52,7 @@ public class TasksFragment extends Fragment {
     private TasksRecyclerAdapter tasksRecyclerAdapter;
     private boolean bAdd;
     private boolean bEdit;
+    private View overlay_delete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -191,11 +193,10 @@ public class TasksFragment extends Fragment {
                     deleteTaskButton.setVisibility(View.GONE);
                 }
             } else {
-                enableSwipeAndButtons(view);
                 if(bAdd){
-                    hideOverlay(ADD_TASK);
+                    hideOverlay(ADD_TASK, view);
                 } else if(bEdit){
-                    hideOverlay(EDIT_TASK);
+                    hideOverlay(EDIT_TASK, view);
                 }
             }
         });
@@ -225,41 +226,83 @@ public class TasksFragment extends Fragment {
             taskViewModel.setTaskOverlayVisibility(true);
         });
 
+        overlay_delete = inflater.inflate(R.layout.overlay_delete, rootLayoutCheckList,
+                false);
+        rootLayoutCheckList.addView(overlay_delete);
+        overlay_delete.setVisibility(View.GONE);
+        Button deleteButton = view.findViewById(R.id.deleteButton);
+        Button cancelDeleteButton = view.findViewById(R.id.cancelDeleteButton);
+        TextView deleteText = view.findViewById(R.id.deleteText);
+        TextView deleteDescriptionText = view.findViewById(R.id.deleteDescriptionText);
+        deleteText.setText(R.string.delete_task);
+        deleteDescriptionText.setText(R.string.delete_task_description);
+
+        taskViewModel.getDeleteOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if(visible){
+                showOverlay(DELETE_TASK);
+            } else {
+                hideOverlay(DELETE_TASK, view);
+            }
+        });
+
+        cancelDeleteButton.setOnClickListener(cancelDeleteButtonListener -> {
+            taskViewModel.setDeleteOverlayVisibility(false);
+            addTaskButton.setEnabled(false);
+        });
+
+        deleteButton.setOnClickListener(deleteButtonListener -> {
+            taskViewModel.deleteSelectedTasks();
+            taskViewModel.setDeleteOverlayVisibility(false);
+        });
+
         deleteTaskButton.setOnClickListener(deleteTaskButtonListener ->
-                taskViewModel.deleteSelectedTasks());
+                taskViewModel.setDeleteOverlayVisibility(true));
     }
 
     private void disableSwipeAndButtons(){
         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-        addTaskButton.setVisibility(View.GONE);
+        addTaskButton.setEnabled(false);
+        editTaskButton.setEnabled(false);
+        deleteTaskButton.setEnabled(false);
     }
 
     private void enableSwipeAndButtons(View view){
         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
         Constants.hideKeyboard(view, requireActivity());
-        addTaskButton.setVisibility(View.VISIBLE);
+        addTaskButton.setEnabled(true);
+        editTaskButton.setEnabled(true);
+        deleteTaskButton.setEnabled(true);
     }
 
     private void showOverlay(String overlayType){
         disableSwipeAndButtons();
-        overlay_add_edit_task.setVisibility(View.VISIBLE);
         switch(overlayType){
             case ADD_TASK:
+                overlay_add_edit_task.setVisibility(View.VISIBLE);
                 taskNameEditText.setText("");
                 break;
             case EDIT_TASK:
+                overlay_add_edit_task.setVisibility(View.VISIBLE);
                 populateGoalField();
+            case DELETE_TASK:
+                overlay_delete.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
-    private void hideOverlay(String overlayType){
-        overlay_add_edit_task.setVisibility(View.GONE);
+    private void hideOverlay(String overlayType, View view){
+        enableSwipeAndButtons(view);
         switch(overlayType){
             case ADD_TASK:
+                overlay_add_edit_task.setVisibility(View.GONE);
                 bAdd = false;
                 break;
             case EDIT_TASK:
+                overlay_add_edit_task.setVisibility(View.GONE);
                 bEdit = false;
+                break;
+            case DELETE_TASK:
+                overlay_delete.setVisibility(View.GONE);
                 break;
         }
     }

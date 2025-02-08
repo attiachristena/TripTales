@@ -26,6 +26,7 @@ public class TaskViewModel extends ViewModel {
     private final MutableLiveData<List<Task>> selectedTasksLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> taskOverlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> deleteOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> taskEvent = new MutableLiveData<>();
 
     public TaskViewModel(ITaskRepository taskRepository) {
@@ -44,10 +45,16 @@ public class TaskViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getTaskOverlayVisibility() { return taskOverlayVisibility; }
 
+    public MutableLiveData<Boolean> getDeleteOverlayVisibility() { return deleteOverlayVisibility; }
+
     public MutableLiveData<String> getTaskEvent() { return taskEvent; }
 
     public void setTaskOverlayVisibility(boolean visible) {
         taskOverlayVisibility.postValue(visible);
+    }
+
+    public void setDeleteOverlayVisibility(boolean visible) {
+        deleteOverlayVisibility.postValue(visible);
     }
 
     public boolean validateInputTask(String name){

@@ -93,7 +93,7 @@ public class DiaryActivity extends AppCompatActivity {
             if (position == 0) tabText.setText(R.string.tabTappe);
             else if (position == 1) tabText.setText(R.string.tabSpese);
             else if (position == 2) tabText.setText(R.string.tabObiettivi);
-            else tabText.setText(R.string.tabCheckList);
+            else tabText.setText(R.string.tabAttivita);
 
             tab.setCustomView(customView);
         }).attach();

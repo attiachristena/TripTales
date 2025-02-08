@@ -8,6 +8,7 @@ import static com.unimib.triptales.util.Constants.CURRENCY_EUR;
 import static com.unimib.triptales.util.Constants.CURRENCY_GBP;
 import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
 import static com.unimib.triptales.util.Constants.CURRENCY_USD;
+import static com.unimib.triptales.util.Constants.DELETE_EXPENSE;
 import static com.unimib.triptales.util.Constants.EDIT_EXPENSE;
 import static com.unimib.triptales.util.Constants.ADDED;
 import static com.unimib.triptales.util.Constants.DELETED;
@@ -95,7 +96,9 @@ public class ExpensesFragment extends Fragment {
     private String inputFilterCategory;
     private boolean bEdit;
     private boolean bAdd;
+    private boolean bFilter;
     private TextInputLayout currencyTextInputLayout;
+    private View overlay_delete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,8 +128,11 @@ public class ExpensesFragment extends Fragment {
         recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewExpenses.setAdapter(expensesRecyclerAdapter);
 
-        expensesRecyclerAdapter.setOnExpenseClickListener((expense) ->
-                expenseViewModel.toggleExpenseSelection(expense));
+        expensesRecyclerAdapter.setOnExpenseClickListener((expense) -> {
+            if(!bFilter) {
+                expenseViewModel.toggleExpenseSelection(expense);
+            }
+        });
 
         return rootView;
     }
@@ -140,6 +146,7 @@ public class ExpensesFragment extends Fragment {
         noExpensesTextView = view.findViewById(R.id.noSpeseString);
         bEdit = false;
         bAdd = false;
+        bFilter = false;
 
         String tmp = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
         if(tmp != null){
@@ -238,11 +245,9 @@ public class ExpensesFragment extends Fragment {
 
         expenseViewModel.getBudgetOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if (visible) {
-                disableSwipeAndButtons();
                 showOverlay(BUDGET);
             } else {
-                enableSwipeAndButtons(view);
-                hideOverlay(BUDGET);
+                hideOverlay(BUDGET, view);
             }
         });
 
@@ -260,20 +265,15 @@ public class ExpensesFragment extends Fragment {
         editExpenseButton = view.findViewById(R.id.modificaSpesa);
         deleteExpenseButton = view.findViewById(R.id.eliminaSpesa);
 
-        addExpenseButton.setOnClickListener(view14 -> {
+        addExpenseButton.setOnClickListener(addExpenseButtonListener -> {
             bAdd = true;
             expenseViewModel.setExpenseOverlayVisibility(true);
         });
 
         ImageButton expenseBackButton = view.findViewById(R.id.backSpesaButton);
 
-        expenseBackButton.setOnClickListener(expenseBackButtonListener -> {
-            if(bEdit){
-                editExpenseButton.setVisibility(View.VISIBLE);
-                deleteExpenseButton.setVisibility(View.VISIBLE);
-            }
-            expenseViewModel.setExpenseOverlayVisibility(false);
-        });
+        expenseBackButton.setOnClickListener(expenseBackButtonListener ->
+            expenseViewModel.setExpenseOverlayVisibility(false));
 
         Button saveExpenseButton = view.findViewById(R.id.salvaSpesa);
         amountEditText = view.findViewById(R.id.inputQuantitaSpesa);
@@ -285,20 +285,16 @@ public class ExpensesFragment extends Fragment {
 
         expenseViewModel.getExpenseOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if (visible) {
-                disableSwipeAndButtons();
                 if(bAdd) {
                     showOverlay(ADD_EXPENSE);
                 } else if(bEdit){
                     showOverlay(EDIT_EXPENSE);
-                    editExpenseButton.setVisibility(View.GONE);
-                    deleteExpenseButton.setVisibility(View.GONE);
                 }
             } else {
-                enableSwipeAndButtons(view);
                 if(bAdd){
-                    hideOverlay(ADD_EXPENSE);
+                    hideOverlay(ADD_EXPENSE, view);
                 } else if(bEdit){
-                    hideOverlay(EDIT_EXPENSE);
+                    hideOverlay(EDIT_EXPENSE, view);
                 }
             }
         });
@@ -411,8 +407,36 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
+        overlay_delete = inflater.inflate(R.layout.overlay_delete, expenseRootLayout, false);
+        expenseRootLayout.addView(overlay_delete);
+        overlay_delete.setVisibility(View.GONE);
+        Button deleteButton = view.findViewById(R.id.deleteButton);
+        Button cancelButton = view.findViewById(R.id.cancelDeleteButton);
+        TextView deleteText = view.findViewById(R.id.deleteText);
+        TextView deleteDescriptionText = view.findViewById(R.id.deleteDescriptionText);
+        deleteText.setText(R.string.delete_expense);
+        deleteDescriptionText.setText(R.string.delete_expense_description);
+
+        expenseViewModel.getDeleteOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if(visible){
+                showOverlay(DELETE_EXPENSE);
+            } else {
+                hideOverlay(DELETE_EXPENSE, view);
+            }
+        });
+
+        deleteButton.setOnClickListener(deleteButtonListener -> {
+            expenseViewModel.deleteSelectedExpenses();
+            expenseViewModel.setDeleteOverlayVisibility(false);
+        });
+
+        cancelButton.setOnClickListener(cancelButtonListener -> {
+            expenseViewModel.setDeleteOverlayVisibility(false);
+            addExpenseButton.setEnabled(false);
+        });
+
         deleteExpenseButton.setOnClickListener(deleteExpenseButtonListener ->
-                expenseViewModel.deleteSelectedExpenses());
+                expenseViewModel.setDeleteOverlayVisibility(true));
 
         editExpenseButton.setOnClickListener(editExpenseButtonListener -> {
             bEdit = true;
@@ -432,19 +456,21 @@ public class ExpensesFragment extends Fragment {
         filterCategoryEditText = view.findViewById(R.id.inputCategoryFilter);
         filterCategoryEditText.setAdapter(categoryAdapter);
 
-        filterBackButton.setOnClickListener(filterBackButtonListener ->
-                expenseViewModel.setFilterOverlayVisibility(false));
+        filterBackButton.setOnClickListener(filterBackButtonListener -> {
+            expenseViewModel.setFilterOverlayVisibility(false);
+            bFilter = false;
+        });
 
-        filterButton.setOnClickListener(filterButtonListener ->
-                expenseViewModel.setFilterOverlayVisibility(true));
+        filterButton.setOnClickListener(filterButtonListener -> {
+            expenseViewModel.setFilterOverlayVisibility(true);
+            bFilter = true;
+        });
 
         expenseViewModel.getFilterOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                disableSwipeAndButtons();
                 showOverlay(FILTER);
             } else {
-                enableSwipeAndButtons(view);
-                hideOverlay(FILTER);
+                hideOverlay(FILTER, view);
             }
         });
 
@@ -473,6 +499,7 @@ public class ExpensesFragment extends Fragment {
             filterTextView.setVisibility(View.GONE);
             totExpenseTextView.setVisibility(View.GONE);
             addExpenseButton.setEnabled(true);
+            bFilter = false;
         });
 
         // gestione modifica progress indicator
@@ -489,8 +516,9 @@ public class ExpensesFragment extends Fragment {
             progressIndicator.setIndicatorColor
                     (ContextCompat.getColor(requireContext(), R.color.secondary));
         progressIndicator.setProgress(progressPercentage);
-        String formattedText = spent + " / " + budget + " spesi"
-                + " (" + progressPercentage + "%)";
+        String text = getString(R.string.progressText);
+        String formattedText = spent + " / " + budget + " " + text + " (" +
+                progressPercentage + "%)";
         progressTextView.setText(formattedText);
     }
 
@@ -531,25 +559,35 @@ public class ExpensesFragment extends Fragment {
                 overlay_filter.setVisibility(View.VISIBLE);
                 filterCategoryEditText.setText("", false);
                 break;
+            case DELETE_EXPENSE:
+                overlay_delete.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
     private void disableSwipeAndButtons() {
         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-        addExpenseButton.setVisibility(View.GONE);
+        addExpenseButton.setEnabled(false);
         editBudgetButton.setEnabled(false);
+        editExpenseButton.setEnabled(false);
+        deleteExpenseButton.setEnabled(false);
         filterButton.setEnabled(false);
     }
 
     private void enableSwipeAndButtons(View view) {
         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
         Constants.hideKeyboard(view, requireActivity());
-        addExpenseButton.setVisibility(View.VISIBLE);
+        if(!bFilter) {
+            addExpenseButton.setEnabled(true);
+        }
         editBudgetButton.setEnabled(true);
+        editExpenseButton.setEnabled(true);
+        deleteExpenseButton.setEnabled(true);
         filterButton.setEnabled(true);
     }
 
-    private void hideOverlay(String overlayType) {
+    private void hideOverlay(String overlayType, View view) {
+        enableSwipeAndButtons(view);
         switch (overlayType) {
             case BUDGET:
                 overlay_add_budget.setVisibility(View.GONE);
@@ -564,6 +602,9 @@ public class ExpensesFragment extends Fragment {
                 break;
             case FILTER:
                 overlay_filter.setVisibility(View.GONE);
+                break;
+            case DELETE_EXPENSE:
+                overlay_delete.setVisibility(View.GONE);
                 break;
         }
     }

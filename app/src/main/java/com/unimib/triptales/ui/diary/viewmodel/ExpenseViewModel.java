@@ -35,6 +35,7 @@ public class ExpenseViewModel extends ViewModel {
     private final MutableLiveData<Boolean> budgetOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<Boolean> expenseOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<Boolean> filterOverlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> deleteOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> expenseEvent = new MutableLiveData<>();
 
     public ExpenseViewModel(IExpenseRepository expenseRepository) {
@@ -87,6 +88,14 @@ public class ExpenseViewModel extends ViewModel {
 
     public void setFilterOverlayVisibility(boolean visible) {
         filterOverlayVisibility.postValue(visible);
+    }
+
+    public MutableLiveData<Boolean> getDeleteOverlayVisibility() {
+        return deleteOverlayVisibility;
+    }
+
+    public void setDeleteOverlayVisibility(boolean visible) {
+        deleteOverlayVisibility.postValue(visible);
     }
 
     public void filterExpenses(String category){

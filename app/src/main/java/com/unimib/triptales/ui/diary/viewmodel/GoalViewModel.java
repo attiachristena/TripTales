@@ -27,6 +27,7 @@ public class GoalViewModel extends ViewModel {
     private final MutableLiveData<List<Goal>> checkedGoalsLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> goalOverlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> deleteOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> goalEvent = new MutableLiveData<>();
 
     public GoalViewModel(IGoalRepository goalRepository) {
@@ -47,10 +48,16 @@ public class GoalViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getGoalOverlayVisibility() { return goalOverlayVisibility; }
 
+    public MutableLiveData<Boolean> getDeleteOverlayVisibility() { return deleteOverlayVisibility; }
+
     public MutableLiveData<String> getGoalEvent() { return goalEvent; }
 
     public void setGoalOverlayVisibility(boolean visible) {
         goalOverlayVisibility.postValue(visible);
+    }
+
+    public void setDeleteOverlayVisibility(boolean visible) {
+        deleteOverlayVisibility.postValue(visible);
     }
 
     public boolean validateInputGoal(String name){

@@ -15,10 +15,10 @@
 
     public class ViewPagerAdapter extends FragmentStateAdapter {
 
-        private String diaryName;
-        private String startDate;
-        private String endDate;
-        private Uri coverImageUri;
+        private final String diaryName;
+        private final String startDate;
+        private final String endDate;
+        private final Uri coverImageUri;
 
         public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, String diaryName, String startDate, String endDate, Uri coverImageUri) {
             super(fragmentActivity);

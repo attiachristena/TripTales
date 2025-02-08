@@ -3,6 +3,7 @@ package com.unimib.triptales.ui.diary.fragment;
 import static com.unimib.triptales.util.Constants.ADDED;
 import static com.unimib.triptales.util.Constants.ADD_GOAL;
 import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.DELETE_GOAL;
 import static com.unimib.triptales.util.Constants.EDIT_GOAL;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
@@ -37,6 +38,8 @@ import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.Constants;
 import com.unimib.triptales.util.ServiceLocator;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class GoalsFragment extends Fragment {
@@ -54,6 +57,7 @@ public class GoalsFragment extends Fragment {
     private GoalsRecyclerAdapter goalsRecyclerAdapter;
     private boolean bAdd;
     private boolean bEdit;
+    private View overlay_delete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -176,13 +180,8 @@ public class GoalsFragment extends Fragment {
         ImageButton goalBackButton = view.findViewById(R.id.backButtonGoal);
         Button saveGoalButton = view.findViewById(R.id.saveGoal);
 
-        goalBackButton.setOnClickListener(view1 -> {
-            if(bEdit){
-                editGoalButton.setVisibility(View.VISIBLE);
-                deleteGoalButton.setVisibility(View.VISIBLE);
-            }
-            goalViewModel.setGoalOverlayVisibility(false);
-        });
+        goalBackButton.setOnClickListener(goalBackButtonListener ->
+                goalViewModel.setGoalOverlayVisibility(false));
 
         goalNameEditText = view.findViewById(R.id.inputGoalName);
         goalDescriptionEditText = view.findViewById(R.id.inputGoalDescription);
@@ -198,15 +197,12 @@ public class GoalsFragment extends Fragment {
                     showOverlay(ADD_GOAL);
                 } else if(bEdit){
                     showOverlay(EDIT_GOAL);
-                    editGoalButton.setVisibility(View.GONE);
-                    deleteGoalButton.setVisibility(View.GONE);
                 }
             } else {
-                enableSwipeAndButtons(view);
                 if(bAdd){
-                    hideOverlay(ADD_GOAL);
+                    hideOverlay(ADD_GOAL, view);
                 } else if(bEdit){
-                    hideOverlay(EDIT_GOAL);
+                    hideOverlay(EDIT_GOAL, view);
                 }
             }
         });
@@ -237,8 +233,37 @@ public class GoalsFragment extends Fragment {
             goalViewModel.setGoalOverlayVisibility(true);
         });
 
+        overlay_delete = inflater.inflate(R.layout.overlay_delete, rootLayoutGoals,
+                false);
+        rootLayoutGoals.addView(overlay_delete);
+        overlay_delete.setVisibility(View.GONE);
+        Button deleteButton = view.findViewById(R.id.deleteButton);
+        Button cancelDeleteButton = view.findViewById(R.id.cancelDeleteButton);
+        TextView deleteText = view.findViewById(R.id.deleteText);
+        TextView deleteDescriptionText = view.findViewById(R.id.deleteDescriptionText);
+        deleteText.setText(R.string.delete_goal);
+        deleteDescriptionText.setText(R.string.delete_goal_description);
+
+        goalViewModel.getDeleteOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if(visible){
+                showOverlay(DELETE_GOAL);
+            } else {
+                hideOverlay(DELETE_GOAL, view);
+            }
+        });
+
+        cancelDeleteButton.setOnClickListener(cancelDeleteButtonListener -> {
+                goalViewModel.setDeleteOverlayVisibility(false);
+                addGoalButton.setEnabled(false);
+        });
+
+        deleteButton.setOnClickListener(deleteButtonListener -> {
+            goalViewModel.deleteSelectedGoals();
+            goalViewModel.setDeleteOverlayVisibility(false);
+        });
+
         deleteGoalButton.setOnClickListener(deleteGoalButtonListener ->
-                goalViewModel.deleteSelectedGoals());
+                goalViewModel.setDeleteOverlayVisibility(true));
 
     }
 
@@ -268,36 +293,50 @@ public class GoalsFragment extends Fragment {
 
     private void disableSwipeAndButtons(){
         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-        addGoalButton.setVisibility(View.GONE);
+        addGoalButton.setEnabled(false);
+        deleteGoalButton.setEnabled(false);
+        editGoalButton.setEnabled(false);
     }
 
     private void enableSwipeAndButtons(View view){
         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
         Constants.hideKeyboard(view, requireActivity());
-        addGoalButton.setVisibility(View.VISIBLE);
+        addGoalButton.setEnabled(true);
+        deleteGoalButton.setEnabled(true);
+        editGoalButton.setEnabled(true);
     }
 
     private void showOverlay(String overlayType){
         disableSwipeAndButtons();
-        overlay_add_edit_goal.setVisibility(View.VISIBLE);
         switch(overlayType){
             case ADD_GOAL:
+                overlay_add_edit_goal.setVisibility(View.VISIBLE);
                 goalNameEditText.setText("");
                 goalDescriptionEditText.setText("");
                 break;
             case EDIT_GOAL:
+                overlay_add_edit_goal.setVisibility(View.VISIBLE);
                 populateGoalField();
+                break;
+            case DELETE_GOAL:
+                overlay_delete.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
-    private void hideOverlay(String overlayType){
-        overlay_add_edit_goal.setVisibility(View.GONE);
+    private void hideOverlay(String overlayType, View view){
+        enableSwipeAndButtons(view);
         switch(overlayType){
             case ADD_GOAL:
+                overlay_add_edit_goal.setVisibility(View.GONE);
                 bAdd = false;
                 break;
             case EDIT_GOAL:
+                overlay_add_edit_goal.setVisibility(View.GONE);
                 bEdit = false;
+                break;
+            case DELETE_GOAL:
+                overlay_delete.setVisibility(View.GONE);
                 break;
         }
     }
