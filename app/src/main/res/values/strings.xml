@@ -102,20 +102,20 @@
     <string name="nome_diario">Nome diario</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
     <string name="intro1_title">Benvenuto su TripTales Il tuo diario di viaggio personale</string>
-    <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>
-    <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni checkpoint</string>
-    <string name="intro2_body">Qui potrai pianificare le tue avventure, annotare ogni scoperta e rivivere ogni momento</string>
-    <string name="intro3_title">Esplora senza connessione, pianifica senza stress</string>
-    <string name="intro3_body">Scarica mappe e crea il tuo itinerario senza bisogno di essere online</string>
-    <string name="intro4_title">Viaggia sereno: noi ti aiutiamo a ricordare ogni dettaglio</string>
-    <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
+    <string name="intro1_body">Racconta i tuoi viaggi e cattura i tuoi ricordi</string>
+    <string name="intro3_title">Esplora il mondo e custodisci ogni tappa</string>
+    <string name="intro3_body">Con TripTales potrai annotare ogni scoperta e rivivere ogni momento</string>
+    <string name="intro4_title">Viaggia sereno: TripTales ti aiuta a ricordare ogni dettaglio</string>
+    <string name="intro4_body">Tppe,obiettivi, spese e check-list: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
     <string name="data_partenza">Data partenza</string>
     <string name="data_arrivo">Data arrivo</string>
     <string name="scegli_immagine">Scegli un’immagine</string>
     <string name="inserisci_nome_diario">Inserisci il nome del diario</string>
-    <string name="paese_visitato">Il paese visitato</string>
+    <string name="paese_visitato">Inserisci il paese visitato</string>
+    <string name="files" translatable="false">Files</string>
+    <string name="immagineSelezionata">Immagine selezionata</string>
 
     <string name="error_unexpected">Errore imprevisto</string>
     <string name="error_google_login">Errore di accesso con Google</string>
@@ -176,6 +176,21 @@
     <string name="snackbarDiaryUpdated">Diario aggiornato</string>
     <string name="snackbarDiaryDeleted">Diario rimosso</string>
     <string name="snackbarDiaryNotDeleted">Errore: diario non rimosso</string>
+    <string name="errorFilterExpenses">Scegli una categoria</string>
+    <string name="errorFilterCategory">Nessuna spesa trovata per la categoria specificata</string>
+    <string name="errorAmount">Inserisci un importo</string>
+    <string name="errorDescription">Inserisci una descrizione</string>
+    <string name="errorDay">Inserisci un giorno</string>
+    <string name="errorInputDay">Giorno inserito non corretto</string>
+    <string name="errorMonth">Inserisci un mese</string>
+    <string name="errorInputMonth">Mese inserito non corretto</string>
+    <string name="errorYear">Inserisci un anno</string>
+    <string name="errorInputYear">Anno inserito non corretto</string>
+    <string name="errorBudget">Inserisci un budget</string>
+    <string name="errorCurrency">Scegli una valuta</string>
+    <string name="errorInputBudget">Inserisci un numero più basso</string>
+    <string name="errorGoalName">Inserisci il nome dell\'obiettivo</string>
+    <string name="errorTaskName">Inserisci il nome dell\'attività</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>
@@ -229,5 +244,5 @@
 
     <string name="i_tuoi_ricordi">I tuoi ricordi...</string>
     <string name="cerca_diario_per_paese">Cerca diario per paese visitato</string>
-
+    <string name="seleziona_lingua">Seleziona la lingua</string>
 </resources>

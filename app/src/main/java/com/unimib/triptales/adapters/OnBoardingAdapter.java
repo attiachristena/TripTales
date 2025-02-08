@@ -20,10 +20,10 @@ public class OnBoardingAdapter extends PagerAdapter {
 
     Context context;
 
-    int []sliderAllImages = {R.drawable.img_intro1, R.drawable.img_intro2, R.drawable.img_intro3, R.drawable.img_intro4};
-    int []sliderAllTitle = {R.string.intro1_title,R.string.intro2_title,R.string.intro3_title,R.string.intro4_title};
-    int []sliderAllDesc = {R.string.intro1_body,R.string.intro2_body,R.string.intro3_body,R.string.intro4_body};
-    int []sliderAllBackgrounds = {R.drawable.bg1,R.drawable.bg2,R.drawable.bg3,R.drawable.bg4};
+    int []sliderAllImages = {R.drawable.img_intro1, R.drawable.img_intro3, R.drawable.img_intro4};
+    int []sliderAllTitle = {R.string.intro1_title,R.string.intro3_title,R.string.intro4_title};
+    int []sliderAllDesc = {R.string.intro1_body,R.string.intro3_body,R.string.intro4_body};
+    int []sliderAllBackgrounds = {R.drawable.bg1,R.drawable.bg3,R.drawable.bg4};
 
 
     public OnBoardingAdapter(Context context){

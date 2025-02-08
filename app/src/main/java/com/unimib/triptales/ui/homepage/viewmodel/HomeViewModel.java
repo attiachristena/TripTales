@@ -4,21 +4,16 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.firebase.database.ServerValue;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.unimib.triptales.util.Constants.ADDED;
 import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
-import static com.unimib.triptales.util.SharedPreferencesUtils.getLoggedUserId;
-
-import android.content.Context;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,20 +75,20 @@ public class HomeViewModel extends ViewModel {
         diaryRepository.getRemoteDiaries();
     }
 
-    public void loadCountries(String userId) {
+    public List<String> getAllCountries(String userId) {
         countriesLiveData.setValue(diaryRepository.getAllCountries(userId));
+        return  countriesLiveData.getValue();
     }
 
     public void insertDiary(String diaryName, String startDate, String endDate,
                             String imageUri, String budget, String country) {
         String userId = SharedPreferencesUtils.getLoggedUserId();
-        if(validateDiaryInput(diaryName, startDate, endDate, imageUri, country)) {
-            Diary newDiary = new Diary(userId, diaryName, startDate, endDate, imageUri,
-                    budget, country, System.currentTimeMillis());
-            diaryRepository.insertDiary(newDiary);
-            loadDiaries();
-            diaryEvent.setValue(ADDED);
-        }
+        Diary newDiary = new Diary(userId, diaryName, startDate, endDate, imageUri,
+                budget, country, System.currentTimeMillis());
+        diaryRepository.insertDiary(newDiary);
+        loadDiaries();
+        diaryEvent.setValue(ADDED);
+        countriesLiveData.setValue(diaryRepository.getAllCountries(userId));
     }
 
     public void updateDiary(Diary diary, String diaryName, String startDate, String endDate,
@@ -158,6 +153,7 @@ public class HomeViewModel extends ViewModel {
 
     public void updateDiaryCountry(String diaryId, String country){
         diaryRepository.updateDiaryCountry(diaryId, country);
+        countriesLiveData.setValue(diaryRepository.getAllCountries(SharedPreferencesUtils.getLoggedUserId()));
         loadDiaries();
     }
 
@@ -167,6 +163,7 @@ public class HomeViewModel extends ViewModel {
             diaryRepository.deleteAllDiaries(selectedDiaries);
             selectedDiariesLiveData.postValue(Collections.emptyList());
             loadDiaries();
+            countriesLiveData.setValue(diaryRepository.getAllCountries(SharedPreferencesUtils.getLoggedUserId()));
             diaryEvent.setValue(DELETED);
         } else {
             diaryEvent.setValue(INVALID_DELETE);
@@ -195,20 +192,23 @@ public class HomeViewModel extends ViewModel {
         }
     }
 
-    private boolean validateDiaryInput(String diaryName, String startDate, String endDate, String imageUri, String country) {
+    public boolean validateDiaryInput(String diaryName, String startDate, String endDate,
+                                      String imageUri, String country, boolean bAdd) {
         boolean correct = true;
+        if(startDate.equals("//")) startDate = "";
+        if(endDate.equals("//")) endDate = "";
         if(diaryName.isEmpty()){
             errorLiveData.setValue("Inserisci il nome del diario");
+        } else if(country.isEmpty()){
+            errorLiveData.setValue("Seleziona un paese");
         } else if(startDate.isEmpty()){
             errorLiveData.setValue("Inserisci la data di partenza");
         } else if(endDate.isEmpty()){
             errorLiveData.setValue("Inserisci la data di ritorno");
         } else if(!validateDateOrder(startDate, endDate)){
-            errorLiveData.setValue("La data di partenza deve essere prima della data di ritorno");
-        } else if(imageUri == null || imageUri.isEmpty()){
+            errorLiveData.setValue("Le date inserite non sono valide");
+        } else if(bAdd && (imageUri == null || imageUri.isEmpty())){
             errorLiveData.setValue("Seleziona un'immagine per il diario");
-        } else if(country.isEmpty()){
-            errorLiveData.setValue("Seleziona un paese");
         }
 
         if(errorLiveData.getValue() != null) correct = false;

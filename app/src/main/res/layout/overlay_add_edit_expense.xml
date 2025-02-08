@@ -12,18 +12,13 @@
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardAddSpesa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:backgroundTint="@color/background_overlays"
             app:cardCornerRadius="20dp"
-            android:elevation="100dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:cardElevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -175,8 +170,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/SeparatoreData"
-                        android:textSize="20sp"
-                        />
+                        android:textSize="20sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldMonth"

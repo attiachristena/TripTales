@@ -1,7 +1,5 @@
 package com.unimib.triptales.repository.diary;
 
-import android.content.Context;
-
 import com.unimib.triptales.model.Diary;
 
 import java.util.List;

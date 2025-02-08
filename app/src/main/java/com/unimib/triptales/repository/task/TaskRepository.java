@@ -1,13 +1,8 @@
 package com.unimib.triptales.repository.task;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.model.Expense;
-import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.source.task.BaseTaskLocalDataSource;
 import com.unimib.triptales.source.task.BaseTaskRemoteDataSource;

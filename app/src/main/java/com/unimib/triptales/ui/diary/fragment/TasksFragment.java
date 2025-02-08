@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -73,19 +72,11 @@ public class TasksFragment extends Fragment {
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewTasks.setAdapter(tasksRecyclerAdapter);
 
-        tasksRecyclerAdapter.setOnTaskClickListener(new TasksRecyclerAdapter.OnTaskClickListener() {
-            @Override
-            public void onTaskClick(Task task) {
-                taskViewModel.toggleTaskSelection(task);
-            }
-        });
+        tasksRecyclerAdapter.setOnTaskClickListener(task ->
+                taskViewModel.toggleTaskSelection(task));
 
-        tasksRecyclerAdapter.setOnTaskCheckBoxClickListener(new TasksRecyclerAdapter.OnTaskCheckBoxClickListener() {
-            @Override
-            public void onTaskCheckBoxClick(Task task) {
-                taskViewModel.toggleTaskCheck(task);
-            }
-        });
+        tasksRecyclerAdapter.setOnTaskCheckBoxClickListener(task ->
+                taskViewModel.toggleTaskCheck(task));
 
         return view;
     }
@@ -103,7 +94,8 @@ public class TasksFragment extends Fragment {
         bAdd = false;
         bEdit = false;
 
-        overlay_add_edit_task = inflater.inflate(R.layout.overlay_add_edit_task, rootLayoutCheckList, false);
+        overlay_add_edit_task = inflater.inflate(R.layout.overlay_add_edit_task,
+                rootLayoutCheckList, false);
         rootLayoutCheckList.addView(overlay_add_edit_task);
         overlay_add_edit_task.setVisibility(View.GONE);
 
@@ -111,157 +103,130 @@ public class TasksFragment extends Fragment {
         Button saveTask = view.findViewById(R.id.saveTask);
         noTasksTextView = view.findViewById(R.id.noTasksString);
 
-        taskViewModel.getTasksLiveData().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
-            @Override
-            public void onChanged(List<Task> tasks) {
-                if(tasks != null) {
-                    tasksRecyclerAdapter.setTasksList(tasks);
-                    if (tasks.isEmpty()) {
-                        noTasksTextView.setVisibility(View.VISIBLE);
-                    } else {
-                        noTasksTextView.setVisibility(View.GONE);
-                    }
+        taskViewModel.getTasksLiveData().observe(getViewLifecycleOwner(), tasks -> {
+            if(tasks != null) {
+                tasksRecyclerAdapter.setTasksList(tasks);
+                if (tasks.isEmpty()) {
+                    noTasksTextView.setVisibility(View.VISIBLE);
+                } else {
+                    noTasksTextView.setVisibility(View.GONE);
                 }
             }
         });
 
-        taskViewModel.getSelectedTasksLiveData().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
-            @Override
-            public void onChanged(List<Task> selectedTasks) {
-                if(selectedTasks != null){
-                    if(selectedTasks.size() == 1){
-                        if(overlay_add_edit_task.getVisibility() == View.VISIBLE){
-                            editTaskButton.setVisibility(View.GONE);
-                            deleteTaskButton.setVisibility(View.GONE);
-                        } else {
-                            addTaskButton.setEnabled(false);
-                            editTaskButton.setVisibility(View.VISIBLE);
-                            deleteTaskButton.setVisibility(View.VISIBLE);
-                        }
-                    } else if(selectedTasks.size() == 2) {
-                        addTaskButton.setEnabled(false);
-                        editTaskButton.setVisibility(View.GONE);
-                    } else if(selectedTasks.isEmpty()){
+        taskViewModel.getSelectedTasksLiveData().observe(getViewLifecycleOwner(),
+                selectedTasks -> {
+            if(selectedTasks != null){
+                if(selectedTasks.size() == 1){
+                    if(overlay_add_edit_task.getVisibility() == View.VISIBLE){
                         editTaskButton.setVisibility(View.GONE);
                         deleteTaskButton.setVisibility(View.GONE);
-                        addTaskButton.setEnabled(true);
+                    } else {
+                        addTaskButton.setEnabled(false);
+                        editTaskButton.setVisibility(View.VISIBLE);
+                        deleteTaskButton.setVisibility(View.VISIBLE);
                     }
+                } else if(selectedTasks.size() == 2) {
+                    addTaskButton.setEnabled(false);
+                    editTaskButton.setVisibility(View.GONE);
+                } else if(selectedTasks.isEmpty()){
+                    editTaskButton.setVisibility(View.GONE);
+                    deleteTaskButton.setVisibility(View.GONE);
+                    addTaskButton.setEnabled(true);
                 }
             }
         });
 
-        taskViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String errorMessage) {
-                if(errorMessage != null){
-                    Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+        taskViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if(errorMessage != null){
+                Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        taskViewModel.getTaskEvent().observe(getViewLifecycleOwner(), message -> {
+            if(message != null){
+                switch (message) {
+                    case ADDED:
+                        Toast.makeText(requireActivity(), R.string.snackbarTaskAdded,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case UPDATED:
+                        Toast.makeText(requireActivity(), R.string.snackbarTaskUpdated,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case DELETED:
+                        Toast.makeText(requireActivity(), R.string.snackbarTaskDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case INVALID_DELETE:
+                        Toast.makeText(requireActivity(), R.string.snackbarTaskNotDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         });
 
-        taskViewModel.getTaskEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String message) {
-                if(message != null){
-                    switch (message) {
-                        case ADDED:
-                            Toast.makeText(requireActivity(), R.string.snackbarTaskAdded, Toast.LENGTH_SHORT).show();
-                            break;
-                        case UPDATED:
-                            Toast.makeText(requireActivity(), R.string.snackbarTaskUpdated, Toast.LENGTH_SHORT).show();
-                            break;
-                        case DELETED:
-                            Toast.makeText(requireActivity(), R.string.snackbarTaskDeleted, Toast.LENGTH_SHORT).show();
-                            break;
-                        case INVALID_DELETE:
-                            Toast.makeText(requireActivity(), R.string.snackbarTaskNotDeleted, Toast.LENGTH_SHORT).show();
-                            break;
+        backButtonTask.setOnClickListener(backButtonTaskListener -> {
+            if(bEdit){
+                editTaskButton.setVisibility(View.VISIBLE);
+                deleteTaskButton.setVisibility(View.VISIBLE);
+            }
+            taskViewModel.setTaskOverlayVisibility(false);
+        });
+
+        taskNameEditText = view.findViewById(R.id.inputTaskName);
+
+        addTaskButton.setOnClickListener(addTaskButtonListener -> {
+            bAdd = true;
+            taskViewModel.setTaskOverlayVisibility(true);
+        });
+
+        taskViewModel.getTaskOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if(visible){
+                if(bAdd){
+                    showOverlay(ADD_TASK);
+                } else if(bEdit){
+                    showOverlay(EDIT_TASK);
+                    editTaskButton.setVisibility(View.GONE);
+                    deleteTaskButton.setVisibility(View.GONE);
+                }
+            } else {
+                enableSwipeAndButtons(view);
+                if(bAdd){
+                    hideOverlay(ADD_TASK);
+                } else if(bEdit){
+                    hideOverlay(EDIT_TASK);
+                }
+            }
+        });
+
+        saveTask.setOnClickListener(saveTaskListener -> {
+            String inputTaskName = taskNameEditText.getText().toString().trim();
+
+            boolean correct = taskViewModel.validateInputTask(inputTaskName);
+
+            if(correct){
+                if(bAdd){
+                    taskViewModel.insertTask(inputTaskName, getContext());
+                } else if(bEdit){
+                    List<Task> selectedTasks = taskViewModel.getSelectedTasksLiveData().getValue();
+                    if(selectedTasks != null && !selectedTasks.isEmpty()){
+                        Task currentTask = selectedTasks.get(0);
+                        taskViewModel.updateTask(currentTask, inputTaskName);
+                        taskViewModel.deselectAllTasks();
                     }
-                }
-            }
-        });
-
-        backButtonTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(bEdit){
-                    editTaskButton.setVisibility(View.VISIBLE);
-                    deleteTaskButton.setVisibility(View.VISIBLE);
                 }
                 taskViewModel.setTaskOverlayVisibility(false);
             }
         });
 
-        taskNameEditText = view.findViewById(R.id.inputTaskName);
-
-        addTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bAdd = true;
-                taskViewModel.setTaskOverlayVisibility(true);
-            }
+        editTaskButton.setOnClickListener(editTaskButtonListener -> {
+            bEdit = true;
+            taskViewModel.setTaskOverlayVisibility(true);
         });
 
-        taskViewModel.getTaskOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean visible) {
-                if(visible){
-                    if(bAdd){
-                        showOverlay(ADD_TASK);
-                    } else if(bEdit){
-                        showOverlay(EDIT_TASK);
-                        editTaskButton.setVisibility(View.GONE);
-                        deleteTaskButton.setVisibility(View.GONE);
-                    }
-                } else {
-                    enableSwipeAndButtons(view);
-                    if(bAdd){
-                        hideOverlay(ADD_TASK);
-                    } else if(bEdit){
-                        hideOverlay(EDIT_TASK);
-                    }
-                }
-            }
-        });
-
-        saveTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String inputTaskName = taskNameEditText.getText().toString().trim();
-
-                boolean correct = taskViewModel.validateInputTask(inputTaskName);
-
-                if(correct){
-                    if(bAdd){
-                        taskViewModel.insertTask(inputTaskName, getContext());
-                    } else if(bEdit){
-                        List<Task> selectedTasks = taskViewModel.getSelectedTasksLiveData().getValue();
-                        if(selectedTasks != null && !selectedTasks.isEmpty()){
-                            Task currentTask = selectedTasks.get(0);
-                            taskViewModel.updateTask(currentTask, inputTaskName);
-                            taskViewModel.deselectAllTasks();
-                        }
-                    }
-                    taskViewModel.setTaskOverlayVisibility(false);
-                }
-            }
-        });
-
-        editTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bEdit = true;
-                taskViewModel.setTaskOverlayVisibility(true);
-            }
-        });
-
-        deleteTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                taskViewModel.deleteSelectedTasks();
-            }
-        });
-
+        deleteTaskButton.setOnClickListener(deleteTaskButtonListener ->
+                taskViewModel.deleteSelectedTasks());
     }
 
     private void disableSwipeAndButtons(){
@@ -306,5 +271,4 @@ public class TasksFragment extends Fragment {
             taskNameEditText.setText(currentTask.getName());
         }
     }
-
 }

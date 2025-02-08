@@ -10,6 +10,7 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.unimib.triptales.R;
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.repository.goal.IGoalRepository;
 import com.unimib.triptales.util.SharedPreferencesUtils;
@@ -55,7 +56,7 @@ public class GoalViewModel extends ViewModel {
     public boolean validateInputGoal(String name){
         boolean correct = true;
         if (name.isEmpty()) {
-            errorLiveData.setValue("Inserisci il nome dell'obiettivo");
+            errorLiveData.setValue(String.valueOf(R.string.errorGoalName));
         } else {
             errorLiveData.setValue(null);
         }
@@ -70,7 +71,8 @@ public class GoalViewModel extends ViewModel {
 
     public void insertGoal(String name, String description, Context context) {
         String diaryId = SharedPreferencesUtils.getDiaryId(context);
-        Goal goal = new Goal(name, description, false, false, diaryId, System.currentTimeMillis());
+        Goal goal = new Goal(name, description, false, false,
+                diaryId, System.currentTimeMillis());
         goalRepository.insertGoal(goal);
         fetchAllGoals();
         goalEvent.setValue(ADDED);
