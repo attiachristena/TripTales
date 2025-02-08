@@ -53,5 +53,5 @@
     <color name="icon_bg_color">#FFFFFF</color>
 
     <color name="bg_popupmenu">#D9D9D9</color>
-
+    <color name="upper_bar_bg">#CDBAA9</color>
 </resources>
