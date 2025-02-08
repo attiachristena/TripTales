@@ -11,4 +11,43 @@
         <item name="color">@color/white</item>
     </style>
 
+    <style name="ShapeAppearance.Material3.Corner.Medium" parent="">
+        <item name="cornerSize">16dp</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="bottomRoundedImage" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">20dp</item>
+        <item name="cornerSizeBottomRight">20dp</item>
+    </style>
+
+    <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:maxWidth">10000dp</item>
+        <item name="queryBackground">@null</item>
+        <item name="submitBackground">@null</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColorHint">@color/search_hint_color</item>
+        <item name="android:textColor">@color/search_text_color</item>
+        <item name="android:editTextColor">@color/search_text_color</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:imeOptions">actionSearch</item>
+    </style>
+
+    <!-- Style for rounded corners -->
+    <style name="ShapeAppearance.App.LargeComponent" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">16dp</item>
+        <item name="cornerSizeBottomRight">16dp</item>
+    </style>
+
+    <!-- Style for top rounded corners -->
+    <style name="ShapeAppearance.App.TopRoundedCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
 </resources>

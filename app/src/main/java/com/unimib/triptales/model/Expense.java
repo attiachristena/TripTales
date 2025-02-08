@@ -1,29 +1,65 @@
 package com.unimib.triptales.model;
 
+import static androidx.room.ForeignKey.CASCADE;
+
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.unimib.triptales.R;
 
 import java.util.Objects;
+import java.util.UUID;
 
-@Entity/*(foreignKeys = @ForeignKey(entity = Diary.class, parentColumns = "id", childColumns = "diaryId", onDelete = CASCADE))*/
+@Entity(foreignKeys = @ForeignKey(entity = Diary.class, parentColumns = "id", childColumns = "diaryId", onDelete = CASCADE))
 public class Expense {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
 
-    public Expense(String amount, String category, String description, String date, boolean expense_isSelected) {
+    @PrimaryKey
+    @NonNull
+    private String id;
+
+    @ColumnInfo(name = "diaryId")
+    private String diaryId;
+
+    @ColumnInfo(name = "expense_amount")
+    private String amount;
+
+    @ColumnInfo(name = "expense_category")
+    private String category;
+
+    @ColumnInfo(name = "expense_description")
+    private String description;
+
+    @ColumnInfo(name = "expense_date")
+    private String date;
+
+    @ColumnInfo(name = "expense_isSelected")
+    private boolean expense_isSelected;
+
+    @ColumnInfo(name = "expense_iconId")
+    private int iconId;
+
+    public Expense(){}
+
+    public Expense(String amount, String category, String description, String date, boolean expense_isSelected,
+                   String diaryId) {
+        this.id = UUID.randomUUID().toString();
         this.amount = amount;
         setCategory(category);
         this.description = description;
         this.date = date;
         this.expense_isSelected = expense_isSelected;
-        //this.diaryId = ;
+        this.diaryId = diaryId;
     }
 
-    public void updateCategory(String newCategory){
-        this.category = newCategory;
+    public String getDiaryId() {
+        return diaryId;
+    }
+
+    public void setDiaryId(String diaryId) {
+        this.diaryId = diaryId;
     }
 
     public void setAmount(String amount) {
@@ -60,17 +96,14 @@ public class Expense {
         return expense_isSelected;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
     public void setIconId(int iconId) {
         this.iconId = iconId;
     }
 
-    public int getId() {
-        return id;
-    }
+    @NonNull
+    public String getId() { return id;}
 
     public String getAmount() {
         return amount;
@@ -96,32 +129,12 @@ public class Expense {
         this.expense_isSelected = expense_isSelected;
     }
 
-    //public int diaryId;
-
-    @ColumnInfo(name = "expense_amount")
-    private String amount;
-
-    @ColumnInfo(name = "expense_category")
-    private String category;
-
-    @ColumnInfo(name = "expense_description")
-    private String description;
-
-    @ColumnInfo(name = "expense_date")
-    private String date;
-
-    @ColumnInfo(name = "expense_isSelected")
-    private boolean expense_isSelected;
-
-    @ColumnInfo(name = "expense_iconId")
-    private int iconId;
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Expense expense = (Expense) obj;
-        return id == expense.id;
+        return id.equals(expense.id);
     }
 
     @Override

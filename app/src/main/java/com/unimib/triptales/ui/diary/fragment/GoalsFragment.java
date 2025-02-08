@@ -1,5 +1,12 @@
 package com.unimib.triptales.ui.diary.fragment;
 
+import static com.unimib.triptales.util.Constants.ADDED;
+import static com.unimib.triptales.util.Constants.ADD_GOAL;
+import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.EDIT_GOAL;
+import static com.unimib.triptales.util.Constants.INVALID_DELETE;
+import static com.unimib.triptales.util.Constants.UPDATED;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.unimib.triptales.R;
@@ -28,31 +37,23 @@ import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.Constants;
 import com.unimib.triptales.util.ServiceLocator;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class GoalsFragment extends Fragment {
 
     private CircularProgressIndicator progressIndicator;
-    private View overlay_add_goal;
-    private FloatingActionButton addButtonGoals;
-    private EditText editTextGoalName;
-    private EditText editTextGoalDescription;
-    private String inputGoalName;
-    private String inputGoalDescription;
-    private FloatingActionButton modifyGoal;
-    private FloatingActionButton deleteGoal;
-    private EditText editTextModifiedGoalName;
-    private EditText editTextModifiedGoalDescription;
-    private String inputModifiedGoalName;
-    private String inputModifiedGoalDescription;
-    private View overlay_modify_goal;
-    private TextView progressText;
-    private TextView noGoalsString;
-    private List<Goal> goalsList;
-    private List<Goal> checkedGoals;
-    private List<Goal> selectedGoals;
+    private View overlay_add_edit_goal;
+    private FloatingActionButton addGoalButton;
+    private EditText goalNameEditText;
+    private EditText goalDescriptionEditText;
+    private FloatingActionButton editGoalButton;
+    private FloatingActionButton deleteGoalButton;
+    private TextView progressTextView;
+    private TextView noGoalsTextView;
     private GoalViewModel goalViewModel;
+    private GoalsRecyclerAdapter goalsRecyclerAdapter;
+    private boolean bAdd;
+    private boolean bEdit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,20 +64,24 @@ public class GoalsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_obiettivi, container, false);
-
         IGoalRepository goalRepository = ServiceLocator.getINSTANCE().getGoalRepository(getContext());
         goalViewModel = new ViewModelProvider(requireActivity(),
                 new ViewModelFactory(goalRepository)).get(GoalViewModel.class);
 
-        goalsList = goalViewModel.getAllGoals();
-        checkedGoals = goalViewModel.getCheckedGoals();
-        progressIndicator = view.findViewById(R.id.goalsProgressIndicator);
-        progressText = view.findViewById(R.id.numObiettivi);
-        updateProgressIndicator();
-        for(Goal g : goalsList){
-            g.setGoal_isSelected(false);
-            goalViewModel.updateGoalIsSelected(g.getId(), false);
-        }
+        goalViewModel.deselectAllGoals();
+        goalViewModel.getCheckedGoals();
+
+        RecyclerView recyclerViewGoals = view.findViewById(R.id.recyclerViewGoals);
+        goalsRecyclerAdapter = new GoalsRecyclerAdapter(getContext());
+        recyclerViewGoals.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewGoals.setAdapter(goalsRecyclerAdapter);
+
+        goalsRecyclerAdapter.setOnGoalClickListener(goal ->
+                goalViewModel.toggleGoalSelection(goal));
+
+        goalsRecyclerAdapter.setOnGoalCheckBoxClickListener(goal ->
+                goalViewModel.toggleGoalCheck(goal));
+
         return view;
     }
 
@@ -85,210 +90,224 @@ public class GoalsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ConstraintLayout rootLayoutGoals = view.findViewById(R.id.rootLayoutGoals);
-        progressText = view.findViewById(R.id.numObiettivi);
+        progressTextView = view.findViewById(R.id.numObiettivi);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-
-        addButtonGoals = view.findViewById(R.id.addButtonGoals);
-        modifyGoal = view.findViewById(R.id.modifyGoal);
-        deleteGoal = view.findViewById(R.id.deleteGoal);
+        addGoalButton = view.findViewById(R.id.addButtonGoals);
+        editGoalButton = view.findViewById(R.id.modifyGoal);
+        deleteGoalButton = view.findViewById(R.id.deleteGoal);
         progressIndicator = view.findViewById(R.id.goalsProgressIndicator);
+        noGoalsTextView = view.findViewById(R.id.noGoalsString);
+        bAdd = false;
+        bEdit = false;
 
-        RecyclerView recyclerViewGoals = view.findViewById(R.id.recyclerViewGoals);
-        GoalsRecyclerAdapter recyclerAdapter = new GoalsRecyclerAdapter(goalsList,  getContext(),
-                addButtonGoals, modifyGoal, deleteGoal, progressIndicator, progressText);
-        recyclerViewGoals.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewGoals.setAdapter(recyclerAdapter);
-
-        overlay_add_goal = inflater.inflate(R.layout.overlay_add_goal, rootLayoutGoals, false);
-        rootLayoutGoals.addView(overlay_add_goal);
-        overlay_add_goal.setVisibility(View.GONE);
-        ImageButton backButtonGoal = view.findViewById(R.id.backButtonGoal);
-        Button saveGoal = view.findViewById(R.id.saveGoal);
+        progressTextView = view.findViewById(R.id.numObiettivi);
         updateProgressIndicator();
-        noGoalsString = view.findViewById(R.id.noGoalsString);
-        if(goalsList.isEmpty()){
-            noGoalsString.setVisibility(View.VISIBLE);
-        } else {
-            noGoalsString.setVisibility(View.GONE);
-        }
 
-        backButtonGoal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                overlay_add_goal.setVisibility(View.GONE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-                Constants.hideKeyboard(view, requireActivity());
-                addButtonGoals.setVisibility(View.VISIBLE);
+        goalViewModel.getGoalsLiveData().observe(getViewLifecycleOwner(), goals -> {
+            goalsRecyclerAdapter.setGoalsList(goals);
+            if(goals.isEmpty()){
+                noGoalsTextView.setVisibility(View.VISIBLE);
+            } else {
+                noGoalsTextView.setVisibility(View.GONE);
             }
+            updateProgressIndicator();
         });
 
-        editTextGoalName = view.findViewById(R.id.inputGoalName);
-        editTextGoalDescription = view.findViewById(R.id.inputGoalDescription);
+        overlay_add_edit_goal = inflater.inflate(R.layout.overlay_add_edit_goal,
+                rootLayoutGoals, false);
+        rootLayoutGoals.addView(overlay_add_edit_goal);
+        overlay_add_edit_goal.setVisibility(View.GONE);
 
-        addButtonGoals.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                overlay_add_goal.setVisibility(View.VISIBLE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-                addButtonGoals.setVisibility(View.GONE);
-                editTextGoalName.setText("");
-                editTextGoalDescription.setText("");
-            }
-        });
-
-        saveGoal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Goal currentGoal;
-
-                inputGoalName = editTextGoalName.getText().toString().trim();
-                inputGoalDescription = editTextGoalDescription.getText().toString().trim();
-
-                if (inputGoalName.isEmpty()) {
-                    editTextGoalName.setError("Inserisci un nome");
-                } else {
-                    editTextGoalName.setError(null);
-                    editTextGoalDescription.setError(null);
-
-                    if(inputGoalDescription.isEmpty()){
-                        currentGoal = new Goal(inputGoalName, null,false, false);
+        goalViewModel.getSelectedGoalsLiveData().observe(getViewLifecycleOwner(),
+                selectedGoals -> {
+            if(selectedGoals != null){
+                if(selectedGoals.size() == 1){
+                    if(overlay_add_edit_goal.getVisibility() == View.VISIBLE){
+                        editGoalButton.setVisibility(View.GONE);
+                        deleteGoalButton.setVisibility(View.GONE);
                     } else {
-                        currentGoal = new Goal(inputGoalName, inputGoalDescription, false, false);
+                        addGoalButton.setEnabled(false);
+                        editGoalButton.setVisibility(View.VISIBLE);
+                        deleteGoalButton.setVisibility(View.VISIBLE);
                     }
-
-                    long id = goalViewModel.insertGoal(currentGoal);
-                    currentGoal.setId((int) id);
-                    goalsList.add(currentGoal);
-                    recyclerAdapter.notifyItemInserted(goalsList.size() - 1);
-
-                    Constants.hideKeyboard(view, requireActivity());
-                    overlay_add_goal.setVisibility(View.GONE);
-                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-                    addButtonGoals.setVisibility(View.VISIBLE);
-                    updateProgressIndicator();
-                    noGoalsString.setVisibility(View.GONE);
+                } else if(selectedGoals.size() == 2) {
+                    addGoalButton.setEnabled(false);
+                    editGoalButton.setVisibility(View.GONE);
+                } else if(selectedGoals.isEmpty()){
+                    editGoalButton.setVisibility(View.GONE);
+                    deleteGoalButton.setVisibility(View.GONE);
+                    addGoalButton.setEnabled(true);
                 }
             }
         });
 
-        overlay_modify_goal = inflater.inflate(R.layout.overlay_modify_goal, rootLayoutGoals, false);
-        rootLayoutGoals.addView(overlay_modify_goal);
-        overlay_modify_goal.setVisibility(View.GONE);
+        goalViewModel.getCheckedGoalsLiveData().observe(getViewLifecycleOwner(),
+                goals -> updateProgressIndicator());
 
-        ImageButton backButtonModifiedGoal = view.findViewById(R.id.backButtonModifiedGoal);
-        Button saveModifiedGoal = view.findViewById(R.id.saveModifiedGoal);
-        editTextModifiedGoalName = view.findViewById(R.id.inputModifiedGoalName);
-        editTextModifiedGoalDescription = view.findViewById(R.id.inputModifiedGoalDescription);
-
-        modifyGoal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                overlay_modify_goal.setVisibility(View.VISIBLE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-
-                selectedGoals = goalViewModel.getSelectedGoals();
-                Goal currentGoal = selectedGoals.get(0);
-
-                editTextModifiedGoalName.setText(currentGoal.getName());
-                editTextModifiedGoalDescription.setText(currentGoal.getDescription());
-
-                addButtonGoals.setVisibility(View.GONE);
-                modifyGoal.setVisibility(View.GONE);
-                deleteGoal.setVisibility(View.GONE);
+        goalViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if(errorMessage != null){
+                Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
-        backButtonModifiedGoal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                overlay_modify_goal.setVisibility(View.GONE);
-                ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-                Constants.hideKeyboard(view, requireActivity());
-                addButtonGoals.setVisibility(View.VISIBLE);
-                modifyGoal.setVisibility(View.VISIBLE);
-                deleteGoal.setVisibility(View.VISIBLE);
-            }
-        });
-
-        saveModifiedGoal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectedGoals = goalViewModel.getSelectedGoals();
-                Goal currentGoal = selectedGoals.get(0);
-
-                inputModifiedGoalName = editTextModifiedGoalName.getText().toString().trim();
-                inputModifiedGoalDescription = editTextModifiedGoalDescription.getText().toString().trim();
-
-                if (inputModifiedGoalName.isEmpty()) {
-                    editTextModifiedGoalName.setError("Inserisci il nome dell'obiettivo");
-                } else {
-                    editTextModifiedGoalName.setError(null);
-                    currentGoal.setName(inputModifiedGoalName);
-                    goalViewModel.updateGoalName(currentGoal.getId(), inputModifiedGoalName);
-                    editTextModifiedGoalDescription.setError(null);
-                    currentGoal.setDescription(inputModifiedGoalDescription);
-                    goalViewModel.updateGoalDescription(currentGoal.getId(), inputModifiedGoalDescription);
-
-                    currentGoal.setGoal_isSelected(false);
-                    goalViewModel.updateGoalIsSelected(currentGoal.getId(), false);
-
-                    int position = goalsList.indexOf(currentGoal);
-                    if (position != -1) {
-                        goalsList.set(position, currentGoal);
-                        recyclerAdapter.notifyItemChanged(position);
-                    }
-
-                    updateProgressIndicator();
-                    Constants.hideKeyboard(view, requireActivity());
-                    overlay_modify_goal.setVisibility(View.GONE);
-                    ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-                    addButtonGoals.setVisibility(View.VISIBLE);
-                    addButtonGoals.setEnabled(true);
+        goalViewModel.getGoalEvent().observe(getViewLifecycleOwner(), message -> {
+            if(message != null){
+                switch (message) {
+                    case ADDED:
+                        Toast.makeText(requireActivity(), R.string.snackbarGoalAdded,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case UPDATED:
+                        Toast.makeText(requireActivity(), R.string.snackbarGoalUpdated,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case DELETED:
+                        Toast.makeText(requireActivity(), R.string.snackbarGoalDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case INVALID_DELETE:
+                        Toast.makeText(requireActivity(), R.string.snackbarGoalNotDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         });
 
-        deleteGoal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int index = 0;
-                Iterator<Goal> iterator = goalsList.iterator();
-                while (iterator.hasNext()) {
-                    Goal g = iterator.next();
-                    if (g.isGoal_isSelected()) {
-                        iterator.remove();
-                        recyclerAdapter.notifyItemRemoved(index);
-                        goalViewModel.deleteGoal(g);
-                    } else {
-                        index++;
+        ImageButton goalBackButton = view.findViewById(R.id.backButtonGoal);
+        Button saveGoalButton = view.findViewById(R.id.saveGoal);
+
+        goalBackButton.setOnClickListener(view1 -> {
+            if(bEdit){
+                editGoalButton.setVisibility(View.VISIBLE);
+                deleteGoalButton.setVisibility(View.VISIBLE);
+            }
+            goalViewModel.setGoalOverlayVisibility(false);
+        });
+
+        goalNameEditText = view.findViewById(R.id.inputGoalName);
+        goalDescriptionEditText = view.findViewById(R.id.inputGoalDescription);
+
+        addGoalButton.setOnClickListener(addGoalButtonListener -> {
+            bAdd = true;
+            goalViewModel.setGoalOverlayVisibility(true);
+        });
+
+        goalViewModel.getGoalOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if(visible){
+                if(bAdd){
+                    showOverlay(ADD_GOAL);
+                } else if(bEdit){
+                    showOverlay(EDIT_GOAL);
+                    editGoalButton.setVisibility(View.GONE);
+                    deleteGoalButton.setVisibility(View.GONE);
+                }
+            } else {
+                enableSwipeAndButtons(view);
+                if(bAdd){
+                    hideOverlay(ADD_GOAL);
+                } else if(bEdit){
+                    hideOverlay(EDIT_GOAL);
+                }
+            }
+        });
+
+        saveGoalButton.setOnClickListener(saveGoalButtonListener -> {
+            String inputGoalName = goalNameEditText.getText().toString().trim();
+            String inputGoalDescription = goalDescriptionEditText.getText().toString().trim();
+
+            boolean correct = goalViewModel.validateInputGoal(inputGoalName);
+
+            if(correct){
+                if(bAdd){
+                    goalViewModel.insertGoal(inputGoalName, inputGoalDescription, getContext());
+                } else if(bEdit){
+                    List<Goal> selectedGoals = goalViewModel.getSelectedGoalsLiveData().getValue();
+                    if(selectedGoals != null && !selectedGoals.isEmpty()){
+                        Goal currentGoal = selectedGoals.get(0);
+                        goalViewModel.updateGoal(currentGoal, inputGoalName, inputGoalDescription);
+                        goalViewModel.deselectAllGoals();
                     }
                 }
-                updateProgressIndicator();
-                modifyGoal.setVisibility(View.GONE);
-                deleteGoal.setVisibility(View.GONE);
-                addButtonGoals.setEnabled(true);
-                if(goalsList.isEmpty()){
-                    noGoalsString.setVisibility(View.VISIBLE);
-                }
+                goalViewModel.setGoalOverlayVisibility(false);
             }
         });
+
+        editGoalButton.setOnClickListener(editGoalButtonListener -> {
+            bEdit = true;
+            goalViewModel.setGoalOverlayVisibility(true);
+        });
+
+        deleteGoalButton.setOnClickListener(deleteGoalButtonListener ->
+                goalViewModel.deleteSelectedGoals());
 
     }
 
-    public void updateProgressIndicator(){
-        double numAllCards = goalsList.size();
-        double numCheckedCards = checkedGoals.size();
-        int progressPercentage;
-        if(goalsList.isEmpty()){
-            progressPercentage = 0;
+    private void updateProgressIndicator(){
+        List<Goal> goals = goalViewModel.getGoalsLiveData().getValue();
+        List<Goal> checkedGoals = goalViewModel.getCheckedGoalsLiveData().getValue();
+        int progressPercentage = 0;
+        double numCheckedCards = 0;
+        double numAllCards;
+        if(goals != null) {
+            numAllCards = goals.size();
+            if(checkedGoals != null){
+                numCheckedCards = checkedGoals.size();
+            }
+            if(!goals.isEmpty()){
+                progressPercentage = (int) ((numCheckedCards / numAllCards) * 100);
+            }
+            progressIndicator.setProgress(progressPercentage);
+            String tmp = getString(R.string.numObiettivi, (int) numCheckedCards, (int) numAllCards);
+            progressTextView.setText(tmp);
         } else {
-            progressPercentage = (int) ((numCheckedCards / numAllCards) * 100);
+            progressIndicator.setProgress(progressPercentage);
+            String tmp = getString(R.string.numObiettivi, 0, 0);
+            progressTextView.setText(tmp);
         }
-        progressIndicator.setProgress(progressPercentage);
-        String tmp = getString(R.string.numObiettivi, checkedGoals.size(), goalsList.size());
-        progressText.setText(tmp);
     }
 
+    private void disableSwipeAndButtons(){
+        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
+        addGoalButton.setVisibility(View.GONE);
+    }
 
+    private void enableSwipeAndButtons(View view){
+        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
+        Constants.hideKeyboard(view, requireActivity());
+        addGoalButton.setVisibility(View.VISIBLE);
+    }
+
+    private void showOverlay(String overlayType){
+        disableSwipeAndButtons();
+        overlay_add_edit_goal.setVisibility(View.VISIBLE);
+        switch(overlayType){
+            case ADD_GOAL:
+                goalNameEditText.setText("");
+                goalDescriptionEditText.setText("");
+                break;
+            case EDIT_GOAL:
+                populateGoalField();
+        }
+    }
+
+    private void hideOverlay(String overlayType){
+        overlay_add_edit_goal.setVisibility(View.GONE);
+        switch(overlayType){
+            case ADD_GOAL:
+                bAdd = false;
+                break;
+            case EDIT_GOAL:
+                bEdit = false;
+                break;
+        }
+    }
+
+    private void populateGoalField(){
+        List<Goal> selectedGoals = goalViewModel.getSelectedGoalsLiveData().getValue();
+        if(selectedGoals != null && !selectedGoals.isEmpty()){
+            Goal currentGoal = selectedGoals.get(0);
+            goalNameEditText.setText(currentGoal.getName());
+            goalDescriptionEditText.setText(currentGoal.getDescription());
+        }
+    }
 }

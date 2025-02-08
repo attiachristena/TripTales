@@ -1,24 +1,27 @@
 package com.unimib.triptales.source.expense;
 
 import com.unimib.triptales.model.Expense;
+import com.unimib.triptales.repository.expense.ExpenseResponseCallback;
 
 import java.util.List;
 
-public interface BaseExpenseLocalDataSource {
+public abstract class BaseExpenseLocalDataSource {
+    protected ExpenseResponseCallback expenseCallback;
 
-    long insertExpense(Expense expense);
-    void updateExpense(Expense expense);
-    void updateAllExpenses(List<Expense> expenses);
-    void updateExpenseCategory(int expenseId, String newCategory);
-    void updateExpenseDescription(int expenseId, String newDescription);
-    void updateExpenseAmount(int expenseId, String newAmount);
-    void updateExpenseDate(int expenseId, String newDate);
-    void updateExpenseIsSelected(int expenseId, boolean newIsSelected);
-    void deleteExpense(Expense expense);
-    void deleteAllExpenses(List<Expense> expenses);
-    List<Expense> getAllExpenses();
-    List<Expense> getSelectedExpenses();
-    List<Expense> getFilteredExpenses(String category);
-    //List<Expense> getAllExpensesByDiaryId(int diaryId);
+    public void setExpenseCallback(ExpenseResponseCallback expenseCallback){
+        this.expenseCallback = expenseCallback;
+    }
 
+    public abstract void insertExpense(Expense expense);
+    public abstract void updateExpense(Expense expense);
+    public abstract void updateExpenseCategory(String expenseId, String newCategory);
+    public abstract void updateExpenseDescription(String expenseId, String newDescription);
+    public abstract void updateExpenseAmount(String expenseId, String newAmount);
+    public abstract void updateExpenseDate(String expenseId, String newDate);
+    public abstract void updateExpenseIsSelected(String expenseId, boolean newIsSelected);
+    public abstract void deleteExpense(Expense expense);
+    public abstract void deleteAllExpenses(List<Expense> expenses);
+    public abstract void getAllExpenses();
+    public abstract void getSelectedExpenses();
+    public abstract void getFilteredExpenses(String category);
 }

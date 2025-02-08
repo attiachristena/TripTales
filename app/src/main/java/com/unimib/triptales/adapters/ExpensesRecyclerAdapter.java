@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
@@ -13,6 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Expense;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecyclerAdapter.ViewHolder> {
@@ -37,9 +40,9 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
         }
     }
 
-    public ExpensesRecyclerAdapter(List<Expense> expenseList, Context context) {
-        this.expenseList = expenseList;
+    public ExpensesRecyclerAdapter(Context context) {
         this.context = context;
+        this.expenseList = new ArrayList<>();
     }
 
     public void setExpenseList(List<Expense> expenses) {
@@ -58,6 +61,7 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
         this.OnExpenseClickListener = listener;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
@@ -90,7 +94,7 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
 
         card.setOnLongClickListener(v -> {
             if (OnExpenseClickListener != null) {
-                OnExpenseClickListener.onExpenseClick(expense, card);
+                OnExpenseClickListener.onExpenseClick(expense);
             }
             return false;
         });
@@ -103,6 +107,6 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
 
 
     public interface OnExpenseClickListener {
-        void onExpenseClick(Expense expense, MaterialCardView card);
+        void onExpenseClick(Expense expense);
     }
 }

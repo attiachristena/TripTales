@@ -51,11 +51,11 @@
     <string name="data_tappa_hint">Data tappa</string>
     <string name="anteprima_immagine">Anteprima immagine</string>
     <string name="pulsante_per_tornare_indietro">Pulsante per tornare indietro</string>
-    <string name="pulsante_per_salvare_la_tappa">Pulsante per salvare la tappa</string>
-    <string name="aggiungi_una_tappa_modificata">Aggiungi una tappa</string>
-    <string name="nome_tappa_modificata">Nome tappa</string>
+    <string name="pulsante_per_salvare_la_tappa">Pulsante per salvare la checkpoint</string>
+    <string name="aggiungi_una_tappa_modificata">Aggiungi una checkpoint</string>
+    <string name="nome_tappa_modificata">Nome checkpoint</string>
     <string name="inserisci_un_immagine_modifica">Inserisci un\'immagine</string>
-    <string name="data_tappa_modificata">Data tappa</string>
+    <string name="data_tappa_modificata">Data checkpoint</string>
     <string name="anteprima_immagine_modificata">Anteprima immagine</string>
     <string name="nome_tappa_card">Nome Tappa</string>
     <string name="nome_tappa">Nome Tappa</string>
@@ -66,7 +66,6 @@
     <string name="accedi">Accedi</string>
     <string name="registrati">Registrati</string>
     <string name="email">Email</string>
-    <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="password_dimenticata">Password dimenticata?</string>
@@ -77,7 +76,7 @@
     <string name="inserisci_la_tua_email">Inserisci la tua email</string>
     <string name="invia_email">Invia email</string>
     <string name="error_email_login">Controlla la tua email</string>
-    <string name="error_password_login">La password deve essere lunga almeno 8 caratteri: almeno 1 lettera, 1 numero e 1 carattere speciale</string>
+    <string name="error_password_signUp">La password deve essere lunga almeno 8 caratteri: almeno 1 lettera, 1 numero e 1 carattere speciale</string>
     <string name="benvenuto_nella_home">Benvenuto nella home</string>
     <string name="totalespesa">"Tot spesa della categoria: "</string>
     <string name="SeparatoreData">/</string>
@@ -110,16 +109,20 @@
     <string name="intro4_body">Tppe,obiettivi, spese e check-list: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
+    <string name="data_partenza">Data partenza</string>
+    <string name="data_arrivo">Data arrivo</string>
+    <string name="scegli_immagine">Scegli un’immagine</string>
+    <string name="inserisci_nome_diario">Inserisci il nome del diario</string>
+    <string name="paese_visitato">Inserisci il paese visitato</string>
+    <string name="files" translatable="false">Files</string>
+    <string name="immagineSelezionata">Immagine selezionata</string>
 
-    ///
-    <string name="error_unexpected">Unexpected error</string>
-    <string name="error_google_login">Google Login Error</string>
-    <string name="error_email_required">Email Required Error</string>
-    <string name="error_email_invalid">Invalid Email Error</string>
-    <string name="password_reset_email_sent">Email for reset password sent</string>
+    <string name="error_unexpected">Errore imprevisto</string>
+    <string name="error_google_login">Errore di accesso con Google</string>
+    <string name="error_email_required">Errore: email obbligatoria</string>
+    <string name="error_email_invalid">Errore: email non valida</string>
+    <string name="password_reset_email_sent">Email per il reset della password inviata</string>
     <string name="registrati_con_google">Registrati con Google</string>
-    ///
-
 
     <string name="nome_user_momentaneo">Nome Cognome</string>
     <string name="modalita_scura">Modalità scura</string>
@@ -157,6 +160,37 @@
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancella</string>
     <string name="aggiungi_diario">Aggiungi Diario</string>
+    <string name="snackbarExpenseAdded">Spesa aggiunta</string>
+    <string name="snackbarExpenseUpdated">Spesa aggiornata</string>
+    <string name="snackbarExpenseDeleted">Spesa rimossa</string>
+    <string name="snackbarExpenseNotDeleted">Errore: spesa non rimossa</string>
+    <string name="snackbarGoalAdded">Obiettivo aggiunto</string>
+    <string name="snackbarGoalUpdated">Obiettivo aggiornato</string>
+    <string name="snackbarGoalDeleted">Obiettivo rimosso</string>
+    <string name="snackbarGoalNotDeleted">Errore: obiettivo non rimosso</string>
+    <string name="snackbarTaskAdded">Attività aggiunta</string>
+    <string name="snackbarTaskUpdated">Attività aggiornata</string>
+    <string name="snackbarTaskDeleted">Attività rimossa</string>
+    <string name="snackbarTaskNotDeleted">Errore: attività non rimossa</string>
+    <string name="snackbarDiaryAdded">Diario aggiunto</string>
+    <string name="snackbarDiaryUpdated">Diario aggiornato</string>
+    <string name="snackbarDiaryDeleted">Diario rimosso</string>
+    <string name="snackbarDiaryNotDeleted">Errore: diario non rimosso</string>
+    <string name="errorFilterExpenses">Scegli una categoria</string>
+    <string name="errorFilterCategory">Nessuna spesa trovata per la categoria specificata</string>
+    <string name="errorAmount">Inserisci un importo</string>
+    <string name="errorDescription">Inserisci una descrizione</string>
+    <string name="errorDay">Inserisci un giorno</string>
+    <string name="errorInputDay">Giorno inserito non corretto</string>
+    <string name="errorMonth">Inserisci un mese</string>
+    <string name="errorInputMonth">Mese inserito non corretto</string>
+    <string name="errorYear">Inserisci un anno</string>
+    <string name="errorInputYear">Anno inserito non corretto</string>
+    <string name="errorBudget">Inserisci un budget</string>
+    <string name="errorCurrency">Scegli una valuta</string>
+    <string name="errorInputBudget">Inserisci un numero più basso</string>
+    <string name="errorGoalName">Inserisci il nome dell\'obiettivo</string>
+    <string name="errorTaskName">Inserisci il nome dell\'attività</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>
@@ -167,5 +201,48 @@
     <string name="italiano">Italiano</string>
     <string name="inglese">Inglese</string>
     <string name="elimina_profilo">Elimina profilo</string>
+    <string name="searchbar_hint">Cerca diario per nome</string>
+
+    <string name="nomeStringheParser">\"NAME_IT\"</string>
+
+    <string name="modifica_profilo"><u>Modifica profilo</u></string>
+    <string name="modifica_profilo2">Modifica profilo</string>
+    <string name="cambia_foto"><u>Cambia foto</u></string>
+
+    <string name="inserisci_nome_e_cognome">Per favore, inserisci sia il nome che il cognome</string>
+    <string name="aggiornamento_con_successo">Nome e cognome aggiornati con successo!</string>
+    <string name="errore_aggiornamento">Errore durante l\'aggiornamento</string>
+    <string name="utente_non_autenticato">Utente non autenticato</string>
+
+    <string name="elimina_account">Elimina account</string>
+    <string name="dialog_elimina_account">Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.</string>
+    <string name="elimina">Elimina</string>
+    <string name="eliminazione_con_successo">Account eliminato con successo!</string>
+    <string name="errore_eliminazione">Errore durante l\'eliminazione dell\'account.</string>
+    <string name="annulla">Annulla</string>
+    <string name="nessun_utente_trovato">Nessun utente autenticato trovato!</string>
+    <string name="user_not_logged_in_error">Utente non registrato</string>
+    <string name="unexpected_error">Errore inaspettato</string>
+    <string name="error_password_login">Password errata. Per favore, ritenta.</string>
+
+    <string name="inserisci_vecchia_password">Inserisci la vecchia password</string>
+    <string name="inserisci_nuova_password">Inserisci la nuova password</string>
+    <string name="password_aggiornata">"Password aggiornata con successo"</string>
+    <string name="errore_aggiornamento_password">Errore durante l\'aggiornamento della password: </string>
+    <string name="autenticazione_fallita">"Autenticazione fallita: "</string>
+
+    <string name="profilo_aggiornato">Profilo aggiornato con successo</string>
+    <string name="aggiornamento_fallito">Aggiornamento fallito</string>
+    <string name="utente_non_autenticated">Utente non autenticato</string>
+
+    <string name="action_back">Back</string>
+    <string name="conferma_logout">Conferma Logout</string>
+    <string name="conferma_uscire_da_account">Vuoi uscire dal tuo account?</string>
+    <string name="esci">Esci</string>
+    <string name="dati_non_disponibili">Dati non disponibili</string>
+    <string name="errore_nel_recupero_dati">Errore nel recupero dei dati</string>
+
+    <string name="i_tuoi_ricordi">I tuoi ricordi...</string>
+    <string name="cerca_diario_per_paese">Cerca diario per paese visitato</string>
 
 </resources>

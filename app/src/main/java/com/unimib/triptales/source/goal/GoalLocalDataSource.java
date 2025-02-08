@@ -5,66 +5,123 @@ import com.unimib.triptales.model.Goal;
 
 import java.util.List;
 
-public class GoalLocalDataSource implements BaseGoalLocalDataSource{
+public class GoalLocalDataSource extends BaseGoalLocalDataSource{
 
     private final GoalDao goalDao;
+    private final String diaryId;
 
-    public GoalLocalDataSource(GoalDao goalDao) {
+    public GoalLocalDataSource(GoalDao goalDao, String diaryId) {
         this.goalDao = goalDao;
+        this.diaryId = diaryId;
     }
 
     @Override
-    public long insertGoal(Goal goal) {
-        return goalDao.insert(goal);
+    public void insertGoal(Goal goal) {
+        try{
+            goalDao.insert(goal);
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void updateGoal(Goal goal) {
-        goalDao.update(goal);
+        try{
+            goalDao.update(goal);
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateGoalName(int goalId, String newName) {
-        goalDao.updateName(goalId, newName);
+    public void updateAllGoals(List<Goal> goals) {
+        try{
+            goalDao.updateAll(goals);
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateGoalDescription(int goalId, String newDescription) {
-        goalDao.updateDescription(goalId, newDescription);
+    public void updateGoalName(String goalId, String newName) {
+        try{
+            goalDao.updateName(goalId, newName);
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateGoalIsSelected(int goalId, boolean newIsSelected) {
-        goalDao.updateIsSelected(goalId, newIsSelected);
+    public void updateGoalDescription(String goalId, String newDescription) {
+        try{
+            goalDao.updateDescription(goalId, newDescription);
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public void updateGoalIsChecked(int goalId, boolean newIsChecked) {
-        goalDao.updateIsChecked(goalId, newIsChecked);
+    public void updateGoalIsSelected(String goalId, boolean newIsSelected) {
+        try{
+            goalDao.updateIsSelected(goalId, newIsSelected);
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
+    }
+
+    @Override
+    public void updateGoalIsChecked(String goalId, boolean newIsChecked) {
+        try{
+            goalDao.updateIsChecked(goalId, newIsChecked);
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void deleteGoal(Goal goal) {
-        goalDao.delete(goal);
+        try{
+            goalDao.delete(goal);
+            goalCallback.onSuccessDeleteFromLocal();
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void deleteAllGoals(List<Goal> goals) {
-        goalDao.deleteAll(goals);
+        try{
+            goalDao.deleteAll(goals);
+            goalCallback.onSuccessDeleteFromLocal();
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public List<Goal> getAllGoals() {
-        return goalDao.getAll();
+    public void getAllGoals() {
+        try{
+            goalCallback.onSuccessFromLocal(goalDao.getAll(diaryId));
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public List<Goal> getSelectedGoals() {
-        return goalDao.getSelectedGoals();
+    public void getSelectedGoals() {
+        try{
+            goalCallback.onSuccessSelectionFromLocal(goalDao.getSelectedGoals(diaryId));
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
-    public List<Goal> getCheckedGoals() {
-        return goalDao.getCheckedGoals();
+    public void getCheckedGoals() {
+        try{
+            goalCallback.onSuccessCheckedFromLocal(goalDao.getCheckedGoals(diaryId));
+        } catch (Exception e){
+            goalCallback.onFailureFromLocal(e);
+        }
     }
 }

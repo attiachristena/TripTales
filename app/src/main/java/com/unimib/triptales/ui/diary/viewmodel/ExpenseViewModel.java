@@ -1,15 +1,25 @@
 package com.unimib.triptales.ui.diary.viewmodel;
 
 import static com.unimib.triptales.util.Constants.CURRENCY_EUR;
+import static com.unimib.triptales.util.Constants.ADDED;
+import static com.unimib.triptales.util.Constants.CURRENCY_GBP;
+import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
+import static com.unimib.triptales.util.Constants.CURRENCY_USD;
+import static com.unimib.triptales.util.Constants.DELETED;
+import static com.unimib.triptales.util.Constants.UPDATED;
+import static com.unimib.triptales.util.Constants.INVALID_DELETE;
+
+import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.unimib.triptales.R;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,8 +31,11 @@ public class ExpenseViewModel extends ViewModel {
     private final MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>();
     private final MutableLiveData<Double> amountSpentLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> budgetOverlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> expenseOverlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> filterOverlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<String> expenseEvent = new MutableLiveData<>();
 
     public ExpenseViewModel(IExpenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
@@ -34,10 +47,6 @@ public class ExpenseViewModel extends ViewModel {
 
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
-    }
-
-    public LiveData<Boolean> getLoadingLiveData() {
-        return loadingLiveData;
     }
 
     public LiveData<List<Expense>> getSelectedExpensesLiveData() {
@@ -52,9 +61,37 @@ public class ExpenseViewModel extends ViewModel {
         return filteredExpensesLiveData;
     }
 
-    public void filterExpenses(String category, String currency){
+    public MutableLiveData<String> getExpenseEvent() {
+        return expenseEvent;
+    }
+
+    public MutableLiveData<Boolean> getBudgetOverlayVisibility() {
+        return budgetOverlayVisibility;
+    }
+
+    public void setBudgetOverlayVisibility(boolean visible) {
+        budgetOverlayVisibility.postValue(visible);
+    }
+
+    public MutableLiveData<Boolean> getExpenseOverlayVisibility() {
+        return expenseOverlayVisibility;
+    }
+
+    public void setExpenseOverlayVisibility(boolean visible) {
+        expenseOverlayVisibility.postValue(visible);
+    }
+
+    public MutableLiveData<Boolean> getFilterOverlayVisibility() {
+        return filterOverlayVisibility;
+    }
+
+    public void setFilterOverlayVisibility(boolean visible) {
+        filterOverlayVisibility.postValue(visible);
+    }
+
+    public void filterExpenses(String category){
         if (category == null || category.trim().isEmpty()) {
-            errorLiveData.setValue("Scegli una categoria");
+            errorLiveData.setValue(String.valueOf(R.string.errorFilterExpenses));
             return;
         }
 
@@ -62,62 +99,72 @@ public class ExpenseViewModel extends ViewModel {
         if (filteredExpenses != null) {
             filteredExpensesLiveData.postValue(filteredExpenses);
         } else {
-            errorLiveData.setValue("Nessuna spesa trovata per la categoria specificata");
+            errorLiveData.setValue(String.valueOf(R.string.errorFilterCategory));
         }
     }
 
+    public void loadAmountSpent(){
+        amountSpentLiveData.postValue(countAmount(getAllExpenses()));
+    }
+
     public void fetchAllExpenses() {
-        try {
-            List<Expense> expenses = expenseRepository.getAllExpenses();
-            expensesLiveData.postValue(expenses);
-            loadingLiveData.postValue(false);
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue(e.getMessage());
-        }
+        expensesLiveData.setValue(expenseRepository.getAllExpenses());
     }
 
     public boolean validateInputExpense(String amount, String category, String description,
                                         String day, String month, String year) {
         boolean correct = true;
+        int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         int inputDay = 0, inputMonth= 0, inputYear = 0;
         if(!day.isEmpty()) inputDay = Integer.parseInt(day);
         if(!month.isEmpty()) inputMonth = Integer.parseInt(month);
         if(!year.isEmpty()) inputYear = Integer.parseInt(year);
         if (amount.isEmpty()) {
-            errorLiveData.setValue("Inserisci un importo");
+            errorLiveData.setValue(String.valueOf(R.string.errorAmount));
         } else if (category.isEmpty()) {
-            errorLiveData.setValue("Scegli una categoria");
+            errorLiveData.setValue(String.valueOf(R.string.errorFilterExpenses));
         } else if (description.isEmpty()) {
-            errorLiveData.setValue("Inserisci una descrizione");
+            errorLiveData.setValue(String.valueOf(R.string.errorDescription));
         } else if(day.isEmpty()) {
-            errorLiveData.setValue("Inserisci un giorno");
+            errorLiveData.setValue(String.valueOf(R.string.errorDay));
         } else if (inputDay < 1 || inputDay > 31) {
-            errorLiveData.setValue("Giorno inserito non corretto");
+            errorLiveData.setValue(String.valueOf(R.string.errorInputDay));
         } else if(month.isEmpty()){
-            errorLiveData.setValue("Inserisci un mese");
+            errorLiveData.setValue(String.valueOf(R.string.errorMonth));
         } else if(inputMonth < 1 || inputMonth > 12){
-            errorLiveData.setValue("Mese inserito non corretto");
+            errorLiveData.setValue(String.valueOf(R.string.errorInputMonth));
         } else if(year.isEmpty()){
-            errorLiveData.setValue("Inserisci un anno");
+            errorLiveData.setValue(String.valueOf(R.string.errorYear));
         } else if(inputYear < 2000 || inputYear > 2100){
-            errorLiveData.setValue("Anno inserito non corretto");
+            errorLiveData.setValue(String.valueOf(R.string.errorInputYear));
         } else {
             errorLiveData.setValue(null);
         }
 
+        if (inputMonth == 2 && isLeapYear(inputYear)) {
+            daysInMonth[1] = 29;
+        }
+
+        if(inputDay > daysInMonth[inputMonth - 1]){
+            errorLiveData.setValue(String.valueOf(R.string.errorInputDay));
+        }
+
         if(errorLiveData.getValue() != null) correct = false;
         return correct;
+    }
+
+    private boolean isLeapYear(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 
     public boolean validateInputBudget(String budget, String currency){
         boolean correct = true;
         if(budget.isEmpty()){
-            errorLiveData.setValue("Inserisci un budget");
+            errorLiveData.setValue(String.valueOf(R.string.errorBudget));
         } else if(currency.isEmpty()){
-            errorLiveData.setValue("Scegli una valuta");
+            errorLiveData.setValue(String.valueOf(R.string.errorCurrency));
         } else if(budget.length() > 9){
-            errorLiveData.setValue("Inserisci un numero più basso");
+            errorLiveData.setValue(String.valueOf(R.string.errorInputBudget));
         } else {
             errorLiveData.setValue(null);
         }
@@ -126,19 +173,22 @@ public class ExpenseViewModel extends ViewModel {
         return correct;
     }
 
-    public MutableLiveData<List<Expense>> insertExpense(String amount, String category, String description,
-                                           String day, String month, String year, String inputCurrency) {
+    public void insertExpense(String amount, String category, String description,
+                              String day, String month, String year, String inputCurrency,
+                              Context context) {
         String completedDate = day+"/"+month+"/"+year;
         String completedAmount;
         if (inputCurrency.equalsIgnoreCase(CURRENCY_EUR))
             completedAmount = amount + inputCurrency;
         else
             completedAmount = inputCurrency + amount;
-        Expense expense = new Expense(completedAmount, category, description, completedDate, false);
+        String diaryId = SharedPreferencesUtils.getDiaryId(context);
+        Expense expense = new Expense(completedAmount, category, description, completedDate,
+                false, diaryId);
         expenseRepository.insertExpense(expense);
-        amountSpentLiveData.postValue(countAmount(getAllExpenses(), inputCurrency));
+        loadAmountSpent();
         fetchAllExpenses();
-        return expensesLiveData;
+        expenseEvent.setValue(ADDED);
     }
 
     public void updateExpense(Expense expense, String currency, String amount,
@@ -146,7 +196,7 @@ public class ExpenseViewModel extends ViewModel {
                               String day, String month, String year) {
         String realAmount = generateTextAmount(amount, currency);
         if(!expense.getAmount().equals(realAmount)){
-            updateExpenseAmount(expense.getId(), realAmount, currency);
+            updateExpenseAmount(expense.getId(), realAmount);
             expense.setAmount(realAmount);
         }
         if(!expense.getCategory().equals(category)){
@@ -162,99 +212,48 @@ public class ExpenseViewModel extends ViewModel {
             updateExpenseDate(expense.getId(), completeDate);
             expense.setDate(completeDate);
         }
+        expenseEvent.setValue(UPDATED);
     }
 
-    public void updateAllExpenses(List<Expense> expenses, String currency) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateAllExpenses(expenses);
-            amountSpentLiveData.postValue(countAmount(getAllExpenses(), currency));
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue("Errore nell'aggiornamento della lista di spese: "+e.getMessage());
-        }
-    }
-
-    public void updateExpenseCategory(int expenseId, String newCategory) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateExpenseCategory(expenseId, newCategory);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento della categoria della spesa: " + e.getMessage());
-        }
-    }
-
-    public void updateExpenseDescription(int expenseId, String newDescription) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateExpenseDescription(expenseId, newDescription);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento della descrizione della spesa: " + e.getMessage());
-        }
-    }
-
-    public void updateExpenseAmount(int expenseId, String newAmount, String currency) {
-        loadingLiveData.setValue(true);
-        try {
-            amountSpentLiveData.postValue(countAmount(getAllExpenses(), currency));
-            expenseRepository.updateExpenseAmount(expenseId, newAmount);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento dell'importo della spesa: " + e.getMessage());
-        }
-    }
-
-    public void updateExpenseDate(int expenseId, String newDate) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateExpenseDate(expenseId, newDate);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento della data della spesa: " + e.getMessage());
-        }
-    }
-
-    public void updateExpenseIsSelected(int expenseId, boolean newIsSelected) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.updateExpenseIsSelected(expenseId, newIsSelected);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nell'aggiornamento di isSelected: " + e.getMessage());
-        }
-    }
-
-    public void deleteExpense(Expense expense) {
-        loadingLiveData.setValue(true);
-        try {
-            expenseRepository.deleteExpense(expense);
-            fetchAllExpenses();
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue("Errore nella rimozione della spesa: "+e.getMessage());
-        }
-    }
-
-    public void deleteSelectedExpenses(List<Expense> expenses, String currency) {
-        if(amountSpentLiveData.getValue() != null){
-            amountSpentLiveData.postValue(amountSpentLiveData.getValue()-countAmount(expenses, currency));
-        }
-        expenseRepository.deleteAllExpenses(expenses);
-        selectedExpensesLiveData.postValue(Collections.emptyList());
+    public void updateExpenseCategory(String expenseId, String newCategory) {
+        expenseRepository.updateExpenseCategory(expenseId, newCategory);
         fetchAllExpenses();
+    }
+
+    public void updateExpenseDescription(String expenseId, String newDescription) {
+        expenseRepository.updateExpenseDescription(expenseId, newDescription);
+        fetchAllExpenses();
+    }
+
+    public void updateExpenseAmount(String expenseId, String newAmount) {
+        loadAmountSpent();
+        expenseRepository.updateExpenseAmount(expenseId, newAmount);
+        fetchAllExpenses();
+    }
+
+    public void updateExpenseDate(String expenseId, String newDate) {
+        expenseRepository.updateExpenseDate(expenseId, newDate);
+        fetchAllExpenses();
+    }
+
+    public void updateExpenseIsSelected(String expenseId, boolean newIsSelected) {
+        expenseRepository.updateExpenseIsSelected(expenseId, newIsSelected);
+        fetchAllExpenses();
+    }
+
+    public void deleteSelectedExpenses() {
+        List<Expense> selectedExpenses = getSelectedExpensesLiveData().getValue();
+        if(selectedExpenses != null && !selectedExpenses.isEmpty()) {
+            if (amountSpentLiveData.getValue() != null) {
+                amountSpentLiveData.postValue(amountSpentLiveData.getValue() - countAmount(selectedExpenses));
+            }
+            expenseRepository.deleteAllExpenses(selectedExpenses);
+            selectedExpensesLiveData.postValue(Collections.emptyList());
+            fetchAllExpenses();
+            expenseEvent.setValue(DELETED);
+        } else {
+            expenseEvent.setValue(INVALID_DELETE);
+        }
     }
 
     public int[] extractDayMonthYear(String date){
@@ -281,9 +280,10 @@ public class ExpenseViewModel extends ViewModel {
         return extractedDate;
     }
 
-    public String extractRealAmount(Expense expense, String currency){
+    public String extractRealAmount(Expense expense){
         String tmp;
         String amount = expense.getAmount();
+        String currency = getInputCurrency(amount);
         if(currency.equalsIgnoreCase(CURRENCY_EUR))
             tmp = amount.substring(0, amount.length()-1);
         else
@@ -291,12 +291,14 @@ public class ExpenseViewModel extends ViewModel {
         return tmp;
     }
 
-    public double countAmount(List<Expense> expenseList, String currency){
+    public double countAmount(List<Expense> expenseList){
         double totExpense = 0;
-        if(!expenseList.isEmpty()) {
+        String currency;
+        if(expenseList != null && !expenseList.isEmpty()) {
             for (Expense e : expenseList) {
                 String amount = e.getAmount();
                 String realAmount;
+                currency = getInputCurrency(amount);
                 if (currency.equalsIgnoreCase(CURRENCY_EUR)) {
                     realAmount = amount.substring(0, amount.length() - 1);
                 } else {
@@ -306,6 +308,23 @@ public class ExpenseViewModel extends ViewModel {
             }
         }
         return totExpense;
+    }
+
+    public String getInputCurrency(String amount){
+        String inputCurrency = "";
+        if (amount.charAt(amount.length() - 1) == CURRENCY_EUR.charAt(0)) {
+            inputCurrency = CURRENCY_EUR;
+        } else {
+            char tmp = amount.charAt(0);
+            if(tmp == CURRENCY_GBP.charAt(0)){
+                inputCurrency = CURRENCY_GBP;
+            } else if(tmp == CURRENCY_JPY.charAt(0)){
+                inputCurrency = CURRENCY_JPY;
+            } else if(tmp == CURRENCY_USD.charAt(0)) {
+                inputCurrency = CURRENCY_USD;
+            }
+        }
+        return inputCurrency;
     }
 
     public String generateTextAmount(String totExpense, String currency){
@@ -318,68 +337,33 @@ public class ExpenseViewModel extends ViewModel {
     }
 
     public List<Expense> getAllExpenses() {
-        loadingLiveData.setValue(true);
-        List<Expense> expenses = new ArrayList<>();
-        try {
-            expenses = expenseRepository.getAllExpenses();
-        } catch (Exception e) {
-            expenses = Collections.emptyList();
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nella restituzione di tutte le spese: "+e.getMessage());
-        }
-        return expenses;
+        fetchAllExpenses();
+        return expensesLiveData.getValue();
     }
-
-    public List<Expense> getSelectedExpenses() {
-        loadingLiveData.setValue(true);
-        List<Expense> expenses;
-        try {
-            expenses = expenseRepository.getSelectedExpenses();
-             selectedExpensesLiveData.postValue(expenseRepository.getSelectedExpenses());
-        } catch (Exception e) {
-            loadingLiveData.postValue(false);
-            expenses = Collections.emptyList();
-            selectedExpensesLiveData.postValue(Collections.emptyList());
-            errorLiveData.postValue
-                    ("Errore nella restituzione delle spese selezionate: "+e.getMessage());
-        }
-        return expenses;
-    }
-
 
     public List<Expense> getFilteredExpenses(String category) {
-        loadingLiveData.setValue(true);
-        List<Expense> expenses = new ArrayList<>();
-        try {
-            expenses = expenseRepository.getFilteredExpenses(category);
-        } catch (Exception e) {
-            expenses = Collections.emptyList();
-            loadingLiveData.postValue(false);
-            errorLiveData.postValue
-                    ("Errore nella restituzione delle spese filtrate: "+e.getMessage());
-        }
-        return expenses;
+        filteredExpensesLiveData.setValue(expenseRepository.getFilteredExpenses(category));
+        return filteredExpensesLiveData.getValue();
     }
 
     public void toggleExpenseSelection(Expense expense) {
         boolean isSelected = expense.isExpense_isSelected();
         expense.setExpense_isSelected(!isSelected);
         updateExpenseIsSelected(expense.getId(), !isSelected);
-        List<Expense> selectedExpenses = getSelectedExpenses();
-        selectedExpensesLiveData.postValue(selectedExpenses);
+        selectedExpensesLiveData.setValue(expenseRepository.getSelectedExpenses());
         fetchAllExpenses();
     }
 
     public void deselectAllExpenses() {
-        List<Expense> expenses = getAllExpenses();
-        for (Expense expense : expenses) {
-            expense.setExpense_isSelected(false);
-            updateExpenseIsSelected(expense.getId(), false);
+        fetchAllExpenses();
+        List<Expense> expenses = expensesLiveData.getValue();
+        if(expenses != null) {
+            for (Expense expense : expenses) {
+                expense.setExpense_isSelected(false);
+                updateExpenseIsSelected(expense.getId(), false);
+            }
+            expensesLiveData.setValue(expenses);
+            selectedExpensesLiveData.postValue(Collections.emptyList());
         }
-        expensesLiveData.setValue(expenses);
-        selectedExpensesLiveData.postValue(Collections.emptyList());
-        expenseRepository.updateAllExpenses(expenses);
     }
-
 }

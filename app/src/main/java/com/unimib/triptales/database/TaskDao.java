@@ -4,22 +4,27 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
+
 import com.unimib.triptales.model.Task;
 import java.util.List;
 
 @Dao
 public interface TaskDao {
     @Insert
-    long insert(Task task);
+    void insert(Task task);
+
+    @Update
+    void updateAll(List<Task> tasks);
 
     @Query("UPDATE Task SET task_name = :newName WHERE id = :taskId")
-    void updateName(int taskId, String newName);
+    void updateName(String taskId, String newName);
 
     @Query("UPDATE Task SET task_isSelected = :newIsSelected WHERE id = :taskId")
-    void updateIsSelected(int taskId, boolean newIsSelected);
+    void updateIsSelected(String taskId, boolean newIsSelected);
 
     @Query("UPDATE Task SET task_isChecked = :newIsChecked WHERE id = :taskId")
-    void updateIsChecked(int taskId, boolean newIsChecked);
+    void updateIsChecked(String taskId, boolean newIsChecked);
 
     @Delete
     void delete(Task task);
@@ -27,13 +32,9 @@ public interface TaskDao {
     @Delete
     void deleteAll(List<Task> tasks);
 
-    @Query("SELECT * FROM Task")
-    List<Task> getAll();
+    @Query("SELECT * FROM Task WHERE diaryId = :diaryId ORDER BY task_timestamp DESC")
+    List<Task> getAll(String diaryId);
 
-    @Query("SELECT * FROM Task WHERE task_isSelected = 1")
-    List<Task> getSelectedTasks();
-
-    //Recupero delle spese di un determinato diario
-    /*@Query("SELECT * FROM Task WHERE diaryId = :diaryId")
-    List<Task> getAllByDiaryId(int diaryId);*/
+    @Query("SELECT * FROM Task WHERE task_isSelected = 1 AND diaryId = :diaryId")
+    List<Task> getSelectedTasks(String diaryId);
 }

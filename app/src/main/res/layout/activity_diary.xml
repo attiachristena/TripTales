@@ -7,62 +7,82 @@
     android:layout_height="match_parent"
     tools:context=".ui.diary.DiaryActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarlayout"
+    <LinearLayout
+        android:id="@+id/linearLayoutDiary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="0dp"
-            android:background="@color/primary"
-            app:menu="@menu/top_app_bar"
-            app:navigationIcon="@drawable/baseline_menu_24"
-            app:title="@string/app_name"
-            app:titleCentered="true" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tablayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        <ImageButton
+            android:id="@+id/backButtonDiary"
+            android:layout_width="50dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_button"
             android:backgroundTint="@color/white"
-            app:tabIndicatorFullWidth="true"
-            app:tabGravity="fill"
-            app:tabMode="fixed"
-            app:tabIndicatorColor="@color/background_dark">
+            android:src="@drawable/baseline_arrow_back_ios_24" />
 
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tappeFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tabTappe" />
+        <TextView
+            android:id="@+id/diaryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins_bold"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/expensesFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tabSpese" />
+    </LinearLayout>
 
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/obiettiviFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tabObiettivi" />
 
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/checkListFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tabCheckList" />
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tablayout"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutDiary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/background_dark"
+        app:tabIndicatorFullWidth="true"
+        app:tabIndicatorGravity="top"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed"
+        app:tabPaddingEnd="5dp"
+        app:tabPaddingStart="5dp">
 
-        </com.google.android.material.tabs.TabLayout>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tappeFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tabTappe" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/expensesFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tabSpese" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/obiettiviFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tabObiettivi" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/checkListFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tabCheckList" />
+
+    </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager"
@@ -72,13 +92,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbarlayout" />
+        app:layout_constraintTop_toBottomOf="@+id/tablayout" />
 
     <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container_diary"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

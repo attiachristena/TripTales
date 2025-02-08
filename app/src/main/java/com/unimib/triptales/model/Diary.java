@@ -1,21 +1,23 @@
 package com.unimib.triptales.model;
 
-import static androidx.room.ForeignKey.CASCADE;
-
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
-import androidx.room.Relation;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 
-@Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "id", childColumns = "userId", onDelete = CASCADE))
+@Entity
 public class Diary {
-    @PrimaryKey
-    private int id;
 
-    private int userId; // ID dell'utente proprietario del diario
+    @PrimaryKey
+    @NonNull
+    private String id;
+
+    private String userId; // ID dell'utente proprietario del diario
 
     @ColumnInfo(name = "diary_name")
     private String name;
@@ -26,18 +28,94 @@ public class Diary {
     @ColumnInfo(name = "diary_end_date")
     private String endDate;
 
-    @ColumnInfo(name = "diary_photo_path")
-    private String photoPath;
+    @ColumnInfo(name = "diary_cover_image_uri")
+    private String coverImageUri;
 
     @ColumnInfo(name = "diary_budget")
     private String budget;
 
-    public String getStartDate() {
-        return startDate;
+    @ColumnInfo(name = "diary_isSelected")
+    private boolean diary_isSelected;
+
+    @ColumnInfo(name = "diary_country")
+    private String country;
+
+    @ColumnInfo(name = "diary_timestamp")
+    private long timestamp;
+
+    public Diary(){}
+
+    // Costruttore completo
+    public Diary(String userId, String name, String startDate, String endDate, String coverImageUri,
+                 String budget, String country, long timestamp) {
+        this.id = UUID.randomUUID().toString();
+        this.userId = userId;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.coverImageUri = coverImageUri;
+        this.budget = budget;
+        this.country = country;
+        this.timestamp = timestamp;
+        this.diary_isSelected = false;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    // Metodi per calcolare la durata del viaggio
+    public int getTravelDuration() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        try {
+            Date start = sdf.parse(startDate);
+            Date end = sdf.parse(endDate);
+
+            if (start != null && end != null && start.before(end)) {
+                long diffInMillis = end.getTime() - start.getTime();
+                long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
+                return (int) diffInDays;
+            } else {
+                return 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    // Metodo per ottenere l'abbreviazione del mese di inizio
+    public String getStartMonthAbbreviation() {
+        return getMonthAbbreviation(startDate);
+    }
+
+    // Metodo per estrarre l'abbreviazione del mese
+    private String getMonthAbbreviation(String dateString) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        try {
+            Date date = sdf.parse(dateString);
+            if (date != null) {
+                SimpleDateFormat monthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
+                return monthFormat.format(date).toUpperCase();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    // Getter e setter per i campi
+    @NonNull
+    public String getId() {
+        return (id);
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -48,20 +126,12 @@ public class Diary {
         this.name = name;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
     public String getEndDate() {
@@ -72,13 +142,13 @@ public class Diary {
         this.endDate = endDate;
     }
 
-    public String getPhotoPath() {
-        return photoPath;
+    public String getCoverImageUri() {
+        return coverImageUri;
+    }
+    public void setCoverImageUri(String coverImageUri) {
+        this.coverImageUri = coverImageUri;
     }
 
-    public void setPhotoPath(String photoPath) {
-        this.photoPath = photoPath;
-    }
 
     public String getBudget() {
         return budget;
@@ -87,4 +157,24 @@ public class Diary {
     public void setBudget(String budget) {
         this.budget = budget;
     }
+
+    public boolean isDiary_isSelected() {
+        return diary_isSelected;
+    }
+
+    public void setDiary_isSelected(boolean isSelected) {
+        this.diary_isSelected = isSelected;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public long getTimestamp() { return timestamp;}
+
+    public void setTimestamp(long timestamp) { this.timestamp = timestamp;}
 }

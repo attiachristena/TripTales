@@ -8,13 +8,17 @@
     <color name="background_dark">#2C2C2C</color>
     <color name="white_dark">#EEEEEE</color>
     <color name="light_gray">#D9D9D9</color>
+    <color name="light_gray2">#CECDCD</color>
     <color name="dark_gray">#B6B1B1</color>
     <color name="background_overlays">#F5F5F5</color>
     <color name="error">#EE0000</color>
     <color name="transparent">#00000000</color>
     <color name="card_selected_background">#80000000</color> <!-- Colore semitrasparente per lo sfondo -->
 
-
+    <color name="search_background">#F5F5F5</color>
+    <color name="search_stroke">#E0E0E0</color>
+    <color name="search_hint_color">#757575</color>
+    <color name="search_text_color">#212121</color>
 
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
@@ -29,6 +33,11 @@
     <color name="orange">#FFA62F</color>
     <color name="light_orange">#FFC96F</color>
 
+        <color name="colorPrimary">#2196F3</color>
+        <color name="colorPrimaryDark">#1976D2</color>
+        <color name="gray">#757575</color>
+        <color name="background_light">#F5F5F5</color>
+
 
     <color name="light_orange2">#FFE7CD</color>
     <color name="pink">#FFD5E1</color>
@@ -39,4 +48,10 @@
     <color name="magenta">#B65066</color>
     <color name="orange2">#FFAA67</color>
     <color name="light_orange3">#FFD3B1</color>
+
+    <color name="icon_color">#000000</color>
+    <color name="icon_bg_color">#FFFFFF</color>
+
+    <color name="bg_popupmenu">#D9D9D9</color>
+
 </resources>

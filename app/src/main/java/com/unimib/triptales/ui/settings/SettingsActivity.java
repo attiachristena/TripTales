@@ -1,5 +1,6 @@
 package com.unimib.triptales.ui.settings;
 
+import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,93 +8,79 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
-
-
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.unimib.triptales.R;
-import com.unimib.triptales.adapters.SettingsAdapter;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
-import com.unimib.triptales.ui.settings.fragment.SettingsFragment;
-
-
-
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class SettingsActivity extends AppCompatActivity {
 
-
-    ViewPager2 viewPager2;
-    SettingsAdapter viewPagerAdapter;
-    //LinearLayout rootLayoutDiary;
-    Toolbar toolbar;
-    //BottomNavigationView bottom_navigation;
-
-
-
+    private NavController navController;
+    private Toolbar toolbar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment_settings);
+        if (navHostFragment != null) {
+            navController = navHostFragment.getNavController();
+        }
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.settingsToolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-
-
-        //bottom_navigation = findViewById(R.id.bottom_navigation);
-        viewPager2 = findViewById(R.id.settingsSlider);
-
-
-        viewPagerAdapter = new SettingsAdapter(this);
-        viewPager2.setAdapter(viewPagerAdapter);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController != null && navController.navigateUp() || super.onSupportNavigateUp();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_app_bar, menu);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        //toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
         return true;
     }
 
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem hideItem = menu.findItem(R.id.action_home);
+        // Nascondi l'item "Home" nel menu
+        MenuItem hideItem = menu.findItem(R.id.action_back);
         hideItem.setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
 
-
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-
         View buttonAccount = toolbar.findViewById(R.id.action_account);
-
-
-        if (id == R.id.action_account){
+        /*if (id == R.id.action_account){
             PopupMenu popupMenu = new PopupMenu(SettingsActivity.this, buttonAccount);
             popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
-
 
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     if (item.getItemId() == R.id.action_logout) {
+                        SharedPreferencesUtils.setLoggedIn(SettingsActivity.this, false);
                         Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
@@ -105,23 +92,25 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             popupMenu.show();
-        }
-
+        }*/
 
         if (id == android.R.id.home) {
-            int posizione_vp2 = viewPager2.getCurrentItem();
+            if (navController.getCurrentDestination().getId() == R.id.settingsFragment) {
+                Intent resultIntent = getIntent();
+                String fragmentTag = resultIntent.getStringExtra(ACTIVE_FRAGMENT_TAG);
 
-            if(posizione_vp2==0){
                 Intent intent = new Intent(SettingsActivity.this, HomepageActivity.class);
+                intent.putExtra("fromSettings", true);
+                intent.putExtra(ACTIVE_FRAGMENT_TAG, fragmentTag);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
                 return true;
-            }else{
-                viewPager2.setCurrentItem(0,false);
+            } else {
+                navController.navigateUp();
                 return true;
             }
         }
 
         return super.onOptionsItemSelected(item);
-
     }
 }

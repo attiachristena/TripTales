@@ -67,6 +67,13 @@
     <string name="accedi">Log in</string>
     <string name="registrati">Sign up</string>
     <string name="email">Email</string>
+    <string name="snackbarGoalAdded">Goal added</string>
+    <string name="snackbarGoalUpdated">Goal updated</string>
+    <string name="snackbarGoalDeleted">Goal deleted</string>
+    <string name="snackbarGoalNotDeleted">Error: goal not deleted</string>
+    <string name="searchbar_hint">Search diary by name</string>
+    <string name="nomeStringheParser">\"NAME_EN\"</string>
+    <string name="errorFilterExpenses">Pick a category</string>
     <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
@@ -78,7 +85,7 @@
     <string name="inserisci_la_tua_email">Enter your email</string>
     <string name="invia_email">Send email</string>
     <string name="error_email_login">Check your email</string>
-    <string name="error_password_login">The password must be at least 8 characters long: at least 1 letter, 1 number, and 1 special character</string>
+    <string name="error_password_signUp">The password must be at least 8 characters long: at least 1 letter, 1 number, and 1 special character</string>
     <string name="benvenuto_nella_home">Welcome to the home page</string>
     <string name="totalespesa">"Total expense of the category:"</string>
     <string name="SeparatoreData">/</string>
@@ -110,6 +117,11 @@
     <string name="intro4_body">Goals, checklists and calendars: everything you need for a perfect trip, without forgetting anything</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">START</string>
+    <string name="data_partenza">Departure date</string>
+    <string name="data_arrivo">Arrival date</string>
+    <string name="scegli_immagine">Choose an image</string>
+    <string name="inserisci_nome_diario">Enter diary name</string>
+    <string name="paese_visitato">Enter visited country</string>
 
     <string name="nome_user_momentaneo">Name Surname</string>
     <string name="modalita_scura">Dark mode</string>
@@ -147,6 +159,11 @@
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Delete</string>
 
+    <string name="aggiungi_diario">Add diary</string>
+    <string name="snackbarExpenseAdded">Expense added</string>
+    <string name="snackbarExpenseUpdated">Expense updated</string>
+    <string name="snackbarExpenseDeleted">Expense deleted</string>
+    <string name="snackbarExpenseNotDeleted">Error: expense not deleted</string>
     <string name="modifica_password">Change password</string>
     <string name="vecchia_password">Old password</string>
     <string name="nuova_password">New password</string>
@@ -162,7 +179,70 @@
     <string name="error_email_required">Email Required Error</string>
     <string name="error_email_invalid">Invalid Email Error</string>
     <string name="password_reset_email_sent">Email for reset password sent</string>
-    <string name="registrati_con_google">Registrati con Google</string>
 
+    <string name="registrati_con_google">Sign up with Google</string>
+    <string name="snackbarTaskAdded">Task added</string>
+    <string name="snackbarTaskUpdated">Task updated</string>
+    <string name="snackbarTaskDeleted">Task deleted</string>
+    <string name="snackbarTaskNotDeleted">Error: task not deleted</string>
+
+    <string name="modifica_profilo"><u>Edit profile</u></string>
+    <string name="modifica_profilo2">Edit profile</string>
+    <string name="cambia_foto"><u>Change photo</u></string>
+
+    <string name="inserisci_nome_e_cognome">Please enter both first name and last name</string>
+    <string name="aggiornamento_con_successo">First name and last name updated successfully!</string>
+    <string name="errore_aggiornamento">Error during update</string>
+    <string name="utente_non_autenticato">User not authenticated</string>
+
+    <string name="elimina_account">Delete account</string>
+    <string name="dialog_elimina_account">Are you sure you want to delete your account? This action is irreversible.</string>
+    <string name="elimina">Delete</string>
+    <string name="eliminazione_con_successo">Account successfully deleted!</string>
+    <string name="errore_eliminazione">Error deleting the account.</string>
+    <string name="annulla">Cancel</string>
+    <string name="nessun_utente_trovato">No authenticated user found!</string>
+    <string name="user_not_logged_in_error">User not signed up</string>
+    <string name="unexpected_error">Unexpected error</string>
+    <string name="error_password_login">Wrong password. Please, retry.</string>
+    <string name="snackbarDiaryAdded">Diary added</string>
+    <string name="snackbarDiaryUpdated">Diary updated</string>
+    <string name="snackbarDiaryDeleted">Diary deleted</string>
+    <string name="snackbarDiaryNotDeleted">Error: diary not deleted</string>
+    <string name="i_tuoi_ricordi">Your memories…</string>
+    <string name="errorFilterCategory">No expenses found for the specified category</string>
+    <string name="errorAmount">Enter an amount</string>
+    <string name="errorDescription">Enter a description</string>
+    <string name="errorDay">Enter a day</string>
+    <string name="errorInputDay">Day entered incorrectly</string>
+    <string name="errorMonth">Enter a month</string>
+    <string name="errorInputMonth">Month entered incorrectly</string>
+    <string name="errorYear">Enter a year</string>
+    <string name="errorInputYear">Year entered incorrectly</string>
+    <string name="errorBudget">Enter a budget</string>
+    <string name="errorCurrency">Choose a currency</string>
+    <string name="errorInputBudget">Enter a lower number</string>
+    <string name="errorGoalName">Enter the goal name</string>
+    <string name="errorTaskName">Enter the task name</string>
+    <string name="immagineSelezionata">Selected image</string>
+    <string name="cerca_diario_per_paese">Find diary by visited country</string>
+
+    <string name="inserisci_vecchia_password">Enter the old password</string>
+    <string name="inserisci_nuova_password">Enter the new password</string>
+    <string name="password_aggiornata">"Password successfully updated"</string>
+    <string name="errore_aggiornamento_password">Error updating password: </string>
+    <string name="autenticazione_fallita">"Authentication failed: "</string>
+
+
+    <string name="profilo_aggiornato">Profile updated successfully</string>
+    <string name="aggiornamento_fallito">Update failed</string>
+    <string name="utente_non_autenticated">User not authenticated</string>
+
+    <string name="action_back">Back</string>
+    <string name="conferma_logout">Confirm Logout</string>
+    <string name="conferma_uscire_da_account">Do you want to log out of your account?</string>
+    <string name="esci">Logout</string>
+    <string name="dati_non_disponibili">Data not available</string>
+    <string name="errore_nel_recupero_dati">Error retrieving data</string>
 
 </resources>

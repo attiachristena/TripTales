@@ -1,5 +1,6 @@
 package com.unimib.triptales.source.user;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.model.Result;

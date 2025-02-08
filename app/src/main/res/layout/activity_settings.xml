@@ -7,41 +7,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.settings.SettingsActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarLayout"
+        android:id="@+id/SettingsAppbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         app:layout_constraintTop_toTopOf="parent">
-
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/settingsToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
             android:elevation="10dp"
-            app:menu="@menu/top_app_bar"
-            app:navigationIcon="@drawable/baseline_menu_24"
-            app:title="@string/app_name"
-            app:titleCentered="true" />
-
+            app:menu="@menu/settings_menu"
+            app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24"
+            app:title="@string/impostazioni"
+            app:titleCentered="true"
+            app:titleTextColor="@color/black"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fragment_container_settings"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment_settings"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        style="@style/Screen">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/settingsSlider"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </FrameLayout>
+        app:navGraph="@navigation/nav_graph_settings"
+        app:defaultNavHost="true"/>
 
 
 </LinearLayout>

@@ -52,6 +52,8 @@ public class IntroActivity extends AppCompatActivity {
             }
 
 
+
+
             if(position == 0){
                 nextButton.setBackgroundColor(getResources().getColor(R.color.light_brown3,getApplicationContext().getTheme()));
                 backButton.setBackgroundColor(getResources().getColor(R.color.light_brown3,getApplicationContext().getTheme()));
@@ -83,7 +85,7 @@ public class IntroActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.nextButton);
         startButton = findViewById(R.id.startButton);
 
-        //to show intro only once after installing the application
+
         SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
         String FirstTime = preferences.getString("FirstTimeInstall","");
 
@@ -132,7 +134,7 @@ public class IntroActivity extends AppCompatActivity {
         slideViewPager.addOnPageChangeListener(viewPagerListener);
 
 
-        
+
         if(FirstTime.equals("Yes")){
             Intent intent = new Intent (IntroActivity.this, LoginActivity.class);
             startActivity(intent);
