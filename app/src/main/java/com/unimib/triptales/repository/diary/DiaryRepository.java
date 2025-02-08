@@ -1,13 +1,10 @@
 package com.unimib.triptales.repository.diary;
 
-import android.content.Context;
-
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
 
 import java.util.List;
-
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

@@ -73,6 +73,7 @@
     <string name="snackbarGoalNotDeleted">Error: goal not deleted</string>
     <string name="searchbar_hint">Search diary by name</string>
     <string name="nomeStringheParser">\"NAME_EN\"</string>
+    <string name="errorFilterExpenses">Pick a category</string>
     <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
@@ -211,8 +212,22 @@
     <string name="snackbarDiaryDeleted">Diary deleted</string>
     <string name="snackbarDiaryNotDeleted">Error: diary not deleted</string>
     <string name="i_tuoi_ricordi">Your memories…</string>
+    <string name="errorFilterCategory">No expenses found for the specified category</string>
+    <string name="errorAmount">Enter an amount</string>
+    <string name="errorDescription">Enter a description</string>
+    <string name="errorDay">Enter a day</string>
+    <string name="errorInputDay">Day entered incorrectly</string>
+    <string name="errorMonth">Enter a month</string>
+    <string name="errorInputMonth">Month entered incorrectly</string>
+    <string name="errorYear">Enter a year</string>
+    <string name="errorInputYear">Year entered incorrectly</string>
+    <string name="errorBudget">Enter a budget</string>
+    <string name="errorCurrency">Choose a currency</string>
+    <string name="errorInputBudget">Enter a lower number</string>
+    <string name="errorGoalName">Enter the goal name</string>
+    <string name="errorTaskName">Enter the task name</string>
+    <string name="immagineSelezionata">Selected image</string>
     <string name="cerca_diario_per_paese">Find diary by visited country</string>
-
 
     <string name="inserisci_vecchia_password">Enter the old password</string>
     <string name="inserisci_nuova_password">Enter the new password</string>

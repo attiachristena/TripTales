@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -72,28 +71,16 @@ public class GoalsFragment extends Fragment {
         goalViewModel.deselectAllGoals();
         goalViewModel.getCheckedGoals();
 
-        progressIndicator = view.findViewById(R.id.goalsProgressIndicator);
-        progressTextView = view.findViewById(R.id.numObiettivi);
-        updateProgressIndicator();
-
         RecyclerView recyclerViewGoals = view.findViewById(R.id.recyclerViewGoals);
         goalsRecyclerAdapter = new GoalsRecyclerAdapter(getContext());
         recyclerViewGoals.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewGoals.setAdapter(goalsRecyclerAdapter);
 
-        goalsRecyclerAdapter.setOnGoalClickListener(new GoalsRecyclerAdapter.OnGoalClickListener() {
-            @Override
-            public void onGoalClick(Goal goal) {
-                goalViewModel.toggleGoalSelection(goal);
-            }
-        });
+        goalsRecyclerAdapter.setOnGoalClickListener(goal ->
+                goalViewModel.toggleGoalSelection(goal));
 
-        goalsRecyclerAdapter.setOnGoalCheckBoxClickListener(new GoalsRecyclerAdapter.OnGoalCheckBoxClickListener() {
-            @Override
-            public void onGoalCheckBoxClick(Goal goal) {
-                goalViewModel.toggleGoalCheck(goal);
-            }
-        });
+        goalsRecyclerAdapter.setOnGoalCheckBoxClickListener(goal ->
+                goalViewModel.toggleGoalCheck(goal));
 
         return view;
     }
@@ -113,82 +100,75 @@ public class GoalsFragment extends Fragment {
         bAdd = false;
         bEdit = false;
 
-        goalViewModel.getGoalsLiveData().observe(getViewLifecycleOwner(), new Observer<List<Goal>>() {
-            @Override
-            public void onChanged(List<Goal> goals) {
-                goalsRecyclerAdapter.setGoalsList(goals);
-                if(goals.isEmpty()){
-                    noGoalsTextView.setVisibility(View.VISIBLE);
-                } else {
-                    noGoalsTextView.setVisibility(View.GONE);
-                }
-                updateProgressIndicator();
+        progressTextView = view.findViewById(R.id.numObiettivi);
+        updateProgressIndicator();
+
+        goalViewModel.getGoalsLiveData().observe(getViewLifecycleOwner(), goals -> {
+            goalsRecyclerAdapter.setGoalsList(goals);
+            if(goals.isEmpty()){
+                noGoalsTextView.setVisibility(View.VISIBLE);
+            } else {
+                noGoalsTextView.setVisibility(View.GONE);
             }
+            updateProgressIndicator();
         });
 
-        overlay_add_edit_goal = inflater.inflate(R.layout.overlay_add_edit_goal, rootLayoutGoals, false);
+        overlay_add_edit_goal = inflater.inflate(R.layout.overlay_add_edit_goal,
+                rootLayoutGoals, false);
         rootLayoutGoals.addView(overlay_add_edit_goal);
         overlay_add_edit_goal.setVisibility(View.GONE);
 
-        goalViewModel.getSelectedGoalsLiveData().observe(getViewLifecycleOwner(), new Observer<List<Goal>>() {
-            @Override
-            public void onChanged(List<Goal> selectedGoals) {
-                if(selectedGoals != null){
-                    if(selectedGoals.size() == 1){
-                        if(overlay_add_edit_goal.getVisibility() == View.VISIBLE){
-                            editGoalButton.setVisibility(View.GONE);
-                            deleteGoalButton.setVisibility(View.GONE);
-                        } else {
-                            addGoalButton.setEnabled(false);
-                            editGoalButton.setVisibility(View.VISIBLE);
-                            deleteGoalButton.setVisibility(View.VISIBLE);
-                        }
-                    } else if(selectedGoals.size() == 2) {
-                        addGoalButton.setEnabled(false);
-                        editGoalButton.setVisibility(View.GONE);
-                    } else if(selectedGoals.isEmpty()){
+        goalViewModel.getSelectedGoalsLiveData().observe(getViewLifecycleOwner(),
+                selectedGoals -> {
+            if(selectedGoals != null){
+                if(selectedGoals.size() == 1){
+                    if(overlay_add_edit_goal.getVisibility() == View.VISIBLE){
                         editGoalButton.setVisibility(View.GONE);
                         deleteGoalButton.setVisibility(View.GONE);
-                        addGoalButton.setEnabled(true);
+                    } else {
+                        addGoalButton.setEnabled(false);
+                        editGoalButton.setVisibility(View.VISIBLE);
+                        deleteGoalButton.setVisibility(View.VISIBLE);
                     }
+                } else if(selectedGoals.size() == 2) {
+                    addGoalButton.setEnabled(false);
+                    editGoalButton.setVisibility(View.GONE);
+                } else if(selectedGoals.isEmpty()){
+                    editGoalButton.setVisibility(View.GONE);
+                    deleteGoalButton.setVisibility(View.GONE);
+                    addGoalButton.setEnabled(true);
                 }
             }
         });
 
-        goalViewModel.getCheckedGoalsLiveData().observe(getViewLifecycleOwner(), new Observer<List<Goal>>() {
-            @Override
-            public void onChanged(List<Goal> goals) {
-                updateProgressIndicator();
+        goalViewModel.getCheckedGoalsLiveData().observe(getViewLifecycleOwner(),
+                goals -> updateProgressIndicator());
+
+        goalViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if(errorMessage != null){
+                Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
-        goalViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String errorMessage) {
-                if(errorMessage != null){
-                    Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        goalViewModel.getGoalEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String message) {
-                if(message != null){
-                    switch (message) {
-                        case ADDED:
-                            Toast.makeText(requireActivity(), R.string.snackbarGoalAdded, Toast.LENGTH_SHORT).show();
-                            break;
-                        case UPDATED:
-                            Toast.makeText(requireActivity(), R.string.snackbarGoalUpdated, Toast.LENGTH_SHORT).show();
-                            break;
-                        case DELETED:
-                            Toast.makeText(requireActivity(), R.string.snackbarGoalDeleted, Toast.LENGTH_SHORT).show();
-                            break;
-                        case INVALID_DELETE:
-                            Toast.makeText(requireActivity(), R.string.snackbarGoalNotDeleted, Toast.LENGTH_SHORT).show();
-                            break;
-                    }
+        goalViewModel.getGoalEvent().observe(getViewLifecycleOwner(), message -> {
+            if(message != null){
+                switch (message) {
+                    case ADDED:
+                        Toast.makeText(requireActivity(), R.string.snackbarGoalAdded,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case UPDATED:
+                        Toast.makeText(requireActivity(), R.string.snackbarGoalUpdated,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case DELETED:
+                        Toast.makeText(requireActivity(), R.string.snackbarGoalDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case INVALID_DELETE:
+                        Toast.makeText(requireActivity(), R.string.snackbarGoalNotDeleted,
+                                Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         });
@@ -196,88 +176,69 @@ public class GoalsFragment extends Fragment {
         ImageButton goalBackButton = view.findViewById(R.id.backButtonGoal);
         Button saveGoalButton = view.findViewById(R.id.saveGoal);
 
-        goalBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(bEdit){
-                    editGoalButton.setVisibility(View.VISIBLE);
-                    deleteGoalButton.setVisibility(View.VISIBLE);
-                }
-                goalViewModel.setGoalOverlayVisibility(false);
+        goalBackButton.setOnClickListener(view1 -> {
+            if(bEdit){
+                editGoalButton.setVisibility(View.VISIBLE);
+                deleteGoalButton.setVisibility(View.VISIBLE);
             }
+            goalViewModel.setGoalOverlayVisibility(false);
         });
 
         goalNameEditText = view.findViewById(R.id.inputGoalName);
         goalDescriptionEditText = view.findViewById(R.id.inputGoalDescription);
 
-        addGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bAdd = true;
-                goalViewModel.setGoalOverlayVisibility(true);
-            }
+        addGoalButton.setOnClickListener(addGoalButtonListener -> {
+            bAdd = true;
+            goalViewModel.setGoalOverlayVisibility(true);
         });
 
-        goalViewModel.getGoalOverlayVisibility().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean visible) {
-                if(visible){
-                    if(bAdd){
-                        showOverlay(ADD_GOAL);
-                    } else if(bEdit){
-                        showOverlay(EDIT_GOAL);
-                        editGoalButton.setVisibility(View.GONE);
-                        deleteGoalButton.setVisibility(View.GONE);
-                    }
-                } else {
-                    enableSwipeAndButtons(view);
-                    if(bAdd){
-                        hideOverlay(ADD_GOAL);
-                    } else if(bEdit){
-                        hideOverlay(EDIT_GOAL);
-                    }
+        goalViewModel.getGoalOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
+            if(visible){
+                if(bAdd){
+                    showOverlay(ADD_GOAL);
+                } else if(bEdit){
+                    showOverlay(EDIT_GOAL);
+                    editGoalButton.setVisibility(View.GONE);
+                    deleteGoalButton.setVisibility(View.GONE);
+                }
+            } else {
+                enableSwipeAndButtons(view);
+                if(bAdd){
+                    hideOverlay(ADD_GOAL);
+                } else if(bEdit){
+                    hideOverlay(EDIT_GOAL);
                 }
             }
         });
 
-        saveGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String inputGoalName = goalNameEditText.getText().toString().trim();
-                String inputGoalDescription = goalDescriptionEditText.getText().toString().trim();
+        saveGoalButton.setOnClickListener(saveGoalButtonListener -> {
+            String inputGoalName = goalNameEditText.getText().toString().trim();
+            String inputGoalDescription = goalDescriptionEditText.getText().toString().trim();
 
-                boolean correct = goalViewModel.validateInputGoal(inputGoalName);
+            boolean correct = goalViewModel.validateInputGoal(inputGoalName);
 
-                if(correct){
-                    if(bAdd){
-                        goalViewModel.insertGoal(inputGoalName, inputGoalDescription, getContext());
-                    } else if(bEdit){
-                        List<Goal> selectedGoals = goalViewModel.getSelectedGoalsLiveData().getValue();
-                        if(selectedGoals != null && !selectedGoals.isEmpty()){
-                            Goal currentGoal = selectedGoals.get(0);
-                            goalViewModel.updateGoal(currentGoal, inputGoalName, inputGoalDescription);
-                            goalViewModel.deselectAllGoals();
-                        }
+            if(correct){
+                if(bAdd){
+                    goalViewModel.insertGoal(inputGoalName, inputGoalDescription, getContext());
+                } else if(bEdit){
+                    List<Goal> selectedGoals = goalViewModel.getSelectedGoalsLiveData().getValue();
+                    if(selectedGoals != null && !selectedGoals.isEmpty()){
+                        Goal currentGoal = selectedGoals.get(0);
+                        goalViewModel.updateGoal(currentGoal, inputGoalName, inputGoalDescription);
+                        goalViewModel.deselectAllGoals();
                     }
-                    goalViewModel.setGoalOverlayVisibility(false);
                 }
+                goalViewModel.setGoalOverlayVisibility(false);
             }
         });
 
-        editGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bEdit = true;
-                goalViewModel.setGoalOverlayVisibility(true);
-            }
+        editGoalButton.setOnClickListener(editGoalButtonListener -> {
+            bEdit = true;
+            goalViewModel.setGoalOverlayVisibility(true);
         });
 
-        deleteGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goalViewModel.deleteSelectedGoals();
-            }
-        });
+        deleteGoalButton.setOnClickListener(deleteGoalButtonListener ->
+                goalViewModel.deleteSelectedGoals());
 
     }
 

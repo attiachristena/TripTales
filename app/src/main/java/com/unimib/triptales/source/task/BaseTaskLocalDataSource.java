@@ -1,7 +1,6 @@
 package com.unimib.triptales.source.task;
 
 import com.unimib.triptales.model.Task;
-import com.unimib.triptales.repository.goal.GoalResponseCallback;
 import com.unimib.triptales.repository.task.TaskResponseCallback;
 
 import java.util.List;

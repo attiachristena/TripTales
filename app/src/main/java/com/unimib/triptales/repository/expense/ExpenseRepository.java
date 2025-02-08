@@ -1,18 +1,12 @@
 package com.unimib.triptales.repository.expense;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Expense;
-import com.unimib.triptales.model.Result;
 import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseRemoteDataSource;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCallback{

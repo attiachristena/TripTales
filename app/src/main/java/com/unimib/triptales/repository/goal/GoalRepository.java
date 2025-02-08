@@ -3,7 +3,6 @@ package com.unimib.triptales.repository.goal;
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.source.goal.BaseGoalLocalDataSource;
 import com.unimib.triptales.source.goal.BaseGoalRemoteDataSource;

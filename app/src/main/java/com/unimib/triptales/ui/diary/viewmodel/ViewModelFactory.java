@@ -26,7 +26,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = expenseRepository;
         this.goalRepository = null;
         this.taskRepository = null;
-        diaryRepository = null;
+        this.diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
     }
@@ -35,7 +35,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = goalRepository;
         this.taskRepository = null;
-        diaryRepository = null;
+        this.diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
     }
@@ -44,7 +44,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = taskRepository;
-        diaryRepository = null;
+        this.diaryRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
     }
@@ -53,9 +53,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = null;
+        this.diaryRepository = null;
         this.checkpointDiaryRepository = checkpointDiaryRepository;
         this.imageCardItemRepository = null;
-        diaryRepository = null;
     }
 
     public ViewModelFactory(IDiaryRepository diaryRepository){
@@ -70,10 +70,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public ViewModelFactory(IImageCardItemRepository imageCardItemRepository){
         this.expenseRepository = null;
         this.goalRepository = null;
+        this.diaryRepository = null;
         this.taskRepository = null;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = imageCardItemRepository;
-        diaryRepository = null;
     }
 
     @NonNull
