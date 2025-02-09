@@ -206,8 +206,11 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
         editCheckpointDiaryImage = findViewById(R.id.editCheckpointDiaryImageButton);
         deleteCheckpointDiaryImage = findViewById(R.id.deleteCheckpointDiaryImageButton);
 
-        addCheckpointDiaryImage.setOnClickListener(v ->
-                overlayView.setVisibility(View.VISIBLE));
+        addCheckpointDiaryImage.setOnClickListener(v -> {
+            addCheckpointDiaryImage.setVisibility(View.GONE);
+            goBackArrow.setVisibility(View.GONE);
+            overlayView.setVisibility(View.VISIBLE);
+        });
 
         editCheckpointDiaryImage.setOnClickListener(v -> {
             List<ImageCardItem> selectedItems = imageCardItemAdapter.getSelectedItems();
@@ -234,6 +237,8 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             previewImageCheckpointDiary.setImageURI(null);
             textPreviewImageCheckpointDiary.setVisibility(View.VISIBLE);
             overlayView.setVisibility(View.GONE);
+            addCheckpointDiaryImage.setVisibility(View.VISIBLE);
+            goBackArrow.setVisibility(View.VISIBLE);
         });
 
 
@@ -245,8 +250,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             String date = dateImage.getText().toString();
             Uri selectedImageUri = selectedImageUriDiary;
 
-            if (!title.isEmpty()
-                /*&& !description.isEmpty() && !date.isEmpty() */) {
+            if (!title.isEmpty() && !description.isEmpty() && !date.isEmpty()) {
                 Uri ImageUri = (selectedImageUri != null) ? saveImageToInternalStorage(selectedImageUri) :
                         Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_background);
 
@@ -261,6 +265,8 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                 imageCardItemViewModel.resetParam(title, description, date);
                 previewImageCheckpointDiary.setImageURI(null);
                 textPreviewImageCheckpointDiary.setVisibility(View.VISIBLE);
+                addCheckpointDiaryImage.setVisibility(View.VISIBLE);
+                goBackArrow.setVisibility(View.VISIBLE);
                 overlayView.setVisibility(View.GONE);
 
                 Snackbar.make(this, rootLayout, "La tua immagine è stata aggiunta con successo",
@@ -321,6 +327,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                 editTitle.setText(imageCardItem.getTitle());
                 editDescription.setText(imageCardItem.getDescription());
                 editDate.setText(imageCardItem.getDate());
+                addCheckpointDiaryImage.setVisibility(View.GONE);
 
                 if (imageCardItem.getImageUri() != null && !imageCardItem.getImageUri().isEmpty()) {
                     Glide.with(this)
@@ -333,6 +340,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                 }
             }
         });
+
         openGalleryEdit.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
@@ -382,6 +390,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                     editDate.setText("");
                     editImage.setImageURI(null);
                     textPrevieEdited.setVisibility(View.VISIBLE);
+                    addCheckpointDiaryImage.setVisibility(View.VISIBLE);
 
                     Snackbar.make(CheckpointDiaryActivity.this, rootLayout,
                             "Modifiche salvate con successo", Snackbar.LENGTH_SHORT).show();
@@ -412,6 +421,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             previewImageCheckpointDiary.setImageURI(null);
             textPrevieEdited.setVisibility(View.VISIBLE);
             selectedCardItem = null;
+            addCheckpointDiaryImage.setVisibility(View.VISIBLE);
         });
 
 

@@ -7,6 +7,8 @@ import com.unimib.triptales.repository.diary.DiaryRepository;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.CheckpointDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
+import com.unimib.triptales.source.checkpointDiary.CheckpointDiaryRemoteDataSource;
+import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryRemoteDataSource;
 import com.unimib.triptales.repository.expense.ExpenseRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.repository.goal.GoalRepository;
@@ -17,6 +19,7 @@ import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.repository.task.TaskRepository;
 import com.unimib.triptales.repository.user.IUserRepository;
 import com.unimib.triptales.repository.user.UserRepository;
+import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryRemoteDataSource;
 import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
 import com.unimib.triptales.source.diary.BaseDiaryRemoteDataSource;
 import com.unimib.triptales.source.diary.DiaryLocalDataSource;
@@ -92,14 +95,11 @@ public class ServiceLocator {
 
     public ICheckpointDiaryRepository getCheckpointDiaryRepository(Context context) {
         BaseCheckpointDiaryLocalDataSource checkpointDiaryLocalDataSource =
-                new CheckpointDiaryLocalDataSource(AppRoomDatabase.getDatabase(context).checkpointDiaryDao());
-        /*
-        BaseCheckpointRemoteDataSource checkpointRemoteDataSource =
-                new CheckpointRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
+                new CheckpointDiaryLocalDataSource(AppRoomDatabase.getDatabase(context).checkpointDiaryDao(),
                         SharedPreferencesUtils.getDiaryId(context));
-
-         */
-        return new CheckpointDiaryRepository(checkpointDiaryLocalDataSource);
+        BaseCheckpointDiaryRemoteDataSource checkpointDiaryRemoteDataSource =
+                new CheckpointDiaryRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
+        return new CheckpointDiaryRepository(checkpointDiaryLocalDataSource, checkpointDiaryRemoteDataSource);
     }
 
     public IImageCardItemRepository getImageCardItemRepository(Context context) {

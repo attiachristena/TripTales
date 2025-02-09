@@ -1,120 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
-        android:clickable="true"
+    <!-- Contenuto principale (scrollabile) -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".ui.diary.CheckpointDiaryActivity">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <ImageButton
-        android:id="@+id/backToTappaFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/edit_text_background"
-        android:backgroundTint="@color/background_overlays"
-        android:contentDescription="@string/pulsante_per_tornare_indietro"
-        android:elevation="4dp"
-        android:src="@drawable/baseline_arrow_back_ios_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/black" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".ui.diary.CheckpointDiaryActivity">
 
-    <TextView
-        android:id="@+id/nomeTappa"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
-        android:elevation="4dp"
-        android:fontFamily="@font/poppins_bold"
-        android:gravity="center"
-        android:text="@string/nome_tappa"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="@+id/immagineTappaItem"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.459" />
+            <ImageButton
+                android:id="@+id/backToTappaFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/edit_text_background"
+                android:backgroundTint="@color/background_overlays"
+                android:contentDescription="@string/pulsante_per_tornare_indietro"
+                android:elevation="4dp"
+                android:src="@drawable/baseline_arrow_back_ios_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black" />
 
-    <TextView
-        android:id="@+id/dataTappa"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:elevation="4dp"
-        android:fontFamily="@font/poppins_regular"
-        android:gravity="center"
-        android:text="Data Tappa"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nomeTappa" />
+            <TextView
+                android:id="@+id/nomeTappa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="140dp"
+                android:elevation="4dp"
+                android:fontFamily="@font/poppins_bold"
+                android:gravity="center"
+                android:text="@string/nome_tappa"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toBottomOf="@+id/immagineTappaItem"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.459" />
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/immagineTappaItem"
-        android:layout_width="match_parent"
-        android:layout_height="270dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background"
-        app:shapeAppearance="@style/bottomRoundedImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="0dp" />
+            <TextView
+                android:id="@+id/dataTappa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:elevation="4dp"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:text="Data Tappa"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nomeTappa" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/i_tuoi_ricordi"
-        app:layout_constraintTop_toBottomOf="@+id/immagineTappaItem"
-        android:gravity="center"
-        android:fontFamily="@font/poppins_bold"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="0dp" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/immagineTappaItem"
+                android:layout_width="match_parent"
+                android:layout_height="270dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_launcher_background"
+                app:shapeAppearance="@style/bottomRoundedImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="0dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/imageCardItemRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    android:clipToPadding="false"
-    android:orientation="vertical"
-    android:padding="8dp"
-    android:nestedScrollingEnabled="false"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/textView" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/i_tuoi_ricordi"
+                app:layout_constraintTop_toBottomOf="@+id/immagineTappaItem"
+                android:gravity="center"
+                android:fontFamily="@font/poppins_bold"
+                android:textSize="20sp"
+                tools:layout_editor_absoluteX="0dp" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/imageCardItemRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Pulsanti fissi (non scrollano) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addCheckpointDiaryImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/white_dark"
         android:src="@drawable/round_add_24"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.954"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976"
+        android:layout_gravity="bottom|end"
         app:tint="@color/black" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -122,16 +126,14 @@
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="80dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/background_dark"
         android:elevation="4dp"
         android:src="@drawable/baseline_delete_outline_24"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/addCheckpointDiaryImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.955"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_gravity="bottom|end"
         app:rippleColor="@color/light_gray"
         app:tint="@color/white" />
 
@@ -140,18 +142,15 @@
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="140dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/background_dark"
         android:elevation="4dp"
         android:src="@drawable/baseline_pen"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/deleteCheckpointDiaryImageButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.955"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_gravity="bottom|end"
         app:rippleColor="@color/light_gray"
         app:tint="@color/white" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

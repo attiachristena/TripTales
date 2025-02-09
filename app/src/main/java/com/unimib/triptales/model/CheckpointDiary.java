@@ -1,10 +1,13 @@
 package com.unimib.triptales.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
+import org.checkerframework.checker.units.qual.N;
 
 @Entity(
         tableName = "CheckpointDiary",
@@ -17,6 +20,7 @@ import androidx.room.PrimaryKey;
         indices = {@Index(value = "diary_id")}
 )
 public class CheckpointDiary {
+
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -38,6 +42,8 @@ public class CheckpointDiary {
     @ColumnInfo(name = "longitude")
     public double longitude;
 
+    public CheckpointDiary() {}
+
     public CheckpointDiary(String diaryId, String nome, String data, String immagineUri, double latitude, double longitude) {
         this.diaryId = diaryId;
         this.nome = nome;
@@ -58,6 +64,10 @@ public class CheckpointDiary {
 
     public String getDiaryId() {
         return diaryId;
+    }
+
+    public void setDiaryId(String diaryId) {
+        this.diaryId = diaryId;
     }
 
 //    public int getCheckpointId() {
