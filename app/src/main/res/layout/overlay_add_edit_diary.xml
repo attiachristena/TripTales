@@ -40,7 +40,7 @@
                         android:layout_marginTop="30dp"
                         android:background="@drawable/rounded_button"
                         android:backgroundTint="@color/background_overlays"
-                        android:src="@drawable/baseline_arrow_back_ios_24" />
+                        android:src="@drawable/baseline_arrow_back_ios_24"/>
 
                     <TextView
                         android:layout_width="wrap_content"
