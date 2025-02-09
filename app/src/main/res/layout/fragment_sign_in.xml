@@ -76,7 +76,8 @@
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background_login" />
+                android:background="@drawable/edit_text_background_login"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -92,7 +93,8 @@
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background_login" />
+                android:background="@drawable/edit_text_background_login"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -108,7 +110,8 @@
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background_login" />
+                android:background="@drawable/edit_text_background_login"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -130,7 +133,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background_login"
                     android:inputType="textPassword"
-                    android:paddingEnd="48dp"/>
+                    android:paddingEnd="48dp"
+                    android:textColor="@color/black"/>
 
                 <ImageButton
                     android:id="@+id/showPassword"
