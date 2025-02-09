@@ -71,12 +71,14 @@
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
             android:backgroundTint="@color/background_overlays"
-            android:hint="@string/nome">
+            android:hint="@string/nome"
+            android:textColorHint="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputGoalName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,12 +95,14 @@
             app:boxCornerRadiusTopStart="20dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/background_overlays"
-            android:hint="@string/hintDescription">
+            android:hint="@string/hintDescription"
+            android:textColorHint="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputGoalDescription"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

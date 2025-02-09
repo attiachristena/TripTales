@@ -74,7 +74,8 @@
             android:fontFamily="@font/poppins_regular"
             android:background="@drawable/edit_text_background"
             android:gravity="center"
-            android:hint="@string/nome_tappa_hint" />
+            android:hint="@string/nome_tappa_hint"
+            app:helperTextTextColor="@color/black"/>
 
         <Button
             android:id="@+id/addImageButton"
