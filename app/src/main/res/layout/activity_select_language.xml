@@ -36,7 +36,8 @@
         app:layout_constraintBottom_toTopOf="@id/icona_app"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:fontFamily="@font/poppins_bold">
+        android:fontFamily="@font/poppins_bold"
+        android:textColor="@color/black">
 
     </TextView>
 

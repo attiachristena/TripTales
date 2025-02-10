@@ -52,47 +52,13 @@ public class SettingsActivity extends AppCompatActivity {
         return navController != null && navController.navigateUp() || super.onSupportNavigateUp();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.settings_menu, menu);
-        //toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // Nascondi l'item "Home" nel menu
-        MenuItem hideItem = menu.findItem(R.id.action_back);
-        hideItem.setVisible(false);
-        return super.onPrepareOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         View buttonAccount = toolbar.findViewById(R.id.action_account);
-        /*if (id == R.id.action_account){
-            PopupMenu popupMenu = new PopupMenu(SettingsActivity.this, buttonAccount);
-            popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
 
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.action_logout) {
-                        SharedPreferencesUtils.setLoggedIn(SettingsActivity.this, false);
-                        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-            popupMenu.show();
-        }*/
 
         if (id == android.R.id.home) {
             if (navController.getCurrentDestination().getId() == R.id.settingsFragment) {

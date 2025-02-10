@@ -29,7 +29,8 @@
             android:textSize="30sp"
             android:textStyle="bold"
             android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="30dp"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/sliderSubtitle"
@@ -41,7 +42,7 @@
             android:gravity="center"
             android:layout_marginLeft="27dp"
             android:layout_marginRight="27dp"
-            />
+            android:textColor="@color/black"/>
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

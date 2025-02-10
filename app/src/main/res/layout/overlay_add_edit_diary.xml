@@ -40,7 +40,7 @@
                         android:layout_marginTop="30dp"
                         android:background="@drawable/rounded_button"
                         android:backgroundTint="@color/background_overlays"
-                        android:src="@drawable/baseline_arrow_back_ios_24" />
+                        android:src="@drawable/baseline_arrow_back_ios_24"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -73,19 +73,21 @@
                     android:paddingHorizontal="16dp"
                     android:layout_marginTop="10dp"
                     app:boxStrokeColor="@color/background_dark"
-                    app:hintTextColor="@color/background_dark"
+                    app:hintTextColor="@color/hint"
                     app:cursorColor="@color/secondary"
                     style="?attr/textInputFilledStyle"
                     app:boxBackgroundColor="@color/background_overlays"
                     app:errorEnabled="true"
-                    app:helperTextEnabled="true">
+                    app:helperTextEnabled="true"
+                    android:textColorHint="@color/hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputDiaryName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/inserisci_nome_diario"
-                        android:paddingHorizontal="16dp"/>
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,7 +103,8 @@
                     android:hint="@string/paese_visitato"
                     app:boxBackgroundColor="@color/background_overlays"
                     app:errorEnabled="true"
-                    app:helperTextEnabled="true">
+                    app:helperTextEnabled="true"
+                    android:textColorHint="@color/hint">
 
                     <AutoCompleteTextView
                         android:id="@+id/VisitedCountry"
@@ -111,7 +114,8 @@
                         android:paddingTop="24dp"
                         android:paddingBottom="10dp"
                         android:inputType="text"
-                        android:popupBackground="@color/background_overlays" />
+                        android:popupBackground="@color/background_overlays"
+                        android:textColor="@color/black"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -142,7 +146,8 @@
                         app:cursorColor="@color/secondary"
                         app:errorEnabled="true"
                         app:helperTextEnabled="true"
-                        app:hintTextColor="@color/background_dark">
+                        app:hintTextColor="@color/background_dark"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputDayDeparture"
@@ -150,7 +155,8 @@
                             android:layout_height="wrap_content"
                             android:inputType="number"
                             android:maxLength="2"
-                            android:ems="2"/>
+                            android:ems="2"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -160,7 +166,8 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/SeparatoreData"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:textColor="@color/black"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldMonthDeparture"
@@ -175,7 +182,8 @@
                         app:cursorColor="@color/secondary"
                         app:errorEnabled="true"
                         app:helperTextEnabled="true"
-                        app:hintTextColor="@color/background_dark">
+                        app:hintTextColor="@color/background_dark"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputMonthDeparture"
@@ -183,7 +191,8 @@
                             android:layout_height="wrap_content"
                             android:inputType="number"
                             android:maxLength="2"
-                            android:ems="2"/>
+                            android:ems="2"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -193,7 +202,8 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/SeparatoreData"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:textColor="@color/black"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldYearDeparture"
@@ -208,7 +218,8 @@
                         app:cursorColor="@color/secondary"
                         app:errorEnabled="true"
                         app:helperTextEnabled="true"
-                        app:hintTextColor="@color/background_dark">
+                        app:hintTextColor="@color/background_dark"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputYearDeparture"
@@ -217,7 +228,8 @@
                             android:background="@android:color/transparent"
                             android:inputType="number"
                             android:maxLength="4"
-                            android:ems="4"/>
+                            android:ems="4"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -251,7 +263,8 @@
                         style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputReturnDay"
@@ -260,7 +273,8 @@
                             android:background="@android:color/transparent"
                             android:inputType="number"
                             android:maxLength="2"
-                            android:ems="2"/>
+                            android:ems="2"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -270,7 +284,8 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/SeparatoreData"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:textColor="@color/black"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldReturnMonth"
@@ -285,7 +300,8 @@
                         style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputReturnMonth"
@@ -294,7 +310,8 @@
                             android:background="@android:color/transparent"
                             android:inputType="number"
                             android:maxLength="2"
-                            android:ems="2"/>
+                            android:ems="2"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -304,7 +321,8 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/SeparatoreData"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:textColor="@color/black"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldReturnYear"
@@ -319,7 +337,8 @@
                         style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputReturnYear"
@@ -328,7 +347,8 @@
                             android:background="@android:color/transparent"
                             android:inputType="number"
                             android:maxLength="4"
-                            android:ems="4"/>
+                            android:ems="4"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 

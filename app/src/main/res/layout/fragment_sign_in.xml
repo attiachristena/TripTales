@@ -68,14 +68,16 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="2dp"
-                android:text="@string/nome" />
+                android:text="@string/nome"
+                android:textColor="@color/black"/>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputNome"
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background_login" />
+                android:background="@drawable/edit_text_background_login"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -83,14 +85,16 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="2dp"
-                android:text="@string/cognome" />
+                android:text="@string/cognome"
+                android:textColor="@color/black"/>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputCognome"
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background_login" />
+                android:background="@drawable/edit_text_background_login"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -98,14 +102,16 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="2dp"
-                android:text="@string/email" />
+                android:text="@string/email"
+                android:textColor="@color/black"/>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputEmail"
                 style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background_login" />
+                android:background="@drawable/edit_text_background_login"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -113,7 +119,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="2dp"
-                android:text="@string/password" />
+                android:text="@string/password"
+                android:textColor="@color/black"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -126,7 +133,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background_login"
                     android:inputType="textPassword"
-                    android:paddingEnd="48dp"/>
+                    android:paddingEnd="48dp"
+                    android:textColor="@color/black"/>
 
                 <ImageButton
                     android:id="@+id/showPassword"
@@ -161,7 +169,7 @@
                 android:gravity="center"
                 android:text="@string/oppure"
                 android:textSize="12sp"
-                />
+                android:textColor="@color/black"/>
 
             <Button
                 android:id="@+id/signInButtonGoogle"
