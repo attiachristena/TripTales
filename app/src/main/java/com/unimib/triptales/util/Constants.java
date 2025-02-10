@@ -14,16 +14,6 @@ public class Constants {
     public static final int DATABASE_VERSION = 1;
     public static final String APP_DATABASE = "app db";
 
-    public static final String SHOPPING = "Shopping";
-    public static final String FOOD = "Cibo";
-    public static final String TRANSPORT = "Trasporto";
-    public static final String ACCOMMODATION = "Alloggio";
-    public static final String CULTURE = "Cultura";
-    public static final String RECREATION = "Svago";
-
-    public static final List<String> CATEGORIES = Arrays.asList(SHOPPING,
-            FOOD, TRANSPORT, ACCOMMODATION, CULTURE, RECREATION);
-
     public static final String ADDED = "ADDED";
     public static final String UPDATED = "UPDATED";
     public static final String DELETED = "DELETED";

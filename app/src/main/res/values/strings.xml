@@ -204,7 +204,7 @@
     <string name="elimina_profilo">Elimina profilo</string>
     <string name="searchbar_hint">Cerca diario per nome</string>
 
-    <string name="nomeStringheParser">\"NAME_IT\"</string>
+    <string name="nome_stringhe_parser">NAME_IT</string>
 
     <string name="modifica_profilo"><u>Modifica profilo</u></string>
     <string name="modifica_profilo2">Modifica profilo</string>
@@ -254,5 +254,13 @@
     <string name="delete_task_description">Sei sicuro di voler eliminare l\'attività?</string>
     <string name="cancel">Annulla</string>
     <string name="delete">Elimina</string>
+
+    <string name="viaggio">Viaggio:</string>
+    <string name="shopping_category" translatable="false">Shopping</string>
+    <string name="food_category">Cibo</string>
+    <string name="transport_category">Trasporti</string>
+    <string name="accommodation_category">Alloggio</string>
+    <string name="culture_category">Cultura</string>
+    <string name="fun_category">Svago</string>
 
 </resources>
