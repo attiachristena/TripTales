@@ -1,5 +1,7 @@
 package com.unimib.triptales.repository.task;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.database.AppRoomDatabase;
@@ -100,7 +102,9 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     }
 
     @Override
-    public void onFailureFromRemote(Exception exception) {}
+    public void onFailureFromRemote(Exception exception) {
+        Log.e("FirebaseError", "Error task: " + exception.getMessage());
+    }
 
     @Override
     public void onSuccessDeleteFromLocal() {
@@ -121,5 +125,7 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     }
 
     @Override
-    public void onFailureFromLocal(Exception exception) {}
+    public void onFailureFromLocal(Exception exception) {
+        Log.e("FirebaseError", "Error task: " + exception.getMessage());
+    }
 }

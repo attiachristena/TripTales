@@ -5,8 +5,11 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
 
+import android.app.Application;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -18,7 +21,7 @@ import com.unimib.triptales.util.SharedPreferencesUtils;
 import java.util.Collections;
 import java.util.List;
 
-public class TaskViewModel extends ViewModel {
+public class TaskViewModel extends AndroidViewModel {
 
     private final ITaskRepository taskRepository;
 
@@ -26,9 +29,11 @@ public class TaskViewModel extends ViewModel {
     private final MutableLiveData<List<Task>> selectedTasksLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> taskOverlayVisibility = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> deleteOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> taskEvent = new MutableLiveData<>();
 
-    public TaskViewModel(ITaskRepository taskRepository) {
+    public TaskViewModel(ITaskRepository taskRepository, @NonNull Application application) {
+        super(application);
         this.taskRepository = taskRepository;
     }
 
@@ -44,16 +49,22 @@ public class TaskViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getTaskOverlayVisibility() { return taskOverlayVisibility; }
 
+    public MutableLiveData<Boolean> getDeleteOverlayVisibility() { return deleteOverlayVisibility; }
+
     public MutableLiveData<String> getTaskEvent() { return taskEvent; }
 
     public void setTaskOverlayVisibility(boolean visible) {
         taskOverlayVisibility.postValue(visible);
     }
 
+    public void setDeleteOverlayVisibility(boolean visible) {
+        deleteOverlayVisibility.postValue(visible);
+    }
+
     public boolean validateInputTask(String name){
         boolean correct = true;
         if (name.isEmpty()) {
-            errorLiveData.setValue(String.valueOf(R.string.errorTaskName));
+            errorLiveData.setValue(getApplication().getString(R.string.errorTaskName));
         } else {
             errorLiveData.setValue(null);
         }

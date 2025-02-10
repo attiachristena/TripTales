@@ -47,17 +47,17 @@ public class DiaryActivity extends AppCompatActivity {
 
         IExpenseRepository expenseRepository = ServiceLocator.getINSTANCE().getExpenseRepository(getApplicationContext());
         ExpenseViewModel expenseViewModel = new ViewModelProvider(this,
-                new ViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
+                new ViewModelFactory(expenseRepository, getApplication())).get(ExpenseViewModel.class);
         expenseViewModel.fetchAllExpenses();
 
         IGoalRepository goalRepository = ServiceLocator.getINSTANCE().getGoalRepository(getApplicationContext());
         GoalViewModel goalViewModel = new ViewModelProvider(this,
-                new ViewModelFactory(goalRepository)).get(GoalViewModel.class);
+                new ViewModelFactory(goalRepository, getApplication())).get(GoalViewModel.class);
         goalViewModel.fetchAllGoals();
 
         ITaskRepository taskRepository = ServiceLocator.getINSTANCE().getTaskRepository(getApplicationContext());
         TaskViewModel taskViewModel = new ViewModelProvider(this,
-                new ViewModelFactory(taskRepository)).get(TaskViewModel.class);
+                new ViewModelFactory(taskRepository, getApplication())).get(TaskViewModel.class);
         taskViewModel.fetchAllTasks();
 
         // Recupera i dati dall'Intent
@@ -93,7 +93,7 @@ public class DiaryActivity extends AppCompatActivity {
             if (position == 0) tabText.setText(R.string.tabTappe);
             else if (position == 1) tabText.setText(R.string.tabSpese);
             else if (position == 2) tabText.setText(R.string.tabObiettivi);
-            else tabText.setText(R.string.tabCheckList);
+            else tabText.setText(R.string.tabAttivita);
 
             tab.setCustomView(customView);
         }).attach();
@@ -123,9 +123,5 @@ public class DiaryActivity extends AppCompatActivity {
         diaryNameTextView.setText(diaryName);
         ImageButton diaryBackButton = findViewById(R.id.backButtonDiary);
         diaryBackButton.setOnClickListener(diaryBackButtonListener -> finish());
-    }
-
-    public void setViewPagerSwipeEnabled(boolean enabled) {
-        viewPager2.setUserInputEnabled(enabled);
     }
 }

@@ -1,5 +1,7 @@
 package com.unimib.triptales.repository.goal;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.database.AppRoomDatabase;
@@ -119,7 +121,9 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     }
 
     @Override
-    public void onFailureFromRemote(Exception exception) {}
+    public void onFailureFromRemote(Exception exception) {
+        Log.e("FirebaseError", "Error goal: " + exception.getMessage());
+    }
 
     @Override
     public void onSuccessDeleteFromLocal() {
@@ -145,5 +149,7 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     }
 
     @Override
-    public void onFailureFromLocal(Exception exception) {}
+    public void onFailureFromLocal(Exception exception) {
+        Log.e("DatabaseError", "Error goal: " + exception.getMessage());
+    }
 }

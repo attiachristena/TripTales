@@ -4,7 +4,7 @@
     <string name="tabTappe">Tappe</string>
     <string name="tabSpese">Spese</string>
     <string name="tabObiettivi">Obiettivi</string>
-    <string name="tabCheckList">Attività</string>
+    <string name="tabAttivita">Lista</string>
     <string name="page_title">TripTales</string>
     <string name="action_home">Home</string>
     <string name="action_logout">Logout</string>
@@ -191,6 +191,7 @@
     <string name="errorInputBudget">Inserisci un numero più basso</string>
     <string name="errorGoalName">Inserisci il nome dell\'obiettivo</string>
     <string name="errorTaskName">Inserisci il nome dell\'attività</string>
+    <string name="progressText">spesi</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>
@@ -245,4 +246,13 @@
     <string name="i_tuoi_ricordi">I tuoi ricordi...</string>
     <string name="cerca_diario_per_paese">Cerca diario per paese visitato</string>
     <string name="seleziona_lingua">Seleziona la lingua</string>
+    <string name="delete_expense">Elimina la spesa</string>
+    <string name="delete_expense_description">Sei sicuro di voler eliminare la spesa?</string>
+    <string name="delete_goal">Elimina l\'obiettivo</string>
+    <string name="delete_goal_description">Sei sicuro di voler eliminare l\'obiettivo?</string>
+    <string name="delete_task">Elimina l\'attività</string>
+    <string name="delete_task_description">Sei sicuro di voler eliminare l\'attività?</string>
+    <string name="cancel">Annulla</string>
+    <string name="delete">Elimina</string>
+
 </resources>

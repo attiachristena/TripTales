@@ -4,6 +4,7 @@ import static com.unimib.triptales.util.Constants.UNEXPECTED_ERROR;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.zzae;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,12 +21,14 @@ import java.util.Map;
 public class DiaryRemoteDataSource extends BaseDiaryRemoteDataSource {
 
         private final DatabaseReference databaseReference;
+        private final String userId;
 
         public DiaryRemoteDataSource(String userId) {
             this.databaseReference = FirebaseDatabase.getInstance()
                     .getReference("users")
                     .child(userId)
                     .child("diaries");
+            this.userId = userId;
         }
 
     @Override
@@ -131,9 +134,70 @@ public class DiaryRemoteDataSource extends BaseDiaryRemoteDataSource {
         @Override
         public void deleteDiary(Diary diary) {
             if (diary != null) {
-                databaseReference.child(diary.getId()).removeValue()
-                        .addOnSuccessListener(aVoid -> diaryCallback.onSuccessDeleteFromRemote())
-                        .addOnFailureListener(e -> diaryCallback.onFailureFromRemote(e));
+                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+                DatabaseReference diaryRef = database.child("users").child(userId)
+                        .child("diaries").child(diary.getId());
+                DatabaseReference expensesRef = database.child("users").child(userId)
+                        .child("expenses");
+                DatabaseReference goalsRef = database.child("users").child(userId)
+                        .child("goals");
+                DatabaseReference tasksRef = database.child("users").child(userId)
+                        .child("tasks");
+
+                expensesRef.orderByChild("diaryId").equalTo(diary.getId())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot expenseSnapshot : dataSnapshot.getChildren()) {
+                            expenseSnapshot.getRef().removeValue();
+                        }
+
+                        goalsRef.orderByChild("diaryId").equalTo(diary.getId())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot goalSnapshot : dataSnapshot.getChildren()) {
+                                    goalSnapshot.getRef().removeValue();
+                                }
+
+                                tasksRef.orderByChild("diaryId").equalTo(diary.getId())
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot taskSnapshot : dataSnapshot.getChildren()) {
+                                            taskSnapshot.getRef().removeValue();
+                                        }
+
+                                        diaryRef.removeValue().addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                diaryCallback.onSuccessDeleteFromRemote();
+                                            } else {
+                                                diaryCallback.onFailureFromRemote
+                                                        (new Exception(UNEXPECTED_ERROR));
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
+                    }
+                });
             } else {
                 diaryCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
             }

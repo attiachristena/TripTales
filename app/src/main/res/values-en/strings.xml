@@ -3,9 +3,9 @@
     <string name="app_name">TripTales</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tabTappe">Stages</string>
-    <string name="tabSpese">Expenses</string>
+    <string name="tabSpese">Exp</string>
     <string name="tabObiettivi">Goals</string>
-    <string name="tabCheckList">CheckList</string>
+    <string name="tabAttivita">Tasks</string>
     <string name="page_title">TripTales</string>
     <string name="action_home">Home</string>
     <string name="action_logout">Logout</string>
@@ -74,6 +74,14 @@
     <string name="searchbar_hint">Search diary by name</string>
     <string name="nomeStringheParser">\"NAME_EN\"</string>
     <string name="errorFilterExpenses">Pick a category</string>
+    <string name="delete_expense">Delete expense</string>
+    <string name="delete_expense_description">Are you sure you want to eliminate the expense?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_goal">Delete goal</string>
+    <string name="delete_task">Delete task</string>
+    <string name="delete_goal_description">Are you sure you want to eliminate the goal?</string>
+    <string name="delete_task_description">Are you sure you want to eliminate the task?</string>
     <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
@@ -104,7 +112,7 @@
     <string name="noTasksString">Add your first activity!</string>
     <string name="noGoalsString">Add your first travel goal!</string>
     <string name="noSpeseString">Set your budget and add your first expense</string>
-    <string name="checklistTitle">Checklist of Tasks to Complete</string>
+    <string name="checklistTitle">Checklist of tasks to complete</string>
     <string name="warningCurrency">*Please note: you can only change the currency if no expenses have been entered yet.</string>
     <string name="hintCurrency">Currency*</string>
     <string name="nome_diario">Diary name</string>
@@ -245,5 +253,6 @@
     <string name="dati_non_disponibili">Data not available</string>
     <string name="errore_nel_recupero_dati">Error retrieving data</string>
     <string name="seleziona_lingua">Select language</string>
+    <string name="progressText">spent</string>
 
 </resources>
