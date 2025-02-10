@@ -9,11 +9,12 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.UPDATED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 
+import android.app.Application;
 import android.content.Context;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Expense;
@@ -23,7 +24,9 @@ import com.unimib.triptales.util.SharedPreferencesUtils;
 import java.util.Collections;
 import java.util.List;
 
-public class ExpenseViewModel extends ViewModel {
+import javax.annotation.Nonnull;
+
+public class ExpenseViewModel extends AndroidViewModel {
 
     private final IExpenseRepository expenseRepository;
 
@@ -37,8 +40,10 @@ public class ExpenseViewModel extends ViewModel {
     private final MutableLiveData<Boolean> filterOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<Boolean> deleteOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> expenseEvent = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> bFilter = new MutableLiveData<>(false);
 
-    public ExpenseViewModel(IExpenseRepository expenseRepository) {
+    public ExpenseViewModel(IExpenseRepository expenseRepository, @Nonnull Application application) {
+        super(application);
         this.expenseRepository = expenseRepository;
     }
 
@@ -98,18 +103,33 @@ public class ExpenseViewModel extends ViewModel {
         deleteOverlayVisibility.postValue(visible);
     }
 
-    public void filterExpenses(String category){
-        if (category == null || category.trim().isEmpty()) {
-            errorLiveData.setValue(String.valueOf(R.string.errorFilterExpenses));
-            return;
-        }
+    public MutableLiveData<Boolean> getBFilter() {
+        return bFilter;
+    }
 
+    public void setBFilter(boolean filter) {
+        bFilter.setValue(filter);
+    }
+
+    public void filterExpenses(String category){
         List<Expense> filteredExpenses = getFilteredExpenses(category);
         if (filteredExpenses != null) {
             filteredExpensesLiveData.postValue(filteredExpenses);
         } else {
-            errorLiveData.setValue(String.valueOf(R.string.errorFilterCategory));
+            errorLiveData.setValue(getApplication().getString(R.string.errorFilterCategory));
         }
+    }
+
+    public boolean validateInputFilter(String category){
+        boolean correct = true;
+        if (category == null || category.trim().isEmpty()) {
+            errorLiveData.setValue(getApplication().getString(R.string.errorFilterExpenses));
+        } else {
+            errorLiveData.setValue(null);
+        }
+
+        if(errorLiveData.getValue() != null) correct = false;
+        return correct;
     }
 
     public void loadAmountSpent(){
@@ -125,27 +145,27 @@ public class ExpenseViewModel extends ViewModel {
         boolean correct = true;
         int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         int inputDay = 0, inputMonth= 0, inputYear = 0;
-        if(!day.isEmpty()) inputDay = Integer.parseInt(day);
-        if(!month.isEmpty()) inputMonth = Integer.parseInt(month);
-        if(!year.isEmpty()) inputYear = Integer.parseInt(year);
-        if (amount.isEmpty()) {
-            errorLiveData.setValue(String.valueOf(R.string.errorAmount));
-        } else if (category.isEmpty()) {
-            errorLiveData.setValue(String.valueOf(R.string.errorFilterExpenses));
-        } else if (description.isEmpty()) {
-            errorLiveData.setValue(String.valueOf(R.string.errorDescription));
-        } else if(day.isEmpty()) {
-            errorLiveData.setValue(String.valueOf(R.string.errorDay));
+        if(day != null && !day.isEmpty()) inputDay = Integer.parseInt(day);
+        if(month != null && !month.isEmpty()) inputMonth = Integer.parseInt(month);
+        if(year != null && !year.isEmpty()) inputYear = Integer.parseInt(year);
+        if (amount == null || amount.isEmpty()) {
+            errorLiveData.setValue(getApplication().getString(R.string.errorAmount));
+        } else if (category == null || category.isEmpty()) {
+            errorLiveData.setValue(getApplication().getString(R.string.errorFilterExpenses));
+        } else if (description == null || description.isEmpty()) {
+            errorLiveData.setValue(getApplication().getString(R.string.errorDescription));
+        } else if(day == null || day.isEmpty()) {
+            errorLiveData.setValue(getApplication().getString(R.string.errorDay));
         } else if (inputDay < 1 || inputDay > 31) {
-            errorLiveData.setValue(String.valueOf(R.string.errorInputDay));
-        } else if(month.isEmpty()){
-            errorLiveData.setValue(String.valueOf(R.string.errorMonth));
+            errorLiveData.setValue(getApplication().getString(R.string.errorInputDay));
+        } else if(month == null || month.isEmpty()){
+            errorLiveData.setValue(getApplication().getString(R.string.errorMonth));
         } else if(inputMonth < 1 || inputMonth > 12){
-            errorLiveData.setValue(String.valueOf(R.string.errorInputMonth));
-        } else if(year.isEmpty()){
-            errorLiveData.setValue(String.valueOf(R.string.errorYear));
+            errorLiveData.setValue(getApplication().getString(R.string.errorInputMonth));
+        } else if(year == null || year.isEmpty()){
+            errorLiveData.setValue(getApplication().getString(R.string.errorYear));
         } else if(inputYear < 2000 || inputYear > 2100){
-            errorLiveData.setValue(String.valueOf(R.string.errorInputYear));
+            errorLiveData.setValue(getApplication().getString(R.string.errorInputYear));
         } else {
             errorLiveData.setValue(null);
         }
@@ -154,8 +174,8 @@ public class ExpenseViewModel extends ViewModel {
             daysInMonth[1] = 29;
         }
 
-        if(inputDay > daysInMonth[inputMonth - 1]){
-            errorLiveData.setValue(String.valueOf(R.string.errorInputDay));
+        if(inputMonth != 0 && inputDay > daysInMonth[inputMonth - 1]){
+            errorLiveData.setValue(getApplication().getString(R.string.errorInputDay));
         }
 
         if(errorLiveData.getValue() != null) correct = false;
@@ -168,12 +188,12 @@ public class ExpenseViewModel extends ViewModel {
 
     public boolean validateInputBudget(String budget, String currency){
         boolean correct = true;
-        if(budget.isEmpty()){
-            errorLiveData.setValue(String.valueOf(R.string.errorBudget));
-        } else if(currency.isEmpty()){
-            errorLiveData.setValue(String.valueOf(R.string.errorCurrency));
+        if(budget == null || budget.isEmpty()){
+            errorLiveData.setValue(getApplication().getString(R.string.errorBudget));
+        } else if(currency == null || currency.isEmpty()){
+            errorLiveData.setValue(getApplication().getString(R.string.errorCurrency));
         } else if(budget.length() > 9){
-            errorLiveData.setValue(String.valueOf(R.string.errorInputBudget));
+            errorLiveData.setValue(getApplication().getString(R.string.errorInputBudget));
         } else {
             errorLiveData.setValue(null);
         }

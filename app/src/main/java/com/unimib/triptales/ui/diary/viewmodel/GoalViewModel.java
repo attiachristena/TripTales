@@ -5,8 +5,11 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
 
+import android.app.Application;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -18,7 +21,7 @@ import com.unimib.triptales.util.SharedPreferencesUtils;
 import java.util.Collections;
 import java.util.List;
 
-public class GoalViewModel extends ViewModel {
+public class GoalViewModel extends AndroidViewModel {
 
     private final IGoalRepository goalRepository;
 
@@ -30,7 +33,8 @@ public class GoalViewModel extends ViewModel {
     private final MutableLiveData<Boolean> deleteOverlayVisibility = new MutableLiveData<>();
     private final MutableLiveData<String> goalEvent = new MutableLiveData<>();
 
-    public GoalViewModel(IGoalRepository goalRepository) {
+    public GoalViewModel(IGoalRepository goalRepository, @NonNull Application application) {
+        super(application);
         this.goalRepository = goalRepository;
     }
 
@@ -63,7 +67,7 @@ public class GoalViewModel extends ViewModel {
     public boolean validateInputGoal(String name){
         boolean correct = true;
         if (name.isEmpty()) {
-            errorLiveData.setValue(String.valueOf(R.string.errorGoalName));
+            errorLiveData.setValue(getApplication().getString(R.string.errorGoalName));
         } else {
             errorLiveData.setValue(null);
         }

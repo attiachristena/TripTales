@@ -1,19 +1,9 @@
 package com.unimib.triptales.ui.diary.fragment;
 
-import static com.unimib.triptales.util.Constants.ADD_EXPENSE;
-import static com.unimib.triptales.util.Constants.BUDGET;
-import static com.unimib.triptales.util.Constants.CATEGORIES;
-import static com.unimib.triptales.util.Constants.CURRENCIES;
 import static com.unimib.triptales.util.Constants.CURRENCY_EUR;
-import static com.unimib.triptales.util.Constants.CURRENCY_GBP;
-import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
-import static com.unimib.triptales.util.Constants.CURRENCY_USD;
-import static com.unimib.triptales.util.Constants.DELETE_EXPENSE;
-import static com.unimib.triptales.util.Constants.EDIT_EXPENSE;
 import static com.unimib.triptales.util.Constants.ADDED;
 import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.UPDATED;
-import static com.unimib.triptales.util.Constants.FILTER;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 
 import android.os.Bundle;
@@ -27,15 +17,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +36,10 @@ import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.ui.diary.DiaryActivity;
+import com.unimib.triptales.ui.diary.overlay.OverlayAddEditExpense;
+import com.unimib.triptales.ui.diary.overlay.OverlayBudget;
+import com.unimib.triptales.ui.diary.overlay.OverlayDelete;
+import com.unimib.triptales.ui.diary.overlay.OverlayFilter;
 import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
@@ -64,41 +54,29 @@ public class ExpensesFragment extends Fragment {
 
     private int budget;
     private TextView progressTextView;
-    private String inputBudget;
     private ImageButton editBudgetButton;
     private LinearProgressIndicator progressIndicator;
     private TextView budgetTextView;
-    private EditText numberEditText;
     private FloatingActionButton addExpenseButton;
-    private EditText amountEditText;
-    private AutoCompleteTextView categoryAutoCompleteTextView;
-    private EditText descriptionEditText;
-    private EditText dayEditText;
-    private EditText monthEditText;
-    private EditText yearEditText;
     private ConstraintLayout expenseRootLayout;
     private FloatingActionButton editExpenseButton;
     private FloatingActionButton deleteExpenseButton;
-    private View overlay_add_edit_expense;
-    private View overlay_add_budget;
+    private OverlayAddEditExpense overlayExpense;
+    private OverlayBudget overlayBudget;
     private Button filterButton;
     private ImageButton closeFilterButton;
-    private TextView totExpenseTextView;
     private TextView filterTextView;
-    private View overlay_filter;
-    private AutoCompleteTextView filterCategoryEditText;
+    private OverlayFilter overlayFilter;
     private String inputCurrency;
-    private AutoCompleteTextView currencyAutoCompleteTextView;
     private TextView noExpensesTextView;
     private ExpenseViewModel expenseViewModel;
     private HomeViewModel homeViewModel;
     private ExpensesRecyclerAdapter expensesRecyclerAdapter;
-    private String inputFilterCategory;
     private boolean bEdit;
     private boolean bAdd;
-    private boolean bFilter;
     private TextInputLayout currencyTextInputLayout;
-    private View overlay_delete;
+    private OverlayDelete overlayDelete;
+    private FrameLayout darkBackground;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,7 +92,7 @@ public class ExpensesFragment extends Fragment {
                 new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
         IExpenseRepository expenseRepository = ServiceLocator.getINSTANCE().getExpenseRepository(getContext());
         expenseViewModel = new ViewModelProvider(requireActivity(),
-                new ViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
+                new ViewModelFactory(expenseRepository, requireActivity().getApplication())).get(ExpenseViewModel.class);
 
         progressTextView = rootView.findViewById(R.id.progressText);
         budgetTextView = rootView.findViewById(R.id.totBudget);
@@ -129,7 +107,7 @@ public class ExpensesFragment extends Fragment {
         recyclerViewExpenses.setAdapter(expensesRecyclerAdapter);
 
         expensesRecyclerAdapter.setOnExpenseClickListener((expense) -> {
-            if(!bFilter) {
+            if(expenseViewModel.getBFilter().getValue() != null && !expenseViewModel.getBFilter().getValue()) {
                 expenseViewModel.toggleExpenseSelection(expense);
             }
         });
@@ -141,12 +119,12 @@ public class ExpensesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LayoutInflater inflater = LayoutInflater.from(view.getContext());
         expenseRootLayout = view.findViewById(R.id.rootLayoutSpese);
+        ConstraintLayout diaryRootLayout = requireActivity().findViewById(R.id.rootLayoutDiary);
         noExpensesTextView = view.findViewById(R.id.noSpeseString);
+        darkBackground = requireActivity().findViewById(R.id.dark_background);
         bEdit = false;
         bAdd = false;
-        bFilter = false;
 
         String tmp = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
         if(tmp != null){
@@ -165,46 +143,42 @@ public class ExpensesFragment extends Fragment {
             updateProgressIndicator(spent, budget);
         }
 
+        // gestione budget
+        overlayBudget = new OverlayBudget(requireContext(), diaryRootLayout, inputCurrency, expenseViewModel);
+
+        editBudgetButton = view.findViewById(R.id.editBudget);
+        editBudgetButton.setOnClickListener(editBudgetButtonListener -> {
+            overlayBudget.showOverlay(homeViewModel);
+            currencyTextInputLayout = requireActivity().findViewById(R.id.textFieldCurrency);
+            List<Expense> expenses = expenseViewModel.getAllExpenses();
+            if(expenses != null) {
+                if(expenses.isEmpty()) {
+                    currencyTextInputLayout.setEnabled(true);
+                } else {
+                    currencyTextInputLayout.setEnabled(false);
+                    currencyTextInputLayout.setBoxBackgroundColor
+                            (ContextCompat.getColor(requireContext(), R.color.background_overlays));
+                }
+            }
+        });
+
         expenseViewModel.getExpensesLiveData().observe(getViewLifecycleOwner(), expenses -> {
             if(expenses != null) {
                 expensesRecyclerAdapter.setExpenseList(expenses);
                 if (expenses.isEmpty()) {
                     noExpensesTextView.setVisibility(View.VISIBLE);
-                    currencyTextInputLayout.setEnabled(true);
+                    filterButton.setEnabled(false);
                 } else {
                     noExpensesTextView.setVisibility(View.GONE);
-                    currencyTextInputLayout.setEnabled(false);
-                    currencyTextInputLayout.setBoxBackgroundColor
-                        (ContextCompat.getColor(requireContext(), R.color.background_overlays));
+                    filterButton.setEnabled(true);
                 }
             }
         });
 
-        // gestione del budget
-        overlay_add_budget = inflater.inflate(R.layout.overlay_add_budget, expenseRootLayout, false);
-        expenseRootLayout.addView(overlay_add_budget);
-        overlay_add_budget.setVisibility(View.GONE);
-        currencyTextInputLayout = view.findViewById(R.id.textFieldCurrency);
-
-        Button saveBudgetButton = view.findViewById(R.id.salvaBudget);
-        editBudgetButton = view.findViewById(R.id.editBudget);
-        ImageButton budgetBackButton = view.findViewById(R.id.backButtonBudget);
-
-        editBudgetButton.setOnClickListener(view1 ->
-                expenseViewModel.setBudgetOverlayVisibility(true));
-
-        budgetBackButton.setOnClickListener(view12 ->
-                expenseViewModel.setBudgetOverlayVisibility(false));
-
-        numberEditText = view.findViewById(R.id.inputBudget);
-        currencyAutoCompleteTextView = view.findViewById(R.id.inputCurrency);
-        totExpenseTextView = view.findViewById(R.id.totSpesa);
-
-        ArrayAdapter<String> budgetAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, CURRENCIES);
-        currencyAutoCompleteTextView.setAdapter(budgetAdapter);
-
+        TextView totExpenseTextView = view.findViewById(R.id.totSpesa);
         homeViewModel.getBudgetLiveData().observe(getViewLifecycleOwner(), diaryBudget -> {
             if(diaryBudget != null) {
+                inputCurrency = expenseViewModel.getInputCurrency(diaryBudget);
                 if(inputCurrency.equals(CURRENCY_EUR)){
                     budget = Integer.parseInt(diaryBudget.substring(0, diaryBudget.length() - 1));
                 } else {
@@ -218,36 +192,16 @@ public class ExpensesFragment extends Fragment {
                     spent = 0;
                 }
                 updateProgressIndicator(spent, budget);
-                if(totExpenseTextView.getVisibility() == View.VISIBLE) {
-                    expenseViewModel.filterExpenses(inputFilterCategory);
-                }
-                updateCurrencyIcon();
-            }
-        });
-
-        saveBudgetButton.setOnClickListener(saveBudget -> {
-            inputBudget = numberEditText.getText().toString().trim();
-            String viewModelBudget = homeViewModel.getBudget(SharedPreferencesUtils.getDiaryId(getContext()));
-            if(viewModelBudget != null){
-                String completeBudget = expenseViewModel.generateTextAmount(String.valueOf(budget), inputCurrency);
-                inputCurrency = expenseViewModel.getInputCurrency(completeBudget);
-            } else {
-                inputCurrency = currencyAutoCompleteTextView.getText().toString().trim();
-            }
-            boolean correct = expenseViewModel.validateInputBudget(inputBudget, inputCurrency);
-            if (correct) {
-                budget = Integer.parseInt(inputBudget);
-                String completeBudget = expenseViewModel.generateTextAmount(inputBudget, inputCurrency);
-                homeViewModel.updateDiaryBudget(SharedPreferencesUtils.getDiaryId(getContext()), completeBudget);
-                expenseViewModel.setBudgetOverlayVisibility(false);
             }
         });
 
         expenseViewModel.getBudgetOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if (visible) {
-                showOverlay(BUDGET);
+                disableSwipeAndButtons();
+                darkBackground.setVisibility(View.VISIBLE);
             } else {
-                hideOverlay(BUDGET, view);
+                enableSwipeAndButtons(view);
+                darkBackground.setVisibility(View.GONE);
             }
         });
 
@@ -257,115 +211,45 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        //gestione di una spesa
-        overlay_add_edit_expense = inflater.inflate(R.layout.overlay_add_edit_expense, expenseRootLayout, false);
-        expenseRootLayout.addView(overlay_add_edit_expense);
-        overlay_add_edit_expense.setVisibility(View.GONE);
+        //gestione dell'aggiunta e la modifica di una spesa
         addExpenseButton = view.findViewById(R.id.addButtonSpese);
         editExpenseButton = view.findViewById(R.id.modificaSpesa);
         deleteExpenseButton = view.findViewById(R.id.eliminaSpesa);
 
+        overlayExpense = new OverlayAddEditExpense(diaryRootLayout, requireContext(),
+                expenseViewModel);
+
         addExpenseButton.setOnClickListener(addExpenseButtonListener -> {
-            bAdd = true;
-            expenseViewModel.setExpenseOverlayVisibility(true);
+            if(budget == 0) {
+                Snackbar snackbar = Snackbar.make(expenseRootLayout, R.string.snackbarErroreBudget,
+                        Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            } else {
+                bAdd = true;
+                expenseViewModel.setExpenseOverlayVisibility(true);
+                overlayExpense.showOverlay(bAdd, bEdit, inputCurrency);
+            }
         });
-
-        ImageButton expenseBackButton = view.findViewById(R.id.backSpesaButton);
-
-        expenseBackButton.setOnClickListener(expenseBackButtonListener ->
-            expenseViewModel.setExpenseOverlayVisibility(false));
-
-        Button saveExpenseButton = view.findViewById(R.id.salvaSpesa);
-        amountEditText = view.findViewById(R.id.inputQuantitaSpesa);
-        categoryAutoCompleteTextView = view.findViewById(R.id.inputCategory);
-        descriptionEditText = view.findViewById(R.id.inputDescription);
-        dayEditText = view.findViewById(R.id.inputDay);
-        monthEditText = view.findViewById(R.id.inputMonth);
-        yearEditText = view.findViewById(R.id.inputYear);
 
         expenseViewModel.getExpenseOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if (visible) {
-                if(bAdd) {
-                    showOverlay(ADD_EXPENSE);
-                } else if(bEdit){
-                    showOverlay(EDIT_EXPENSE);
-                }
+                disableSwipeAndButtons();
+                darkBackground.setVisibility(View.VISIBLE);
             } else {
+                enableSwipeAndButtons(view);
+                darkBackground.setVisibility(View.GONE);
                 if(bAdd){
-                    hideOverlay(ADD_EXPENSE, view);
+                    bAdd = false;
                 } else if(bEdit){
-                    hideOverlay(EDIT_EXPENSE, view);
+                    bEdit = false;
                 }
-            }
-        });
-
-        dayEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length() == 2){
-                    monthEditText.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-
-        monthEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length() == 2){
-                    yearEditText.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, CATEGORIES);
-        categoryAutoCompleteTextView.setAdapter(categoryAdapter);
-
-        saveExpenseButton.setOnClickListener(saveExpenseButtonListener -> {
-            String inputAmount = amountEditText.getText().toString().trim();
-            String inputCategory = categoryAutoCompleteTextView.getText().toString().trim();
-            String inputDescription = descriptionEditText.getText().toString().trim();
-            String inputDay = dayEditText.getText().toString().trim();
-            String inputMonth = monthEditText.getText().toString().trim();
-            String inputYear = yearEditText.getText().toString().trim();
-
-            boolean correct = expenseViewModel.validateInputExpense(inputAmount, inputCategory,
-                    inputDescription, inputDay, inputMonth, inputYear);
-
-            if(correct){
-                if(bAdd){
-                    expenseViewModel.insertExpense(inputAmount, inputCategory,
-                            inputDescription, inputDay, inputMonth, inputYear,
-                            inputCurrency, getContext());
-                } else if(bEdit){
-                    List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
-                    if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
-                        Expense currentExpense = selectedExpenses.get(0);
-                        expenseViewModel.updateExpense(currentExpense, inputCurrency, inputAmount,
-                                inputCategory, inputDescription, inputDay, inputMonth, inputYear);
-                        expenseViewModel.deselectAllExpenses();
-                    }
-                }
-                expenseViewModel.setExpenseOverlayVisibility(false);
             }
         });
 
         expenseViewModel.getSelectedExpensesLiveData().observe(getViewLifecycleOwner(), selectedExpenses -> {
             if(selectedExpenses != null) {
                 if (selectedExpenses.size() == 1) {
-                    if(overlay_add_edit_expense.getVisibility() == View.VISIBLE){
+                    if(Boolean.TRUE.equals(expenseViewModel.getExpenseOverlayVisibility().getValue())){
                         editExpenseButton.setVisibility(View.GONE);
                         deleteExpenseButton.setVisibility(View.GONE);
                     } else {
@@ -407,70 +291,67 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        overlay_delete = inflater.inflate(R.layout.overlay_delete, expenseRootLayout, false);
-        expenseRootLayout.addView(overlay_delete);
-        overlay_delete.setVisibility(View.GONE);
-        Button deleteButton = view.findViewById(R.id.deleteButton);
-        Button cancelButton = view.findViewById(R.id.cancelDeleteButton);
-        TextView deleteText = view.findViewById(R.id.deleteText);
-        TextView deleteDescriptionText = view.findViewById(R.id.deleteDescriptionText);
-        deleteText.setText(R.string.delete_expense);
-        deleteDescriptionText.setText(R.string.delete_expense_description);
+        // gestione eliminazione di una spesa
+        overlayDelete = new OverlayDelete(diaryRootLayout, requireContext(), expenseViewModel);
 
         expenseViewModel.getDeleteOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                showOverlay(DELETE_EXPENSE);
+                disableSwipeAndButtons();
+                darkBackground.setVisibility(View.VISIBLE);
             } else {
-                hideOverlay(DELETE_EXPENSE, view);
+                enableSwipeAndButtons(view);
+                darkBackground.setVisibility(View.GONE);
+                List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
+                if(selectedExpenses != null && !selectedExpenses.isEmpty()){
+                    addExpenseButton.setEnabled(false);
+                }
             }
         });
 
-        deleteButton.setOnClickListener(deleteButtonListener -> {
-            expenseViewModel.deleteSelectedExpenses();
-            expenseViewModel.setDeleteOverlayVisibility(false);
+        deleteExpenseButton.setOnClickListener(deleteExpenseButtonListener -> {
+            expenseViewModel.setDeleteOverlayVisibility(true);
+            overlayDelete.showOverlay();
+            TextView deleteText = requireActivity().findViewById(R.id.deleteText);
+            TextView deleteDescriptionText = requireActivity().findViewById(R.id.deleteDescriptionText);
+            deleteText.setText(R.string.delete_expense);
+            deleteDescriptionText.setText(R.string.delete_expense_description);
         });
-
-        cancelButton.setOnClickListener(cancelButtonListener -> {
-            expenseViewModel.setDeleteOverlayVisibility(false);
-            addExpenseButton.setEnabled(false);
-        });
-
-        deleteExpenseButton.setOnClickListener(deleteExpenseButtonListener ->
-                expenseViewModel.setDeleteOverlayVisibility(true));
 
         editExpenseButton.setOnClickListener(editExpenseButtonListener -> {
             bEdit = true;
             expenseViewModel.setExpenseOverlayVisibility(true);
+            overlayExpense.showOverlay(bAdd, bEdit, inputCurrency);
         });
 
         // gestione del filtro delle spese
-        overlay_filter = inflater.inflate(R.layout.overlay_filter, expenseRootLayout, false);
-        expenseRootLayout.addView(overlay_filter);
-        overlay_filter.setVisibility(View.GONE);
+        overlayFilter = new OverlayFilter(requireContext(), diaryRootLayout, expenseViewModel);
 
         filterButton = view.findViewById(R.id.buttonFilter);
-        ImageButton filterBackButton = view.findViewById(R.id.backButtonFilter);
-        Button saveCategoryButton = view.findViewById(R.id.saveCategory);
         closeFilterButton = view.findViewById(R.id.closeFilter);
         filterTextView = view.findViewById(R.id.testoFiltro);
-        filterCategoryEditText = view.findViewById(R.id.inputCategoryFilter);
-        filterCategoryEditText.setAdapter(categoryAdapter);
-
-        filterBackButton.setOnClickListener(filterBackButtonListener -> {
-            expenseViewModel.setFilterOverlayVisibility(false);
-            bFilter = false;
-        });
 
         filterButton.setOnClickListener(filterButtonListener -> {
             expenseViewModel.setFilterOverlayVisibility(true);
-            bFilter = true;
+            overlayFilter.showOverlay();
         });
 
         expenseViewModel.getFilterOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                showOverlay(FILTER);
+                disableSwipeAndButtons();
+                darkBackground.setVisibility(View.VISIBLE);
             } else {
-                hideOverlay(FILTER, view);
+                enableSwipeAndButtons(view);
+                darkBackground.setVisibility(View.GONE);
+                boolean filter = false;
+                if(expenseViewModel.getBFilter().getValue() != null) {
+                    filter = expenseViewModel.getBFilter().getValue();
+                }
+                if(filter){
+                    closeFilterButton.setVisibility(View.VISIBLE);
+                    filterTextView.setVisibility(View.VISIBLE);
+                    totExpenseTextView.setVisibility(View.VISIBLE);
+                    addExpenseButton.setEnabled(false);
+                }
             }
         });
 
@@ -483,23 +364,13 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        saveCategoryButton.setOnClickListener(saveCategoryButtonListener -> {
-            inputFilterCategory = filterCategoryEditText.getText().toString().trim();
-            expenseViewModel.filterExpenses(inputFilterCategory);
-            expenseViewModel.setFilterOverlayVisibility(false);
-            closeFilterButton.setVisibility(View.VISIBLE);
-            filterTextView.setVisibility(View.VISIBLE);
-            totExpenseTextView.setVisibility(View.VISIBLE);
-            addExpenseButton.setEnabled(false);
-        });
-
         closeFilterButton.setOnClickListener(closeFilterButtonListener -> {
             expensesRecyclerAdapter.setExpenseList(expenseViewModel.getAllExpenses());
             closeFilterButton.setVisibility(View.GONE);
             filterTextView.setVisibility(View.GONE);
             totExpenseTextView.setVisibility(View.GONE);
             addExpenseButton.setEnabled(true);
-            bFilter = false;
+            expenseViewModel.setBFilter(false);
         });
 
         // gestione modifica progress indicator
@@ -522,49 +393,6 @@ public class ExpensesFragment extends Fragment {
         progressTextView.setText(formattedText);
     }
 
-    public void updateCurrencyIcon(){
-        TextInputLayout textQuantity = overlay_add_edit_expense.findViewById(R.id.textFieldQuantita);
-        if(inputCurrency.equalsIgnoreCase(CURRENCY_EUR)){
-            textQuantity.setStartIconDrawable(R.drawable.baseline_euro_24);
-        }else if(inputCurrency.equalsIgnoreCase(CURRENCY_USD)){
-            textQuantity.setStartIconDrawable(R.drawable.baseline_attach_money_24);
-        }else if(inputCurrency.equalsIgnoreCase(CURRENCY_GBP)){
-            textQuantity.setStartIconDrawable(R.drawable.baseline_currency_pound_24);
-        }else if(inputCurrency.equalsIgnoreCase(CURRENCY_JPY)){
-            textQuantity.setStartIconDrawable(R.drawable.baseline_currency_yen_24);
-        }
-    }
-
-    private void showOverlay(String overlayType) {
-        disableSwipeAndButtons();
-        switch (overlayType) {
-            case BUDGET:
-                overlay_add_budget.setVisibility(View.VISIBLE);
-                break;
-            case ADD_EXPENSE:
-                if(budget == 0) {
-                    Snackbar snackbar = Snackbar.make(expenseRootLayout, R.string.snackbarErroreBudget, Snackbar.LENGTH_SHORT);
-                    snackbar.show();
-                    expenseViewModel.setExpenseOverlayVisibility(false);
-                } else {
-                    overlay_add_edit_expense.setVisibility(View.VISIBLE);
-                    resetExpenseInputFields();
-                }
-                break;
-            case EDIT_EXPENSE:
-                overlay_add_edit_expense.setVisibility(View.VISIBLE);
-                populateExpenseFields();
-                break;
-            case FILTER:
-                overlay_filter.setVisibility(View.VISIBLE);
-                filterCategoryEditText.setText("", false);
-                break;
-            case DELETE_EXPENSE:
-                overlay_delete.setVisibility(View.VISIBLE);
-                break;
-        }
-    }
-
     private void disableSwipeAndButtons() {
         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
         addExpenseButton.setEnabled(false);
@@ -577,60 +405,12 @@ public class ExpensesFragment extends Fragment {
     private void enableSwipeAndButtons(View view) {
         ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
         Constants.hideKeyboard(view, requireActivity());
-        if(!bFilter) {
+        if(expenseViewModel.getBFilter().getValue() != null && !expenseViewModel.getBFilter().getValue()) {
             addExpenseButton.setEnabled(true);
         }
         editBudgetButton.setEnabled(true);
         editExpenseButton.setEnabled(true);
         deleteExpenseButton.setEnabled(true);
         filterButton.setEnabled(true);
-    }
-
-    private void hideOverlay(String overlayType, View view) {
-        enableSwipeAndButtons(view);
-        switch (overlayType) {
-            case BUDGET:
-                overlay_add_budget.setVisibility(View.GONE);
-                break;
-            case ADD_EXPENSE:
-                overlay_add_edit_expense.setVisibility(View.GONE);
-                bAdd = false;
-                break;
-            case EDIT_EXPENSE:
-                overlay_add_edit_expense.setVisibility(View.GONE);
-                bEdit = false;
-                break;
-            case FILTER:
-                overlay_filter.setVisibility(View.GONE);
-                break;
-            case DELETE_EXPENSE:
-                overlay_delete.setVisibility(View.GONE);
-                break;
-        }
-    }
-
-    private void resetExpenseInputFields() {
-        amountEditText.setText("");
-        categoryAutoCompleteTextView.setText("");
-        descriptionEditText.setText("");
-        dayEditText.setText("");
-        monthEditText.setText("");
-        yearEditText.setText("");
-    }
-
-    private void populateExpenseFields() {
-        List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
-        if (selectedExpenses != null && !selectedExpenses.isEmpty()) {
-            Expense currentExpense = selectedExpenses.get(0);
-            String tmp = expenseViewModel.extractRealAmount(currentExpense);
-            amountEditText.setText(tmp);
-            categoryAutoCompleteTextView.setText(currentExpense.getCategory(), false);
-            descriptionEditText.setText(currentExpense.getDescription());
-
-            int[] extractedDate = expenseViewModel.extractDayMonthYear(currentExpense.getDate());
-            dayEditText.setText(String.valueOf(extractedDate[0]));
-            monthEditText.setText(String.valueOf(extractedDate[1]));
-            yearEditText.setText(String.valueOf(extractedDate[2]));
-        }
     }
 }

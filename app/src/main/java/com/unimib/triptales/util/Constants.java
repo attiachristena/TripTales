@@ -1,7 +1,5 @@
 package com.unimib.triptales.util;
 
-import static android.app.PendingIntent.getActivity;
-
 import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,21 +24,10 @@ public class Constants {
     public static final List<String> CATEGORIES = Arrays.asList(SHOPPING,
             FOOD, TRANSPORT, ACCOMMODATION, CULTURE, RECREATION);
 
-    public static final String BUDGET = "BUDGET";
-    public static final String ADD_EXPENSE = "ADD_EXPENSE";
-    public static final String EDIT_EXPENSE = "EDIT_EXPENSE";
-    public static final String DELETE_EXPENSE = "DELETE_EXPENSE";
-    public static final String FILTER = "FILTER";
     public static final String ADDED = "ADDED";
     public static final String UPDATED = "UPDATED";
     public static final String DELETED = "DELETED";
     public static final String INVALID_DELETE = "INVALID_DELETE";
-    public static final String ADD_GOAL = "ADD_GOAL";
-    public static final String EDIT_GOAL = "EDIT_GOAL";
-    public static final String DELETE_GOAL = "DELETE_GOAL";
-    public static final String ADD_TASK = "ADD_TASK";
-    public static final String EDIT_TASK = "EDIT_TASK";
-    public static final String DELETE_TASK = "DELETE_TASK";
     public static final String ADD_DIARY = "ADD_DIARY";
     public static final String EDIT_DIARY = "EDIT_DIARY";
 

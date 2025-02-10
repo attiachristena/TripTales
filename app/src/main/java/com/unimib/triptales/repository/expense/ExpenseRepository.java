@@ -1,5 +1,8 @@
 package com.unimib.triptales.repository.expense;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.database.AppRoomDatabase;
@@ -8,6 +11,7 @@ import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseRemoteDataSource;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCallback{
 
@@ -16,6 +20,7 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     private final MutableLiveData<List<Expense>> expensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> selectedExpensesLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Expense>> filteredExpensesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private boolean remoteDelete = false;
     private boolean localDelete = false;
 
@@ -133,5 +138,6 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     }
 
     @Override
-    public void onFailureFromLocal(Exception exception) {}
+    public void onFailureFromLocal(Exception exception) {
+    }
 }
