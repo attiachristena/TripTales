@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -80,12 +79,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_gray_style));
         updateMap(homeViewModel.getAllCountries(SharedPreferencesUtils.getLoggedUserId()));
 
-        homeViewModel.getCountriesLiveData().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> countryList) {
-                updateMap(countryList);
-            }
-        });
+        homeViewModel.getCountriesLiveData().observe(getViewLifecycleOwner(),
+                this::updateMap);
 
         // Controlla i permessi di localizzazione
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -134,9 +129,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void updateMap(List<String> countryList){
-        //String userId = SharedPreferencesUtils.getLoggedUserId();
-        //List<String> countryList = homeViewModel.getAllCountries(userId);
-
         HashSet<String> countryListSet = new HashSet<>(countryList);
         HashSet<String> countryPolygonsSet = new HashSet<>(countryPolygons.keySet());
 
