@@ -18,5 +18,5 @@
     <color name="hint">#757575</color>
     <color name="rounded_button">#2C2C2C</color>
     <color name="text_reverse">#FFFFFFFF</color>
-
+    <color name="otherDaysColor">#757575</color>
 </resources>

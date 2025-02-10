@@ -58,5 +58,6 @@
     <color name="hint">#B6B1B1</color>
     <color name="rounded_button">#EEEEEE</color>
     <color name="text_reverse">#2C2C2C</color>
+    <color name="otherDaysColor">#BDBDBD</color>
 
 </resources>
