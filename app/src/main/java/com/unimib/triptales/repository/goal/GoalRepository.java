@@ -122,7 +122,7 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
 
     @Override
     public void onFailureFromRemote(Exception exception) {
-        Log.e("FirebaseError", "Errore nel recupero remoto: " + exception.getMessage());
+        Log.e("FirebaseError", "Error goal: " + exception.getMessage());
     }
 
     @Override
@@ -150,6 +150,6 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
 
     @Override
     public void onFailureFromLocal(Exception exception) {
-        Log.e("DatabaseError", "Errore nel recupero locale: " + exception.getMessage());
+        Log.e("DatabaseError", "Error goal: " + exception.getMessage());
     }
 }

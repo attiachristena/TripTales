@@ -103,7 +103,7 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
 
     @Override
     public void onFailureFromRemote(Exception exception) {
-        Log.e("FirebaseError", "Errore nel recupero remoto: " + exception.getMessage());
+        Log.e("FirebaseError", "Error task: " + exception.getMessage());
     }
 
     @Override
@@ -126,6 +126,6 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
 
     @Override
     public void onFailureFromLocal(Exception exception) {
-        Log.e("FirebaseError", "Errore nel recupero remoto: " + exception.getMessage());
+        Log.e("FirebaseError", "Error task: " + exception.getMessage());
     }
 }
