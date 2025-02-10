@@ -169,10 +169,11 @@ public class TasksFragment extends Fragment {
 
         taskViewModel.getTaskOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                disableSwipeAndButtons();
+                darkBackground.setClickable(true);
                 darkBackground.setVisibility(View.VISIBLE);
             } else {
-                enableSwipeAndButtons(view);
+                Constants.hideKeyboard(view, requireActivity());
+                darkBackground.setClickable(false);
                 darkBackground.setVisibility(View.GONE);
                 if(bAdd){
                     bAdd = false;
@@ -193,10 +194,11 @@ public class TasksFragment extends Fragment {
 
         taskViewModel.getDeleteOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                disableSwipeAndButtons();
+                darkBackground.setClickable(true);
                 darkBackground.setVisibility(View.VISIBLE);
             } else {
-                enableSwipeAndButtons(view);
+                Constants.hideKeyboard(view, requireActivity());
+                darkBackground.setClickable(false);
                 darkBackground.setVisibility(View.GONE);
                 List<Task> selectedTasks = taskViewModel.getSelectedTasksLiveData().getValue();
                 if(selectedTasks != null && !selectedTasks.isEmpty()){
@@ -213,20 +215,5 @@ public class TasksFragment extends Fragment {
             deleteText.setText(R.string.delete_task);
             deleteDescriptionText.setText(R.string.delete_task_description);
         });
-    }
-
-    private void disableSwipeAndButtons(){
-        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-        addTaskButton.setEnabled(false);
-        editTaskButton.setEnabled(false);
-        deleteTaskButton.setEnabled(false);
-    }
-
-    private void enableSwipeAndButtons(View view){
-        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-        Constants.hideKeyboard(view, requireActivity());
-        addTaskButton.setEnabled(true);
-        editTaskButton.setEnabled(true);
-        deleteTaskButton.setEnabled(true);
     }
 }

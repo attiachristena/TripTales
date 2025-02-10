@@ -162,6 +162,7 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
+        filterButton = view.findViewById(R.id.buttonFilter);
         expenseViewModel.getExpensesLiveData().observe(getViewLifecycleOwner(), expenses -> {
             if(expenses != null) {
                 expensesRecyclerAdapter.setExpenseList(expenses);
@@ -197,10 +198,11 @@ public class ExpensesFragment extends Fragment {
 
         expenseViewModel.getBudgetOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if (visible) {
-                disableSwipeAndButtons();
+                darkBackground.setClickable(true);
                 darkBackground.setVisibility(View.VISIBLE);
             } else {
-                enableSwipeAndButtons(view);
+                Constants.hideKeyboard(view, requireActivity());
+                darkBackground.setClickable(false);
                 darkBackground.setVisibility(View.GONE);
             }
         });
@@ -233,10 +235,11 @@ public class ExpensesFragment extends Fragment {
 
         expenseViewModel.getExpenseOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if (visible) {
-                disableSwipeAndButtons();
+                darkBackground.setClickable(true);
                 darkBackground.setVisibility(View.VISIBLE);
             } else {
-                enableSwipeAndButtons(view);
+                Constants.hideKeyboard(view, requireActivity());
+                darkBackground.setClickable(false);
                 darkBackground.setVisibility(View.GONE);
                 if(bAdd){
                     bAdd = false;
@@ -296,10 +299,11 @@ public class ExpensesFragment extends Fragment {
 
         expenseViewModel.getDeleteOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                disableSwipeAndButtons();
+                darkBackground.setClickable(true);
                 darkBackground.setVisibility(View.VISIBLE);
             } else {
-                enableSwipeAndButtons(view);
+                Constants.hideKeyboard(view, requireActivity());
+                darkBackground.setClickable(false);
                 darkBackground.setVisibility(View.GONE);
                 List<Expense> selectedExpenses = expenseViewModel.getSelectedExpensesLiveData().getValue();
                 if(selectedExpenses != null && !selectedExpenses.isEmpty()){
@@ -326,7 +330,6 @@ public class ExpensesFragment extends Fragment {
         // gestione del filtro delle spese
         overlayFilter = new OverlayFilter(requireContext(), diaryRootLayout, expenseViewModel);
 
-        filterButton = view.findViewById(R.id.buttonFilter);
         closeFilterButton = view.findViewById(R.id.closeFilter);
         filterTextView = view.findViewById(R.id.testoFiltro);
 
@@ -337,10 +340,11 @@ public class ExpensesFragment extends Fragment {
 
         expenseViewModel.getFilterOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                disableSwipeAndButtons();
+                darkBackground.setClickable(true);
                 darkBackground.setVisibility(View.VISIBLE);
             } else {
-                enableSwipeAndButtons(view);
+                Constants.hideKeyboard(view, requireActivity());
+                darkBackground.setClickable(false);
                 darkBackground.setVisibility(View.GONE);
                 boolean filter = false;
                 if(expenseViewModel.getBFilter().getValue() != null) {
@@ -391,26 +395,5 @@ public class ExpensesFragment extends Fragment {
         String formattedText = spent + " / " + budget + " " + text + " (" +
                 progressPercentage + "%)";
         progressTextView.setText(formattedText);
-    }
-
-    private void disableSwipeAndButtons() {
-        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-        addExpenseButton.setEnabled(false);
-        editBudgetButton.setEnabled(false);
-        editExpenseButton.setEnabled(false);
-        deleteExpenseButton.setEnabled(false);
-        filterButton.setEnabled(false);
-    }
-
-    private void enableSwipeAndButtons(View view) {
-        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-        Constants.hideKeyboard(view, requireActivity());
-        if(expenseViewModel.getBFilter().getValue() != null && !expenseViewModel.getBFilter().getValue()) {
-            addExpenseButton.setEnabled(true);
-        }
-        editBudgetButton.setEnabled(true);
-        editExpenseButton.setEnabled(true);
-        deleteExpenseButton.setEnabled(true);
-        filterButton.setEnabled(true);
     }
 }

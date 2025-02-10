@@ -124,8 +124,4 @@ public class DiaryActivity extends AppCompatActivity {
         ImageButton diaryBackButton = findViewById(R.id.backButtonDiary);
         diaryBackButton.setOnClickListener(diaryBackButtonListener -> finish());
     }
-
-    public void setViewPagerSwipeEnabled(boolean enabled) {
-        viewPager2.setUserInputEnabled(enabled);
-    }
 }

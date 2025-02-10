@@ -59,25 +59,25 @@
         app:tabPaddingStart="5dp">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tappeFragment"
+            android:id="@+id/tabCheckpoint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tabTappe" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/expensesFragment"
+            android:id="@+id/tabExpenses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tabSpese" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/obiettiviFragment"
+            android:id="@+id/tabGoals"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tabObiettivi" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/checkListFragment"
+            android:id="@+id/tabTasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tabAttivita" />

@@ -9,6 +9,7 @@ import static com.unimib.triptales.util.Constants.CURRENCY_USD;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class OverlayAddEditExpense {
 
         Button saveExpenseButton = overlayView.findViewById(R.id.salvaSpesa);
         amountEditText = overlayView.findViewById(R.id.inputQuantitaSpesa);
+        amountEditText.setKeyListener(DigitsKeyListener.getInstance("0123456789.,"));
         categoryAutoCompleteTextView = overlayView.findViewById(R.id.inputCategory);
         descriptionEditText = overlayView.findViewById(R.id.inputDescription);
         dayEditText = overlayView.findViewById(R.id.inputDay);
@@ -103,7 +105,7 @@ public class OverlayAddEditExpense {
         categoryAutoCompleteTextView.setAdapter(categoryAdapter);
 
         saveExpenseButton.setOnClickListener(saveExpenseButtonListener -> {
-            String inputAmount = amountEditText.getText().toString().trim();
+            String inputAmount = amountEditText.getText().toString().replace(",", ".");
             String inputCategory = categoryAutoCompleteTextView.getText().toString().trim();
             String inputDescription = descriptionEditText.getText().toString().trim();
             String inputDay = dayEditText.getText().toString().trim();

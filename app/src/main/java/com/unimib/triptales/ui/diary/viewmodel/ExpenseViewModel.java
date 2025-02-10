@@ -21,6 +21,8 @@ import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 
@@ -148,7 +150,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         if(day != null && !day.isEmpty()) inputDay = Integer.parseInt(day);
         if(month != null && !month.isEmpty()) inputMonth = Integer.parseInt(month);
         if(year != null && !year.isEmpty()) inputYear = Integer.parseInt(year);
-        if (amount == null || amount.isEmpty()) {
+        if (amount == null || amount.isEmpty() || amount.charAt(0) == '0') {
             errorLiveData.setValue(getApplication().getString(R.string.errorAmount));
         } else if (category == null || category.isEmpty()) {
             errorLiveData.setValue(getApplication().getString(R.string.errorFilterExpenses));
@@ -174,7 +176,8 @@ public class ExpenseViewModel extends AndroidViewModel {
             daysInMonth[1] = 29;
         }
 
-        if(inputMonth != 0 && inputDay > daysInMonth[inputMonth - 1]){
+        if(errorLiveData.getValue() == null && inputMonth != 0 &&
+                inputDay > daysInMonth[inputMonth - 1]){
             errorLiveData.setValue(getApplication().getString(R.string.errorInputDay));
         }
 
@@ -320,23 +323,23 @@ public class ExpenseViewModel extends AndroidViewModel {
         return tmp;
     }
 
-    public double countAmount(List<Expense> expenseList){
-        double totExpense = 0;
-        String currency;
-        if(expenseList != null && !expenseList.isEmpty()) {
+    public double countAmount(List<Expense> expenseList) {
+        BigDecimal totExpense = BigDecimal.ZERO;
+        if (expenseList != null && !expenseList.isEmpty()) {
             for (Expense e : expenseList) {
                 String amount = e.getAmount();
                 String realAmount;
-                currency = getInputCurrency(amount);
+                String currency = getInputCurrency(amount);
                 if (currency.equalsIgnoreCase(CURRENCY_EUR)) {
                     realAmount = amount.substring(0, amount.length() - 1);
                 } else {
                     realAmount = amount.substring(1);
                 }
-                totExpense += Double.parseDouble(realAmount);
+                BigDecimal expenseValue = new BigDecimal(realAmount);
+                totExpense = totExpense.add(expenseValue);
             }
         }
-        return totExpense;
+        return totExpense.setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     public String getInputCurrency(String amount){

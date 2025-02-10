@@ -27,7 +27,6 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.GoalsRecyclerAdapter;
 import com.unimib.triptales.model.Goal;
 import com.unimib.triptales.repository.goal.IGoalRepository;
-import com.unimib.triptales.ui.diary.DiaryActivity;
 import com.unimib.triptales.ui.diary.overlay.OverlayAddEditGoal;
 import com.unimib.triptales.ui.diary.overlay.OverlayDelete;
 import com.unimib.triptales.ui.diary.viewmodel.GoalViewModel;
@@ -177,10 +176,11 @@ public class GoalsFragment extends Fragment {
 
         goalViewModel.getGoalOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                disableSwipeAndButtons();
+                darkBackground.setClickable(true);
                 darkBackground.setVisibility(View.VISIBLE);
             } else {
-                enableSwipeAndButtons(view);
+                Constants.hideKeyboard(view, requireActivity());
+                darkBackground.setClickable(false);
                 darkBackground.setVisibility(View.GONE);
                 if(bAdd){
                     bAdd = false;
@@ -202,10 +202,11 @@ public class GoalsFragment extends Fragment {
 
         goalViewModel.getDeleteOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {
             if(visible){
-                disableSwipeAndButtons();
+                darkBackground.setClickable(true);
                 darkBackground.setVisibility(View.VISIBLE);
             } else {
-                enableSwipeAndButtons(view);
+                Constants.hideKeyboard(view, requireActivity());
+                darkBackground.setClickable(false);
                 darkBackground.setVisibility(View.GONE);
                 List<Goal> selectedGoals = goalViewModel.getSelectedGoalsLiveData().getValue();
                 if(selectedGoals != null && !selectedGoals.isEmpty()){
@@ -248,20 +249,5 @@ public class GoalsFragment extends Fragment {
             String tmp = getString(R.string.numObiettivi, 0, 0);
             progressTextView.setText(tmp);
         }
-    }
-
-    private void disableSwipeAndButtons(){
-        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(false);
-        addGoalButton.setEnabled(false);
-        deleteGoalButton.setEnabled(false);
-        editGoalButton.setEnabled(false);
-    }
-
-    private void enableSwipeAndButtons(View view){
-        ((DiaryActivity) requireActivity()).setViewPagerSwipeEnabled(true);
-        Constants.hideKeyboard(view, requireActivity());
-        addGoalButton.setEnabled(true);
-        deleteGoalButton.setEnabled(true);
-        editGoalButton.setEnabled(true);
     }
 }
