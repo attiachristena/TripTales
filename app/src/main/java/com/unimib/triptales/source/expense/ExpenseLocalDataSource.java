@@ -39,15 +39,20 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
         try{
             if (newCategory.equalsIgnoreCase("Shopping")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_shopping_cart_24);
-            } else if (newCategory.equalsIgnoreCase("Cibo")){
+            } else if (newCategory.equalsIgnoreCase("Cibo")
+                        || newCategory.equalsIgnoreCase("Food")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_fastfood_24);
-            } else if (newCategory.equalsIgnoreCase("Trasporto")){
+            } else if (newCategory.equalsIgnoreCase("Trasporto")
+                        || newCategory.equalsIgnoreCase("Transportation")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_directions_bus_24);
-            } else if (newCategory.equalsIgnoreCase("Alloggio")){
+            } else if (newCategory.equalsIgnoreCase("Alloggio")
+                        || newCategory.equalsIgnoreCase("Accommodation")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_hotel_24);
-            } else if (newCategory.equalsIgnoreCase("Cultura")){
+            } else if (newCategory.equalsIgnoreCase("Cultura")
+                        || newCategory.equalsIgnoreCase("Culture")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_museum_24);
-            } else if (newCategory.equalsIgnoreCase("Svago")){
+            } else if (newCategory.equalsIgnoreCase("Svago")
+                        || newCategory.equalsIgnoreCase("Leisure")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_attractions_24);
             }
             expenseDao.updateCategory(expenseId, newCategory);
