@@ -1,7 +1,5 @@
 package com.unimib.triptales.ui.diary.overlay;
 
-import static com.unimib.triptales.util.Constants.CATEGORIES;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,9 @@ import android.widget.ImageButton;
 
 import com.unimib.triptales.R;
 import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class OverlayFilter {
     private final Context context;
@@ -32,9 +33,16 @@ public class OverlayFilter {
         ImageButton filterBackButton = overlayView.findViewById(R.id.backButtonFilter);
         Button saveCategoryButton = overlayView.findViewById(R.id.saveCategory);
 
+        List<String> categories = Arrays.asList(context.getString(R.string.shopping_category),
+                context.getString(R.string.food_category),
+                context.getString(R.string.transport_category),
+                context.getString(R.string.accommodation_category),
+                context.getString(R.string.culture_category),
+                context.getString(R.string.fun_category));
+
         AutoCompleteTextView filterCategoryEditText = overlayView.findViewById(R.id.inputCategoryFilter);
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(context,
-                android.R.layout.simple_dropdown_item_1line, CATEGORIES);
+                android.R.layout.simple_dropdown_item_1line, categories);
         filterCategoryEditText.setAdapter(categoryAdapter);
 
         filterCategoryEditText.setText("", false);

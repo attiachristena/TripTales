@@ -159,7 +159,6 @@
                 app:iconTint="@null"
                 android:layout_marginBottom="30dp"
                 />
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

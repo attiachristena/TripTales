@@ -1,6 +1,5 @@
 package com.unimib.triptales.ui.diary.overlay;
 
-import static com.unimib.triptales.util.Constants.CATEGORIES;
 import static com.unimib.triptales.util.Constants.CURRENCY_EUR;
 import static com.unimib.triptales.util.Constants.CURRENCY_GBP;
 import static com.unimib.triptales.util.Constants.CURRENCY_JPY;
@@ -24,6 +23,7 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class OverlayAddEditExpense {
@@ -100,8 +100,15 @@ public class OverlayAddEditExpense {
             public void afterTextChanged(Editable editable) {}
         });
 
+        List<String> categories = Arrays.asList(context.getString(R.string.shopping_category),
+                context.getString(R.string.food_category),
+                context.getString(R.string.transport_category),
+                context.getString(R.string.accommodation_category),
+                context.getString(R.string.culture_category),
+                context.getString(R.string.fun_category));
+
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(context,
-                android.R.layout.simple_dropdown_item_1line, CATEGORIES);
+                android.R.layout.simple_dropdown_item_1line, categories);
         categoryAutoCompleteTextView.setAdapter(categoryAdapter);
 
         saveExpenseButton.setOnClickListener(saveExpenseButtonListener -> {

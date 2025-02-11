@@ -72,7 +72,7 @@
     <string name="snackbarGoalDeleted">Goal deleted</string>
     <string name="snackbarGoalNotDeleted">Error: goal not deleted</string>
     <string name="searchbar_hint">Search diary by name</string>
-    <string name="nomeStringheParser">\"NAME_EN\"</string>
+    <string name="nome_stringhe_parser">NAME_EN</string>
     <string name="errorFilterExpenses">Pick a category</string>
     <string name="delete_expense">Delete expense</string>
     <string name="delete_expense_description">Are you sure you want to eliminate the expense?</string>
@@ -254,5 +254,13 @@
     <string name="errore_nel_recupero_dati">Error retrieving data</string>
     <string name="seleziona_lingua">Select language</string>
     <string name="progressText">spent</string>
+    <string name="viaggio">Trip:</string>
+    <string name="food_category">Food</string>
+    <string name="transport_category">Transportation</string>
+    <string name="accommodation_category">Accommodation</string>
+    <string name="culture_category">Culture</string>
+    <string name="fun_category">Leisure</string>
+    <string name="caricamento">Loading...</string>
+
 
 </resources>

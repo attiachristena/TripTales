@@ -59,7 +59,8 @@ public class CalendarFragment extends Fragment {
             String diaryName = diaryNameMap.get(clickedDay);
 
             if (diaryName != null) {
-                Toast.makeText(getContext(), "Viaggio: " + diaryName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.viaggio) + " "
+                        + diaryName, Toast.LENGTH_SHORT).show();
             }
         });
 
