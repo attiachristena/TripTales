@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
@@ -56,6 +55,7 @@ public class LoginFragment extends Fragment {
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
     private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
     private UserViewModel userViewModel;
+    private LoadingDialog loadingDialog;
 
     public LoginFragment() {
     }
@@ -66,6 +66,8 @@ public class LoginFragment extends Fragment {
 
         IUserRepository userRepository = ServiceLocator.getINSTANCE().getUserRepository();
         userViewModel = new ViewModelProvider(requireActivity(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
+        loadingDialog = new LoadingDialog(requireActivity());
 
         oneTapClient = Identity.getSignInClient(requireActivity());
         signInRequest = BeginSignInRequest.builder()
@@ -85,11 +87,13 @@ public class LoginFragment extends Fragment {
         activityResultLauncher = registerForActivityResult(startIntentSenderForResult, activityResult -> {
             if (activityResult.getResultCode() == Activity.RESULT_OK) {
                 Log.d(TAG, "result.getResultCode() == Activity.RESULT_OK");
+                loadingDialog.startLoadingDialog();
                 try {
                     SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(activityResult.getData());
                     String idToken = credential.getGoogleIdToken();
                     if (idToken !=  null) {
                         userViewModel.getGoogleUserMutableLiveData(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
+                            loadingDialog.dismissDialog();
                             if (authenticationResult.isSuccess()) {
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
@@ -184,8 +188,11 @@ public class LoginFragment extends Fragment {
 
                 loginButton.setEnabled(false);
 
+                loadingDialog.startLoadingDialog();
+
                 userViewModel.getUserMutableLiveData(email, password, true).observe(getViewLifecycleOwner(), result -> {
                     loginButton.setEnabled(true);
+                    loadingDialog.dismissDialog();
                     if (result.isSuccess()) {
                         SharedPreferencesUtils.setLoggedIn(getContext(), true);
                         startActivity(new Intent(getContext(), HomepageActivity.class));

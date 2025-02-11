@@ -262,5 +262,6 @@
     <string name="accommodation_category">Alloggio</string>
     <string name="culture_category">Cultura</string>
     <string name="fun_category">Svago</string>
+    <string name="caricamento">Caricamento...</string>
 
 </resources>
