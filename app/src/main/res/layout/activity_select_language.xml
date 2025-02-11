@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.intro.SelectLanguageActivity"
-    android:background="@color/bg_app_color"
+    android:background="@color/primary"
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
@@ -45,7 +45,7 @@
         android:id="@+id/icona_app"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@drawable/icona_prova"
+        android:src="@drawable/icona_senza_sfondo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
