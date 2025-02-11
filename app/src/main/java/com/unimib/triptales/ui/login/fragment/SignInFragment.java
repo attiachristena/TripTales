@@ -56,7 +56,6 @@ public class SignInFragment extends Fragment {
     private BeginSignInRequest signInRequest;
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
     private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
-    private LoadingDialog loadingDialog;
 
     public SignInFragment() {
     }
@@ -68,7 +67,6 @@ public class SignInFragment extends Fragment {
         IUserRepository userRepository = ServiceLocator.getINSTANCE().getUserRepository();
         userViewModel = new ViewModelProvider(requireActivity(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
-        loadingDialog = new LoadingDialog(requireActivity());
 
         oneTapClient = Identity.getSignInClient(requireActivity());
         signInRequest = BeginSignInRequest.builder()
@@ -88,13 +86,11 @@ public class SignInFragment extends Fragment {
         activityResultLauncher = registerForActivityResult(startIntentSenderForResult, activityResult -> {
             if (activityResult.getResultCode() == Activity.RESULT_OK) {
                 Log.d(TAG, "result.getResultCode() == Activity.RESULT_OK");
-                loadingDialog.startLoadingDialog();
                 try {
                     SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(activityResult.getData());
                     String idToken = credential.getGoogleIdToken();
                     if (idToken !=  null) {
                         userViewModel.signUpWithGoogle(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
-                            loadingDialog.dismissDialog();
                             if (authenticationResult.isSuccess()) {
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
@@ -196,14 +192,12 @@ public class SignInFragment extends Fragment {
 
             if (isValid) {
                 signInButton.setEnabled(false);
-                loadingDialog.startLoadingDialog();
                 userViewModel.signupUser(editTextNome.getText().toString(),
                         editTextCognome.getText().toString(),
                         editTextEmail.getText().toString(),
                         editTextPassword.getText().toString())
                         .observe(getViewLifecycleOwner(), result -> {
                             signInButton.setEnabled(true);
-                            loadingDialog.dismissDialog();
                             if (result.isSuccess()) {
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
