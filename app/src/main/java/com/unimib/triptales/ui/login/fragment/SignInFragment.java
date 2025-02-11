@@ -100,6 +100,7 @@ public class SignInFragment extends Fragment {
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
+                                hideLoadingDialog();
                                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) authenticationResult).getMessage()),
                                         Snackbar.LENGTH_SHORT).show();
@@ -203,12 +204,13 @@ public class SignInFragment extends Fragment {
                         editTextPassword.getText().toString())
                         .observe(getViewLifecycleOwner(), result -> {
                             signInButton.setEnabled(true);
-                            hideLoadingDialog();
                             if (result.isSuccess()) {
+                                hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                hideLoadingDialog();
+                                Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getString(R.string.error_unexpected), Snackbar.LENGTH_SHORT).show();
                     }
                 });

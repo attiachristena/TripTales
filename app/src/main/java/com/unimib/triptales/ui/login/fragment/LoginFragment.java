@@ -92,12 +92,13 @@ public class LoginFragment extends Fragment {
                     if (idToken !=  null) {
                         showLoadingDialog();
                         userViewModel.getGoogleUserMutableLiveData(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
-                            hideLoadingDialog();
                             if (authenticationResult.isSuccess()) {
+                                hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
+                                hideLoadingDialog();
                                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) authenticationResult).getMessage()),
                                         Snackbar.LENGTH_SHORT).show();
@@ -191,12 +192,13 @@ public class LoginFragment extends Fragment {
 
                 userViewModel.getUserMutableLiveData(email, password, true).observe(getViewLifecycleOwner(), result -> {
                     loginButton.setEnabled(true);
-                    hideLoadingDialog();
                     if (result.isSuccess()) {
+                        hideLoadingDialog();
                         SharedPreferencesUtils.setLoggedIn(getContext(), true);
                         startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
                         userViewModel.setAuthenticationError(true);
+                        hideLoadingDialog();
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getErrorMessage(((Result.Error) result).getMessage()),
                                 Snackbar.LENGTH_SHORT).show();
