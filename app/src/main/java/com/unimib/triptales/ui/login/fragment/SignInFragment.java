@@ -4,6 +4,7 @@ import static com.unimib.triptales.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static com.unimib.triptales.util.Constants.INVALID_USER_ERROR;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -56,6 +57,7 @@ public class SignInFragment extends Fragment {
     private BeginSignInRequest signInRequest;
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
     private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
+    private AlertDialog loadingDialog;
 
     public SignInFragment() {
     }
@@ -87,10 +89,12 @@ public class SignInFragment extends Fragment {
             if (activityResult.getResultCode() == Activity.RESULT_OK) {
                 Log.d(TAG, "result.getResultCode() == Activity.RESULT_OK");
                 try {
+                    showLoadingDialog();
                     SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(activityResult.getData());
                     String idToken = credential.getGoogleIdToken();
                     if (idToken !=  null) {
                         userViewModel.signUpWithGoogle(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
+                            hideLoadingDialog();
                             if (authenticationResult.isSuccess()) {
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
@@ -192,12 +196,14 @@ public class SignInFragment extends Fragment {
 
             if (isValid) {
                 signInButton.setEnabled(false);
+                showLoadingDialog();
                 userViewModel.signupUser(editTextNome.getText().toString(),
                         editTextCognome.getText().toString(),
                         editTextEmail.getText().toString(),
                         editTextPassword.getText().toString())
                         .observe(getViewLifecycleOwner(), result -> {
                             signInButton.setEnabled(true);
+                            hideLoadingDialog();
                             if (result.isSuccess()) {
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
@@ -241,5 +247,19 @@ public class SignInFragment extends Fragment {
 
     private boolean isEmailOk(String email) {
         return (Patterns.EMAIL_ADDRESS.matcher(email).matches());
+    }
+
+    private void showLoadingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setView(R.layout.dialog_loading);
+        builder.setCancelable(false);
+        loadingDialog = builder.create();
+        loadingDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 }

@@ -260,5 +260,7 @@
     <string name="accommodation_category">Accommodation</string>
     <string name="culture_category">Culture</string>
     <string name="fun_category">Leisure</string>
+    <string name="caricamento">Loading...</string>
+
 
 </resources>
