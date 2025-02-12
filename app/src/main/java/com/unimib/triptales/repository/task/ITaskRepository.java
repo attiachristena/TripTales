@@ -15,5 +15,4 @@ public interface ITaskRepository {
     void deleteAllTasks(List<Task> tasks);
     List<Task> getAllTasks();
     List<Task> getSelectedTasks();
-    //List<Task> getAllTasksByDiaryId(int diaryId);
 }

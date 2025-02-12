@@ -9,7 +9,7 @@ public interface ExpenseResponseCallback {
     void onSuccessFromRemote(List<Expense> expenses);
     void onFailureFromRemote(Exception exception);
 
-    void onSuccessDeleteFromLocal();
+    void onSuccessDeleteFromLocal(List<Expense> expenses);
     void onSuccessFromLocal(List<Expense> expenses);
     void onSuccessSelectionFromLocal(List<Expense> expenses);
     void onSuccessFilterFromLocal(List<Expense> expenses);

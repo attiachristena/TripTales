@@ -114,8 +114,9 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     }
 
     @Override
-    public void onSuccessDeleteFromLocal() {
+    public void onSuccessDeleteFromLocal(List<Expense> expenses) {
         localDelete = true;
+        expenseRemoteDataSource.deleteAllExpenses(expenses);
     }
 
     @Override
