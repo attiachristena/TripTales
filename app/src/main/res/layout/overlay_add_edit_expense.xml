@@ -80,7 +80,8 @@
                     app:errorEnabled="true"
                     app:helperTextEnabled="true"
                     app:startIconDrawable="@drawable/baseline_euro_24"
-                    android:textColorHint="@color/hint">
+                    android:textColorHint="@color/hint"
+                    app:startIconTint="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputQuantitaSpesa"
@@ -103,7 +104,8 @@
                     app:boxBackgroundColor="@color/background_overlays"
                     app:errorEnabled="true"
                     app:helperTextEnabled="true"
-                    android:textColorHint="@color/hint">
+                    android:textColorHint="@color/hint"
+                    app:endIconTint="@color/hint">
 
                     <AutoCompleteTextView
                         android:id="@+id/inputCategory"
