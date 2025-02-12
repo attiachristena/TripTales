@@ -116,19 +116,13 @@ public class SettingsFragment extends Fragment {
             public void onClick(View view){
                 if(nightMode){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    editor = sharedPreferences.edit();
-                    editor.putBoolean("nightMode", false);
-                    editor.apply();
                 }else{
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    editor = sharedPreferences.edit();
-                    editor.putBoolean("nightMode", true);
-                    editor.apply();
                 }
+                editor = sharedPreferences.edit();
+                editor.putBoolean("nightMode", nightMode);
+                editor.apply();
 
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                getActivity().finish();
-                startActivity(intent);
             }
         });
 
