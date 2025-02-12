@@ -119,15 +119,12 @@ public class SettingsFragment extends Fragment {
                     editor = sharedPreferences.edit();
                     editor.putBoolean("nightMode", false);
                     editor.apply();
-                    Log.d("NightMode", "Saved value: " + sharedPreferences.getBoolean("nightMode", false));
                 }else{
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     editor = sharedPreferences.edit();
                     editor.putBoolean("nightMode", true);
-                    Log.d("NightMode", "Saved value: " + sharedPreferences.getBoolean("nightMode", true));
                     editor.apply();
                 }
-
 
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 getActivity().finish();
@@ -225,7 +222,7 @@ public class SettingsFragment extends Fragment {
     private void performDelete(){
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         String userId = currentUser.getUid();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         userRef.removeValue().addOnCompleteListener(task -> {
             currentUser.delete().addOnCompleteListener(task2 -> {

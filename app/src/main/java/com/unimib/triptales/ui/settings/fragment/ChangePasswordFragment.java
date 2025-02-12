@@ -95,7 +95,7 @@ public class ChangePasswordFragment extends Fragment {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getContext(), getString(R.string.errore_aggiornamento_password) + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getContext(), getString(R.string.errore_aggiornamento_password), Toast.LENGTH_LONG).show();
                                         changePasswordButton.setEnabled(true);
                                     }
                                 });
@@ -103,7 +103,7 @@ public class ChangePasswordFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), getString(R.string.autenticazione_fallita) + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getString(R.string.autenticazione_fallita), Toast.LENGTH_LONG).show();
                         changePasswordButton.setEnabled(true);
                     }
                 });

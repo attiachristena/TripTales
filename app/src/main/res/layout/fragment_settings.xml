@@ -113,8 +113,10 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="2dp"
-                        android:background="@color/icon_bg_color"
-                        android:src="@drawable/baseline_arrow_forward_ios_24" />
+                        android:backgroundTint="@color/icon_bg_color"
+                        android:background="@drawable/rounded_button"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        app:rippleColor="@color/light_gray"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -145,8 +147,10 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="2dp"
-                        android:background="@color/icon_bg_color"
-                        android:src="@drawable/baseline_arrow_forward_ios_24" />
+                        android:backgroundTint="@color/icon_bg_color"
+                        android:background="@drawable/rounded_button"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        app:rippleColor="@color/light_gray"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -177,8 +181,10 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="2dp"
-                        android:background="@color/icon_bg_color"
-                        android:src="@drawable/baseline_arrow_forward_ios_24" />
+                        android:backgroundTint="@color/icon_bg_color"
+                        android:background="@drawable/rounded_button"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        app:rippleColor="@color/light_gray"/>
                 </RelativeLayout>
             </LinearLayout>
 
@@ -218,8 +224,10 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="2dp"
-                        android:background="@color/icon_bg_color"
-                        android:src="@drawable/baseline_arrow_forward_ios_24" />
+                        android:backgroundTint="@color/icon_bg_color"
+                        android:background="@drawable/rounded_button"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        app:rippleColor="@color/light_gray"/>
                 </RelativeLayout>
 
             </LinearLayout>
