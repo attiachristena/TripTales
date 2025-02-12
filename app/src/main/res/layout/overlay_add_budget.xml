@@ -106,7 +106,8 @@
                 app:boxBackgroundColor="@color/background_overlays"
                 app:errorEnabled="true"
                 app:helperTextEnabled="true"
-                android:textColorHint="@color/hint">
+                android:textColorHint="@color/hint"
+                app:endIconTint="@color/hint">
 
                 <AutoCompleteTextView
                     android:id="@+id/inputCurrency"

@@ -15,16 +15,8 @@
             app:destination="@id/editProfileFragment" />
 
         <action
-            android:id="@+id/action_settings_to_privacy"
-            app:destination="@id/privacyFragment" />
-
-        <action
             android:id="@+id/action_settings_to_aboutUs"
             app:destination="@id/aboutUsFragment" />
-
-        <action
-            android:id="@+id/action_settings_to_change_email"
-            app:destination="@id/changeEmailFragment" />
 
         <action
             android:id="@+id/action_settings_to_change_password"
@@ -39,22 +31,10 @@
         tools:layout="@layout/fragment_edit_profile" />
 
     <fragment
-        android:id="@+id/privacyFragment"
-        android:name="com.unimib.triptales.ui.settings.fragment.PrivacyFragment"
-        android:label="Privacy"
-        tools:layout="@layout/fragment_privacy" />
-
-    <fragment
         android:id="@+id/aboutUsFragment"
         android:name="com.unimib.triptales.ui.settings.fragment.AboutUsFragment"
         android:label="About Us"
         tools:layout="@layout/fragment_about_us" />
-
-    <fragment
-        android:id="@+id/changeEmailFragment"
-        android:name="com.unimib.triptales.ui.settings.fragment.ChangeEmailFragment"
-        android:label="Change Email"
-        tools:layout="@layout/fragment_change_email" />
 
     <fragment
         android:id="@+id/changePasswordFragment"

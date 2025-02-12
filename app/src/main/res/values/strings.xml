@@ -216,7 +216,7 @@
     <string name="utente_non_autenticato">Utente non autenticato</string>
 
     <string name="elimina_account">Elimina account</string>
-    <string name="dialog_elimina_account">Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.</string>
+    <string name="dialog_elimina_account">Sei sicuro di voler eliminare l\'account?\nQuesta azione è irreversibile</string>
     <string name="elimina">Elimina</string>
     <string name="eliminazione_con_successo">Account eliminato con successo!</string>
     <string name="errore_eliminazione">Errore durante l\'eliminazione dell\'account.</string>
@@ -263,5 +263,15 @@
     <string name="culture_category">Cultura</string>
     <string name="fun_category">Svago</string>
     <string name="caricamento">Caricamento...</string>
+
+    <string name="aboutUs_text"><i>TripTales</i> nasce come progetto universitario per il corso di Programmazione di Dispositivi
+        Mobili. Dietro questa app c’è il team <i>Printine</i> – un gruppo di studentesse appassionate di
+    tecnologia e viaggi: Daniela Lorriz Bautista, Christena Attia, Giulia Giardelli, Sanaa Msellek, Lesly Mishel Zambrano Condori \n
+    \nAbbiamo creato <i>TripTales</i> con un obiettivo preciso: offrire ai viaggiatori un diario digitale in
+    cui raccogliere e conservare tutti i loro ricordi di viaggio. Un luogo dove annotare tappe,
+    esperienze, attività e spese in modo semplice e organizzato.\n
+    \nPer qualsiasi cosa contattaci all’email:
+    \nprintine@gmail.com\n
+        \nBuon viaggio con <i>TripTales</i>! </string>
 
 </resources>

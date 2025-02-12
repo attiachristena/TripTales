@@ -40,7 +40,6 @@ public class EditProfileFragment extends Fragment {
     private DatabaseReference databaseReference;
     private EditText newNameField, newSurnameField;
     private Button saveButton;
-    private Uri selectedImageUri = null;
     private boolean isNameChanged = false;
     private boolean isSurnameChanged = false;
 
@@ -101,7 +100,6 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void enableSaveButton() {
-        // The save button should only be enabled if something has changed (name, surname, or image)
         saveButton.setEnabled(isNameChanged || isSurnameChanged);
     }
 
@@ -110,12 +108,10 @@ public class EditProfileFragment extends Fragment {
             String userId = firebaseUser.getUid();
             DatabaseReference userRef = databaseReference.child(userId);
 
-            // Update name if changed
             if (isNameChanged) {
                 userRef.child("name").setValue(newName);
             }
 
-            // Update surname if changed
             if (isSurnameChanged) {
                 userRef.child("surname").setValue(newSurname);
             }
@@ -130,7 +126,6 @@ public class EditProfileFragment extends Fragment {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    // Gestire l'errore
                     saveButton.setEnabled(true);
                     Toast.makeText(getContext(), getString(R.string.aggiornamento_fallito), Toast.LENGTH_SHORT).show();
                 }

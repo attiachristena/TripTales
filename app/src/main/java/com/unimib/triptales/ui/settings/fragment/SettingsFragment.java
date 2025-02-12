@@ -39,7 +39,7 @@ import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class SettingsFragment extends Fragment {
 
-    ImageButton PrivacyButton, LinguaButton, AccountButton, AboutUsButton, LogoutButton;
+    ImageButton LinguaButton, AccountButton, AboutUsButton, LogoutButton;
     Button ModificaProfiloButton;
     SwitchCompat switchNightMode;
     boolean nightMode;
@@ -47,7 +47,7 @@ public class SettingsFragment extends Fragment {
     SharedPreferences.Editor editor;
     private FirebaseAuth firebaseAuth;
     private NavController navController;
-    private ProgressBar progressBar;
+    private android.app.AlertDialog loadingDialog;
 
     public SettingsFragment() { }
 
@@ -64,12 +64,11 @@ public class SettingsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        progressBar = view.findViewById(R.id.progressBar);
 
         // Inizializza il NavController
         navController = NavHostFragment.findNavController(this);
 
-        PrivacyButton = view.findViewById(R.id.PrivacyButton);
+
         LinguaButton = view.findViewById(R.id.LinguaButton);
         AccountButton = view.findViewById(R.id.AccountButton);
         AboutUsButton = view.findViewById(R.id.AboutUsButton);
@@ -120,15 +119,12 @@ public class SettingsFragment extends Fragment {
                     editor = sharedPreferences.edit();
                     editor.putBoolean("nightMode", false);
                     editor.apply();
-                    Log.d("NightMode", "Saved value: " + sharedPreferences.getBoolean("nightMode", false));
                 }else{
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     editor = sharedPreferences.edit();
                     editor.putBoolean("nightMode", true);
-                    Log.d("NightMode", "Saved value: " + sharedPreferences.getBoolean("nightMode", true));
                     editor.apply();
                 }
-
 
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 getActivity().finish();
@@ -145,7 +141,7 @@ public class SettingsFragment extends Fragment {
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
 
-                showLoading();
+                showLoadingDialog();
 
                 if (id == R.id.action_italiano) {
                     changeLanguage("it");
@@ -156,11 +152,11 @@ public class SettingsFragment extends Fragment {
                 }
                 return false;
             });
+            hideLoadingDialog();
             popupMenu.show();
         });
 
         // Navigazione con Navigation Component
-        PrivacyButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_privacy));
         AboutUsButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_aboutUs));
         ModificaProfiloButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_edit_profile));
 
@@ -185,9 +181,6 @@ public class SettingsFragment extends Fragment {
 
         LogoutButton.setOnClickListener(v -> showLogoutDialog());
 
-
-
-
         return view;
     }
 
@@ -199,31 +192,8 @@ public class SettingsFragment extends Fragment {
         editor.apply();
 
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
-        //getActivity().recreate();
+        getActivity().recreate();
 
-        // Simuliamo un breve ritardo prima di ricreare l'attività
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1500);  // Ritardo di 1.5 secondi (può essere aumentato)
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                // Verifica se l'attività è ancora valida prima di chiamare runOnUiThread()
-                if (getActivity() != null) {
-                    // Dopo il ritardo, nascondi il cerchio di caricamento e ricrea l'attività
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            hideLoading();
-                            getActivity().recreate(); // Ricrea l'attività per applicare la lingua
-                        }
-                    });
-                }
-            }
-        }).start();
     }
 
     private void applySavedLanguage() {
@@ -233,15 +203,6 @@ public class SettingsFragment extends Fragment {
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
     }
 
-    // Metodo per mostrare il cerchio di caricamento
-    private void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    // Metodo per nascondere il cerchio di caricamento
-    private void hideLoading() {
-        progressBar.setVisibility(View.GONE);
-    }
 
     // Eliminazione account con conferma
     private void confirmAndDeleteAccount() {
@@ -261,7 +222,7 @@ public class SettingsFragment extends Fragment {
     private void performDelete(){
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         String userId = currentUser.getUid();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         userRef.removeValue().addOnCompleteListener(task -> {
             currentUser.delete().addOnCompleteListener(task2 -> {
@@ -298,5 +259,17 @@ public class SettingsFragment extends Fragment {
         requireActivity().finish();
     }
 
+    private void showLoadingDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        builder.setView(R.layout.dialog_loading);
+        builder.setCancelable(false);
+        loadingDialog = builder.create();
+        loadingDialog.show();
+    }
 
+    private void hideLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+    }
 }

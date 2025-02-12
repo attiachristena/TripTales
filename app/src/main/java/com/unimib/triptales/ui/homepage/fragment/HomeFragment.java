@@ -395,6 +395,7 @@ public class HomeFragment extends Fragment {
         buttonChooseImage.setOnClickListener(v -> openImagePicker());
 
         SearchView searchView = view.findViewById(R.id.search_view_diaries);
+        
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

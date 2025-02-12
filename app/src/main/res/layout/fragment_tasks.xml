@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@string/checklistTitle"
             android:textSize="18sp"
-            android:textColor="@color/background_dark"
+            android:textColor="@color/text_reverse"
             android:textStyle="bold"/>
 
         <androidx.recyclerview.widget.RecyclerView
