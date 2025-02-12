@@ -47,8 +47,7 @@
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusBottomStart="20dp"
             app:boxCornerRadiusTopEnd="20dp"
-            app:boxCornerRadiusTopStart="20dp"
-            color>
+            app:boxCornerRadiusTopStart="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editName"
@@ -98,7 +97,7 @@
             android:text="@string/saveButton"
             android:textColor="#000000"
             app:backgroundTint="#B57F63"
-            app:rippleColor="@color/light_gray"
+            
             />
 
     </LinearLayout>
