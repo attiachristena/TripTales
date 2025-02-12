@@ -17,6 +17,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.unimib.triptales.R;
@@ -107,8 +110,14 @@ public class OverlayAddEditExpense {
                 context.getString(R.string.culture_category),
                 context.getString(R.string.fun_category));
 
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(context,
-                android.R.layout.simple_dropdown_item_1line, categories);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, categories) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView textView = (TextView) super.getView(position, convertView, parent);
+                textView.setTextColor(ContextCompat.getColor(context, R.color.black));
+                return textView;
+            }
+        };
         categoryAutoCompleteTextView.setAdapter(categoryAdapter);
 
         saveExpenseButton.setOnClickListener(saveExpenseButtonListener -> {
