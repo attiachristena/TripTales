@@ -20,8 +20,7 @@
             android:layout_height="wrap_content"
             android:text="@string/about_us"
             android:textSize="22sp"
-            android:textStyle="bold"
-            style="@style/text"/>
+            android:textStyle="bold" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

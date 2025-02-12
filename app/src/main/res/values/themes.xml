@@ -11,6 +11,9 @@
         <item name="popupMenuBackground">@color/error</item>
         <item name="popupMenuStyle">@style/PopupMenuStyle</item>
         <item name="colorSecondaryContainer">@color/primary_light</item>
+        <item name="textInputStyle">@color/black</item>
+        <item name="android:textColorHint">@color/hint</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 
