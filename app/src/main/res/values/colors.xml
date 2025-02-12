@@ -52,7 +52,7 @@
     <color name="icon_color">#000000</color>
     <color name="icon_bg_color">#FFFFFF</color>
 
-    <color name="bg_popupmenu">#D9D9D9</color>
+    <color name="bg_popupmenu">#EEEEEE</color>
     <color name="bg_app_color">#CAA675</color>
     <color name="upper_bar_bg">#CDBAA9</color>
     <color name="hint">#B6B1B1</color>
