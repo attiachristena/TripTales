@@ -60,4 +60,6 @@
     <color name="text_reverse">#2C2C2C</color>
     <color name="otherDaysColor">#BDBDBD</color>
     <color name="white_to_black">#FFFFFF</color>
+    <color name="secondary_light">#60B57F63</color>
+
 </resources>
