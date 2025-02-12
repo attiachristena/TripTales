@@ -77,6 +77,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     int indice;
     ImageButton goBackEditCheckpoint;
     View overlay_edit_checkpoint;
+    View overlay_dialog;
     Button saveEditCheckpoint;
     EditText editNameCheckpoint;
     Button changeImageCheckpoint;
@@ -105,7 +106,8 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     Uri selectedImageUriMappaModifica;
     Uri selectedImageUriModifica;
     int checkpointId;
-
+    Button yesAnswer;
+    Button noAnswer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -185,6 +187,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
                 moveMap(latLng);
                 addMarkerOnMap(latLng, featureName);
+                showOverlayDialogAdd();
             }
         });
 
@@ -233,6 +236,10 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         checkpointsLayout.addView(overlay_edit_checkpoint);
         overlay_edit_checkpoint.setVisibility(View.GONE);
 
+        overlay_dialog = inflater.inflate(R.layout.overlay_dialog_add_checkpoint_diary, checkpointsLayout, false);
+        checkpointsLayout.addView(overlay_dialog);
+        overlay_dialog.setVisibility(View.GONE);
+
         deleteCheckpoint = view.findViewById(R.id.deleteCheckpointButton);
         editCheckpoint = view.findViewById(R.id.editCheckpointButton);
         saveEditCheckpoint = overlay_edit_checkpoint.findViewById(R.id.saveEditCheckpointButton);
@@ -242,6 +249,13 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         changeImageCheckpoint = overlay_edit_checkpoint.findViewById(R.id.changeImageButton);
         previewChangedImage = overlay_edit_checkpoint.findViewById(R.id.previewChangedImage);
         textPreviewChangeImage = overlay_edit_checkpoint.findViewById(R.id.textPreviewChangeImage);
+        yesAnswer = overlay_dialog.findViewById(R.id.yesAnswer);
+        noAnswer = overlay_dialog.findViewById(R.id.noAnswer);
+
+        noAnswer.setOnClickListener(v -> {
+            overlay_dialog.setVisibility(View.GONE);
+            hideOverlayDialogAdd();
+        });
 
         add_checkpoint = getLayoutInflater().inflate(R.layout.overlay_add_checkpoint, checkpointsLayout, false);
         previewImage = add_checkpoint.findViewById(R.id.previewImage);
@@ -297,11 +311,9 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     private void addMarkerOnMap(LatLng latLng, String title) {
         googleMap.clear();
         googleMap.addMarker(new MarkerOptions().position(latLng).title(title).snippet("Clicca per aggiungere la tappa"));
-        googleMap.setOnMarkerClickListener(marker -> {
-            searchView.setVisibility(View.GONE);
-            checkpointsMap.setVisibility(View.GONE);
+        yesAnswer.setOnClickListener(v -> {
             showSavingCheckpointOverlay(latLng);
-            return true;
+            hideOverlayDialogAdd();
         });
     }
 
@@ -311,8 +323,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         }
 
         checkpointsLayout.addView(add_checkpoint);
-
-
 
         checkpointName = add_checkpoint.findViewById(R.id.addCheckpointName);
         checkpointDate = add_checkpoint.findViewById(R.id.addCheckpointDate);
@@ -356,7 +366,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         checkpointsLayout.removeView(add_checkpoint);
                         checkpointsLayout.removeView(add_checkpoint);
 
-                        checkpointDiaryViewModel.resetParameters(checkpointNameSave, checkpointDateSave, imageUri);
 
                         previewImage.setImageURI(null);
                         textPreviewImage.setVisibility(View.VISIBLE);
@@ -364,6 +373,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         checkpointsMap.setVisibility(View.VISIBLE);
                         checkpointName.setText("");
                         checkpointDate.setText("");
+                        immagineTappaPreview.setImageURI(null);
 
                         Snackbar.make(getContext(), checkpointsLayout, "La tappa è stata aggiunta con successo",
                                 Snackbar.LENGTH_SHORT).show();
@@ -564,12 +574,10 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
             if (selectedCheckpoints != null && !selectedCheckpoints.isEmpty()) {
                 checkpointDiaryViewModel.deleteSelectedCheckpoints(selectedCheckpoints, getContext());
 
-                // Rimuove le card dal container
                 for (MaterialCardView card : tappeSelezionate) {
                     checkpointContainer.removeView(card);
                 }
 
-                // Svuota la lista delle card selezionate
                 tappeSelezionate.clear();
                 checkpointDiaryViewModel.clearSelectedCheckpoints();
 
@@ -748,5 +756,43 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                 year, month, day
         );
         datePickerDialog.show();
+    }
+
+    private void showOverlayDialogAdd() {
+        // Mostra l'overlay
+        overlay_dialog.setVisibility(View.VISIBLE);
+
+        // Disabilita lo sfondo
+        checkpointsLayout.setClickable(false);
+        checkpointsLayout.setFocusable(false);
+
+        // Applica l'opacità solo ai figli escludendo l'overlay
+        for (int i = 0; i < checkpointsLayout.getChildCount(); i++) {
+            View child = checkpointsLayout.getChildAt(i);
+            if (child != overlay_dialog) { // Escludi l'overlay
+                child.setAlpha(0.5f); // Riduci l'opacità
+                child.setClickable(false);
+                child.setFocusable(false);
+            }
+        }
+    }
+
+    private void hideOverlayDialogAdd() {
+        // Nascondi l'overlay
+        overlay_dialog.setVisibility(View.GONE);
+
+        // Ripristina lo sfondo
+        checkpointsLayout.setClickable(true);
+        checkpointsLayout.setFocusable(true);
+
+        // Ripristina l'opacità e le proprietà dei figli
+        for (int i = 0; i < checkpointsLayout.getChildCount(); i++) {
+            View child = checkpointsLayout.getChildAt(i);
+            if (child != overlay_dialog) { // Escludi l'overlay
+                child.setAlpha(1f); // Ripristina l'opacità
+                child.setClickable(true);
+                child.setFocusable(true);
+            }
+        }
     }
 }

@@ -225,4 +225,7 @@
     <string name="titolo_ricordo">Titolo</string>
     <string name="data_ricordo">Data</string>
     <string name="modifica_la_tappa">Modifica la tappa</string>
+    <string name="s">Sì</string>
+    <string name="no">No</string>
+    <string name="vuoi_aggiungere_questo_luogo_alle_tappe">Vuoi aggiungere questo luogo alle tappe?</string>
 </resources>

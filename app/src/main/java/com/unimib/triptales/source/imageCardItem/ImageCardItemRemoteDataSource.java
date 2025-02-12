@@ -10,10 +10,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.unimib.triptales.database.AppRoomDatabase;
-import com.unimib.triptales.database.ImageCardItemDao;
 import com.unimib.triptales.model.ImageCardItem;
-import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,12 +20,10 @@ import java.util.Map;
 public class ImageCardItemRemoteDataSource extends BaseImageCardItemRemoteDataSource {
     private final DatabaseReference databaseReference;
 
-    public ImageCardItemRemoteDataSource(String userId, int checkpointId) {
+    public ImageCardItemRemoteDataSource(String userId) {
         this.databaseReference = FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(userId)
-                .child("checkpointDiaries")
-                .child(String.valueOf(checkpointId))
                 .child("imageCardItems");
     }
 

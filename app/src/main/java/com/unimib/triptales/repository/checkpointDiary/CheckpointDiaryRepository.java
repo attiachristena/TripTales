@@ -8,7 +8,6 @@ import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryLocalDataS
 import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryRemoteDataSource;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, CheckpointDiaryResponseCallBack {
 
@@ -75,6 +74,7 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
     @Override
     public void deleteCheckpointDiaryById(List<Integer> ids) {
         checkpointDiaryLocalDataSource.deleteCheckpointDiaryById(ids);
+
     }
 
     @Override
@@ -119,18 +119,20 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
 
     @Override
     public void onSuccessFromRemote(List<CheckpointDiary> checkpoints) {
-        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            if(remoteDelete || !localDelete){
-                for (CheckpointDiary checkpoint : checkpoints) {
-                    checkpointDiaryLocalDataSource.insertCheckpointDiary(checkpoint);
+        if (!isRemoteOperation) {
+            AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+                if (remoteDelete || !localDelete) {
+                    for (CheckpointDiary checkpoint : checkpoints) {
+                        checkpointDiaryLocalDataSource.insertCheckpointDiary(checkpoint);
+                    }
+                    checkpointDiaryLocalDataSource.getAllCheckpointDiaries();
+                    remoteDelete = false;
+                    localDelete = false;
                 }
-                checkpointDiaryLocalDataSource.getAllCheckpointDiaries();
-                remoteDelete = false;
-                localDelete = false;
-            }
-        });
+            });
+        }
+        isRemoteOperation = false;
     }
-
 
     @Override
     public void onFailureFromRemote(Exception exception) {
@@ -143,9 +145,11 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
 
     @Override
     public void onSuccessFromLocal(List<CheckpointDiary> checkpoints) {
-        checkpointDiariesLiveData.setValue(checkpoints);
-        for(CheckpointDiary checkpoint : checkpoints){
-            checkpointDiaryRemoteDataSource.insertCheckpointDiary(checkpoint);
+        checkpointDiariesLiveData.postValue(checkpoints);
+        if (!isRemoteOperation) {
+            for (CheckpointDiary checkpoint : checkpoints) {
+                checkpointDiaryRemoteDataSource.insertCheckpointDiary(checkpoint);
+            }
         }
     }
 

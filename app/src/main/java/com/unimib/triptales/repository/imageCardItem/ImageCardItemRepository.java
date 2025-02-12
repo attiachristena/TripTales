@@ -90,7 +90,8 @@ public class ImageCardItemRepository implements IImageCardItemRepository, ImageC
     }
 
     public List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId) {
-        List<ImageCardItem> imageCardItems = imageCardItemLocalDataSource.getImageCardItemByCheckpointDiaryId(checkpointDiaryId);
+        List<ImageCardItem> imageCardItems =
+                imageCardItemLocalDataSource.getImageCardItemByCheckpointDiaryId(checkpointDiaryId);
         imageCardItemsLiveData.postValue(imageCardItems);
         return imageCardItems;
     }

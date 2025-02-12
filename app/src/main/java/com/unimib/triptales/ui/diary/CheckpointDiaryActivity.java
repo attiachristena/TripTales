@@ -508,17 +508,14 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
     }
 
     private void showDatePickerDialog(TextInputEditText dateEditText) {
-        // Ottieni la data corrente
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Crea e mostra il DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // Formatta la data selezionata (es. "dd/MM/yyyy")
                     String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
                     dateEditText.setText(selectedDate); // Imposta la data nel campo EditText
                 },

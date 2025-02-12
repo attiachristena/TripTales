@@ -125,12 +125,6 @@ public class CheckpointDiaryViewModel extends ViewModel {
         }
     }
 
-    public void resetParameters(String nome, String data, Uri imageUri) {
-        nome = "";
-        data = "";
-        imageUri = null;
-    }
-
     public void updateCheckpointDiary(int checkpointId, String newName, String newDate, Uri newImageUri, Context context) {
         executorService.execute(() -> {
             try {
@@ -156,9 +150,9 @@ public class CheckpointDiaryViewModel extends ViewModel {
         executorService.execute(() -> {
             try {
                 for (CheckpointDiary checkpointDiary : selectedCheckpoints) {
-                    checkpointDiaryRepository.deleteCheckpointDiary(checkpointDiary);  // Passa ogni checkpoint singolarmente
+                    checkpointDiaryRepository.deleteCheckpointDiary(checkpointDiary);
                 }
-                loadCheckpoints(context);  // Ricarica i checkpoint dopo la cancellazione
+                loadCheckpoints(context);
                 operationStatus.postValue(true);
             } catch (Exception e) {
                 operationStatus.postValue(false);

@@ -222,5 +222,8 @@
     <string name="descrizione_ricordo">Description</string>
     <string name="data_ricordo">Date</string>
     <string name="modifica_la_tappa">Edit checkpoint</string>
+    <string name="s">Yes</string>
+    <string name="no">No</string>
+    <string name="vuoi_aggiungere_questo_luogo_alle_tappe">Would you like to add this place to your checkpoints?</string>
 
 </resources>
