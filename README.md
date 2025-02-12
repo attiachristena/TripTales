@@ -3,6 +3,7 @@
 Progetto di Programmazione di Dispositivi Mobili, A.A. 2024/2025
 
 Gruppo: Printine
+
 Componenti:
 - Christena Attia 894887
 - Daniela Lorriz Bautista 900074
