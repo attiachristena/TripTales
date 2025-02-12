@@ -18,9 +18,4 @@ public interface ICheckpointDiaryRepository {
     void updateCheckpointDiaryLatitude(int checkpointId, double newLatitude);
     void updateCheckpointDiaryLongitude(int checkpointId, double newLongitude);
     void updateAllCheckpointDiaries(List<CheckpointDiary> checkpointDiaries);
-
-    interface RepositoryCallback<T> {
-        void onSuccess(T result);
-        void onError(String error);
-    }
 }

@@ -19,7 +19,7 @@
         android:backgroundTint="@color/background_overlays">
 
         <TextView
-            android:id="@+id/titolo_overlay_checkpointDiary"
+            android:id="@+id/titleTextViewEdit"
             android:layout_width="216dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -28,12 +28,12 @@
             android:layout_marginEnd="102dp"
             android:fontFamily="@font/poppins_bold"
             android:gravity="center"
-            android:text="@string/aggiungi_un_ricordo"
+            android:text="@string/modifica_il_tuo_ricordo"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/saveCheckpointDiaryButton"
+            android:id="@+id/saveEditCheckpointDiaryButton"
             android:layout_width="83dp"
             android:layout_height="40dp"
             android:layout_alignParentTop="true"
@@ -50,13 +50,13 @@
             android:textColor="@color/white" />
 
         <ImageButton
-            android:id="@+id/goBackArrowButtonCheckpointDiary"
+            android:id="@+id/goBackArrowButtonEditedCheckpointDiary"
             android:layout_width="22dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="33dp"
             android:layout_marginEnd="-3dp"
-            android:layout_toStartOf="@+id/titolo_overlay_checkpointDiary"
+            android:layout_toStartOf="@+id/titleTextViewEdit"
             android:backgroundTint="@color/background_overlays"
             android:contentDescription="@string/pulsante_per_tornare_indietro"
             android:src="@drawable/baseline_arrow_back_ios_24"
@@ -68,19 +68,19 @@
             android:id="@+id/titleInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/titolo_overlay_checkpointDiary"
+            android:layout_below="@+id/titleTextViewEdit"
             android:layout_marginStart="45dp"
             android:layout_marginTop="19dp"
             android:layout_marginEnd="35dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/imageTitle"
+                android:id="@+id/editedTitleCheckpointDiary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
-                android:hint="@string/titolo_ricordo"
+                android:hint="@string/titolo"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,9 +96,9 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/imageDescription"
+                android:id="@+id/imageDescriptionEdited"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 android:hint="@string/descrizione_ricordo"
@@ -117,27 +117,27 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/addDateCheckpointDiary"
+                android:id="@+id/addDateCheckpointDiaryEdited"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:cursorVisible="false"
-                android:focusable="false"
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 android:hint="@string/data_ricordo"
-                android:inputType="none" />
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/addImageCheckpointDiaryButton"
+            android:id="@+id/editImageCheckpointDiaryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/dateInputLayout"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="54dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="28dp"
             android:layout_marginEnd="45dp"
             android:background="@drawable/edit_text_background"
             android:backgroundTint="@color/primary"
@@ -146,25 +146,25 @@
             android:text="@string/inserisci_un_immagine" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/previewImageCheckpointDiary"
-            android:layout_width="381dp"
+            android:id="@+id/previewImageCheckpointDiaryEdited"
+            android:layout_width="250dp"
             android:layout_height="181dp"
-            android:layout_below="@id/addImageCheckpointDiaryButton"
+            android:layout_below="@id/editImageCheckpointDiaryButton"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="17dp"
-            android:layout_marginTop="9dp"
-            android:layout_marginEnd="13dp"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="17dp"
             android:scaleType="centerCrop"
             android:visibility="visible"
             app:shapeAppearance="@style/roundedImage" />
 
         <TextView
-            android:id="@+id/textPreviewImageCheckpointDiary"
+            android:id="@+id/textPreviewImageCheckpointDiaryEdited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/previewImageCheckpointDiary"
-            android:layout_alignBottom="@+id/previewImageCheckpointDiary"
+            android:layout_alignTop="@+id/previewImageCheckpointDiaryEdited"
+            android:layout_alignBottom="@+id/previewImageCheckpointDiaryEdited"
             android:layout_marginTop="69dp"
             android:layout_marginBottom="78dp"
             android:fontFamily="@font/poppins_regular"

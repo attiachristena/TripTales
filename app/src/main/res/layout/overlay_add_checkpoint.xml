@@ -3,6 +3,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="20dp"
+    android:layout_marginTop="80dp"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:backgroundTint="@color/background_overlays"
@@ -14,7 +15,6 @@
         android:layout_width="match_parent"
         android:backgroundTint="@color/background_overlays"
         android:layout_height="600dp">
-
 
         <TextView
             android:id="@+id/textView3"
@@ -61,27 +61,56 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/addCheckpointName"
-            android:layout_width="327dp"
-            android:layout_height="50dp"
+        <!-- Campo per il nome della tappa -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/textView3"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginStart="40dp"
             android:layout_marginTop="43dp"
             android:layout_marginEnd="40dp"
-            android:fontFamily="@font/poppins_regular"
-            android:background="@drawable/edit_text_background"
-            android:gravity="center"
-            android:hint="@string/nome_tappa_hint"
-            app:helperTextTextColor="@color/black"/>
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addCheckpointName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:hint="@string/nome_tappa_hint"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo per la data della tappa -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dateInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nameInputLayout"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="40dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addCheckpointDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:hint="@string/data_tappa_hint"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/addImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/addCheckpointDate"
+            android:layout_below="@+id/dateInputLayout"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="50dp"
@@ -93,31 +122,15 @@
             android:gravity="center"
             android:text="@string/inserisci_un_immagine" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/addCheckpointDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/addCheckpointName"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginEnd="40dp"
-            android:fontFamily="@font/poppins_regular"
-            android:background="@drawable/edit_text_background"
-            android:gravity="center"
-            android:hint="@string/data_tappa_hint"
-            android:inputType="date" />
-
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/previewImage"
             android:layout_width="381dp"
             android:layout_height="181dp"
-            android:layout_below="@id/addCheckpointDate"
+            android:layout_below="@id/addImageButton"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="17dp"
-            android:layout_marginTop="136dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="13dp"
             android:scaleType="centerCrop"
             android:visibility="visible"
@@ -138,10 +151,5 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-
     </RelativeLayout>
-
-
-
-
 </com.google.android.material.card.MaterialCardView>

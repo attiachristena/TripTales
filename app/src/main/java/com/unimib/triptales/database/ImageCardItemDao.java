@@ -15,7 +15,7 @@ import java.util.List;
 public interface ImageCardItemDao {
 
     @Insert
-    void insertImageCardItem(ImageCardItem imageCardItem);
+    long insertImageCardItem(ImageCardItem imageCardItem);
 
     @Query("SELECT * FROM ImageCardItem WHERE checkpoint_diary_id = :checkpointDiaryId")
     LiveData<List<ImageCardItem>> getImageCardItemsByCheckpointDiaryId(int checkpointDiaryId);
