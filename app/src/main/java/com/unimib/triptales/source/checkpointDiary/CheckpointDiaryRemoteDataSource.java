@@ -105,7 +105,6 @@ public class CheckpointDiaryRemoteDataSource extends BaseCheckpointDiaryRemoteDa
                 .addOnFailureListener(e -> checkpointDiaryCallback.onFailureFromRemote(e));
     }
 
-    @Override
     public void deleteCheckpointDiary(CheckpointDiary checkpointDiary) {
         if (checkpointDiary != null) {
             databaseReference.child(String.valueOf(checkpointDiary.getId())).removeValue()
@@ -115,6 +114,7 @@ public class CheckpointDiaryRemoteDataSource extends BaseCheckpointDiaryRemoteDa
             checkpointDiaryCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
         }
     }
+
 
     @Override
     public void deleteAllCheckpointDiaries(List<CheckpointDiary> checkpointDiaries) {

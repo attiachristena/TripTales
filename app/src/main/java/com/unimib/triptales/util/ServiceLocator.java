@@ -116,11 +116,14 @@ public class ServiceLocator {
         }
 
         BaseImageCardItemLocalDataSource imageCardItemLocalDataSource =
-                new ImageCardItemLocalDataSource(AppRoomDatabase.getDatabase(context).imageCardItemDao(), checkpointDiaryId);
+                new ImageCardItemLocalDataSource(AppRoomDatabase.getDatabase(context).imageCardItemDao(),
+                        checkpointDiaryId);
         BaseImageCardItemRemoteDataSource imageCardItemRemoteDataSource =
-                new ImageCardItemRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
+                new ImageCardItemRemoteDataSource(SharedPreferencesUtils.getLoggedUserId(),
+                        checkpointDiaryId);
 
-        return new ImageCardItemRepository(imageCardItemLocalDataSource, imageCardItemRemoteDataSource);
+        return new ImageCardItemRepository(imageCardItemLocalDataSource, imageCardItemRemoteDataSource,
+                checkpointDiaryId);
     }
 
 
