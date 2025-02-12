@@ -218,6 +218,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         Expense expense = new Expense(completedAmount, category, description, completedDate,
                 false, diaryId);
         expenseRepository.insertExpense(expense);
+        expenseRepository.updateExpenseCategory(expense.getId(), category);
         loadAmountSpent();
         fetchAllExpenses();
         expenseEvent.setValue(ADDED);

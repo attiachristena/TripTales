@@ -3,6 +3,7 @@ package com.unimib.triptales.source.goal;
 import com.unimib.triptales.database.GoalDao;
 import com.unimib.triptales.model.Goal;
 
+import java.util.Collections;
 import java.util.List;
 
 public class GoalLocalDataSource extends BaseGoalLocalDataSource{
@@ -82,7 +83,8 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void deleteGoal(Goal goal) {
         try{
             goalDao.delete(goal);
-            goalCallback.onSuccessDeleteFromLocal();
+            List<Goal> goals = Collections.singletonList(goal);
+            goalCallback.onSuccessDeleteFromLocal(goals);
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -92,7 +94,7 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void deleteAllGoals(List<Goal> goals) {
         try{
             goalDao.deleteAll(goals);
-            goalCallback.onSuccessDeleteFromLocal();
+            goalCallback.onSuccessDeleteFromLocal(goals);
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
