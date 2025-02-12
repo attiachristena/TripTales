@@ -4,8 +4,12 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.unimib.triptales.R;
@@ -126,7 +130,14 @@ public class GeoJSONParser {
 
     public static void setupAutoCompleteTextView(Context context, AutoCompleteTextView autoCompleteTextView) {
         List<String> countryNames = extractCountryNamesFromJson(context);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, countryNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, countryNames){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView textView = (TextView) super.getView(position, convertView, parent);
+                textView.setTextColor(ContextCompat.getColor(context, R.color.black));
+                return textView;
+            }
+        };
         autoCompleteTextView.setAdapter(adapter);
     }
 
