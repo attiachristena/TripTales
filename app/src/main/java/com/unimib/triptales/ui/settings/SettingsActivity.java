@@ -18,10 +18,10 @@ import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.unimib.triptales.R;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
             navController = navHostFragment.getNavController();
         }
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.settingsToolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -52,43 +52,13 @@ public class SettingsActivity extends AppCompatActivity {
         return navController != null && navController.navigateUp() || super.onSupportNavigateUp();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_app_bar, menu);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // Nascondi l'item "Home" nel menu
-        MenuItem hideItem = menu.findItem(R.id.action_home);
-        hideItem.setVisible(false);
-        return super.onPrepareOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         View buttonAccount = toolbar.findViewById(R.id.action_account);
-        if (id == R.id.action_account) {
-            PopupMenu popupMenu = new PopupMenu(SettingsActivity.this, buttonAccount);
-            popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
 
-            popupMenu.setOnMenuItemClickListener(menuItem -> {
-                if (menuItem.getItemId() == R.id.action_logout) {
-                    Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                }
-                return false;
-            });
-
-            popupMenu.show();
-        }
 
         if (id == android.R.id.home) {
             if (navController.getCurrentDestination().getId() == R.id.settingsFragment) {

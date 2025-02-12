@@ -49,8 +49,7 @@ public class ServiceLocator {
 
     public static volatile ServiceLocator INSTANCE = null;
 
-    private ServiceLocator() {
-    }
+    private ServiceLocator() {}
 
     public static ServiceLocator getINSTANCE() {
         if (INSTANCE == null) {

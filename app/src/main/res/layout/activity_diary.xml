@@ -24,15 +24,14 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/white"
-            android:src="@drawable/baseline_arrow_back_ios_24" />
+            android:backgroundTint="@color/icon_bg_color"
+            android:src="@drawable/baseline_arrow_back_ios_24_2" />
 
         <TextView
             android:id="@+id/diaryName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:textColor="@color/black"
             android:fontFamily="@font/poppins_bold"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -45,7 +44,7 @@
         android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/icon_bg_color"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutDiary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,28 +58,28 @@
         app:tabPaddingStart="5dp">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tappeFragment"
+            android:id="@+id/tabCheckpoint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tabTappe" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/expensesFragment"
+            android:id="@+id/tabExpenses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tabSpese" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/obiettiviFragment"
+            android:id="@+id/tabGoals"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tabObiettivi" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/checkListFragment"
+            android:id="@+id/tabTasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tabCheckList" />
+            android:text="@string/tabAttivita" />
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -98,5 +97,12 @@
         android:id="@+id/fragment_container_diary"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/dark_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

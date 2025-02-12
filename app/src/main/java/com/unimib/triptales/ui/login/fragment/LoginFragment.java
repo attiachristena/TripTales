@@ -4,6 +4,7 @@ import static com.unimib.triptales.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static com.unimib.triptales.util.Constants.INVALID_USER_ERROR;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -15,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
@@ -56,6 +56,7 @@ public class LoginFragment extends Fragment {
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
     private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
     private UserViewModel userViewModel;
+    private AlertDialog loadingDialog;
 
     public LoginFragment() {
     }
@@ -89,12 +90,15 @@ public class LoginFragment extends Fragment {
                     SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(activityResult.getData());
                     String idToken = credential.getGoogleIdToken();
                     if (idToken !=  null) {
+                        showLoadingDialog();
                         userViewModel.getGoogleUserMutableLiveData(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
                             if (authenticationResult.isSuccess()) {
+                                hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
+                                hideLoadingDialog();
                                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) authenticationResult).getMessage()),
                                         Snackbar.LENGTH_SHORT).show();
@@ -184,13 +188,17 @@ public class LoginFragment extends Fragment {
 
                 loginButton.setEnabled(false);
 
+                showLoadingDialog();
+
                 userViewModel.getUserMutableLiveData(email, password, true).observe(getViewLifecycleOwner(), result -> {
                     loginButton.setEnabled(true);
                     if (result.isSuccess()) {
+                        hideLoadingDialog();
                         SharedPreferencesUtils.setLoggedIn(getContext(), true);
                         startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
                         userViewModel.setAuthenticationError(true);
+                        hideLoadingDialog();
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getErrorMessage(((Result.Error) result).getMessage()),
                                 Snackbar.LENGTH_SHORT).show();
@@ -204,8 +212,11 @@ public class LoginFragment extends Fragment {
         passwordDimenticata.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_passwordDimenticataFragment));
 
         Button googleLoginButton = view.findViewById(R.id.googleLoginButton);
-        googleLoginButton.setOnClickListener(v -> { oneTapClient.beginSignIn(signInRequest)
+        googleLoginButton.setOnClickListener(v -> {
+            googleLoginButton.setEnabled(false);
+            oneTapClient.beginSignIn(signInRequest)
                 .addOnSuccessListener(requireActivity(), result -> {
+                    googleLoginButton.setEnabled(true);
                     try {
                         activityResultLauncher.launch(new IntentSenderRequest.Builder(result.getPendingIntent()).build());
                     } catch (Exception e) {
@@ -218,6 +229,7 @@ public class LoginFragment extends Fragment {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                             getString(R.string.error_google_login),
                             Snackbar.LENGTH_SHORT).show();
+                    googleLoginButton.setEnabled(true);
                 });
         });
     }
@@ -234,6 +246,20 @@ public class LoginFragment extends Fragment {
 
     private boolean isEmailOk(String email) {
         return (Patterns.EMAIL_ADDRESS.matcher(email).matches());
+    }
+
+    private void showLoadingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setView(R.layout.dialog_loading);
+        builder.setCancelable(false);
+        loadingDialog = builder.create();
+        loadingDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 
 

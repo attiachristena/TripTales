@@ -1,18 +1,14 @@
 package com.unimib.triptales.repository.expense;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Expense;
-import com.unimib.triptales.model.Result;
 import com.unimib.triptales.source.expense.BaseExpenseLocalDataSource;
 import com.unimib.triptales.source.expense.BaseExpenseRemoteDataSource;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCallback{
@@ -113,11 +109,14 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     }
 
     @Override
-    public void onFailureFromRemote(Exception exception) {}
+    public void onFailureFromRemote(Exception exception) {
+        Log.e("FirebaseError", "Error expense: " + exception.getMessage());
+    }
 
     @Override
-    public void onSuccessDeleteFromLocal() {
+    public void onSuccessDeleteFromLocal(List<Expense> expenses) {
         localDelete = true;
+        expenseRemoteDataSource.deleteAllExpenses(expenses);
     }
 
     @Override
@@ -139,5 +138,7 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
     }
 
     @Override
-    public void onFailureFromLocal(Exception exception) {}
+    public void onFailureFromLocal(Exception exception) {
+        Log.e("DatabaseError", "Error expense: " + exception.getMessage());
+    }
 }

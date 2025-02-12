@@ -4,6 +4,8 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
@@ -39,15 +41,20 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
         try{
             if (newCategory.equalsIgnoreCase("Shopping")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_shopping_cart_24);
-            } else if (newCategory.equalsIgnoreCase("Cibo")){
+            } else if (newCategory.equalsIgnoreCase("Cibo")
+                        || newCategory.equalsIgnoreCase("Food")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_fastfood_24);
-            } else if (newCategory.equalsIgnoreCase("Trasporto")){
+            } else if (newCategory.equalsIgnoreCase("Trasporti")
+                        || newCategory.equalsIgnoreCase("Transportation")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_directions_bus_24);
-            } else if (newCategory.equalsIgnoreCase("Alloggio")){
+            } else if (newCategory.equalsIgnoreCase("Alloggio")
+                        || newCategory.equalsIgnoreCase("Accommodation")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_hotel_24);
-            } else if (newCategory.equalsIgnoreCase("Cultura")){
+            } else if (newCategory.equalsIgnoreCase("Cultura")
+                        || newCategory.equalsIgnoreCase("Culture")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_museum_24);
-            } else if (newCategory.equalsIgnoreCase("Svago")){
+            } else if (newCategory.equalsIgnoreCase("Svago")
+                        || newCategory.equalsIgnoreCase("Leisure")){
                 expenseDao.updateIconId(expenseId, R.drawable.baseline_attractions_24);
             }
             expenseDao.updateCategory(expenseId, newCategory);
@@ -96,7 +103,8 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void deleteExpense(Expense expense) {
         try{
             expenseDao.delete(expense);
-            expenseCallback.onSuccessDeleteFromLocal();
+            List<Expense> expenses = Collections.singletonList(expense);
+            expenseCallback.onSuccessDeleteFromLocal(expenses);
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -106,7 +114,7 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void deleteAllExpenses(List<Expense> expenses) {
         try{
             expenseDao.deleteAll(expenses);
-            expenseCallback.onSuccessDeleteFromLocal();
+            expenseCallback.onSuccessDeleteFromLocal(expenses);
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }

@@ -40,13 +40,8 @@ public class EditProfileFragment extends Fragment {
     private DatabaseReference databaseReference;
     private EditText newNameField, newSurnameField;
     private Button saveButton;
-    private Uri selectedImageUri = null;
     private boolean isNameChanged = false;
     private boolean isSurnameChanged = false;
-    private boolean isImageChanged = false;
-
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
-    private ImageView profileImageView; // Assume that you have an ImageView for the profile image
 
     @Nullable
     @Override
@@ -55,31 +50,15 @@ public class EditProfileFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
         newNameField = view.findViewById(R.id.editName);
         newSurnameField = view.findViewById(R.id.editSurname);
         saveButton = view.findViewById(R.id.editProfileButton);
-        profileImageView = view.findViewById(R.id.profile_icon);
 
-        saveButton.setEnabled(false); // initially disable save button
+        saveButton.setEnabled(false);
 
-        // Image picker setup
-        imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        selectedImageUri = result.getData().getData();
-                        if (selectedImageUri != null) {
-                            profileImageView.setImageURI(selectedImageUri);
-                            isImageChanged = true;
-                        }
-                        enableSaveButton();
-                    }
-                }
-        );
 
-        // Handle text changes for name and surname
         newNameField.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
@@ -91,6 +70,7 @@ public class EditProfileFragment extends Fragment {
             @Override
             public void afterTextChanged(android.text.Editable editable) {}
         });
+
 
         newSurnameField.addTextChangedListener(new android.text.TextWatcher() {
             @Override
@@ -104,25 +84,23 @@ public class EditProfileFragment extends Fragment {
             public void afterTextChanged(android.text.Editable editable) {}
         });
 
+
         saveButton.setOnClickListener(v -> {
             String newName = newNameField.getText().toString().trim();
             String newSurname = newSurnameField.getText().toString().trim();
 
-            if (isNameChanged || isSurnameChanged || isImageChanged) {
+            if (isNameChanged || isSurnameChanged) {
                 saveButton.setEnabled(false);
                 updateProfile(newName, newSurname);
             }
         });
 
-        // Handle image selection
-        view.findViewById(R.id.changePhotoButton).setOnClickListener(v -> openImagePicker());
 
         return view;
     }
 
     private void enableSaveButton() {
-        // The save button should only be enabled if something has changed (name, surname, or image)
-        saveButton.setEnabled(isNameChanged || isSurnameChanged || isImageChanged);
+        saveButton.setEnabled(isNameChanged || isSurnameChanged);
     }
 
     private void updateProfile(String newName, String newSurname) {
@@ -130,82 +108,36 @@ public class EditProfileFragment extends Fragment {
             String userId = firebaseUser.getUid();
             DatabaseReference userRef = databaseReference.child(userId);
 
-            // Update name if changed
             if (isNameChanged) {
                 userRef.child("name").setValue(newName);
             }
 
-            // Update surname if changed
             if (isSurnameChanged) {
                 userRef.child("surname").setValue(newSurname);
             }
 
-            // Update profile image if changed
-            /*if (isImageChanged) {
-                uploadProfileImage(userRef);
-            }*/
 
-            // Aggiungi il completamento dell'operazione di aggiornamento
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Operazione completata con successo
                     saveButton.setEnabled(true);
-                    Toast.makeText(getContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.profilo_aggiornato), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    // Gestire l'errore
                     saveButton.setEnabled(true);
-                    Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.aggiornamento_fallito), Toast.LENGTH_SHORT).show();
                 }
             });
 
         } else {
             saveButton.setEnabled(true);
-            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.utente_non_autenticated), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        imagePickerLauncher.launch(intent);
-    }
 
-    private void uploadProfileImage(DatabaseReference userRef) {
-        if (selectedImageUri != null) {
-            // Riferimento a Firebase Storage
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile_images/" + firebaseUser.getUid() + ".jpg");
 
-            // Caricamento dell'immagine su Firebase Storage
-            storageReference.putFile(selectedImageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // Una volta caricato, ottieni l'URL dell'immagine
-                        storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                            // Salva l'URL dell'immagine nel database Firebase
-                            userRef.child("profileImage").setValue(uri.toString())
-                                    .addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            // Mostra un messaggio di successo
-                                            Toast.makeText(getContext(), "Immagine del profilo aggiornata", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            // In caso di errore durante l'aggiornamento dell'URL
-                                            Toast.makeText(getContext(), "Errore durante l'aggiornamento dell'immagine", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }).addOnFailureListener(e -> {
-                            // Gestisci eventuali errori nel recupero dell'URL
-                            Toast.makeText(getContext(), "Errore nel recupero dell'URL dell'immagine", Toast.LENGTH_SHORT).show();
-                        });
-                    })
-                    .addOnFailureListener(e -> {
-                        // Gestisci eventuali errori durante il caricamento
-                        Toast.makeText(getContext(), "Errore nel caricamento dell'immagine", Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Toast.makeText(getContext(), "Nessuna immagine selezionata", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 }

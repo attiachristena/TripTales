@@ -1,7 +1,9 @@
 package com.unimib.triptales.ui.settings.fragment;
 
+import static android.content.Intent.getIntent;
+import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
+
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,27 +18,28 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.unimib.triptales.R;
+import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class SettingsFragment extends Fragment {
 
-    ImageButton PrivacyButton, LinguaButton, AccountButton, AboutUsButton;
+    ImageButton LinguaButton, AccountButton, AboutUsButton, LogoutButton;
     Button ModificaProfiloButton;
     SwitchCompat switchNightMode;
     boolean nightMode;
@@ -44,6 +47,7 @@ public class SettingsFragment extends Fragment {
     SharedPreferences.Editor editor;
     private FirebaseAuth firebaseAuth;
     private NavController navController;
+    private android.app.AlertDialog loadingDialog;
 
     public SettingsFragment() { }
 
@@ -60,13 +64,15 @@ public class SettingsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
+
         // Inizializza il NavController
         navController = NavHostFragment.findNavController(this);
 
-        PrivacyButton = view.findViewById(R.id.PrivacyButton);
+
         LinguaButton = view.findViewById(R.id.LinguaButton);
         AccountButton = view.findViewById(R.id.AccountButton);
         AboutUsButton = view.findViewById(R.id.AboutUsButton);
+        LogoutButton = view.findViewById(R.id.LogoutButton);
         ModificaProfiloButton = view.findViewById(R.id.ModificaProfiloButton);
         switchNightMode = view.findViewById(R.id.switchNightMode);
         TextView nomeCognomeTextView = view.findViewById(R.id.nome_cognome);
@@ -75,24 +81,26 @@ public class SettingsFragment extends Fragment {
         nightMode = sharedPreferences.getBoolean("nightMode", false);
 
         // Recupera nome e cognome utente da Firebase
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference usersRef = database.getReference("users");
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        db.collection("users").document(userId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("name");
-                        String surname = documentSnapshot.getString("surname");
-                        nomeCognomeTextView.setText(name + " " + surname);
-                    } else {
-                        Log.d("Firestore", "Documento non trovato!");
-                        nomeCognomeTextView.setText("Dati non disponibili");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Errore nel recupero dati", e);
-                });
-
+        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String name = dataSnapshot.child("name").getValue(String.class);
+                    String surname = dataSnapshot.child("surname").getValue(String.class);
+                    nomeCognomeTextView.setText(name + " " + surname);
+                } else {
+                    nomeCognomeTextView.setText(getString(R.string.dati_non_disponibili));
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                nomeCognomeTextView.setText(getString(R.string.errore_nel_recupero_dati));
+            }
+        });
 
         // Imposta lo stato dello switch per la modalità notturna
         if (nightMode) {
@@ -110,26 +118,31 @@ public class SettingsFragment extends Fragment {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     editor = sharedPreferences.edit();
                     editor.putBoolean("nightMode", false);
+                    editor.apply();
                 }else{
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     editor = sharedPreferences.edit();
                     editor.putBoolean("nightMode", true);
+                    editor.apply();
                 }
-                editor.apply();
 
-                Intent intent = new Intent(requireActivity(), SettingsActivity.class);
-                requireActivity().finish();
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                getActivity().finish();
                 startActivity(intent);
             }
         });
 
         // Cambiare lingua con popup menu
         LinguaButton.setOnClickListener(v -> {
+
             PopupMenu popupMenu = new PopupMenu(getActivity(), LinguaButton);
             popupMenu.getMenuInflater().inflate(R.menu.lingua_menu, popupMenu.getMenu());
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
+
+                showLoadingDialog();
+
                 if (id == R.id.action_italiano) {
                     changeLanguage("it");
                     return true;
@@ -139,11 +152,11 @@ public class SettingsFragment extends Fragment {
                 }
                 return false;
             });
+            hideLoadingDialog();
             popupMenu.show();
         });
 
         // Navigazione con Navigation Component
-        PrivacyButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_privacy));
         AboutUsButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_aboutUs));
         ModificaProfiloButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_edit_profile));
 
@@ -154,10 +167,7 @@ public class SettingsFragment extends Fragment {
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
-                if (id == R.id.action_modifica_email) {
-                    navController.navigate(R.id.action_settings_to_change_email);
-                    return true;
-                } else if (id == R.id.action_modifica_password) {
+                if (id == R.id.action_modifica_password) {
                     navController.navigate(R.id.action_settings_to_change_password);
                     return true;
                 } else if (id == R.id.action_elimina_profilo) {
@@ -168,6 +178,8 @@ public class SettingsFragment extends Fragment {
             });
             popupMenu.show();
         });
+
+        LogoutButton.setOnClickListener(v -> showLogoutDialog());
 
         return view;
     }
@@ -181,6 +193,7 @@ public class SettingsFragment extends Fragment {
 
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
         getActivity().recreate();
+
     }
 
     private void applySavedLanguage() {
@@ -190,6 +203,7 @@ public class SettingsFragment extends Fragment {
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
     }
 
+
     // Eliminazione account con conferma
     private void confirmAndDeleteAccount() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -197,28 +211,65 @@ public class SettingsFragment extends Fragment {
             new AlertDialog.Builder(getContext())
                     .setTitle(getString(R.string.elimina_account))
                     .setMessage(getString(R.string.dialog_elimina_account))
-                    .setPositiveButton(getString(R.string.elimina), (dialog, which) -> {
-                        String userId = currentUser.getUid();
-                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
-
-                        userRef.removeValue().addOnCompleteListener(task -> {
-                            currentUser.delete().addOnCompleteListener(task2 -> {
-                                if (task2.isSuccessful()) {
-                                    Toast.makeText(getContext(), getString(R.string.eliminazione_con_successo), Toast.LENGTH_SHORT).show();
-                                    firebaseAuth.signOut();
-                                    Intent intent = new Intent(getContext(), LoginActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                } else {
-                                    Toast.makeText(getContext(), getString(R.string.errore_eliminazione), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        });
-                    })
+                    .setPositiveButton(getString(R.string.elimina), (dialog, which) -> performDelete())
                     .setNegativeButton(getString(R.string.annulla), null)
                     .show();
         } else {
             Toast.makeText(getContext(), getString(R.string.nessun_utente_trovato), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void performDelete(){
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        String userId = currentUser.getUid();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+
+        userRef.removeValue().addOnCompleteListener(task -> {
+            currentUser.delete().addOnCompleteListener(task2 -> {
+                if (task2.isSuccessful()) {
+                    Toast.makeText(getContext(), getString(R.string.eliminazione_con_successo), Toast.LENGTH_SHORT).show();
+                    firebaseAuth.signOut();
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.errore_eliminazione), Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
+    //Dialog per uscire dall'account
+    private void showLogoutDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.conferma_logout))
+                .setMessage(R.string.conferma_uscire_da_account)
+                .setPositiveButton(getString(R.string.esci), (dialog, which) -> performLogout())
+                .setNegativeButton(getString(R.string.annulla), (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void performLogout() {
+        SharedPreferencesUtils.setLoggedIn(requireContext(), false);
+
+        Intent intent = new Intent(requireActivity(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
+        requireActivity().finish();
+    }
+
+    private void showLoadingDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        builder.setView(R.layout.dialog_loading);
+        builder.setCancelable(false);
+        loadingDialog = builder.create();
+        loadingDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
         }
     }
 }

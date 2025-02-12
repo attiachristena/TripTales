@@ -4,6 +4,7 @@ import static com.unimib.triptales.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static com.unimib.triptales.util.Constants.INVALID_USER_ERROR;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -56,6 +57,7 @@ public class SignInFragment extends Fragment {
     private BeginSignInRequest signInRequest;
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
     private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
+    private AlertDialog loadingDialog;
 
     public SignInFragment() {
     }
@@ -66,6 +68,7 @@ public class SignInFragment extends Fragment {
 
         IUserRepository userRepository = ServiceLocator.getINSTANCE().getUserRepository();
         userViewModel = new ViewModelProvider(requireActivity(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
 
         oneTapClient = Identity.getSignInClient(requireActivity());
         signInRequest = BeginSignInRequest.builder()
@@ -86,15 +89,18 @@ public class SignInFragment extends Fragment {
             if (activityResult.getResultCode() == Activity.RESULT_OK) {
                 Log.d(TAG, "result.getResultCode() == Activity.RESULT_OK");
                 try {
+                    showLoadingDialog();
                     SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(activityResult.getData());
                     String idToken = credential.getGoogleIdToken();
                     if (idToken !=  null) {
                         userViewModel.signUpWithGoogle(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
+                            hideLoadingDialog();
                             if (authenticationResult.isSuccess()) {
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
+                                hideLoadingDialog();
                                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) authenticationResult).getMessage()),
                                         Snackbar.LENGTH_SHORT).show();
@@ -191,6 +197,7 @@ public class SignInFragment extends Fragment {
 
             if (isValid) {
                 signInButton.setEnabled(false);
+                showLoadingDialog();
                 userViewModel.signupUser(editTextNome.getText().toString(),
                         editTextCognome.getText().toString(),
                         editTextEmail.getText().toString(),
@@ -198,10 +205,12 @@ public class SignInFragment extends Fragment {
                         .observe(getViewLifecycleOwner(), result -> {
                             signInButton.setEnabled(true);
                             if (result.isSuccess()) {
+                                hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                hideLoadingDialog();
+                                Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getString(R.string.error_unexpected), Snackbar.LENGTH_SHORT).show();
                     }
                 });
@@ -210,8 +219,11 @@ public class SignInFragment extends Fragment {
         });
 
         Button googleSignInButton = view.findViewById(R.id.signInButtonGoogle);
-        googleSignInButton.setOnClickListener(v -> { oneTapClient.beginSignIn(signInRequest)
+        googleSignInButton.setOnClickListener(v -> {
+            googleSignInButton.setEnabled(false);
+            oneTapClient.beginSignIn(signInRequest)
                 .addOnSuccessListener(requireActivity(), result -> {
+                    googleSignInButton.setEnabled(true);
                     try {
                         activityResultLauncher.launch(new IntentSenderRequest.Builder(result.getPendingIntent()).build());
                     } catch (Exception e) {
@@ -224,6 +236,7 @@ public class SignInFragment extends Fragment {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                             getString(R.string.error_google_login),
                             Snackbar.LENGTH_SHORT).show();
+                    googleSignInButton.setEnabled(true);
                 });
         });
     }
@@ -240,5 +253,19 @@ public class SignInFragment extends Fragment {
 
     private boolean isEmailOk(String email) {
         return (Patterns.EMAIL_ADDRESS.matcher(email).matches());
+    }
+
+    private void showLoadingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setView(R.layout.dialog_loading);
+        builder.setCancelable(false);
+        loadingDialog = builder.create();
+        loadingDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 }

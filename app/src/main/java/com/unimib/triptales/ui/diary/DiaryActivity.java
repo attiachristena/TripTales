@@ -1,24 +1,15 @@
 package com.unimib.triptales.ui.diary;
 
-import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
@@ -34,13 +25,7 @@ import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.GoalViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
-import com.unimib.triptales.ui.homepage.HomepageActivity;
-import com.unimib.triptales.ui.login.LoginActivity;
-import com.unimib.triptales.ui.settings.SettingsActivity;
 import com.unimib.triptales.util.ServiceLocator;
-import com.unimib.triptales.util.SharedPreferencesUtils;
-
-import org.w3c.dom.Text;
 
 import java.util.Objects;
 
@@ -50,7 +35,6 @@ public class DiaryActivity extends AppCompatActivity {
     ViewPager2 viewPager2;
     ViewPagerAdapter viewPagerAdapter;
     ConstraintLayout rootLayoutDiary;
-    Toolbar toolbar;
 
     // Variabili per i dati
     private String diaryName;
@@ -65,17 +49,17 @@ public class DiaryActivity extends AppCompatActivity {
 
         IExpenseRepository expenseRepository = ServiceLocator.getINSTANCE().getExpenseRepository(getApplicationContext());
         ExpenseViewModel expenseViewModel = new ViewModelProvider(this,
-                new ViewModelFactory(expenseRepository)).get(ExpenseViewModel.class);
+                new ViewModelFactory(expenseRepository, getApplication())).get(ExpenseViewModel.class);
         expenseViewModel.fetchAllExpenses();
 
         IGoalRepository goalRepository = ServiceLocator.getINSTANCE().getGoalRepository(getApplicationContext());
         GoalViewModel goalViewModel = new ViewModelProvider(this,
-                new ViewModelFactory(goalRepository)).get(GoalViewModel.class);
+                new ViewModelFactory(goalRepository, getApplication())).get(GoalViewModel.class);
         goalViewModel.fetchAllGoals();
 
         ITaskRepository taskRepository = ServiceLocator.getINSTANCE().getTaskRepository(getApplicationContext());
         TaskViewModel taskViewModel = new ViewModelProvider(this,
-                new ViewModelFactory(taskRepository)).get(TaskViewModel.class);
+                new ViewModelFactory(taskRepository, getApplication())).get(TaskViewModel.class);
         taskViewModel.fetchAllTasks();
 
         ICheckpointDiaryRepository checkpointDiaryRepository = ServiceLocator.getINSTANCE().getCheckpointDiaryRepository(getApplicationContext());
@@ -105,18 +89,20 @@ public class DiaryActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewpager);
 
         // Passa l'URI come Uri, non come String
-        viewPagerAdapter = new ViewPagerAdapter(this, diaryName, startDate, endDate, coverImageUri);
+        viewPagerAdapter = new ViewPagerAdapter(this, diaryName, startDate, endDate,
+                coverImageUri);
         viewPager2.setAdapter(viewPagerAdapter);
         rootLayoutDiary = findViewById(R.id.rootLayoutDiary);
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
-            View customView = LayoutInflater.from(this).inflate(R.layout.tab_custom, null);
+            View customView = LayoutInflater.from(this).inflate(R.layout.tab_custom,
+                    null);
             TextView tabText = customView.findViewById(R.id.tabText);
 
             if (position == 0) tabText.setText(R.string.tabTappe);
             else if (position == 1) tabText.setText(R.string.tabSpese);
             else if (position == 2) tabText.setText(R.string.tabObiettivi);
-            else tabText.setText(R.string.tabCheckList);
+            else tabText.setText(R.string.tabAttivita);
 
             tab.setCustomView(customView);
         }).attach();
@@ -145,15 +131,6 @@ public class DiaryActivity extends AppCompatActivity {
         TextView diaryNameTextView = findViewById(R.id.diaryName);
         diaryNameTextView.setText(diaryName);
         ImageButton diaryBackButton = findViewById(R.id.backButtonDiary);
-        diaryBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-    }
-
-    public void setViewPagerSwipeEnabled(boolean enabled) {
-        viewPager2.setUserInputEnabled(enabled);
+        diaryBackButton.setOnClickListener(diaryBackButtonListener -> finish());
     }
 }

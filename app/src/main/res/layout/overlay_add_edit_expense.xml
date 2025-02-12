@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="120dp"
     android:fillViewport="true">
 
     <LinearLayout
@@ -12,18 +13,12 @@
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardAddSpesa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="10dp"
             android:backgroundTint="@color/background_overlays"
             app:cardCornerRadius="20dp"
-            android:elevation="100dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:cardElevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,13 +79,16 @@
                     app:boxBackgroundColor="@color/background_overlays"
                     app:errorEnabled="true"
                     app:helperTextEnabled="true"
-                    app:startIconDrawable="@drawable/baseline_euro_24">
+                    app:startIconDrawable="@drawable/baseline_euro_24"
+                    android:textColorHint="@color/hint"
+                    app:startIconTint="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputQuantitaSpesa"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/black"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -105,7 +103,9 @@
                     style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
                     app:boxBackgroundColor="@color/background_overlays"
                     app:errorEnabled="true"
-                    app:helperTextEnabled="true">
+                    app:helperTextEnabled="true"
+                    android:textColorHint="@color/hint"
+                    app:endIconTint="@color/hint">
 
                     <AutoCompleteTextView
                         android:id="@+id/inputCategory"
@@ -113,7 +113,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="none"
                         android:hint="@string/hintCategoria"
-                        android:popupBackground="@color/background_overlays" />
+                        android:popupBackground="@color/background_overlays"
+                        android:textColor="@color/black"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -129,12 +130,14 @@
                     style="?attr/textInputFilledStyle"
                     app:boxBackgroundColor="@color/background_overlays"
                     app:errorEnabled="true"
-                    app:helperTextEnabled="true">
+                    app:helperTextEnabled="true"
+                    android:textColorHint="@color/hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputDescription"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -157,7 +160,8 @@
                         style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputDay"
@@ -165,7 +169,8 @@
                             android:layout_height="wrap_content"
                             android:inputType="number"
                             android:maxLength="2"
-                            android:ems="2"/>
+                            android:ems="2"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -176,7 +181,7 @@
                         android:gravity="center"
                         android:text="@string/SeparatoreData"
                         android:textSize="20sp"
-                        />
+                        android:textColor="@color/black"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldMonth"
@@ -191,7 +196,8 @@
                         style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputMonth"
@@ -199,7 +205,8 @@
                             android:layout_height="wrap_content"
                             android:inputType="number"
                             android:maxLength="2"
-                            android:ems="2"/>
+                            android:ems="2"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -210,7 +217,7 @@
                         android:gravity="center"
                         android:text="@string/SeparatoreData"
                         android:textSize="20sp"
-                        />
+                        android:textColor="@color/black"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textFieldYear"
@@ -225,7 +232,8 @@
                         style="?attr/textInputFilledStyle"
                         app:boxBackgroundColor="@color/background_overlays"
                         app:errorEnabled="true"
-                        app:helperTextEnabled="true">
+                        app:helperTextEnabled="true"
+                        android:textColorHint="@color/hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputYear"
@@ -233,7 +241,8 @@
                             android:layout_height="wrap_content"
                             android:inputType="number"
                             android:maxLength="4"
-                            android:ems="4"/>
+                            android:ems="4"
+                            android:textColor="@color/black"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 

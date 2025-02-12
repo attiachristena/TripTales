@@ -1,13 +1,12 @@
 package com.unimib.triptales.repository.diary;
 
-import android.content.Context;
+import android.util.Log;
 
 import com.unimib.triptales.database.AppRoomDatabase;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
 
 import java.util.List;
-
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -187,7 +186,7 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
     // Callback: Fallimento da database locale
     @Override
     public void onFailureFromLocal(Exception exception) {
-        // Log dell'errore o notifica all'utente
+        Log.e("DatabaseError", "Error diary: " + exception.getMessage());
     }
 
     // Callback: Successo da database remoto
@@ -216,6 +215,6 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
     // Callback: Fallimento da database remoto
     @Override
     public void onFailureFromRemote(Exception exception) {
-        // Log dell'errore o notifica all'utente
+        Log.e("FirebaseError", "Error diary: " + exception.getMessage());
     }
 }

@@ -4,7 +4,7 @@
     <string name="tabTappe">Tappe</string>
     <string name="tabSpese">Spese</string>
     <string name="tabObiettivi">Obiettivi</string>
-    <string name="tabCheckList">Attività</string>
+    <string name="tabAttivita">Lista</string>
     <string name="page_title">TripTales</string>
     <string name="action_home">Home</string>
     <string name="action_logout">Logout</string>
@@ -91,37 +91,37 @@
     <string name="action_account">action_account</string>
     <string name="in_corso">In corso</string>
     <string name="fatto">Fatto</string>
-    <string name="nuovo_compito">Nuova attività</string>
-    <string name="noTasksString">Aggiungi la prima attività!</string>
+    <string name="nuovo_compito">Nuovo elemento</string>
+    <string name="noTasksString">Aggiungi il primo elemento della lista!</string>
     <string name="noGoalsString">Aggiungi il primo obiettivo del viaggio!</string>
     <string name="noSpeseString">Imposta il budget e aggiungi la prima spesa!</string>
-    <string name="checklistTitle">Lista delle attività da svolgere</string>
+    <string name="checklistTitle">Non devo dimenticarmi di:</string>
     <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
     //
     <string name="hintCurrency">Valuta*</string>
     <string name="nome_diario">Nome diario</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
     <string name="intro1_title">Benvenuto su TripTales Il tuo diario di viaggio personale</string>
-    <string name="intro1_body">Racconta il tuo viaggio, cattura i tuoi ricordi e scopri il mondo a modo tuo</string>
-    <string name="intro2_title">Organizza il tuo viaggio, esplora il mondo, custodisci ogni checkpoint</string>
-    <string name="intro2_body">Qui potrai pianificare le tue avventure, annotare ogni scoperta e rivivere ogni momento</string>
-    <string name="intro3_title">Esplora senza connessione, pianifica senza stress</string>
-    <string name="intro3_body">Scarica mappe e crea il tuo itinerario senza bisogno di essere online</string>
-    <string name="intro4_title">Viaggia sereno: noi ti aiutiamo a ricordare ogni dettaglio</string>
-    <string name="intro4_body">Obiettivi, check-list e calendari: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
+    <string name="intro1_body">Racconta i tuoi viaggi e cattura i tuoi ricordi</string>
+    <string name="intro3_title">Esplora il mondo e custodisci ogni tappa</string>
+    <string name="intro3_body">Con TripTales potrai annotare ogni scoperta e rivivere ogni momento</string>
+    <string name="intro4_title">Viaggia sereno: TripTales ti aiuta a ricordare ogni dettaglio</string>
+    <string name="intro4_body">Tappe, obiettivi, spese e check-list: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
     <string name="data_partenza">Data partenza</string>
-    <string name="data_arrivo">Data arrivo</string>
+    <string name="data_arrivo">Data ritorno</string>
     <string name="scegli_immagine">Scegli un’immagine</string>
     <string name="inserisci_nome_diario">Inserisci il nome del diario</string>
-    <string name="paese_visitato">Il paese visitato</string>
+    <string name="paese_visitato">Inserisci il paese visitato</string>
+    <string name="files" translatable="false">Files</string>
+    <string name="immagineSelezionata">Immagine selezionata</string>
 
-    <string name="error_unexpected">Unexpected error</string>
-    <string name="error_google_login">Google Login Error</string>
-    <string name="error_email_required">Email Required Error</string>
-    <string name="error_email_invalid">Invalid Email Error</string>
-    <string name="password_reset_email_sent">Email for reset password sent</string>
+    <string name="error_unexpected">Errore imprevisto</string>
+    <string name="error_google_login">Errore di accesso con Google</string>
+    <string name="error_email_required">Errore: email obbligatoria</string>
+    <string name="error_email_invalid">Errore: email non valida</string>
+    <string name="password_reset_email_sent">Email per il reset della password inviata</string>
     <string name="registrati_con_google">Registrati con Google</string>
 
     <string name="nome_user_momentaneo">Nome Cognome</string>
@@ -168,14 +168,30 @@
     <string name="snackbarGoalUpdated">Obiettivo aggiornato</string>
     <string name="snackbarGoalDeleted">Obiettivo rimosso</string>
     <string name="snackbarGoalNotDeleted">Errore: obiettivo non rimosso</string>
-    <string name="snackbarTaskAdded">Attività aggiunta</string>
-    <string name="snackbarTaskUpdated">Attività aggiornata</string>
-    <string name="snackbarTaskDeleted">Attività rimossa</string>
-    <string name="snackbarTaskNotDeleted">Errore: attività non rimossa</string>
+    <string name="snackbarTaskAdded">Elemento aggiunto</string>
+    <string name="snackbarTaskUpdated">Elemento aggiornato</string>
+    <string name="snackbarTaskDeleted">Elemento rimosso</string>
+    <string name="snackbarTaskNotDeleted">Errore: elemento non rimosso</string>
     <string name="snackbarDiaryAdded">Diario aggiunto</string>
     <string name="snackbarDiaryUpdated">Diario aggiornato</string>
     <string name="snackbarDiaryDeleted">Diario rimosso</string>
     <string name="snackbarDiaryNotDeleted">Errore: diario non rimosso</string>
+    <string name="errorFilterExpenses">Scegli una categoria</string>
+    <string name="errorFilterCategory">Nessuna spesa trovata per la categoria specificata</string>
+    <string name="errorAmount">Inserisci un importo</string>
+    <string name="errorDescription">Inserisci una descrizione</string>
+    <string name="errorDay">Inserisci un giorno</string>
+    <string name="errorInputDay">Giorno inserito non corretto</string>
+    <string name="errorMonth">Inserisci un mese</string>
+    <string name="errorInputMonth">Mese inserito non corretto</string>
+    <string name="errorYear">Inserisci un anno</string>
+    <string name="errorInputYear">Anno inserito non corretto</string>
+    <string name="errorBudget">Inserisci un budget</string>
+    <string name="errorCurrency">Scegli una valuta</string>
+    <string name="errorInputBudget">Inserisci un numero più basso</string>
+    <string name="errorGoalName">Inserisci il nome dell\'obiettivo</string>
+    <string name="errorTaskName">Inserisci il nome dell\'elemento</string>
+    <string name="progressText">spesi</string>
 
     <string name="modifica_password">Modifica password</string>
     <string name="vecchia_password">Vecchia password</string>
@@ -188,7 +204,7 @@
     <string name="elimina_profilo">Elimina profilo</string>
     <string name="searchbar_hint">Cerca diario per nome</string>
 
-    <string name="nomeStringheParser">\"NAME_IT\"</string>
+    <string name="nome_stringhe_parser">NAME_IT</string>
 
     <string name="modifica_profilo"><u>Modifica profilo</u></string>
     <string name="modifica_profilo2">Modifica profilo</string>
@@ -200,7 +216,7 @@
     <string name="utente_non_autenticato">Utente non autenticato</string>
 
     <string name="elimina_account">Elimina account</string>
-    <string name="dialog_elimina_account">Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.</string>
+    <string name="dialog_elimina_account">Sei sicuro di voler eliminare l\'account?\nQuesta azione è irreversibile</string>
     <string name="elimina">Elimina</string>
     <string name="eliminazione_con_successo">Account eliminato con successo!</string>
     <string name="errore_eliminazione">Errore durante l\'eliminazione dell\'account.</string>
@@ -209,7 +225,24 @@
     <string name="user_not_logged_in_error">Utente non registrato</string>
     <string name="unexpected_error">Errore inaspettato</string>
     <string name="error_password_login">Password errata. Per favore, ritenta.</string>
-    <string name="cerca_diario_per_nome">Cerca diario per nome</string>
+
+    <string name="inserisci_vecchia_password">Inserisci la vecchia password</string>
+    <string name="inserisci_nuova_password">Inserisci la nuova password</string>
+    <string name="password_aggiornata">"Password aggiornata con successo"</string>
+    <string name="errore_aggiornamento_password">Errore durante l\'aggiornamento della password: </string>
+    <string name="autenticazione_fallita">"Autenticazione fallita: "</string>
+
+    <string name="profilo_aggiornato">Profilo aggiornato con successo</string>
+    <string name="aggiornamento_fallito">Aggiornamento fallito</string>
+    <string name="utente_non_autenticated">Utente non autenticato</string>
+
+    <string name="action_back">Back</string>
+    <string name="conferma_logout">Conferma Logout</string>
+    <string name="conferma_uscire_da_account">Vuoi uscire dal tuo account?</string>
+    <string name="esci">Esci</string>
+    <string name="dati_non_disponibili">Dati non disponibili</string>
+    <string name="errore_nel_recupero_dati">Errore nel recupero dei dati</string>
+
     <string name="i_tuoi_ricordi">I tuoi ricordi...</string>
     <string name="modifica_il_tuo_ricordo">Modifica il tuo ricordo</string>
     <string name="data_tappa">Data Tappa</string>
@@ -228,4 +261,35 @@
     <string name="s">Sì</string>
     <string name="no">No</string>
     <string name="vuoi_aggiungere_questo_luogo_alle_tappe">Vuoi aggiungere questo luogo alle tappe?</string>
+
+    <string name="cerca_diario_per_paese">Cerca diario per paese visitato</string>
+    <string name="seleziona_lingua">Seleziona la lingua</string>
+    <string name="delete_expense">Elimina la spesa</string>
+    <string name="delete_expense_description">Sei sicuro di voler eliminare la spesa?</string>
+    <string name="delete_goal">Elimina l\'obiettivo</string>
+    <string name="delete_goal_description">Sei sicuro di voler eliminare l\'obiettivo?</string>
+    <string name="delete_task">Elimina l\'elemento</string>
+    <string name="delete_task_description">Sei sicuro di voler eliminare l\'elemento?</string>
+    <string name="cancel">Annulla</string>
+    <string name="delete">Elimina</string>
+
+    <string name="viaggio">Viaggio:</string>
+    <string name="shopping_category" translatable="false">Shopping</string>
+    <string name="food_category">Cibo</string>
+    <string name="transport_category">Trasporti</string>
+    <string name="accommodation_category">Alloggio</string>
+    <string name="culture_category">Cultura</string>
+    <string name="fun_category">Svago</string>
+    <string name="caricamento">Caricamento...</string>
+
+    <string name="aboutUs_text"><i>TripTales</i> nasce come progetto universitario per il corso di Programmazione di Dispositivi
+        Mobili. Dietro questa app c’è il team <i>Printine</i> – un gruppo di studentesse appassionate di
+    tecnologia e viaggi: Daniela Lorriz Bautista, Christena Attia, Giulia Giardelli, Sanaa Msellek, Lesly Mishel Zambrano Condori \n
+    \nAbbiamo creato <i>TripTales</i> con un obiettivo preciso: offrire ai viaggiatori un diario digitale in
+    cui raccogliere e conservare tutti i loro ricordi di viaggio. Un luogo dove annotare tappe,
+    esperienze, attività e spese in modo semplice e organizzato.\n
+    \nPer qualsiasi cosa contattaci all’email:
+    \nprintine@gmail.com\n
+        \nBuon viaggio con <i>TripTales</i>! </string>
+
 </resources>

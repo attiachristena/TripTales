@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="125dp"
+    android:layout_marginTop="120dp"
     app:cardCornerRadius="20dp"
-    android:elevation="100dp"
+    app:cardElevation="5dp"
     android:backgroundTint="@color/background_overlays"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.5"
@@ -72,14 +72,17 @@
             app:boxBackgroundColor="@color/background_overlays"
             android:hint="@string/hintCategoria"
             app:errorEnabled="true"
-            app:helperTextEnabled="true">
+            app:helperTextEnabled="true"
+            android:textColorHint="@color/hint"
+            app:endIconTint="@color/hint">
 
             <AutoCompleteTextView
                 android:id="@+id/inputCategoryFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:popupBackground="@color/background_overlays" />
+                android:popupBackground="@color/background_overlays"
+                android:textColor="@color/black"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

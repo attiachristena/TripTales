@@ -22,6 +22,15 @@
         <item name="cornerSizeBottomRight">20dp</item>
     </style>
 
+    <style name="CustomTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/cream</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxCornerRadiusBottomEnd">20dp</item>
+        <item name="boxCornerRadiusBottomStart">20dp</item>
+        <item name="boxCornerRadiusTopEnd">20dp</item>
+        <item name="boxCornerRadiusTopStart">20dp</item>
+    </style>
+
     <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
         <item name="android:maxWidth">10000dp</item>
         <item name="queryBackground">@null</item>
@@ -49,5 +58,19 @@
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
+
+    <style name="CustomToolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:titleTextColor">@android:color/background_dark</item>
+        <item name="titleTextAppearance">@style/ToolbarTitleText</item>
+    </style>
+
+    <style name="ToolbarTitleText" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+
 
 </resources>

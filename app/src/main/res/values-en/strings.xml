@@ -5,7 +5,7 @@
     <string name="tabTappe">Checkpoints</string>
     <string name="tabSpese">Expenses</string>
     <string name="tabObiettivi">Goals</string>
-    <string name="tabCheckList">CheckList</string>
+    <string name="tabAttivita">List</string>
     <string name="page_title">TripTales</string>
     <string name="action_home">Home</string>
     <string name="action_logout">Logout</string>
@@ -72,7 +72,16 @@
     <string name="snackbarGoalDeleted">Goal deleted</string>
     <string name="snackbarGoalNotDeleted">Error: goal not deleted</string>
     <string name="searchbar_hint">Search diary by name</string>
-    <string name="nomeStringheParser">\"NAME_EN\"</string>
+    <string name="nome_stringhe_parser">NAME_EN</string>
+    <string name="errorFilterExpenses">Pick a category</string>
+    <string name="delete_expense">Delete expense</string>
+    <string name="delete_expense_description">Are you sure you want to eliminate the expense?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_goal">Delete goal</string>
+    <string name="delete_task">Delete item</string>
+    <string name="delete_goal_description">Are you sure you want to eliminate the goal?</string>
+    <string name="delete_task_description">Are you sure you want to eliminate the item?</string>
     <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
@@ -99,19 +108,17 @@
     <string name="action_account">action_account</string>
     <string name="in_corso">Ongoing</string>
     <string name="fatto">Done</string>
-    <string name="nuovo_compito">New activity</string>
-    <string name="noTasksString">Add your first activity!</string>
+    <string name="nuovo_compito">New item</string>
+    <string name="noTasksString">Add the first item of the list!</string>
     <string name="noGoalsString">Add your first travel goal!</string>
     <string name="noSpeseString">Set your budget and add your first expense</string>
-    <string name="checklistTitle">Checklist of Tasks to Complete</string>
-    <string name="warningCurrency">*Please note: you can only change the currency if no expenses have been entered yet.</string>
+    <string name="checklistTitle">I must not forget to take:</string>
+    <string name="warningCurrency">*You can only change the currency if you have not yet entered any expenses.</string>
     <string name="hintCurrency">Currency*</string>
     <string name="nome_diario">Diary name</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
     <string name="intro1_title">Welcome to TripTales. Your Personal Travel Journal</string>
     <string name="intro1_body">Tell your journey, capture your memories and discover the world your own way</string>
-    <string name="intro2_title">Plan your trip, explore the world, treasure every stage</string>
-    <string name="intro2_body">Here you can plan your adventures, note down every discovery and relive every moment.</string>
     <string name="intro3_title">Explore without internet connection, plan without stress</string>
     <string name="intro3_body">Download maps and create your itinerary without needing to be online</string>
     <string name="intro4_title">Travel with peace of mind: we help you remember every detail</string>
@@ -119,7 +126,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">START</string>
     <string name="data_partenza">Departure date</string>
-    <string name="data_arrivo">Arrival date</string>
+    <string name="data_arrivo">Return date</string>
     <string name="scegli_immagine">Choose an image</string>
     <string name="inserisci_nome_diario">Enter diary name</string>
     <string name="paese_visitato">Enter visited country</string>
@@ -182,10 +189,10 @@
     <string name="password_reset_email_sent">Email for reset password sent</string>
 
     <string name="registrati_con_google">Sign up with Google</string>
-    <string name="snackbarTaskAdded">Task added</string>
-    <string name="snackbarTaskUpdated">Task updated</string>
-    <string name="snackbarTaskDeleted">Task deleted</string>
-    <string name="snackbarTaskNotDeleted">Error: task not deleted</string>
+    <string name="snackbarTaskAdded">Item added</string>
+    <string name="snackbarTaskUpdated">Item updated</string>
+    <string name="snackbarTaskDeleted">Item deleted</string>
+    <string name="snackbarTaskNotDeleted">Error: item not deleted</string>
 
     <string name="modifica_profilo"><u>Edit profile</u></string>
     <string name="modifica_profilo2">Edit profile</string>
@@ -197,7 +204,7 @@
     <string name="utente_non_autenticato">User not authenticated</string>
 
     <string name="elimina_account">Delete account</string>
-    <string name="dialog_elimina_account">Are you sure you want to delete your account? This action is irreversible.</string>
+    <string name="dialog_elimina_account">Are you sure you want to delete your account?\nThis action is irreversible</string>
     <string name="elimina">Delete</string>
     <string name="eliminazione_con_successo">Account successfully deleted!</string>
     <string name="errore_eliminazione">Error deleting the account.</string>
@@ -225,5 +232,56 @@
     <string name="s">Yes</string>
     <string name="no">No</string>
     <string name="vuoi_aggiungere_questo_luogo_alle_tappe">Would you like to add this place to your checkpoints?</string>
+    <string name="i_tuoi_ricordi">Your memories…</string>
+    <string name="errorFilterCategory">No expenses found for the specified category</string>
+    <string name="errorAmount">Enter an amount</string>
+    <string name="errorDescription">Enter a description</string>
+    <string name="errorDay">Enter a day</string>
+    <string name="errorInputDay">Day entered incorrectly</string>
+    <string name="errorMonth">Enter a month</string>
+    <string name="errorInputMonth">Month entered incorrectly</string>
+    <string name="errorYear">Enter a year</string>
+    <string name="errorInputYear">Year entered incorrectly</string>
+    <string name="errorBudget">Enter a budget</string>
+    <string name="errorCurrency">Choose a currency</string>
+    <string name="errorInputBudget">Enter a lower number</string>
+    <string name="errorGoalName">Enter the goal name</string>
+    <string name="errorTaskName">Enter the item name</string>
+    <string name="immagineSelezionata">Selected image</string>
+    <string name="cerca_diario_per_paese">Find diary by visited country</string>
+
+    <string name="inserisci_vecchia_password">Enter the old password</string>
+    <string name="inserisci_nuova_password">Enter the new password</string>
+    <string name="password_aggiornata">"Password successfully updated"</string>
+    <string name="errore_aggiornamento_password">Error updating password: </string>
+    <string name="autenticazione_fallita">"Authentication failed: "</string>
+
+
+    <string name="profilo_aggiornato">Profile updated successfully</string>
+    <string name="aggiornamento_fallito">Update failed</string>
+    <string name="utente_non_autenticated">User not authenticated</string>
+
+    <string name="action_back">Back</string>
+    <string name="conferma_logout">Confirm Logout</string>
+    <string name="conferma_uscire_da_account">Do you want to log out of your account?</string>
+    <string name="esci">Logout</string>
+    <string name="dati_non_disponibili">Data not available</string>
+    <string name="errore_nel_recupero_dati">Error retrieving data</string>
+    <string name="seleziona_lingua">Select language</string>
+    <string name="progressText">spent</string>
+    <string name="viaggio">Trip:</string>
+    <string name="food_category">Food</string>
+    <string name="transport_category">Transportation</string>
+    <string name="accommodation_category">Accommodation</string>
+    <string name="culture_category">Culture</string>
+    <string name="fun_category">Leisure</string>
+    <string name="caricamento">Loading...</string>
+
+    <string name="aboutUs_text"><i>TripTales</i> was born as a university project for the Mobile Devices Programming course.
+    Behind this app is the <i>Printine</i> team – a group of female students passionate about technology and travel: Daniela Lorriz Bautista, Christena Attia, Giulia Giardelli, Sanaa Msellek, Lesly Mishel Zambrano Condori. \n
+    \nWe created <i>TripTales</i> with a clear goal: to offer travelers a digital journal where they can collect and preserve all their travel memories. A place to note down stops, experiences, activities, and expenses in a simple and organized way.\n
+    \nFor anything, feel free to contact us at:\n
+    \nprintine@gmail.com\n
+    \nHappy travels with <i>TripTales</i>!</string>
 
 </resources>

@@ -7,9 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="125dp"
+    android:layout_marginTop="120dp"
     app:cardCornerRadius="20dp"
-    android:elevation="100dp"
+    app:cardElevation="5dp"
     android:backgroundTint="@color/background_overlays"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.5"
@@ -79,13 +79,15 @@
                 style="?attr/textInputFilledStyle"
                 app:boxBackgroundColor="@color/background_overlays"
                 app:errorEnabled="true"
-                app:helperTextEnabled="true">
+                app:helperTextEnabled="true"
+                android:textColorHint="@color/hint">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputBudget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:textColor="@color/black"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,7 +105,9 @@
                 style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 app:boxBackgroundColor="@color/background_overlays"
                 app:errorEnabled="true"
-                app:helperTextEnabled="true">
+                app:helperTextEnabled="true"
+                android:textColorHint="@color/hint"
+                app:endIconTint="@color/hint">
 
                 <AutoCompleteTextView
                     android:id="@+id/inputCurrency"
@@ -111,7 +115,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hintCurrency"
                     android:inputType="none"
-                    android:popupBackground="@color/background_overlays" />
+                    android:popupBackground="@color/background_overlays"
+                    android:textColor="@color/black"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -123,7 +128,7 @@
             android:paddingHorizontal="16dp"
             android:layout_marginBottom="20dp"
             android:text="@string/warningCurrency"
-            android:textColor="@color/dark_gray"/>
+            android:textColor="@color/hint"/>
 
     </LinearLayout>
 

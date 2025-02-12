@@ -122,7 +122,6 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="10"
                 android:text="@string/listaSpese"
-                android:textColor="@color/black"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
@@ -139,10 +138,10 @@
                 android:layout_width="85dp"
                 android:layout_height="40dp"
                 android:layout_gravity="end"
-                android:backgroundTint="@color/background_dark"
+                android:backgroundTint="@color/text_reverse"
                 android:text="@string/buttonSpese"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/white_to_black"
                 android:textSize="15sp"
                 app:cardCornerRadius="20dp" />
 
