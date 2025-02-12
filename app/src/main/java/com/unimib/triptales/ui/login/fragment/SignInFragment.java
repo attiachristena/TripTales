@@ -219,8 +219,11 @@ public class SignInFragment extends Fragment {
         });
 
         Button googleSignInButton = view.findViewById(R.id.signInButtonGoogle);
-        googleSignInButton.setOnClickListener(v -> { oneTapClient.beginSignIn(signInRequest)
+        googleSignInButton.setOnClickListener(v -> {
+            googleSignInButton.setEnabled(false);
+            oneTapClient.beginSignIn(signInRequest)
                 .addOnSuccessListener(requireActivity(), result -> {
+                    googleSignInButton.setEnabled(true);
                     try {
                         activityResultLauncher.launch(new IntentSenderRequest.Builder(result.getPendingIntent()).build());
                     } catch (Exception e) {
@@ -233,6 +236,7 @@ public class SignInFragment extends Fragment {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                             getString(R.string.error_google_login),
                             Snackbar.LENGTH_SHORT).show();
+                    googleSignInButton.setEnabled(true);
                 });
         });
     }

@@ -212,8 +212,11 @@ public class LoginFragment extends Fragment {
         passwordDimenticata.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_passwordDimenticataFragment));
 
         Button googleLoginButton = view.findViewById(R.id.googleLoginButton);
-        googleLoginButton.setOnClickListener(v -> { oneTapClient.beginSignIn(signInRequest)
+        googleLoginButton.setOnClickListener(v -> {
+            googleLoginButton.setEnabled(false);
+            oneTapClient.beginSignIn(signInRequest)
                 .addOnSuccessListener(requireActivity(), result -> {
+                    googleLoginButton.setEnabled(true);
                     try {
                         activityResultLauncher.launch(new IntentSenderRequest.Builder(result.getPendingIntent()).build());
                     } catch (Exception e) {
@@ -226,6 +229,7 @@ public class LoginFragment extends Fragment {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                             getString(R.string.error_google_login),
                             Snackbar.LENGTH_SHORT).show();
+                    googleLoginButton.setEnabled(true);
                 });
         });
     }

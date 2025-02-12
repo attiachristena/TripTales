@@ -21,6 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.unimib.triptales.model.Result;
 import com.unimib.triptales.model.User;
 
+import java.util.List;
+
 public class UserAuthenticationFirebaseDataSource extends BaseUserAuthenticationRemoteDataSource{
 
     private final FirebaseAuth firebaseAuth;
@@ -170,12 +172,23 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
     @Override
     public MutableLiveData<Result> resetPassword(String email) {
         MutableLiveData<Result> resultLiveData = new MutableLiveData<>();
-        firebaseAuth.sendPasswordResetEmail(email)
+
+        firebaseAuth.fetchSignInMethodsForEmail(email)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
-                        resultLiveData.postValue(new Result.GenericSuccess());
-                    } else {
-                        resultLiveData.postValue(new Result.Error(task.getException().getMessage()));
+                    if(task.isSuccessful()) {
+                        List<String> signInMethods = task.getResult().getSignInMethods();
+                        if(signInMethods == null || signInMethods.isEmpty()) {
+                            resultLiveData.postValue(new Result.Error("Nessun account trovato per questa email"));
+                        } else {
+                            firebaseAuth.sendPasswordResetEmail(email)
+                                    .addOnCompleteListener(resetTask -> {
+                                        if (resetTask.isSuccessful()){
+                                            resultLiveData.postValue(new Result.GenericSuccess());
+                                        } else {
+                                            resultLiveData.postValue(new Result.Error(resetTask.getException().getMessage()));
+                                        }
+                                    });
+                        }
                     }
                 });
         return resultLiveData;
