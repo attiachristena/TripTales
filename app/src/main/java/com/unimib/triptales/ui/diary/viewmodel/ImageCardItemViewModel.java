@@ -29,6 +29,7 @@ public class ImageCardItemViewModel extends ViewModel {
 
     public ImageCardItemViewModel(IImageCardItemRepository imageCardItemRepository) {
         this.imageCardItemRepository = imageCardItemRepository;
+        loadAllImageCardItems();
     }
 
     public LiveData<List<ImageCardItem>> getImageCardItemsLiveData() {
@@ -36,13 +37,18 @@ public class ImageCardItemViewModel extends ViewModel {
     }
 
 
+    public void insertImageCardItem(String title, String description, String date, Uri imageUri,
+                                    Context context, int checkpointDiaryId) {
 
-    public void insertImageCardItem(String title, String description, String date, Uri imageUri, Context context) {
-        int checkpointDiaryId = SharedPreferencesUtils.getCheckpointDiaryId(context);
-
-        ImageCardItem newItem = new ImageCardItem(title, description, date, imageUri.toString(), false, checkpointDiaryId);
-
+        ImageCardItem newItem = new ImageCardItem();
+        newItem.setTitle(title);
+        newItem.setDescription(description);
+        newItem.setDate(date);
+        newItem.setImageUri(imageUri.toString());
+        newItem.setCheckpointDiaryId(checkpointDiaryId);
+        newItem.setSelected(false);
         imageCardItemRepository.insertImageCardItem(newItem);
+
         fetchAllImageCardItems(context);
         operationStatus.postValue(true);
     }

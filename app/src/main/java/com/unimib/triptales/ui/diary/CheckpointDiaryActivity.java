@@ -3,6 +3,7 @@ package com.unimib.triptales.ui.diary;
 
 import static java.security.AccessController.getContext;
 
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -49,6 +50,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -212,10 +214,13 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
         editCheckpointDiaryImage = findViewById(R.id.editCheckpointDiaryImageButton);
         deleteCheckpointDiaryImage = findViewById(R.id.deleteCheckpointDiaryImageButton);
 
+
         addCheckpointDiaryImage.setOnClickListener(v -> {
             addCheckpointDiaryImage.setVisibility(View.GONE);
             goBackArrow.setVisibility(View.GONE);
             overlayView.setVisibility(View.VISIBLE);
+            dateImage.setOnClickListener(v1 -> showDatePickerDialog(dateImage));
+
         });
 
         editCheckpointDiaryImage.setOnClickListener(v -> {
@@ -265,7 +270,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                     return;
                 }
 
-                imageCardItemViewModel.insertImageCardItem(title, description, date, ImageUri, this);
+                imageCardItemViewModel.insertImageCardItem(title, description, date, ImageUri, this, checkpointDiaryId);
 
                 imageTitle.setText("");
                 imageDescrpition.setText("");
@@ -337,6 +342,8 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                 editDescription.setText(imageCardItem.getDescription());
                 editDate.setText(imageCardItem.getDate());
                 addCheckpointDiaryImage.setVisibility(View.GONE);
+                editCheckpointDiaryImage.setVisibility(View.GONE);
+                deleteCheckpointDiaryImage.setVisibility(View.GONE);
 
                 if (imageCardItem.getImageUri() != null && !imageCardItem.getImageUri().isEmpty()) {
                     Glide.with(this)
@@ -372,6 +379,8 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             String newTitle = editTitle.getText().toString();
             String newDescription = editDescription.getText().toString();
             String newDate = editDate.getText().toString();
+
+            editDate.setOnClickListener(v1 -> showDatePickerDialog(editDate));
 
             Uri newImageUri = selectedImageUriDiaryEdited;
 
@@ -496,6 +505,26 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         imageCardItemViewModel.fetchAllImageCardItems(this);
+    }
+
+    private void showDatePickerDialog(TextInputEditText dateEditText) {
+        // Ottieni la data corrente
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Crea e mostra il DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    // Formatta la data selezionata (es. "dd/MM/yyyy")
+                    String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                    dateEditText.setText(selectedDate); // Imposta la data nel campo EditText
+                },
+                year, month, day
+        );
+        datePickerDialog.show();
     }
 
 }

@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Contenuto principale (scrollabile) -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,20 +17,6 @@
             android:layout_height="wrap_content"
             tools:context=".ui.diary.CheckpointDiaryActivity">
 
-            <ImageButton
-                android:id="@+id/backToTappaFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/edit_text_background"
-                android:backgroundTint="@color/background_overlays"
-                android:contentDescription="@string/pulsante_per_tornare_indietro"
-                android:elevation="4dp"
-                android:src="@drawable/baseline_arrow_back_ios_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/black" />
 
             <TextView
                 android:id="@+id/nomeTappa"
@@ -59,7 +44,7 @@
                 android:elevation="4dp"
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
-                android:text="Data Tappa"
+                android:text="@string/data_tappa"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -110,7 +95,21 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Pulsanti fissi (non scrollano) -->
+    <ImageButton
+        android:id="@+id/backToTappaFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/edit_text_background"
+        android:backgroundTint="@color/background_overlays"
+        android:contentDescription="@string/pulsante_per_tornare_indietro"
+        android:elevation="4dp"
+        android:src="@drawable/baseline_arrow_back_ios_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addCheckpointDiaryImage"
         android:layout_width="wrap_content"

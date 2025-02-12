@@ -23,16 +23,19 @@ import java.util.Map;
 public class ImageCardItemRemoteDataSource extends BaseImageCardItemRemoteDataSource {
     private final DatabaseReference databaseReference;
 
-    public ImageCardItemRemoteDataSource(String userId) {
+    public ImageCardItemRemoteDataSource(String userId, int checkpointId) {
         this.databaseReference = FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(userId)
                 .child("checkpointDiaries")
+                .child(String.valueOf(checkpointId))
                 .child("imageCardItems");
     }
 
     public void insertImageCardItem(ImageCardItem imageCardItem) {
         if (imageCardItem != null) {
+            Log.d("InsertImageCardItem", "CheckpointDiary ID: " + imageCardItem.getCheckpointDiaryId());
+
             databaseReference.child(String.valueOf(imageCardItem.getId())).setValue(imageCardItem)
                     .addOnSuccessListener(aVoid -> {
                         List<ImageCardItem> items = new ArrayList<>();

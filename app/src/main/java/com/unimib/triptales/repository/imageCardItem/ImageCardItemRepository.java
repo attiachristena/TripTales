@@ -7,7 +7,9 @@ import com.unimib.triptales.model.ImageCardItem;
 import com.unimib.triptales.source.imageCardItem.BaseImageCardItemLocalDataSource;
 import com.unimib.triptales.source.imageCardItem.BaseImageCardItemRemoteDataSource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ImageCardItemRepository implements IImageCardItemRepository, ImageCardItemResponseCallBack {
     private BaseImageCardItemLocalDataSource imageCardItemLocalDataSource;
@@ -17,23 +19,37 @@ public class ImageCardItemRepository implements IImageCardItemRepository, ImageC
     private boolean remoteDelete = false;
     private boolean localDelete = false;
     private boolean isRemoteOperation = false;
+    private final int checkpointDiaryId;
+
 
 
     public ImageCardItemRepository(BaseImageCardItemLocalDataSource imageCardItemLocalDataSource,
-                                   BaseImageCardItemRemoteDataSource imageCardItemRemoteDataSource) {
+                                   BaseImageCardItemRemoteDataSource imageCardItemRemoteDataSource,
+                                   int checkpointDiaryId) {
+        this.checkpointDiaryId = checkpointDiaryId;
         this.imageCardItemLocalDataSource = imageCardItemLocalDataSource;
         this.imageCardItemRemoteDataSource = imageCardItemRemoteDataSource;
         this.imageCardItemLocalDataSource.setImageCardItemCallback(this);
         this.imageCardItemRemoteDataSource.setImageCardItemCallback(this);
     }
 
+    @Override
     public List<ImageCardItem> getAllImageCardItems() {
         imageCardItemLocalDataSource.getAllImageCardItems();
         imageCardItemRemoteDataSource.getAllImageCardItems();
-        return imageCardItemsLiveData.getValue();
+
+        List<ImageCardItem> allItems = imageCardItemsLiveData.getValue();
+        if (allItems != null) {
+            return allItems.stream()
+                    .filter(item -> item.getCheckpointDiaryId() == this.checkpointDiaryId)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
+    @Override
     public void insertImageCardItem(ImageCardItem imageCardItem) {
+        imageCardItem.setCheckpointDiaryId(this.checkpointDiaryId);
         imageCardItemLocalDataSource.insertImageCardItem(imageCardItem);
         imageCardItemRemoteDataSource.insertImageCardItem(imageCardItem);
     }
@@ -96,15 +112,18 @@ public class ImageCardItemRepository implements IImageCardItemRepository, ImageC
 
     @Override
     public void onSuccessFromRemote(List<ImageCardItem> imageCardItems) {
+        List<ImageCardItem> filteredItems = imageCardItems.stream()
+                .filter(item -> item.getCheckpointDiaryId() == this.checkpointDiaryId)
+                .collect(Collectors.toList());
+
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            if (remoteDelete || !localDelete) {
-                for (ImageCardItem imageCardItem : imageCardItems) {
-                    imageCardItemLocalDataSource.insertImageCardItem(imageCardItem);
-                }
-                imageCardItemLocalDataSource.getAllImageCardItems();
-                remoteDelete = false;
-                localDelete = false;
+
+            for (ImageCardItem imageCardItem : filteredItems) {
+                imageCardItemLocalDataSource.insertImageCardItem(imageCardItem);
             }
+            imageCardItemLocalDataSource.getAllImageCardItems();
+            remoteDelete = false;
+            localDelete = false;
         });
     }
 
@@ -119,10 +138,11 @@ public class ImageCardItemRepository implements IImageCardItemRepository, ImageC
 
     @Override
     public void onSuccessFromLocal(List<ImageCardItem> imageCardItems) {
-        imageCardItemsLiveData.setValue(imageCardItems);
-        for (ImageCardItem imageCardItem : imageCardItems) {
-            imageCardItemRemoteDataSource.insertImageCardItem(imageCardItem);
-        }
+        List<ImageCardItem> filteredItems = imageCardItems.stream()
+                .filter(item -> item.getCheckpointDiaryId() == this.checkpointDiaryId)
+                .collect(Collectors.toList());
+
+        imageCardItemsLiveData.setValue(filteredItems);
     }
 
     @Override

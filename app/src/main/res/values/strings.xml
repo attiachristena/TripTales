@@ -212,4 +212,17 @@
     <string name="cerca_diario_per_nome">Cerca diario per nome</string>
     <string name="i_tuoi_ricordi">I tuoi ricordi...</string>
     <string name="modifica_il_tuo_ricordo">Modifica il tuo ricordo</string>
+    <string name="data_tappa">Data Tappa</string>
+    <string name="nome_del_diario">Nome del Diario</string>
+    <string name="data_di_partenza_data_di_arrivo">Data di Partenza - Data di Arrivo</string>
+    <string name="cerca_un_luogo">Cerca un luogo</string>
+    <string name="data_immagine">Data Immagine</string>
+    <string name="titolo_immagine">Titolo</string>
+    <string name="sottotitolo_immagine">Sottotitolo</string>
+    <string name="aggiungi_un_ricordo">Aggiungi un ricordo</string>
+    <string name="titolo">Titolo</string>
+    <string name="descrizione_ricordo">Descrivi il momento...</string>
+    <string name="titolo_ricordo">Titolo</string>
+    <string name="data_ricordo">Data</string>
+    <string name="modifica_la_tappa">Modifica la tappa</string>
 </resources>

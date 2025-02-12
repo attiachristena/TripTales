@@ -3,7 +3,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="20dp"
-    android:layout_height="630dp"
+    android:layout_height="660dp"
     android:layout_marginTop="80dp"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
@@ -17,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:backgroundTint="@color/background_overlays">
-
 
         <TextView
             android:id="@+id/titleTextViewEdit"
@@ -64,30 +63,81 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editedTitleCheckpointDiary"
-            android:layout_width="327dp"
-            android:layout_height="50dp"
+        <!-- Campo per il titolo del ricordo -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/titleInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/titleTextViewEdit"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginStart="45dp"
             android:layout_marginTop="19dp"
             android:layout_marginEnd="35dp"
-            android:background="@drawable/edit_text_background"
-            android:fontFamily="@font/poppins_regular"
-            android:gravity="center"
-            android:hint="Titolo" />
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editedTitleCheckpointDiary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:hint="@string/titolo"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo per la descrizione del ricordo -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/descriptionInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/titleInputLayout"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="35dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/imageDescriptionEdited"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:hint="@string/descrizione_ricordo"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo per la data del ricordo -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dateInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/descriptionInputLayout"
+            android:layout_marginStart="47dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="33dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addDateCheckpointDiaryEdited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:hint="@string/data_ricordo"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/editImageCheckpointDiaryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/addDateCheckpointDiaryEdited"
+            android:layout_below="@+id/dateInputLayout"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="54dp"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="28dp"
             android:layout_marginEnd="45dp"
             android:background="@drawable/edit_text_background"
             android:backgroundTint="@color/primary"
@@ -95,48 +145,16 @@
             android:gravity="center"
             android:text="@string/inserisci_un_immagine" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/addDateCheckpointDiaryEdited"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imageDescriptionEdited"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="47dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="33dp"
-            android:background="@drawable/edit_text_background"
-            android:fontFamily="@font/poppins_regular"
-            android:gravity="center"
-            android:hint="Data"
-            android:inputType="date" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/imageDescriptionEdited"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_below="@+id/editedTitleCheckpointDiary"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="45dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="35dp"
-            android:background="@drawable/edit_text_background"
-            android:fontFamily="@font/poppins_regular"
-            android:gravity="center"
-            android:hint="Descrivi il momento..."
-            android:inputType="date" />
-
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/previewImageCheckpointDiaryEdited"
-            android:layout_width="381dp"
+            android:layout_width="250dp"
             android:layout_height="181dp"
-            android:layout_below="@id/addDateCheckpointDiaryEdited"
+            android:layout_below="@id/editImageCheckpointDiaryButton"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="17dp"
-            android:layout_marginTop="85dp"
-            android:layout_marginEnd="13dp"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="17dp"
             android:scaleType="centerCrop"
             android:visibility="visible"
             app:shapeAppearance="@style/roundedImage" />
@@ -156,8 +174,5 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-
     </RelativeLayout>
-
-
 </com.google.android.material.card.MaterialCardView>

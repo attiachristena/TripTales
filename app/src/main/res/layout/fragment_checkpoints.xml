@@ -38,7 +38,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="143dp"
                 android:fontFamily="@font/poppins_bold"
-                android:text="Nome del Diario"
+                android:text="@string/nome_del_diario"
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -51,7 +51,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="0dp"
                 android:fontFamily="@font/poppins_regular"
-                android:text="Data di Partenza - Data di Arrivo"
+                android:text="@string/data_di_partenza_data_di_arrivo"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
 
@@ -88,7 +88,7 @@
                 android:focusable="true"
                 android:iconifiedByDefault="false"
                 android:queryBackground="@android:color/transparent"
-                android:queryHint="Cerca un luogo"
+                android:queryHint="@string/cerca_un_luogo"
                 android:theme="@style/CustomSearchViewStyle" />
 
 

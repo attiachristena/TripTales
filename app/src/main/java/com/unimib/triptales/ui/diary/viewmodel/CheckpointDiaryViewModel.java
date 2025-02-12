@@ -102,6 +102,7 @@ public class CheckpointDiaryViewModel extends ViewModel {
         });
     }
 
+
     public void insertCheckpoint(String nome, String data, Uri imageUri, LatLng latLng, Context context) {
 
         String diaryIdStr = SharedPreferencesUtils.getDiaryId(context);
@@ -149,6 +150,7 @@ public class CheckpointDiaryViewModel extends ViewModel {
             }
         });
     }
+
 
     public void deleteSelectedCheckpoints(List<CheckpointDiary> selectedCheckpoints, Context context) {
         executorService.execute(() -> {

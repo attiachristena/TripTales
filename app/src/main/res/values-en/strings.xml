@@ -44,12 +44,12 @@
     <string name="page_3">Calendar</string>
     <string name="snackbarErroreBudget">Set the budget!</string>
     <string name="firstHomePageText">You haven\'t created any diary yet, start your adventure!</string>
-    <string name="tappe">Stages</string>
+    <string name="tappe">Checkpoints</string>
     <string name="titolo_diario">Diary Title</string>
-    <string name="aggiungi_una_tappa">Stage name</string>
-    <string name="nome_tappa_hint">Stage name</string>
+    <string name="aggiungi_una_tappa">Add a checkpoint</string>
+    <string name="nome_tappa_hint">Checkpoint name</string>
     <string name="inserisci_un_immagine">Insert an image</string>
-    <string name="data_tappa_hint">Stage date</string>
+    <string name="data_tappa_hint">Checkpoint date</string>
     <string name="anteprima_immagine">Image preview</string>
     <string name="pulsante_per_tornare_indietro">Button to go back</string>
     <string name="pulsante_per_salvare_la_tappa">Button to save the stage</string>
@@ -213,5 +213,14 @@
 
     <string name="i_tuoi_ricordi">Your travel memories…</string>
     <string name="modifica_il_tuo_ricordo">Edit your travel memory</string>
+    <string name="data_tappa">Trip Date</string>
+    <string name="nome_del_diario">Diary Name</string>
+    <string name="data_di_partenza_data_di_arrivo">Depaurture Date - Arrival Date</string>
+    <string name="cerca_un_luogo">Search a place</string>
+    <string name="aggiungi_un_ricordo">Add a memory image</string>
+    <string name="titolo_ricordo">Title</string>
+    <string name="descrizione_ricordo">Description</string>
+    <string name="data_ricordo">Date</string>
+    <string name="modifica_la_tappa">Edit checkpoint</string>
 
 </resources>
