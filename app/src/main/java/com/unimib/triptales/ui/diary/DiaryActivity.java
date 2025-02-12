@@ -25,8 +25,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.ViewPagerAdapter;
+import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.repository.goal.IGoalRepository;
+import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
 import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.GoalViewModel;
@@ -76,7 +78,14 @@ public class DiaryActivity extends AppCompatActivity {
                 new ViewModelFactory(taskRepository)).get(TaskViewModel.class);
         taskViewModel.fetchAllTasks();
 
-        // Recupera i dati dall'Intent
+        ICheckpointDiaryRepository checkpointDiaryRepository = ServiceLocator.getINSTANCE().getCheckpointDiaryRepository(getApplicationContext());
+        TaskViewModel checkpointDiaryViewModel = new ViewModelProvider(this,
+                new ViewModelFactory(checkpointDiaryRepository)).get(TaskViewModel.class);
+        checkpointDiaryViewModel.fetchAllTasks();
+
+
+
+                // Recupera i dati dall'Intent
         Intent intent = getIntent();
 
         if (intent != null) {

@@ -1,10 +1,14 @@
 package com.unimib.triptales.ui.diary;
 
 
+import static java.security.AccessController.getContext;
+
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +25,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import static java.security.AccessController.getContext;
+
 
 
 import com.bumptech.glide.Glide;
@@ -33,7 +39,7 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.ImageCardItemAdapter;
 import com.unimib.triptales.model.ImageCardItem;
 import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
-import com.unimib.triptales.ui.diary.viewmodel.checkpoint.ImageCardItemViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.ImageCardItemViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
@@ -41,8 +47,10 @@ import com.unimib.triptales.util.SharedPreferencesUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class CheckpointDiaryActivity extends AppCompatActivity {
@@ -68,7 +76,6 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
     private ArrayList<Uri> imageUris = new ArrayList<>();
     private TextInputEditText dateImage;
     private RecyclerView carouselRecyclerView;
-    private ImageCardItemAdapter adapter;
     private List<ImageCardItem> imageCardItems = new ArrayList<>();
     private Button saveImage;
     private ImageCardItemViewModel imageCardItemViewModel;
@@ -110,10 +117,24 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
         rootLayout.addView(overlayView);
         rootLayout.addView(overlayEditView);
 
+
+        nomeTappaString = getIntent().getStringExtra("nomeTappa");
+        imageUri = Uri.parse(getIntent().getStringExtra("immagineTappaUri"));
+        dataTappaString = getIntent().getStringExtra("dataTappa");
+        checkpointDiaryId = getIntent().getIntExtra("checkpointDiaryId", -1);
+
+        if (checkpointDiaryId == -1) {
+            throw new IllegalStateException("Invalid CheckpointDiary ID");
+        }
+
+        SharedPreferencesUtils.setCheckpointDiaryId(this, checkpointDiaryId);
+
+
         IImageCardItemRepository imageCardItemRepository = ServiceLocator.getINSTANCE().getImageCardItemRepository(this);
         imageCardItemViewModel = new ViewModelProvider(this,
                 new ViewModelFactory(imageCardItemRepository))
                 .get(ImageCardItemViewModel.class);
+
 
 
         RecyclerView recyclerViewCards = findViewById(R.id.imageCardItemRecyclerView);
@@ -121,28 +142,13 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
         recyclerViewCards.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewCards.setAdapter(imageCardItemAdapter);
 
-        nomeTappaString = getIntent().getStringExtra("nomeTappa");
-        imageUri = Uri.parse(getIntent().getStringExtra("immagineTappaUri"));
-        dataTappaString = getIntent().getStringExtra("dataTappa");
-
-        checkpointDiaryId = getIntent().getIntExtra("checkpointDiaryId", -1);
-
-        if (checkpointDiaryId == -1) {
-            checkpointDiaryId = SharedPreferencesUtils.getCheckpointDiaryId(this);
-            Log.d("CheckpointDiaryActivity", "Retrieved checkpointDiaryId from SharedPreferences: " + checkpointDiaryId);
-        }
-
-        if (checkpointDiaryId > 0) {
-            SharedPreferencesUtils.saveCheckpointDiaryId(this, checkpointDiaryId);
-            imageCardItemViewModel.setCheckpointDiaryId(checkpointDiaryId);
-            Log.d("CheckpointDiaryActivity", "Set checkpointDiaryId in ViewModel: " + checkpointDiaryId);
-        }
-
+        imageCardItemViewModel.fetchAllImageCardItems(this);
+        imageCardItemViewModel.loadAllImageCardItems();
 
         imageCardItemViewModel.getImageCardItemsLiveData().observe(this, imageCardItems -> {
             imageCardItemAdapter.setImageCardItems(imageCardItems);
+            imageCardItemAdapter.notifyDataSetChanged();
         });
-
 
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -229,7 +235,6 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
         });
 
 
-
         closeOverlayButton.setOnClickListener(v -> {
             imageTitle.setText("");
             imageDescrpition.setText("");
@@ -251,7 +256,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             Uri selectedImageUri = selectedImageUriDiary;
 
             if (!title.isEmpty() && !description.isEmpty() && !date.isEmpty()) {
-                Uri ImageUri = (selectedImageUri != null) ? saveImageToInternalStorage(selectedImageUri) :
+                Uri ImageUri = (selectedImageUri != null) ? saveImageToPublicStorage(selectedImageUri) :
                         Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_background);
 
                 if (ImageUri == null) {
@@ -262,7 +267,11 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
 
                 imageCardItemViewModel.insertImageCardItem(title, description, date, ImageUri, this);
 
-                imageCardItemViewModel.resetParam(title, description, date);
+                imageTitle.setText("");
+                imageDescrpition.setText("");
+                dateImage.setText("");
+                selectedImageUriDiary = null;
+
                 previewImageCheckpointDiary.setImageURI(null);
                 textPreviewImageCheckpointDiary.setVisibility(View.VISIBLE);
                 addCheckpointDiaryImage.setVisibility(View.VISIBLE);
@@ -369,7 +378,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             if (selectedCardItem != null) {
                 if (!newTitle.isEmpty()) {
                     Uri finalImageUri = (newImageUri != null) ?
-                            saveImageToInternalStorage(newImageUri) :
+                            saveImageToPublicStorage(newImageUri) :
                             Uri.parse(selectedCardItem.getImageUri());
 
                     // Chiama il ViewModel per aggiornare la card
@@ -428,49 +437,45 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Ensure we still have a valid ID when resuming
-        checkpointDiaryId = SharedPreferencesUtils.getCheckpointDiaryId(this);
-        if (checkpointDiaryId > 0) {
-            imageCardItemViewModel.setCheckpointDiaryId(checkpointDiaryId);
-            imageCardItemViewModel.fetchAllImageCardItems();
-        }
-    }
-
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         pickImageLauncher.launch(intent);
     }
 
-    private Uri saveImageToInternalStorage(Uri sourceUri) {
+    private Uri saveImageToPublicStorage(Uri sourceUri) {
+        Bitmap bitmap;
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), sourceUri);
-
-            File storageDir = new File(getFilesDir(), "checkpoint_images");
-            if (!storageDir.exists()) {
-                storageDir.mkdirs();
-            }
-
-            String fileName = "tappa_" + System.currentTimeMillis() + ".jpg";
-            File imageFile = new File(storageDir, fileName);
-
-            try (FileOutputStream out = new FileOutputStream(imageFile)) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            }
-
-            return Uri.fromFile(imageFile);
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), sourceUri);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("CheckpointDiaryActivity", "Errore durante il salvataggio dell'immagine: " + e.getMessage());
             return null;
         }
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "diary_" + System.currentTimeMillis() + ".jpg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/TripTales");
+
+        Uri imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        try {
+            if (imageUri != null) {
+                OutputStream out = getContentResolver().openOutputStream(imageUri);
+                if (out != null) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                    out.close();
+                }
+                return imageUri;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void openEditOverlay(ImageCardItem item) {
-        selectedCardItem = item; // Imposta la card selezionata
+        selectedCardItem = item;
         overlayEditView.setVisibility(View.VISIBLE);
         editTitle.setText(item.getTitle());
         editDescription.setText(item.getDescription());
@@ -485,6 +490,12 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             editImage.setImageResource(R.drawable.ic_launcher_background);
             textPrevieEdited.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        imageCardItemViewModel.fetchAllImageCardItems(this);
     }
 
 }

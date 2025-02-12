@@ -86,17 +86,35 @@ public class SharedPreferencesUtils {
         Log.d("SharedPreferencesUtils", "Saved checkpoint diary ID: " + id);
     }
 
-    public static int getCheckpointDiaryId(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences("TripTales", Context.MODE_PRIVATE);
-        int id = prefs.getInt(CHECKPOINT_DIARY_ID_KEY, -1);
-        Log.d("SharedPreferencesUtils", "Retrieved checkpoint diary ID: " + id);
-        return id;
+    public static void setCheckpointDiaryId(Context context, int checkpointDiaryId) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("YourAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("CHECKPOINT_DIARY_ID", checkpointDiaryId);
+        editor.apply();
+
+        Log.d("SharedPreferences", "Checkpoint Diary ID salvato: " + checkpointDiaryId);
     }
+
+
+
+    public static int getCheckpointDiaryId(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("YourAppPrefs", Context.MODE_PRIVATE);
+        int checkpointDiaryId = sharedPreferences.getInt("CHECKPOINT_DIARY_ID", 0);
+        Log.d("SharedPreferences", "Checkpoint Diary ID recuperato: " + checkpointDiaryId);
+        return checkpointDiaryId;
+    }
+
+
 
     // Recupera il diaryId salvato
     public static String getDiaryId(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(KEY_DIARY_ID, null); // Ritorna null se non esiste
+    }
+
+    public static void saveImageCardItemId(Context context, int imageCardItemId) {
+        SharedPreferences prefs = context.getSharedPreferences("TripTales", Context.MODE_PRIVATE);
+        prefs.edit().putInt("imageCardItemId", imageCardItemId).apply();
     }
 
 

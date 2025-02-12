@@ -1,87 +1,136 @@
 package com.unimib.triptales.source.imageCardItem;
 
-import androidx.lifecycle.LiveData;
-
 import com.unimib.triptales.database.ImageCardItemDao;
 import com.unimib.triptales.model.ImageCardItem;
 
 import java.util.List;
 
-public class ImageCardItemLocalDataSource implements BaseImageCardItemLocalDataSource{
+public class ImageCardItemLocalDataSource extends BaseImageCardItemLocalDataSource{
     private final ImageCardItemDao imageCardItemDao;
+    private final int checkpointDiaryId;
 
-    public ImageCardItemLocalDataSource(ImageCardItemDao imageCardItemDao) {
+    public ImageCardItemLocalDataSource(ImageCardItemDao imageCardItemDao, int checkpointDiaryId) {
         this.imageCardItemDao = imageCardItemDao;
+        this.checkpointDiaryId = checkpointDiaryId;
     }
 
     @Override
     public List<ImageCardItem> getAllImageCardItems() {
-        return imageCardItemDao.getAllImageCardItems();
+        try {
+            List<ImageCardItem> imageCardItems = imageCardItemDao.getAllImageCardItems();
+            imageCardItemCallback.onSuccessFromLocal(imageCardItems);
+            return imageCardItems;
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+            return null;
+        }
     }
 
     @Override
     public void insertImageCardItem(ImageCardItem imageCardItem) {
-        imageCardItemDao.insertImageCardItem(imageCardItem);
+        try{
+            long id = imageCardItemDao.insertImageCardItem(imageCardItem); // Inserimento in Room
+            imageCardItem.setId((int) id);
+            imageCardItemCallback.onSuccessFromLocal(List.of(imageCardItem));
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void updateImageCardItem(ImageCardItem imageCardItem) {
-        imageCardItemDao.updateImageCardItem(imageCardItem);
+        try {
+            imageCardItemDao.updateImageCardItem(imageCardItem);
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void deleteImageCardItem(ImageCardItem imageCardItem) {
-        imageCardItemDao.deleteImageCardItem(imageCardItem);
-    }
-
-    @Override
-    public void deleteAllImageCardItems() {
-        imageCardItemDao.deleteAllImageCardItems();
+        try {
+            imageCardItemDao.deleteImageCardItem(imageCardItem);
+            imageCardItemCallback.onSuccessDeleteFromLocal();
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void deleteImageCardItemById(int id) {
-        imageCardItemDao.deleteImageCardItemById(id);
+        try {
+            imageCardItemDao.deleteImageCardItemById(id);
+            imageCardItemCallback.onSuccessDeleteFromLocal();
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
+
     @Override
-    public List<ImageCardItem> getImageCardItemById(int id) {
-        return imageCardItemDao.getImageCardItemById(id);
+    public List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId){
+        try {
+            return imageCardItemDao.getImageCardItemByCheckpointDiaryId(checkpointDiaryId);
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+            return null;
+        }
     }
 
     @Override
     public void updateImageCardItemTitle(int id, String title) {
-        imageCardItemDao.updateImageCardItemTitle(id, title);
+        try {
+            imageCardItemDao.updateImageCardItemTitle(id, title);
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void updateImageCardItemDescription(int id, String description) {
-        imageCardItemDao.updateImageCardItemDescription(id, description);
+        try {
+            imageCardItemDao.updateImageCardItemDescription(id, description);
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void updateImageCardItemDate(int id, String date) {
-        imageCardItemDao.updateImageCardItemDate(id, date);
+        try {
+            imageCardItemDao.updateImageCardItemDate(id, date);
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
     @Override
     public void updateImageCardItemImageUri(int id, String imageUri) {
-        imageCardItemDao.updateImageCardItemImageUri(id, imageUri);
+        try {
+            imageCardItemDao.updateImageCardItemImageUri(id, imageUri);
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
-    @Override
-    public List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId) {
-        return imageCardItemDao.getImageCardItemByCheckpointDiaryId(checkpointDiaryId);
-    }
 
     @Override
     public List<ImageCardItem> getSelectedImageCardItems() {
-        return imageCardItemDao.getSelectedImageCardItems();
+        try {
+            return imageCardItemDao.getSelectedImageCardItems();
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+            return null;
+        }
     }
 
     @Override
     public void updateImageCardItemIsSelected(int id, boolean isSelected) {
-        imageCardItemDao.updateImageCardItemIsSelected(id, isSelected);
+        try {
+            imageCardItemDao.updateImageCardItemIsSelected(id, isSelected);
+        } catch (Exception e) {
+            imageCardItemCallback.onFailureFromLocal(e);
+        }
     }
 
 }

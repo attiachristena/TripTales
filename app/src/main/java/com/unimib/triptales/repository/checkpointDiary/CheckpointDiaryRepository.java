@@ -8,6 +8,7 @@ import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryLocalDataS
 import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryRemoteDataSource;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, CheckpointDiaryResponseCallBack {
 
@@ -45,11 +46,9 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
 
     @Override
     public long insertCheckpointDiary(CheckpointDiary checkpointDiary) {
-        // Prima inserisci localmente per ottenere l'ID
         long id = checkpointDiaryLocalDataSource.insertCheckpointDiary(checkpointDiary);
-        checkpointDiary.setId((int) id);  // Aggiorna l'ID del checkpoint
+        checkpointDiary.setId((int) id);
 
-        // Poi salva nel remote
         isRemoteOperation = true;
         checkpointDiaryRemoteDataSource.insertCheckpointDiary(checkpointDiary);
 
@@ -120,24 +119,21 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
 
     @Override
     public void onSuccessFromRemote(List<CheckpointDiary> checkpoints) {
-        if (!isRemoteOperation) {  // Solo se non è un'operazione iniziata dal remote
-            AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-                if (remoteDelete || !localDelete) {
-                    for (CheckpointDiary checkpoint : checkpoints) {
-                        checkpointDiaryLocalDataSource.insertCheckpointDiary(checkpoint);
-                    }
-                    checkpointDiaryLocalDataSource.getAllCheckpointDiaries();
-                    remoteDelete = false;
-                    localDelete = false;
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            if(remoteDelete || !localDelete){
+                for (CheckpointDiary checkpoint : checkpoints) {
+                    checkpointDiaryLocalDataSource.insertCheckpointDiary(checkpoint);
                 }
-            });
-        }
-        isRemoteOperation = false;  // Reset del flag
+                checkpointDiaryLocalDataSource.getAllCheckpointDiaries();
+                remoteDelete = false;
+                localDelete = false;
+            }
+        });
     }
+
 
     @Override
     public void onFailureFromRemote(Exception exception) {
-        // Handle remote failures if needed
     }
 
     @Override
@@ -147,12 +143,9 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
 
     @Override
     public void onSuccessFromLocal(List<CheckpointDiary> checkpoints) {
-        checkpointDiariesLiveData.postValue(checkpoints);
-        // Non propagare al remote se l'operazione è già partita da lì
-        if (!isRemoteOperation) {
-            for (CheckpointDiary checkpoint : checkpoints) {
-                checkpointDiaryRemoteDataSource.insertCheckpointDiary(checkpoint);
-            }
+        checkpointDiariesLiveData.setValue(checkpoints);
+        for(CheckpointDiary checkpoint : checkpoints){
+            checkpointDiaryRemoteDataSource.insertCheckpointDiary(checkpoint);
         }
     }
 

@@ -35,7 +35,9 @@ import com.unimib.triptales.source.goal.BaseGoalRemoteDataSource;
 import com.unimib.triptales.source.goal.GoalLocalDataSource;
 import com.unimib.triptales.source.goal.GoalRemoteDataSource;
 import com.unimib.triptales.source.imageCardItem.BaseImageCardItemLocalDataSource;
+import com.unimib.triptales.source.imageCardItem.BaseImageCardItemRemoteDataSource;
 import com.unimib.triptales.source.imageCardItem.ImageCardItemLocalDataSource;
+import com.unimib.triptales.source.imageCardItem.ImageCardItemRemoteDataSource;
 import com.unimib.triptales.source.task.BaseTaskLocalDataSource;
 import com.unimib.triptales.source.task.BaseTaskRemoteDataSource;
 import com.unimib.triptales.source.task.TaskLocalDataSource;
@@ -94,6 +96,11 @@ public class ServiceLocator {
     }
 
     public ICheckpointDiaryRepository getCheckpointDiaryRepository(Context context) {
+        String diaryId = SharedPreferencesUtils.getDiaryId(context);
+        if (diaryId == null || diaryId.isEmpty()) {
+            throw new IllegalStateException("Invalid Diary ID");
+        }
+
         BaseCheckpointDiaryLocalDataSource checkpointDiaryLocalDataSource =
                 new CheckpointDiaryLocalDataSource(AppRoomDatabase.getDatabase(context).checkpointDiaryDao(),
                         SharedPreferencesUtils.getDiaryId(context));
@@ -103,11 +110,19 @@ public class ServiceLocator {
     }
 
     public IImageCardItemRepository getImageCardItemRepository(Context context) {
-        BaseImageCardItemLocalDataSource imageCardItemLocalDataSource =
-                new ImageCardItemLocalDataSource(AppRoomDatabase.getDatabase(context).imageCardItemDao());
-        return new ImageCardItemRepository(imageCardItemLocalDataSource);
+        int checkpointDiaryId = SharedPreferencesUtils.getCheckpointDiaryId(context);
+        if (checkpointDiaryId <= 0) {
+            throw new IllegalStateException("Invalid CheckpointDiary ID");
+        }
 
+        BaseImageCardItemLocalDataSource imageCardItemLocalDataSource =
+                new ImageCardItemLocalDataSource(AppRoomDatabase.getDatabase(context).imageCardItemDao(), checkpointDiaryId);
+        BaseImageCardItemRemoteDataSource imageCardItemRemoteDataSource =
+                new ImageCardItemRemoteDataSource(SharedPreferencesUtils.getLoggedUserId());
+
+        return new ImageCardItemRepository(imageCardItemLocalDataSource, imageCardItemRemoteDataSource);
     }
+
 
     public IDiaryRepository getDiaryRepository(Context context) {
         BaseDiaryLocalDataSource diaryLocalDataSource =

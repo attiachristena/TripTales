@@ -2,6 +2,8 @@ package com.unimib.triptales.source.checkpointDiary;
 
 import static com.unimib.triptales.util.Constants.UNEXPECTED_ERROR;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -137,6 +139,7 @@ public class CheckpointDiaryRemoteDataSource extends BaseCheckpointDiaryRemoteDa
                 }
                 checkpointDiaryCallback.onSuccessFromRemote(checkpointList);
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

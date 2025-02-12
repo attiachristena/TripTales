@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.diary.viewmodel.checkpoint;
+package com.unimib.triptales.ui.diary.viewmodel;
 
 import android.content.Context;
 import android.location.Address;
@@ -164,12 +164,6 @@ public class CheckpointDiaryViewModel extends ViewModel {
         });
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        executorService.shutdown();
-    }
-
     public void loadMapCheckpoints() {
         executorService.execute(() -> {
             if (checkpointDiariesLiveData.getValue() != null) {
@@ -205,5 +199,6 @@ public class CheckpointDiaryViewModel extends ViewModel {
             }
         });
     }
+
 
 }

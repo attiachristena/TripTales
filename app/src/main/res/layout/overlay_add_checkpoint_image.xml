@@ -124,8 +124,7 @@
             android:background="@drawable/edit_text_background"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:hint="Descrivi il momento..."
-            android:inputType="date" />
+            android:hint="Descrivi il momento..." />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/previewImageCheckpointDiary"

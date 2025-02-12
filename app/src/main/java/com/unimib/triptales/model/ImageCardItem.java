@@ -15,6 +15,7 @@ import androidx.room.PrimaryKey;
         )
 )
 public class ImageCardItem {
+
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -30,6 +31,9 @@ public class ImageCardItem {
     private String imageUri;
     @ColumnInfo(name = "is_selected")
     private boolean isSelected;
+
+    public ImageCardItem() {
+    }
 
     public ImageCardItem(String title, String date, String description, String imageUri, boolean isSelected, int checkpointDiaryId) {
         this.title = title;
@@ -60,6 +64,10 @@ public class ImageCardItem {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getImageUri() {
         return imageUri;
     }
@@ -72,8 +80,16 @@ public class ImageCardItem {
         return date;
     }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isSelected() {
@@ -84,4 +100,3 @@ public class ImageCardItem {
         this.isSelected = isSelected;
     }
 }
-

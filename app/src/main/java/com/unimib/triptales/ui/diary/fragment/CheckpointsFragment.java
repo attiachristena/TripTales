@@ -1,10 +1,12 @@
 package com.unimib.triptales.ui.diary.fragment;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,15 +44,16 @@ import com.google.android.material.snackbar.Snackbar;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.CheckpointDiary;
 import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
+import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
 import com.unimib.triptales.ui.diary.CheckpointDiaryActivity;
-import com.unimib.triptales.ui.diary.viewmodel.checkpoint.CheckpointDiaryViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.CheckpointDiaryViewModel;
+import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -105,7 +108,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_tappe, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_checkpoints, container, false);
 
         // Recupera i dati passati dal Bundle
         Bundle bundle = getArguments();
@@ -140,6 +143,9 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
 
         }
+
+
+
         // Inizializza il ViewModel
         ICheckpointDiaryRepository checkpointDiaryRepository = ServiceLocator.getINSTANCE().getCheckpointDiaryRepository(getContext());
         checkpointDiaryViewModel = new ViewModelProvider(requireActivity(),
@@ -329,7 +335,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
             Uri selectedImageUri = selectedImageUriMappa;
 
             if (!checkpointNameSave.isEmpty()) {
-                Uri imageUri = (selectedImageUri != null) ? saveImageToInternalStorage(selectedImageUri) :
+                Uri imageUri = (selectedImageUri != null) ? saveImageToPublicStorage(selectedImageUri) :
                         Uri.parse("android.resource://" + getContext().getPackageName() + "/" + getRandomImage());
 
                 if (tappeEsistenti.contains(checkpointNameSave)) {
@@ -353,13 +359,13 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         checkpointsMap.setVisibility(View.VISIBLE);
 
                         Snackbar.make(getContext(), checkpointsLayout, "La tappa è stata aggiunta con successo",
-                                    Snackbar.LENGTH_SHORT).show();
-                        }
-
-                    } else {
-                        Snackbar.make(getContext(), checkpointsLayout, "Errore nel salvataggio dell'immagine",
                                 Snackbar.LENGTH_SHORT).show();
                     }
+
+                } else {
+                    Snackbar.make(getContext(), checkpointsLayout, "Errore nel salvataggio dell'immagine",
+                            Snackbar.LENGTH_SHORT).show();
+                }
             } else {
                 Snackbar.make(getContext(), checkpointsLayout, "Nome della tappa vuoto",
                         Snackbar.LENGTH_SHORT).show();
@@ -431,10 +437,13 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         cardView.setOnClickListener(v -> {
             CheckpointDiary checkpointFromTag = (CheckpointDiary) cardView.getTag();
             Intent intent = new Intent(getContext(), CheckpointDiaryActivity.class);
-            intent.putExtra("checkpointDiaryId", checkpointFromTag.getId());
             intent.putExtra("nomeTappa", nome);
             intent.putExtra("dataTappa", data);
             intent.putExtra("immagineTappaUri", immagine);
+            intent.putExtra("checkpointDiaryId", checkpointId);
+            if (checkpointId == -1) {
+                Log.e("CheckpointDiaryActivity", "checkpointDiaryId non valido. ID: " + checkpointId);
+            }
             startActivity(intent);
         });
 
@@ -509,14 +518,14 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
                 if (selectedImageUriModifica != null) {
                     // Se l'utente ha selezionato una nuova immagine, la salva
-                    imageUri = saveImageToInternalStorage(selectedImageUriModifica);
+                    imageUri = saveImageToPublicStorage(selectedImageUriModifica);
                 } else {
                     // Altrimenti, mantiene l'immagine corrente
                     imageUri = Uri.parse(currentCheckpoint.getImmagineUri());
                 }
 
                 checkpointDiaryViewModel.updateCheckpointDiary(selectedCheckpoints.get(0).getId(), editName,
-                      editDate, imageUri, getContext());
+                        editDate, imageUri, getContext());
 
                 checkpointDiaryViewModel.clearSelectedCheckpoints();
 
@@ -659,22 +668,33 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
 
     // Metodo per salvare l'immagine nel dispositivo
-    private Uri saveImageToInternalStorage(Uri sourceUri) {
+    private Uri saveImageToPublicStorage(Uri sourceUri) {
+        Bitmap bitmap;
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), sourceUri);
-            File storageDir = getContext().getFilesDir();
-            String fileName = "tappa_" + System.currentTimeMillis() + ".jpg";
-            File imageFile = new File(storageDir, fileName);
-
-            try (FileOutputStream out = new FileOutputStream(imageFile)) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            }
-
-            return Uri.fromFile(imageFile);
+            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), sourceUri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "diary_" + System.currentTimeMillis() + ".jpg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/TripTales");
+
+        Uri imageUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        try {
+            if (imageUri != null) {
+                OutputStream out = getContext().getContentResolver().openOutputStream(imageUri);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.close();
+                return imageUri; // Restituisce l'URI pubblico
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Metodo per selezionare una immagine casuale
@@ -703,4 +723,11 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
         return defaultImages[randomIndex];
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkpointDiaryViewModel.loadCheckpoints(getContext());
+    }
+
 }
