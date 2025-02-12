@@ -3,6 +3,7 @@ package com.unimib.triptales.ui.diary.fragment;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -146,7 +148,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         }
 
 
-
         // Inizializza il ViewModel
         ICheckpointDiaryRepository checkpointDiaryRepository = ServiceLocator.getINSTANCE().getCheckpointDiaryRepository(getContext());
         checkpointDiaryViewModel = new ViewModelProvider(requireActivity(),
@@ -255,6 +256,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         noAnswer.setOnClickListener(v -> {
             overlay_dialog.setVisibility(View.GONE);
             hideOverlayDialogAdd();
+            hideKeyboard();
         });
 
         add_checkpoint = getLayoutInflater().inflate(R.layout.overlay_add_checkpoint, checkpointsLayout, false);
@@ -366,6 +368,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         checkpointsLayout.removeView(add_checkpoint);
                         checkpointsLayout.removeView(add_checkpoint);
 
+                        hideKeyboard();
 
                         previewImage.setImageURI(null);
                         textPreviewImage.setVisibility(View.VISIBLE);
@@ -497,7 +500,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
             checkpointsMap.setVisibility(View.GONE);
 
 
-
             // Ottiene le tappe selezionate
             List<CheckpointDiary> selectedCheckpoints = checkpointDiaryViewModel.getSelectedCheckpoints().getValue();
 
@@ -552,6 +554,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         editDate, imageUri, getContext());
 
                 checkpointDiaryViewModel.clearSelectedCheckpoints();
+                hideKeyboard();
 
                 overlay_edit_checkpoint.setVisibility(View.GONE);
                 editCheckpoint.setVisibility(View.GONE);
@@ -792,6 +795,17 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                 child.setAlpha(1f); // Ripristina l'opacità
                 child.setClickable(true);
                 child.setFocusable(true);
+            }
+        }
+    }
+
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                // Nascondi la tastiera
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
     }
