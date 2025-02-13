@@ -82,10 +82,6 @@ public class CheckpointDiaryViewModel extends ViewModel {
         selectedCheckpointDiaries.setValue(new ArrayList<>());
     }
 
-    public LiveData<Boolean> getOperationStatus() {
-        return operationStatus;
-    }
-
     public void loadCheckpoints(Context context) {
         executorService.execute(() -> {
             String diaryIdStr = SharedPreferencesUtils.getDiaryId(context);

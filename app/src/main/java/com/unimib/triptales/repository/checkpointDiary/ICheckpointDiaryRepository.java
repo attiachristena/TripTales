@@ -8,14 +8,8 @@ public interface ICheckpointDiaryRepository {
     List<CheckpointDiary> getCheckpointDiariesByDiaryId(String diaryId);
     List<CheckpointDiary> getAllCheckpointDiaries();
     long insertCheckpointDiary(CheckpointDiary checkpointDiary);
-    void updateCheckpointDiary(CheckpointDiary checkpointDiary);
     void deleteCheckpointDiary(CheckpointDiary checkpointDiary);
-    void deleteAllCheckpointDiaries();
-    void deleteCheckpointDiaryById(List<Integer> ids);
     void updateCheckpointDiaryName(int checkpointId, String newName);
     void updateCheckpointDiaryDate(int checkpointId, String newDate);
     void updateCheckpointDiaryImageUri(int checkpointId, String newImageUri);
-    void updateCheckpointDiaryLatitude(int checkpointId, double newLatitude);
-    void updateCheckpointDiaryLongitude(int checkpointId, double newLongitude);
-    void updateAllCheckpointDiaries(List<CheckpointDiary> checkpointDiaries);
 }

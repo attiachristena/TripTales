@@ -54,20 +54,10 @@ public class ImageCardItemRepository implements IImageCardItemRepository, ImageC
         imageCardItemRemoteDataSource.insertImageCardItem(imageCardItem);
     }
 
-    public void updateImageCardItem(ImageCardItem imageCardItem) {
-        imageCardItemLocalDataSource.updateImageCardItem(imageCardItem);
-        imageCardItemRemoteDataSource.updateImageCardItem(imageCardItem);
-    }
-
     public void deleteImageCardItem(ImageCardItem imageCardItem) {
         imageCardItemLocalDataSource.deleteImageCardItem(imageCardItem);
         imageCardItemRemoteDataSource.deleteImageCardItem(imageCardItem);
     }
-
-    public void deleteImageCardItemById(int id) {
-        imageCardItemLocalDataSource.deleteImageCardItemById(id);
-    }
-
 
     public void updateImageCardItemTitle(int id, String title) {
         imageCardItemLocalDataSource.updateImageCardItemTitle(id, title);
@@ -94,16 +84,6 @@ public class ImageCardItemRepository implements IImageCardItemRepository, ImageC
                 imageCardItemLocalDataSource.getImageCardItemByCheckpointDiaryId(checkpointDiaryId);
         imageCardItemsLiveData.postValue(imageCardItems);
         return imageCardItems;
-    }
-
-    public List<ImageCardItem> getSelectedImageCardItems() {
-        imageCardItemLocalDataSource.getSelectedImageCardItems();
-        return selectedImageCardItemsLiveData.getValue();
-    }
-
-    public void updateImageCardItemIsSelected(int id, boolean isSelected) {
-        imageCardItemLocalDataSource.updateImageCardItemIsSelected(id, isSelected);
-        imageCardItemRemoteDataSource.updateImageCardItemIsSelected(id, isSelected);
     }
 
     @Override
@@ -155,9 +135,4 @@ public class ImageCardItemRepository implements IImageCardItemRepository, ImageC
     public void onFailureFromLocal(Exception exception) {
     }
 
-
-    public interface RepositoryCallback<T> {
-        void onSuccess(T result);
-        void onError(String error);
-    }
 }

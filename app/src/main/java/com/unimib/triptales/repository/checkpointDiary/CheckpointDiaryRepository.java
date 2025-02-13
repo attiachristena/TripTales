@@ -54,11 +54,6 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
         return id;
     }
 
-    @Override
-    public void updateCheckpointDiary(CheckpointDiary checkpointDiary) {
-        checkpointDiaryLocalDataSource.updateCheckpointDiary(checkpointDiary);
-        checkpointDiaryRemoteDataSource.updateCheckpointDiary(checkpointDiary);
-    }
 
     @Override
     public void deleteCheckpointDiary(CheckpointDiary checkpointDiary) {
@@ -66,16 +61,6 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
         checkpointDiaryRemoteDataSource.deleteCheckpointDiary(checkpointDiary);
     }
 
-    @Override
-    public void deleteAllCheckpointDiaries() {
-        checkpointDiaryLocalDataSource.deleteAllCheckpointDiaries();
-    }
-
-    @Override
-    public void deleteCheckpointDiaryById(List<Integer> ids) {
-        checkpointDiaryLocalDataSource.deleteCheckpointDiaryById(ids);
-
-    }
 
     @Override
     public void updateCheckpointDiaryName(int checkpointId, String newName) {
@@ -93,23 +78,6 @@ public class CheckpointDiaryRepository implements ICheckpointDiaryRepository, Ch
     public void updateCheckpointDiaryImageUri(int checkpointId, String newImageUri) {
         checkpointDiaryLocalDataSource.updateCheckpointDiaryImageUri(checkpointId, newImageUri);
         checkpointDiaryRemoteDataSource.updateCheckpointDiaryImageUri(checkpointId, newImageUri);
-    }
-
-    @Override
-    public void updateCheckpointDiaryLatitude(int checkpointId, double newLatitude) {
-        checkpointDiaryLocalDataSource.updateCheckpointDiaryLatitude(checkpointId, newLatitude);
-        checkpointDiaryRemoteDataSource.updateCheckpointDiaryLatitude(checkpointId, newLatitude);
-    }
-
-    @Override
-    public void updateCheckpointDiaryLongitude(int checkpointId, double newLongitude) {
-        checkpointDiaryLocalDataSource.updateCheckpointDiaryLongitude(checkpointId, newLongitude);
-        checkpointDiaryRemoteDataSource.updateCheckpointDiaryLongitude(checkpointId, newLongitude);
-    }
-
-    @Override
-    public void updateAllCheckpointDiaries(List<CheckpointDiary> checkpointDiaries) {
-        checkpointDiaryLocalDataSource.updateAllCheckpointDiaries(checkpointDiaries);
     }
 
     @Override

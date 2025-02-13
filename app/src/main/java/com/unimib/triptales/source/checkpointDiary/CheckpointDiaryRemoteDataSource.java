@@ -36,15 +36,6 @@ public class CheckpointDiaryRemoteDataSource extends BaseCheckpointDiaryRemoteDa
         }
     }
 
-    @Override
-    public void updateCheckpointDiary(CheckpointDiary checkpointDiary) {
-        if (checkpointDiary != null) {
-            databaseReference.child(String.valueOf(checkpointDiary.getId())).setValue(checkpointDiary)
-                    .addOnFailureListener(e -> checkpointDiaryCallback.onFailureFromRemote(e));
-        } else {
-            checkpointDiaryCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
-        }
-    }
 
     @Override
     public void updateCheckpointDiaryName(int checkpointId, String newName) {
@@ -85,23 +76,6 @@ public class CheckpointDiaryRemoteDataSource extends BaseCheckpointDiaryRemoteDa
         }
     }
 
-    @Override
-    public void updateCheckpointDiaryLatitude(int checkpointId, double newLatitude) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("latitude", newLatitude);
-
-        databaseReference.child(String.valueOf(checkpointId)).updateChildren(updates)
-                .addOnFailureListener(e -> checkpointDiaryCallback.onFailureFromRemote(e));
-    }
-
-    @Override
-    public void updateCheckpointDiaryLongitude(int checkpointId, double newLongitude) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("longitude", newLongitude);
-
-        databaseReference.child(String.valueOf(checkpointId)).updateChildren(updates)
-                .addOnFailureListener(e -> checkpointDiaryCallback.onFailureFromRemote(e));
-    }
 
     @Override
     public void deleteCheckpointDiary(CheckpointDiary checkpointDiary) {
@@ -111,15 +85,6 @@ public class CheckpointDiaryRemoteDataSource extends BaseCheckpointDiaryRemoteDa
                     .addOnFailureListener(e -> checkpointDiaryCallback.onFailureFromRemote(e));
         } else {
             checkpointDiaryCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
-        }
-    }
-
-    @Override
-    public void deleteAllCheckpointDiaries(List<CheckpointDiary> checkpointDiaries) {
-        if (checkpointDiaries != null) {
-            for (CheckpointDiary checkpoint : checkpointDiaries) {
-                deleteCheckpointDiary(checkpoint);
-            }
         }
     }
 

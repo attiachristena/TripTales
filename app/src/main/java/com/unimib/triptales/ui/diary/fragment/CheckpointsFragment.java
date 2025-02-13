@@ -47,10 +47,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.CheckpointDiary;
 import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
-import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
 import com.unimib.triptales.ui.diary.CheckpointDiaryActivity;
 import com.unimib.triptales.ui.diary.viewmodel.CheckpointDiaryViewModel;
-import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
@@ -60,7 +58,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CheckpointsFragment extends Fragment implements OnMapReadyCallback {
@@ -76,7 +73,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     FloatingActionButton editCheckpoint;
     View cardView;
     ImageView checkpointCardImage;
-    int indice;
     ImageButton goBackEditCheckpoint;
     View overlay_edit_checkpoint;
     View overlay_dialog;
@@ -107,7 +103,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     private CheckpointDiaryViewModel checkpointDiaryViewModel;
     Uri selectedImageUriMappaModifica;
     Uri selectedImageUriModifica;
-    int checkpointId;
     Button yesAnswer;
     Button noAnswer;
 
@@ -172,6 +167,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
             @Override
             public boolean onQueryTextSubmit(String query) {
                 checkpointDiaryViewModel.searchLocation(query, requireContext());
+                hideKeyboard();
                 return true;
             }
 
@@ -254,9 +250,9 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
         noAnswer = overlay_dialog.findViewById(R.id.noAnswer);
 
         noAnswer.setOnClickListener(v -> {
+            hideKeyboard();
             overlay_dialog.setVisibility(View.GONE);
             hideOverlayDialogAdd();
-            hideKeyboard();
         });
 
         add_checkpoint = getLayoutInflater().inflate(R.layout.overlay_add_checkpoint, checkpointsLayout, false);
@@ -394,9 +390,9 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
         // Pulsante per tornare indietro
         goBackArrow.setOnClickListener(v -> {
+            hideKeyboard();
             checkpointsLayout.removeView(add_checkpoint);
 
-            // Reset dei parametri
             checkpointName.setText("");
             checkpointDate.setText("");
             immagineTappaPreview.setImageURI(null);
@@ -469,6 +465,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
         // Pulsante per tornare indietro
         goBackEditCheckpoint.setOnClickListener(v -> {
+            hideKeyboard();
             overlay_edit_checkpoint.setVisibility(View.GONE);
             editCheckpoint.setVisibility(View.GONE);
             deleteCheckpoint.setVisibility(View.GONE);
@@ -555,7 +552,6 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
                 checkpointDiaryViewModel.clearSelectedCheckpoints();
                 hideKeyboard();
-
                 overlay_edit_checkpoint.setVisibility(View.GONE);
                 editCheckpoint.setVisibility(View.GONE);
                 deleteCheckpoint.setVisibility(View.GONE);
@@ -762,18 +758,15 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     }
 
     private void showOverlayDialogAdd() {
-        // Mostra l'overlay
         overlay_dialog.setVisibility(View.VISIBLE);
 
-        // Disabilita lo sfondo
         checkpointsLayout.setClickable(false);
         checkpointsLayout.setFocusable(false);
 
-        // Applica l'opacità solo ai figli escludendo l'overlay
         for (int i = 0; i < checkpointsLayout.getChildCount(); i++) {
             View child = checkpointsLayout.getChildAt(i);
-            if (child != overlay_dialog) { // Escludi l'overlay
-                child.setAlpha(0.5f); // Riduci l'opacità
+            if (child != overlay_dialog) {
+                child.setAlpha(0.5f);
                 child.setClickable(false);
                 child.setFocusable(false);
             }
@@ -781,18 +774,15 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
     }
 
     private void hideOverlayDialogAdd() {
-        // Nascondi l'overlay
         overlay_dialog.setVisibility(View.GONE);
 
-        // Ripristina lo sfondo
         checkpointsLayout.setClickable(true);
         checkpointsLayout.setFocusable(true);
 
-        // Ripristina l'opacità e le proprietà dei figli
         for (int i = 0; i < checkpointsLayout.getChildCount(); i++) {
             View child = checkpointsLayout.getChildAt(i);
-            if (child != overlay_dialog) { // Escludi l'overlay
-                child.setAlpha(1f); // Ripristina l'opacità
+            if (child != overlay_dialog) {
+                child.setAlpha(1f);
                 child.setClickable(true);
                 child.setFocusable(true);
             }

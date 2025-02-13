@@ -15,8 +15,4 @@ public interface IImageCardItemRepository {
     void updateImageCardItemImageUri(int id, String imageUri);
     List<ImageCardItem> getAllImageCardItems();
 
-    interface RepositoryCallback<T> {
-        void onSuccess(T result);
-        void onError(String error);
-    }
 }

@@ -15,14 +15,12 @@ public class ImageCardItemLocalDataSource extends BaseImageCardItemLocalDataSour
     }
 
     @Override
-    public List<ImageCardItem> getAllImageCardItems() {
+    public void getAllImageCardItems() {
         try {
             List<ImageCardItem> imageCardItems = imageCardItemDao.getAllImageCardItems();
             imageCardItemCallback.onSuccessFromLocal(imageCardItems);
-            return imageCardItems;
         } catch (Exception e) {
             imageCardItemCallback.onFailureFromLocal(e);
-            return null;
         }
     }
 
@@ -37,29 +35,11 @@ public class ImageCardItemLocalDataSource extends BaseImageCardItemLocalDataSour
         }
     }
 
-    @Override
-    public void updateImageCardItem(ImageCardItem imageCardItem) {
-        try {
-            imageCardItemDao.updateImageCardItem(imageCardItem);
-        } catch (Exception e) {
-            imageCardItemCallback.onFailureFromLocal(e);
-        }
-    }
 
     @Override
     public void deleteImageCardItem(ImageCardItem imageCardItem) {
         try {
             imageCardItemDao.deleteImageCardItem(imageCardItem);
-            imageCardItemCallback.onSuccessDeleteFromLocal();
-        } catch (Exception e) {
-            imageCardItemCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void deleteImageCardItemById(int id) {
-        try {
-            imageCardItemDao.deleteImageCardItemById(id);
             imageCardItemCallback.onSuccessDeleteFromLocal();
         } catch (Exception e) {
             imageCardItemCallback.onFailureFromLocal(e);
@@ -112,25 +92,4 @@ public class ImageCardItemLocalDataSource extends BaseImageCardItemLocalDataSour
             imageCardItemCallback.onFailureFromLocal(e);
         }
     }
-
-
-    @Override
-    public List<ImageCardItem> getSelectedImageCardItems() {
-        try {
-            return imageCardItemDao.getSelectedImageCardItems();
-        } catch (Exception e) {
-            imageCardItemCallback.onFailureFromLocal(e);
-            return null;
-        }
-    }
-
-    @Override
-    public void updateImageCardItemIsSelected(int id, boolean isSelected) {
-        try {
-            imageCardItemDao.updateImageCardItemIsSelected(id, isSelected);
-        } catch (Exception e) {
-            imageCardItemCallback.onFailureFromLocal(e);
-        }
-    }
-
 }

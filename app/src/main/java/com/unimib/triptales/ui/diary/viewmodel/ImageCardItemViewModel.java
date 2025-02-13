@@ -1,9 +1,7 @@
 package com.unimib.triptales.ui.diary.viewmodel;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -69,18 +67,6 @@ public class ImageCardItemViewModel extends ViewModel {
         imageCardItemsLiveData.postValue(items);
     }
 
-
-    public void deleteImageCardItem(ImageCardItem imageCardItem, Context context) {
-        executorService.execute(() -> {
-            try {
-                imageCardItemRepository.deleteImageCardItem(imageCardItem);
-                fetchAllImageCardItems(context);
-                operationStatus.postValue(true);
-            } catch (Exception e) {
-                operationStatus.postValue(false);
-            }
-        });
-    }
 
     public void deleteSelectedImageCardItems(List<ImageCardItem> selectedImageCardItems, Context context) {
         executorService.execute(() -> {

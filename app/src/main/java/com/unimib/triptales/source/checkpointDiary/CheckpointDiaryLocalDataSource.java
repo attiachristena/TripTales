@@ -25,14 +25,12 @@ public class CheckpointDiaryLocalDataSource extends BaseCheckpointDiaryLocalData
     }
 
     @Override
-    public List<CheckpointDiary> getAllCheckpointDiaries() {
+    public void getAllCheckpointDiaries() {
         try {
             List<CheckpointDiary> checkpoints = checkpointDiaryDao.getAllCheckpointDiaries();
             checkpointDiaryCallback.onSuccessFromLocal(checkpoints);
-            return checkpoints;
         } catch (Exception e) {
             checkpointDiaryCallback.onFailureFromLocal(e);
-            return null;
         }
     }
 
@@ -46,39 +44,11 @@ public class CheckpointDiaryLocalDataSource extends BaseCheckpointDiaryLocalData
         }
     }
 
-    @Override
-    public void updateCheckpointDiary(CheckpointDiary checkpointDiary) {
-        try {
-            checkpointDiaryDao.updateCheckpointDiary(checkpointDiary);
-        } catch (Exception e) {
-            checkpointDiaryCallback.onFailureFromLocal(e);
-        }
-    }
 
     @Override
     public void deleteCheckpointDiary(CheckpointDiary checkpointDiary) {
         try {
             checkpointDiaryDao.deleteCheckpointDiary(checkpointDiary);
-            checkpointDiaryCallback.onSuccessDeleteFromLocal();
-        } catch (Exception e) {
-            checkpointDiaryCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void deleteAllCheckpointDiaries() {
-        try {
-            checkpointDiaryDao.deleteAllCheckpointDiaries();
-            checkpointDiaryCallback.onSuccessDeleteFromLocal();
-        } catch (Exception e) {
-            checkpointDiaryCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void deleteCheckpointDiaryById(List<Integer> ids) {
-        try {
-            checkpointDiaryDao.deleteCheckpointDiaryById(ids);
             checkpointDiaryCallback.onSuccessDeleteFromLocal();
         } catch (Exception e) {
             checkpointDiaryCallback.onFailureFromLocal(e);
@@ -107,33 +77,6 @@ public class CheckpointDiaryLocalDataSource extends BaseCheckpointDiaryLocalData
     public void updateCheckpointDiaryImageUri(int checkpointId, String newImageUri) {
         try {
             checkpointDiaryDao.updateCheckpointDiaryImageUri(checkpointId, newImageUri);
-        } catch (Exception e) {
-            checkpointDiaryCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void updateCheckpointDiaryLatitude(int checkpointId, double newLatitude) {
-        try {
-            checkpointDiaryDao.updateCheckpointDiaryLatitude(checkpointId, newLatitude);
-        } catch (Exception e) {
-            checkpointDiaryCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void updateCheckpointDiaryLongitude(int checkpointId, double newLongitude) {
-        try {
-            checkpointDiaryDao.updateCheckpointDiaryLongitude(checkpointId, newLongitude);
-        } catch (Exception e) {
-            checkpointDiaryCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void updateAllCheckpointDiaries(List<CheckpointDiary> checkpointDiaries) {
-        try {
-            checkpointDiaryDao.updateAllCheckpointsDiaries(checkpointDiaries);
         } catch (Exception e) {
             checkpointDiaryCallback.onFailureFromLocal(e);
         }

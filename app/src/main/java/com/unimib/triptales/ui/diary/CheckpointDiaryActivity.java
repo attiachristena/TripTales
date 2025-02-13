@@ -1,20 +1,20 @@
 package com.unimib.triptales.ui.diary;
 
-
-import static java.security.AccessController.getContext;
+import static android.app.PendingIntent.getActivity;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,14 +26,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import static java.security.AccessController.getContext;
-
-
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.unimib.triptales.R;
@@ -45,47 +40,35 @@ import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class CheckpointDiaryActivity extends AppCompatActivity {
 
-    private TextView descrizioneTappa;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private ActivityResultLauncher<Intent> pickImageLauncherEdit;
     private String nomeTappaString;
     private String dataTappaString;
     private Uri imageUri;
-    private MaterialCardView overlayAddImage;
-    private ShapeableImageView previewImage;
     private Uri selectedImageUri;
     private FloatingActionButton addCheckpointDiaryImage;
     private Button openGallery;
     private ImageButton closeOverlayButton;
-    View rootLayout;
     private View overlayView;
     private View overlayEditView;
     private ImageButton goBackArrow;
     private TextInputEditText imageTitle;
     private TextInputEditText imageDescrpition;
-    private ArrayList<Uri> imageUris = new ArrayList<>();
     private TextInputEditText dateImage;
-    private RecyclerView carouselRecyclerView;
-    private List<ImageCardItem> imageCardItems = new ArrayList<>();
     private Button saveImage;
     private ImageCardItemViewModel imageCardItemViewModel;
-    int checkpointDiaryId;
-    TextView nomeTappa;
-    TextView dataTappa;
-    ImageView immagineTappa;
-    List<ImageCardItem> imageCardItemList = new ArrayList<>();
+    private int checkpointDiaryId;
+    private TextView nomeTappa;
+    private TextView dataTappa;
+    private ImageView immagineTappa;
     private ImageCardItemAdapter imageCardItemAdapter;
     private Uri selectedImageUriDiary;
     private ImageView previewImageCheckpointDiary;
@@ -225,7 +208,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
 
         editCheckpointDiaryImage.setOnClickListener(v -> {
             List<ImageCardItem> selectedItems = imageCardItemAdapter.getSelectedItems();
-            if (!selectedItems.isEmpty() && selectedItems.size() == 1) {
+            if (selectedItems.size() == 1) {
                 ImageCardItem selectedItem = selectedItems.get(0);
                 openEditOverlay(selectedItem);
             }
@@ -246,6 +229,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             dateImage.setText("");
             previewImageCheckpointDiary.setImageURI(null);
             textPreviewImageCheckpointDiary.setVisibility(View.VISIBLE);
+            hideKeyboard();
             overlayView.setVisibility(View.GONE);
             addCheckpointDiaryImage.setVisibility(View.VISIBLE);
             goBackArrow.setVisibility(View.VISIBLE);
@@ -260,22 +244,22 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
             String date = dateImage.getText().toString();
             Uri selectedImageUri = selectedImageUriDiary;
 
-            if (!title.isEmpty() && !description.isEmpty() && !date.isEmpty()) {
-                Uri ImageUri = (selectedImageUri != null) ? saveImageToPublicStorage(selectedImageUri) :
-                        Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_launcher_background);
+            if (!title.isEmpty() && !description.isEmpty() && !date.isEmpty() && selectedImageUri != null) {
+                Uri imageUri = saveImageToPublicStorage(selectedImageUri);
 
-                if (ImageUri == null) {
-                    Snackbar.make(this, rootLayout, "Errore durante il salvataggio dell'immagine",
+                if (imageUri == null) {
+                    Snackbar.make(rootLayout, "Errore durante il salvataggio dell'immagine",
                             Snackbar.LENGTH_SHORT).show();
                     return;
                 }
 
-                imageCardItemViewModel.insertImageCardItem(title, description, date, ImageUri, this, checkpointDiaryId);
+                imageCardItemViewModel.insertImageCardItem(title, description, date, imageUri,
+                        this, checkpointDiaryId);
 
                 imageTitle.setText("");
                 imageDescrpition.setText("");
                 dateImage.setText("");
-                selectedImageUriDiary = null;
+                hideKeyboard();
 
                 previewImageCheckpointDiary.setImageURI(null);
                 textPreviewImageCheckpointDiary.setVisibility(View.VISIBLE);
@@ -283,12 +267,13 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                 goBackArrow.setVisibility(View.VISIBLE);
                 overlayView.setVisibility(View.GONE);
 
-                Snackbar.make(this, rootLayout, "La tua immagine è stata aggiunta con successo",
+                Snackbar.make(rootLayout, "La tua immagine è stata aggiunta con successo",
                         Snackbar.LENGTH_SHORT).show();
             } else {
-                Snackbar.make(this, rootLayout, "Compila tutti i campi",
+                Snackbar.make(rootLayout, "Compila tutti i campi (inclusa l'immagine)",
                         Snackbar.LENGTH_SHORT).show();
             }
+
         });
 
         imageCardItemAdapter.setOnImageCardItemClickListener(new ImageCardItemAdapter.OnImageCardItemClickListener() {
@@ -390,7 +375,6 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                             saveImageToPublicStorage(newImageUri) :
                             Uri.parse(selectedCardItem.getImageUri());
 
-                    // Chiama il ViewModel per aggiornare la card
                     imageCardItemViewModel.updateImageCardItem(
                             selectedCardItem.getId(),
                             newTitle,
@@ -400,7 +384,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                             CheckpointDiaryActivity.this
                     );
 
-                    // Resetta l'UI
+                    hideKeyboard();
                     overlayEditView.setVisibility(View.GONE);
                     selectedImageUriDiaryEdited = null;
                     editTitle.setText("");
@@ -429,6 +413,7 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
 
 
         goBackArrowEdit.setOnClickListener(v -> {
+            hideKeyboard();
             overlayEditView.setVisibility(View.GONE);
             imageCardItemAdapter.clearSelections();
             editCheckpointDiaryImage.setVisibility(View.GONE);
@@ -517,11 +502,22 @@ public class CheckpointDiaryActivity extends AppCompatActivity {
                 this,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
                     String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                    dateEditText.setText(selectedDate); // Imposta la data nel campo EditText
+                    dateEditText.setText(selectedDate);
                 },
                 year, month, day
         );
         datePickerDialog.show();
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                // Nascondi la tastiera
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
     }
 
 }

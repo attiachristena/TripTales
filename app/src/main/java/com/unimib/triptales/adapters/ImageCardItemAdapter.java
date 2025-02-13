@@ -1,7 +1,6 @@
 package com.unimib.triptales.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,11 +46,11 @@ public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdap
     public void toggleSelection(int position) {
         ImageCardItem item = imageCardItems.get(position);
         if (selectedItems.contains(item)) {
-            selectedItems.remove(item); // Rimuovi la card se è già selezionata
+            selectedItems.remove(item);
         } else {
-            selectedItems.add(item); // Aggiungi la card se non è selezionata
+            selectedItems.add(item);
         }
-        notifyItemChanged(position); // Notifica l'adapter che l'elemento è cambiato
+        notifyItemChanged(position);
 
         if (onImageCardItemClickListener != null) {
             onImageCardItemClickListener.onSelectionChanged(getSelectedItems());
@@ -59,14 +58,14 @@ public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdap
     }
 
     public List<ImageCardItem> getSelectedItems() {
-        return new ArrayList<>(selectedItems); // Restituisci una copia della lista delle card selezionate
+        return new ArrayList<>(selectedItems);
     }
 
     public void clearSelections() {
-        selectedItems.clear(); // Rimuovi tutte le selezioni
-        notifyDataSetChanged(); // Notifica l'adapter che i dati sono cambiati
+        selectedItems.clear();
+        notifyDataSetChanged();
         if (onImageCardItemClickListener != null) {
-            onImageCardItemClickListener.onSelectionChanged(getSelectedItems()); // Notifica il listener
+            onImageCardItemClickListener.onSelectionChanged(getSelectedItems());
         }
     }
 
@@ -97,13 +96,11 @@ public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdap
             holder.card.setStrokeWidth(0);
         }
 
-        // Gestisci il click lungo per la selezione
         holder.card.setOnLongClickListener(v -> {
             toggleSelection(position);
             return true;
         });
 
-        // Carica l'immagine con Glide
         Glide.with(context)
                 .load(imageCardItem.getImageUri())
                 .into(holder.postImage);
