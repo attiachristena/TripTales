@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -17,6 +20,8 @@ public class SharedPreferencesUtils {
     private static final String KEY_FIRST_ACCESS = "firstAccess";
     private static final String PREFS_NAME = "TriptalesPrefs";
     private static final String KEY_CHECKPOINT_DIARY_ID = "checkpoint_diary_id";
+    private static final String KEY_NIGHT_MODE = "nightMode";
+    private static final String KEY_LANGUAGE = "language";
     private final Context context;
 
     public SharedPreferencesUtils(Context context){
@@ -111,7 +116,6 @@ public class SharedPreferencesUtils {
     }
 
 
-
     // Rimuove il diaryId (es. logout)
     public static void clearDiaryId(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -126,6 +130,50 @@ public class SharedPreferencesUtils {
             return null;
         }
         return firebaseUser.getUid();
+    }
+
+    // Salva la modalità notte
+    public static void saveNightMode(Context context, boolean isNightMode) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(KEY_NIGHT_MODE, isNightMode);
+        editor.apply();
+    }
+
+    // Ottiene la modalità notte
+    public static boolean isNightModeEnabled(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(KEY_NIGHT_MODE, false);
+    }
+
+    // Applica la modalità notturna all'avvio dell'app
+    public static void applyNightMode(Context context) {
+        boolean isNightMode = isNightModeEnabled(context);
+        if (isNightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+
+    // Salva la lingua scelta
+    public static void saveLanguage(Context context, String languageCode) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(KEY_LANGUAGE, languageCode);
+        editor.apply();
+    }
+
+    // Recupera la lingua salvata
+    public static String getSavedLanguage(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_LANGUAGE, "it");
+    }
+
+    // Applica la lingua all'avvio dell'app
+    public static void applyLanguage(Context context) {
+        String languageCode = getSavedLanguage(context);
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
     }
 
 }

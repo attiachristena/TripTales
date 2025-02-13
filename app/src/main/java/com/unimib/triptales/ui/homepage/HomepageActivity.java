@@ -5,6 +5,7 @@ import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -48,6 +49,8 @@ public class HomepageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_homepage);
         IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getApplicationContext());
         HomeViewModel homeViewModel = new ViewModelProvider(this,
