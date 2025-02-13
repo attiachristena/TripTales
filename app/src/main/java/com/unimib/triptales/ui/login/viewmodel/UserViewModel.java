@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.model.Result;
-import com.unimib.triptales.model.User;
 import com.unimib.triptales.repository.user.IUserRepository;
 
 

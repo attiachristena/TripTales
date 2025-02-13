@@ -29,30 +29,6 @@ public class SharedPreferencesUtils {
         this.context = context;
     }
 
-    public void writeStringData(String sharedPreferencesFileName, String key, String value){
-        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    public void writeStringData(String sharedPreferencesFileName, String key, Set<String> value){
-        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putStringSet(key, value);
-        editor.apply();
-    }
-
-    public String readStringData(String sharedPreferencesFileName, String key){
-        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName, Context.MODE_PRIVATE);
-        return sharedPref.getString(key, null);
-    }
-
-    public Set<String> readStringSetData(String sharedPreferencesFileName, String key){
-        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName, Context.MODE_PRIVATE);
-        return sharedPref.getStringSet(key, null);
-    }
-
     public static void setLoggedIn(Context context, boolean isLoggedIn) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

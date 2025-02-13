@@ -34,7 +34,6 @@ import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Firebase;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Result;
 import com.unimib.triptales.repository.user.IUserRepository;
@@ -96,7 +95,7 @@ public class SignInFragment extends Fragment {
                         userViewModel.signUpWithGoogle(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
                             hideLoadingDialog();
                             if (authenticationResult.isSuccess()) {
-                                SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                SharedPreferencesUtils.setLoggedIn(requireContext(), true);
                                 requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
@@ -207,7 +206,7 @@ public class SignInFragment extends Fragment {
                             signInButton.setEnabled(true);
                             if (result.isSuccess()) {
                                 hideLoadingDialog();
-                                SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                SharedPreferencesUtils.setLoggedIn(requireContext(), true);
                                 requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
