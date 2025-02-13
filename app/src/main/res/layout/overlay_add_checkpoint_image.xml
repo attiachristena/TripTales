@@ -72,7 +72,9 @@
             android:layout_marginStart="45dp"
             android:layout_marginTop="19dp"
             android:layout_marginEnd="35dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:textColorHint="@color/hint"
+            app:boxStrokeColor="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/imageTitle"
@@ -81,7 +83,8 @@
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 android:hint="@string/titolo_ricordo"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textColor="@color/black"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo per la descrizione del ricordo -->
@@ -93,7 +96,9 @@
             android:layout_marginStart="45dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="35dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:textColorHint="@color/hint"
+            app:boxStrokeColor="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/imageDescription"
@@ -102,7 +107,8 @@
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 android:hint="@string/descrizione_ricordo"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                android:textColor="@color/black"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo per la data del ricordo -->
@@ -114,7 +120,9 @@
             android:layout_marginStart="47dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="33dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:textColorHint="@color/hint"
+            app:boxStrokeColor="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/addDateCheckpointDiary"
@@ -126,7 +134,8 @@
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 android:hint="@string/data_ricordo"
-                android:inputType="none" />
+                android:inputType="none"
+                android:textColor="@color/black"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -143,7 +152,8 @@
             android:backgroundTint="@color/primary"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:text="@string/inserisci_un_immagine" />
+            android:text="@string/inserisci_un_immagine"
+            android:textColor="@color/white"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/previewImageCheckpointDiary"
@@ -170,7 +180,7 @@
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
             android:text="@string/anteprima_immagine"
-            android:textColor="@color/primary"
+            android:textColor="@color/upper_bar_bg"
             android:textSize="20sp"
             android:textStyle="bold" />
 
