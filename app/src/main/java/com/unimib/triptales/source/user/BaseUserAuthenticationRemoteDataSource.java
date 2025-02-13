@@ -1,6 +1,5 @@
 package com.unimib.triptales.source.user;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.unimib.triptales.model.Result;
@@ -21,4 +20,6 @@ public abstract class BaseUserAuthenticationRemoteDataSource {
     public abstract void signUp(String name, String surname, String email, String password);
     public abstract void signUpWithGoogle(String idToken);
     public abstract MutableLiveData<Result> resetPassword(String email);
+    public abstract void updatePassword(String email, String oldPassword, String newPassword);
+    public abstract void updateProfile(String newName, String newSurname);
 }

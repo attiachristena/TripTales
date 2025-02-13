@@ -5,9 +5,7 @@ import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,9 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.unimib.triptales.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,38 +23,34 @@ import com.unimib.triptales.ui.homepage.fragment.CalendarFragment;
 import com.unimib.triptales.ui.homepage.fragment.HomeFragment;
 import com.unimib.triptales.ui.homepage.fragment.MapFragment;
 import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
-import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.settings.SettingsActivity;
 import com.unimib.triptales.util.ServiceLocator;
-import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.Objects;
 
 
 public class HomepageActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private Fragment homeFragment;
     private Fragment mapFragment;
     private Fragment calendarFragment;
     private Fragment activeFragment;
     private BottomNavigationView bottomNavigationView;
+    private HomeViewModel homeViewModel;
 
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
+
         IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getApplicationContext());
-        HomeViewModel homeViewModel = new ViewModelProvider(this,
+        homeViewModel = new ViewModelProvider(this,
                 new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
 
-        if (SharedPreferencesUtils.isFirstAccess(getApplicationContext())) {
-            homeViewModel.loadRemoteDiaries();
-            SharedPreferencesUtils.setFirstAccessComplete(getApplicationContext());
-        }
+        homeViewModel.loadRemoteDiaries();
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -124,6 +116,12 @@ public class HomepageActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        homeViewModel.loadRemoteDiaries();
+    }
+
     private void switchFragment(Fragment fragment, String tag){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(!fragment.isAdded()){
@@ -155,47 +153,10 @@ public class HomepageActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_app_bar, menu);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.baseline_account_circle_24));
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem hideItem = menu.findItem(R.id.action_home);
-        hideItem.setVisible(false);
-        return super.onPrepareOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
-        View buttonAccount = toolbar.findViewById(R.id.action_account);
-
-        if (id == R.id.action_account){
-            PopupMenu popupMenu = new PopupMenu(HomepageActivity.this, buttonAccount);
-            popupMenu.getMenuInflater().inflate(R.menu.menu_account, popupMenu.getMenu());
-
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.action_logout) {
-                        SharedPreferencesUtils.setLoggedIn(HomepageActivity.this, false);
-                        Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-            popupMenu.show();
-        }
 
         if (id == android.R.id.home){
             Intent intent = new Intent(HomepageActivity.this, SettingsActivity.class);

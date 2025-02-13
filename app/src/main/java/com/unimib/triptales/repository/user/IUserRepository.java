@@ -12,10 +12,16 @@ public interface IUserRepository {
     MutableLiveData<Result> signIn(String email, String password);
     MutableLiveData<Result> signInWithGoogle(String token);
     MutableLiveData<Result> signUpWithGoogle(String idToken);
-    MutableLiveData<Result> logout();
+    void logout();
+    MutableLiveData<Boolean> getLogoutSuccess();
 
     MutableLiveData<Result> getUser(String name, String surname, String email, String password, boolean isUserRegistered);
+    MutableLiveData<Result> getUser();
     User getLoggedUser();
 
     MutableLiveData<Result> resetPassword(String email);
+    MutableLiveData<String> updatePassword(String email, String oldPassword, String newPassword);
+    MutableLiveData<String> updateProfile(String newName, String newSurname);
+    MutableLiveData<String> getError();
+
 }

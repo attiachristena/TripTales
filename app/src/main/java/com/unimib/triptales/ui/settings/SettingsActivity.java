@@ -57,9 +57,6 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        View buttonAccount = toolbar.findViewById(R.id.action_account);
-
-
         if (id == android.R.id.home) {
             if (navController.getCurrentDestination().getId() == R.id.settingsFragment) {
                 Intent resultIntent = getIntent();

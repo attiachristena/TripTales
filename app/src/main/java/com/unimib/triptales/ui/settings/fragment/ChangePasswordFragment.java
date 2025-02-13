@@ -1,5 +1,10 @@
 package com.unimib.triptales.ui.settings.fragment;
 
+import static com.unimib.triptales.util.Constants.INTERNET_ERROR;
+import static com.unimib.triptales.util.Constants.INVALID_OLD_PASSWORD_ERROR;
+import static com.unimib.triptales.util.Constants.PASSWORD_NOT_UPDATED_ERROR;
+import static com.unimib.triptales.util.Constants.hideKeyboard;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,42 +17,42 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.unimib.triptales.R;
+import com.unimib.triptales.repository.user.IUserRepository;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
+import com.unimib.triptales.util.ServiceLocator;
+import com.unimib.triptales.util.SharedPreferencesUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChangePasswordFragment extends Fragment {
 
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser firebaseUser;
     private EditText oldPasswordEditText, newPasswordEditText;
     private Button changePasswordButton;
+    private UserViewModel userViewModel;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_change_password, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater
+                .inflate(R.layout.fragment_change_password, container, false);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
+        IUserRepository userRepository = ServiceLocator.getINSTANCE().getUserRepository();
+        userViewModel = new ViewModelProvider(requireActivity(),
+                new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         oldPasswordEditText = view.findViewById(R.id.oldPassword);
         newPasswordEditText = view.findViewById(R.id.newPassword);
         changePasswordButton = view.findViewById(R.id.changePassword);
 
-        changePasswordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleChangePassword();
-            }
+        changePasswordButton.setOnClickListener(v -> {
+            handleChangePassword();
+            hideKeyboard(view,requireActivity());
         });
 
         return view;
@@ -66,8 +71,6 @@ public class ChangePasswordFragment extends Fragment {
             return;
         }
 
-        //if(oldPassword = firebaseUser.getPassword() )
-
         if (!isPasswordOk(newPasswordEditText.getText().toString())) {
             newPasswordEditText.setError(getString(R.string.error_password_login));
             return;
@@ -75,38 +78,25 @@ public class ChangePasswordFragment extends Fragment {
 
         changePasswordButton.setEnabled(false);
 
-        updatePassword(oldPassword, newPassword);
-    }
+        String email = SharedPreferencesUtils.getLoggedUserEmail();
+        userViewModel.updatePassword(email, oldPassword, newPassword);
 
-    private void updatePassword(String oldPassword, final String newPassword) {
-        AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(), oldPassword);
+        userViewModel.getError().observe(getViewLifecycleOwner(), error -> {
+            if(error == null || error.isEmpty()){
+                Toast.makeText(getContext(), getString(R.string.password_aggiornata), Toast.LENGTH_SHORT).show();
+                resetFields();
+            } else if(error.equals(PASSWORD_NOT_UPDATED_ERROR)){
+                Toast.makeText(getContext(), getString(R.string.errore_aggiornamento_password), Toast.LENGTH_SHORT).show();
+                changePasswordButton.setEnabled(true);
+            } else if(error.equals(INVALID_OLD_PASSWORD_ERROR)){
+                Toast.makeText(getContext(), getString(R.string.autenticazione_fallita), Toast.LENGTH_SHORT).show();
+                changePasswordButton.setEnabled(true);
+            } else if(error.equals(INTERNET_ERROR)){
+                Toast.makeText(getContext(), getString(R.string.errore_internet), Toast.LENGTH_SHORT).show();
+                changePasswordButton.setEnabled(true);
+            }
+        });
 
-        firebaseUser.reauthenticate(credential)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        firebaseUser.updatePassword(newPassword)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(getContext(), getString(R.string.password_aggiornata), Toast.LENGTH_SHORT).show();
-                                        resetFields();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getContext(), getString(R.string.errore_aggiornamento_password), Toast.LENGTH_LONG).show();
-                                        changePasswordButton.setEnabled(true);
-                                    }
-                                });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), getString(R.string.autenticazione_fallita), Toast.LENGTH_LONG).show();
-                        changePasswordButton.setEnabled(true);
-                    }
-                });
     }
 
     private boolean isPasswordOk(String password) {

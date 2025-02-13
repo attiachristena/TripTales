@@ -14,8 +14,6 @@ public class SharedPreferencesUtils {
     private static final String PREF_NAME = "TripTalesPrefs";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_DIARY_ID = "current_diary_id";
-    private static final String KEY_FIRST_ACCESS = "firstAccess";
-    private static final String PREFS_NAME = "TriptalesPrefs";
     private static final String KEY_CHECKPOINT_DIARY_ID = "checkpoint_diary_id";
     private final Context context;
 
@@ -59,19 +57,6 @@ public class SharedPreferencesUtils {
         return sharedPref.getBoolean(KEY_IS_LOGGED_IN, false);
     }
 
-    public static boolean isFirstAccess(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return sharedPref.getBoolean(KEY_FIRST_ACCESS, true); // Default: true se non esiste
-    }
-
-    // Metodo per impostare il flag dopo il primo accesso
-    public static void setFirstAccessComplete(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(KEY_FIRST_ACCESS, false); // Imposta il flag come "non è il primo accesso"
-        editor.apply();
-    }
-
     // Salva il diaryId nelle SharedPreferences
     public static void saveDiaryId(Context context, String diaryId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -110,22 +95,20 @@ public class SharedPreferencesUtils {
         return prefs.getString(KEY_DIARY_ID, null); // Ritorna null se non esiste
     }
 
-
-
-    // Rimuove il diaryId (es. logout)
-    public static void clearDiaryId(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.remove(KEY_DIARY_ID);
-        editor.apply();
-    }
-
     public static String getLoggedUserId() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null) {
             return null;
         }
         return firebaseUser.getUid();
+    }
+
+    public static String getLoggedUserEmail() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            return null;
+        }
+        return firebaseUser.getEmail();
     }
 
 }

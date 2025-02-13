@@ -26,6 +26,10 @@ public class UserViewModel extends ViewModel{
         return userMutableLiveData;
     }
 
+    public MutableLiveData<String> getError() {
+        return userRepository.getError();
+    }
+
     public void fetchUserData(String email, String password, boolean isUserRegistered){
         userMutableLiveData = userRepository.getUser(null, null, email, password, isUserRegistered);
     }
@@ -48,17 +52,19 @@ public class UserViewModel extends ViewModel{
         return userMutableLiveData;
     }
 
-    public User getLoggedUser(){
-        return userRepository.getLoggedUser();
+    public User getLoggedUser(){ return userRepository.getLoggedUser(); }
+
+    public MutableLiveData<Result> getUser(){
+        userMutableLiveData = userRepository.getUser();
+        return userMutableLiveData;
     }
 
-    public MutableLiveData<Result> logout(){
-        if(userMutableLiveData == null) {
-            userMutableLiveData = userRepository.logout();
-        } else {
-            userRepository.logout();
-        }
-        return userMutableLiveData;
+    public void logout(){
+        userRepository.logout();
+    }
+
+    public MutableLiveData<Boolean> getLogoutSuccess(){
+        return userRepository.getLogoutSuccess();
     }
 
     public boolean isAuthenticationError(){
@@ -71,5 +77,13 @@ public class UserViewModel extends ViewModel{
 
     public MutableLiveData<Result> resetPassword(String email){
         return userRepository.resetPassword(email);
+    }
+
+    public void updatePassword(String email, String oldPassword, String newPassword){
+        userRepository.updatePassword(email, oldPassword, newPassword);
+    }
+
+    public void updateProfile(String newName, String newSurname){
+        userRepository.updateProfile(newName, newSurname);
     }
 }

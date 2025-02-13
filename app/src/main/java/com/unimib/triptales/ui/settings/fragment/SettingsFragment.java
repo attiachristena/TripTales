@@ -8,11 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -32,9 +35,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 import com.unimib.triptales.R;
+import com.unimib.triptales.model.Result;
+import com.unimib.triptales.model.User;
+import com.unimib.triptales.repository.user.IUserRepository;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
 import com.unimib.triptales.ui.settings.SettingsActivity;
+import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class SettingsFragment extends Fragment {
@@ -45,9 +54,9 @@ public class SettingsFragment extends Fragment {
     boolean nightMode;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    private FirebaseAuth firebaseAuth;
     private NavController navController;
     private android.app.AlertDialog loadingDialog;
+    private UserViewModel userViewModel;
 
     public SettingsFragment() { }
 
@@ -55,7 +64,8 @@ public class SettingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         applySavedLanguage();
-        firebaseAuth = FirebaseAuth.getInstance();
+        IUserRepository userRepository = ServiceLocator.getINSTANCE().getUserRepository();
+        userViewModel = new ViewModelProvider(requireActivity(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
     }
 
     @Override
@@ -77,28 +87,22 @@ public class SettingsFragment extends Fragment {
         switchNightMode = view.findViewById(R.id.switchNightMode);
         TextView nomeCognomeTextView = view.findViewById(R.id.nome_cognome);
 
-        sharedPreferences = getActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
         nightMode = sharedPreferences.getBoolean("nightMode", false);
 
-        // Recupera nome e cognome utente da Firebase
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference usersRef = database.getReference("users");
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String name = dataSnapshot.child("name").getValue(String.class);
-                    String surname = dataSnapshot.child("surname").getValue(String.class);
-                    nomeCognomeTextView.setText(name + " " + surname);
-                } else {
-                    nomeCognomeTextView.setText(getString(R.string.dati_non_disponibili));
+        // imposta nome e cognome dell'utente
+        userViewModel.getUser().observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()){
+                Result.UserSuccess userResult = (Result.UserSuccess) result;
+                User user = userResult.getData();
+                if(user != null){
+                    String name = user.getName();
+                    String surname = user.getSurname();
+                    String completeName = name + " " + surname;
+                    nomeCognomeTextView.setText(completeName);
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                nomeCognomeTextView.setText(getString(R.string.errore_nel_recupero_dati));
+            } else {
+                nomeCognomeTextView.setText(getString(R.string.dati_non_disponibili));
             }
         });
 
@@ -127,7 +131,7 @@ public class SettingsFragment extends Fragment {
                 }
 
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                getActivity().finish();
+                requireActivity().finish();
                 startActivity(intent);
             }
         });
@@ -181,23 +185,33 @@ public class SettingsFragment extends Fragment {
 
         LogoutButton.setOnClickListener(v -> showLogoutDialog());
 
+        userViewModel.getLogoutSuccess().observe(getViewLifecycleOwner(), logout -> {
+            if (logout != null && logout) {
+                Intent intent = new Intent(requireContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                SharedPreferencesUtils.setLoggedIn(requireContext(), false);
+                requireActivity().finish();
+            }
+        });
+
         return view;
     }
 
     // Cambio lingua
     private void changeLanguage(String languageCode) {
-        SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        SharedPreferences preferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("language", languageCode);
         editor.apply();
 
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
-        getActivity().recreate();
+        requireActivity().recreate();
 
     }
 
     private void applySavedLanguage() {
-        SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        SharedPreferences preferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         String languageCode = preferences.getString("language", "it");
 
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
@@ -206,12 +220,15 @@ public class SettingsFragment extends Fragment {
 
     // Eliminazione account con conferma
     private void confirmAndDeleteAccount() {
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            new AlertDialog.Builder(getContext())
+        String currentUserId = SharedPreferencesUtils.getLoggedUserId();
+        //FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUserId != null) {
+            new AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.elimina_account))
                     .setMessage(getString(R.string.dialog_elimina_account))
-                    .setPositiveButton(getString(R.string.elimina), (dialog, which) -> performDelete())
+                    .setPositiveButton(getString(R.string.elimina), (dialog, which) -> {
+                        userViewModel.logout();
+                    })
                     .setNegativeButton(getString(R.string.annulla), null)
                     .show();
         } else {
@@ -219,7 +236,7 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    private void performDelete(){
+    /*private void performDelete(){
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         String userId = currentUser.getUid();
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
@@ -237,7 +254,7 @@ public class SettingsFragment extends Fragment {
                 }
             });
         });
-    }
+    }*/
 
     //Dialog per uscire dall'account
     private void showLogoutDialog() {

@@ -10,4 +10,6 @@ public interface UserResponseCallback {
     void onSuccessLogout();
     void onSuccessFromRemoteDatabase(User user);
     void onFailureFromRemoteDatabase(String message);
+    void onSuccessFromUpdateData();
+    void onFailureFromUpdateData(String message);
 }
