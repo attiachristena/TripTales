@@ -1,9 +1,11 @@
 package com.unimib.triptales.ui.homepage.viewmodel;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.unimib.triptales.R;
 import com.unimib.triptales.model.Diary;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.util.SharedPreferencesUtils;
@@ -15,13 +17,17 @@ import static com.unimib.triptales.util.Constants.DELETED;
 import static com.unimib.triptales.util.Constants.INVALID_DELETE;
 import static com.unimib.triptales.util.Constants.UPDATED;
 
+import android.app.Application;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import java.util.*;
 
-public class HomeViewModel extends ViewModel {
+import javax.annotation.Nonnull;
+
+public class HomeViewModel extends AndroidViewModel {
     private final IDiaryRepository diaryRepository;
 
     private final MutableLiveData<List<Diary>> diariesLiveData = new MutableLiveData<>();
@@ -32,7 +38,8 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<String> diaryEvent = new MutableLiveData<>();
     private final MutableLiveData<Boolean> diaryOverlayVisibility = new MutableLiveData<>();
 
-    public HomeViewModel(IDiaryRepository repository) {
+    public HomeViewModel(IDiaryRepository repository, @Nonnull Application application) {
+        super(application);
         this.diaryRepository = repository;
         loadDiaries();
     }
@@ -198,17 +205,17 @@ public class HomeViewModel extends ViewModel {
         if(startDate.equals("//")) startDate = "";
         if(endDate.equals("//")) endDate = "";
         if(diaryName.isEmpty()){
-            errorLiveData.setValue("Inserisci il nome del diario");
+            errorLiveData.setValue(getApplication().getString(R.string.errore_nome));
         } else if(country.isEmpty()){
-            errorLiveData.setValue("Seleziona un paese");
+            errorLiveData.setValue(getApplication().getString(R.string.errore_paese));
         } else if(startDate.isEmpty()){
-            errorLiveData.setValue("Inserisci la data di partenza");
+            errorLiveData.setValue(getApplication().getString(R.string.errore_data_partenza));
         } else if(endDate.isEmpty()){
-            errorLiveData.setValue("Inserisci la data di ritorno");
+            errorLiveData.setValue(getApplication().getString(R.string.errore_data_ritorno));
         } else if(!validateDateOrder(startDate, endDate)){
-            errorLiveData.setValue("Le date inserite non sono valide");
+            errorLiveData.setValue(getApplication().getString(R.string.errore_date));
         } else if(bAdd && (imageUri == null || imageUri.isEmpty())){
-            errorLiveData.setValue("Seleziona un'immagine per il diario");
+            errorLiveData.setValue(getApplication().getString(R.string.errore_date));
         }
 
         if(errorLiveData.getValue() != null) correct = false;

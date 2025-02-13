@@ -299,6 +299,13 @@
     <string name="compila_con_la_tua_email">Compila con la tua email</string>
     <string name="compila_con_la_tua_password">Compila con la tua password</string>
 
+    <string name="errore_nome">Inserisci il nome del diario</string>
+    <string name="errore_paese">Seleziona un paese</string>
+    <string name="errore_data_partenza">Inserisci la data di partenza</string>
+    <string name="errore_data_ritorno">Inserisci la data di ritorno</string>
+    <string name="errore_date">Le date inserite non sono valide</string>
+    <string name="errore_immagine">Seleziona un\'immagine per il diario</string>
+
     <string name="tu_sei_qui">Tu sei qui</string>
     <string name="errore_posizione">Impossibile ottenere la posizione</string>
     <string name="posizione_necessaria">Per mostrare la tua posizione sulla mappa è necessario il permesso di accesso alla posizione</string>"

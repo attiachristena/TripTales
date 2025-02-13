@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.unimib.triptales.App;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.checkpointDiary.ICheckpointDiaryRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
@@ -63,14 +64,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.app = null;
     }
 
-    public ViewModelFactory(IDiaryRepository diaryRepository){
+    public ViewModelFactory(IDiaryRepository diaryRepository, Application app){
         this.expenseRepository = null;
         this.goalRepository = null;
         this.taskRepository = null;
         this.diaryRepository = diaryRepository;
         this.checkpointDiaryRepository = null;
         this.imageCardItemRepository = null;
-        this.app = null;
+        this.app = app;
     }
 
     public ViewModelFactory(IImageCardItemRepository imageCardItemRepository){
@@ -102,7 +103,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new ImageCardItemViewModel(imageCardItemRepository);
         }
         if(modelClass.isAssignableFrom(HomeViewModel.class)){
-            return (T) new HomeViewModel(diaryRepository);
+            return (T) new HomeViewModel(diaryRepository, app);
         }
 
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());

@@ -281,7 +281,7 @@ public class OverlayAddEditDiary {
             imageViewCover.setVisibility(View.VISIBLE);
             selectedImageUri = imageUri.toString();
         } else {
-            throw new NullPointerException("imageViewCover è null! Verifica che sia inizializzato correttamente.");
+            throw new NullPointerException(context.getString(R.string.errore_immagine));
         }
     }
 
