@@ -23,13 +23,10 @@ public class IntroActivity extends AppCompatActivity {
     Button backButton, nextButton, startButton, backButtonToActivity;
     TextView[] dots;
 
-
     ViewPager.OnPageChangeListener viewPagerListener = new ViewPager.OnPageChangeListener() {
 
         @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
         @Override
         public void onPageSelected(int position) {
@@ -67,14 +64,10 @@ public class IntroActivity extends AppCompatActivity {
                 nextButton.setBackgroundColor(getResources().getColor(R.color.orange2,getApplicationContext().getTheme()));
                 backButton.setBackgroundColor(getResources().getColor(R.color.orange2,getApplicationContext().getTheme()));
             }
-
-
         }
 
         @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
+        public void onPageScrollStateChanged(int state) {}
     };
 
     @Override
