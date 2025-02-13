@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/Base.Theme.TripTales"
+    android:id="@+id/rootLayoutHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -31,17 +33,20 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintTop_toBottomOf="@+id/appbarlayout" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        app:itemBackground="@color/icon_bg_color"
         app:itemIconTint="@color/text_reverse"
         app:itemTextColor="@color/text_reverse"
-        app:itemBackground="@color/icon_bg_color"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
