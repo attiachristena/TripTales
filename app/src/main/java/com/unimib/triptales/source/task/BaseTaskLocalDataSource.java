@@ -17,7 +17,6 @@ public abstract class BaseTaskLocalDataSource {
     public abstract void updateTaskName(String taskId, String newName);
     public abstract void updateTaskIsSelected(String taskId, boolean newIsSelected);
     public abstract void updateTaskIsChecked(String taskId, boolean newIsChecked);
-    public abstract void deleteTask(Task task);
     public abstract void deleteAllTasks(List<Task> tasks);
     public abstract void getAllTasks();
     public abstract void getSelectedTasks();

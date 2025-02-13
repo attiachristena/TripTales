@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +54,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         this.onTaskCheckBoxClickListener = listener;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
@@ -92,22 +94,16 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                     & ~Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
-        card.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if(onTaskClickListener != null){
-                    onTaskClickListener.onTaskClick(task);
-                }
-                return false;
+        card.setOnLongClickListener(cardListener -> {
+            if(onTaskClickListener != null){
+                onTaskClickListener.onTaskClick(task);
             }
+            return false;
         });
 
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(onTaskCheckBoxClickListener != null){
-                    onTaskCheckBoxClickListener.onTaskCheckBoxClick(task);
-                }
+        checkBox.setOnClickListener(checkBoxListener -> {
+            if(onTaskCheckBoxClickListener != null){
+                onTaskCheckBoxClickListener.onTaskCheckBoxClick(task);
             }
         });
 

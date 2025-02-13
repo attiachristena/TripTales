@@ -10,9 +10,9 @@
     import android.widget.TextView;
 
     import androidx.annotation.NonNull;
+    import androidx.core.content.ContextCompat;
     import androidx.recyclerview.widget.RecyclerView;
 
-    import com.bumptech.glide.Glide;
     import com.unimib.triptales.R;
     import com.unimib.triptales.model.Diary;
     import com.unimib.triptales.ui.diary.DiaryActivity;
@@ -27,16 +27,14 @@
     public class DiaryRecyclerAdapter extends RecyclerView.Adapter<DiaryRecyclerAdapter.DiaryViewHolder> {
 
         private Context context;
-        private List<Diary> diaries;
+        private final List<Diary> diaries;
         private OnDiaryLongClickListener onDiaryLongClicked;
 
-        // Constructor
         public DiaryRecyclerAdapter(Context context) {
             this.context = context;
             this.diaries = new ArrayList<>();
         }
 
-        // ViewHolder per la gestione dei widget nella carta
         public static class DiaryViewHolder extends RecyclerView.ViewHolder {
 
             MaterialCardView cardView;
@@ -81,11 +79,11 @@
 
             // Imposta il colore del bordo e dello sfondo in base allo stato di selezione
             if (diary.isDiary_isSelected()) {
-                holder.cardView.setStrokeColor(context.getResources().getColor(R.color.brown));
-                holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.orange));
+                holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.brown));
+                holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.orange));
             } else {
-                holder.cardView.setStrokeColor(context.getResources().getColor(R.color.transparent));
-                holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.white));
+                holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.transparent));
+                holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white));
             }
 
             // Imposta i dati nella carta

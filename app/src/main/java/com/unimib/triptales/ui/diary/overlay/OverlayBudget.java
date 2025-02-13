@@ -2,7 +2,6 @@ package com.unimib.triptales.ui.diary.overlay;
 
 import static com.unimib.triptales.util.Constants.CURRENCIES;
 
-import android.app.Application;
 import android.content.Context;
 
 import android.view.LayoutInflater;
@@ -15,17 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
-
-import com.unimib.triptales.App;
 import com.unimib.triptales.R;
-import com.unimib.triptales.repository.diary.IDiaryRepository;
-import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
-import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
-import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class OverlayBudget {

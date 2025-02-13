@@ -35,7 +35,6 @@ import com.unimib.triptales.adapters.ExpensesRecyclerAdapter;
 import com.unimib.triptales.model.Expense;
 import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.expense.IExpenseRepository;
-import com.unimib.triptales.ui.diary.DiaryActivity;
 import com.unimib.triptales.ui.diary.overlay.OverlayAddEditExpense;
 import com.unimib.triptales.ui.diary.overlay.OverlayBudget;
 import com.unimib.triptales.ui.diary.overlay.OverlayDelete;
@@ -54,7 +53,6 @@ public class ExpensesFragment extends Fragment {
 
     private int budget;
     private TextView progressTextView;
-    private ImageButton editBudgetButton;
     private LinearProgressIndicator progressIndicator;
     private TextView budgetTextView;
     private FloatingActionButton addExpenseButton;
@@ -146,7 +144,7 @@ public class ExpensesFragment extends Fragment {
         // gestione budget
         overlayBudget = new OverlayBudget(requireContext(), diaryRootLayout, inputCurrency, expenseViewModel);
 
-        editBudgetButton = view.findViewById(R.id.editBudget);
+        ImageButton editBudgetButton = view.findViewById(R.id.editBudget);
         editBudgetButton.setOnClickListener(editBudgetButtonListener -> {
             overlayBudget.showOverlay(homeViewModel);
             currencyTextInputLayout = requireActivity().findViewById(R.id.textFieldCurrency);
@@ -294,7 +292,7 @@ public class ExpensesFragment extends Fragment {
             }
         });
 
-        // gestione eliminazione di una spesa
+        // gestione dell'eliminazione di una spesa
         overlayDelete = new OverlayDelete(diaryRootLayout, requireContext(), expenseViewModel);
 
         expenseViewModel.getDeleteOverlayVisibility().observe(getViewLifecycleOwner(), visible -> {

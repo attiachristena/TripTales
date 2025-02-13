@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TripTales</string>
+    <string name="app_name">TRIPTALES</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tabTappe">Tappe</string>
     <string name="tabSpese">Spese</string>
@@ -230,7 +230,8 @@
     <string name="inserisci_nuova_password">Inserisci la nuova password</string>
     <string name="password_aggiornata">"Password aggiornata con successo"</string>
     <string name="errore_aggiornamento_password">Errore durante l\'aggiornamento della password: </string>
-    <string name="autenticazione_fallita">"Autenticazione fallita: "</string>
+    <string name="autenticazione_fallita">Vecchia password inserita non corretta</string>
+    <string name="errore_internet">Connessione internet assente: la password non è stata aggiornata</string>
 
     <string name="profilo_aggiornato">Profilo aggiornato con successo</string>
     <string name="aggiornamento_fallito">Aggiornamento fallito</string>

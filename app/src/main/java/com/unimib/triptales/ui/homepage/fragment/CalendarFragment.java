@@ -64,12 +64,7 @@ public class CalendarFragment extends Fragment {
             }
         });
 
-        homeViewModel.getDiariesLiveData().observe(getViewLifecycleOwner(), new Observer<List<Diary>>() {
-            @Override
-            public void onChanged(List<Diary> diaries) {
-                updateCalendar(diaries);
-            }
-        });
+        homeViewModel.getDiariesLiveData().observe(getViewLifecycleOwner(), this::updateCalendar);
     }
 
     private void updateCalendar(List<Diary> diaries) {

@@ -18,12 +18,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/upper_bar_bg"
-            app:menu="@menu/top_app_bar"
+            android:background="@color/white"
             app:navigationIcon="@drawable/baseline_menu_24"
             app:title="@string/app_name"
             app:titleTextAppearance="@style/ToolbarTitleText"
-            app:titleTextColor="@color/black"
+            app:titleTextColor="@color/primary"
             app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>

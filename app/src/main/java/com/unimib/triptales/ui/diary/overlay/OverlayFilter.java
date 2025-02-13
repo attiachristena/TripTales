@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.unimib.triptales.R;
@@ -47,8 +48,9 @@ public class OverlayFilter {
 
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_dropdown_item_1line, categories){
+            @NonNull
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 TextView textView = (TextView) super.getView(position, convertView, parent);
                 textView.setTextColor(ContextCompat.getColor(context, R.color.black));
                 return textView;

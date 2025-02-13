@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.model.Result;
+import com.unimib.triptales.model.User;
 import com.unimib.triptales.repository.user.IUserRepository;
 
 
@@ -24,6 +25,10 @@ public class UserViewModel extends ViewModel{
         return userMutableLiveData;
     }
 
+    public MutableLiveData<String> getError() {
+        return userRepository.getError();
+    }
+
     public void fetchUserData(String email, String password, boolean isUserRegistered){
         userRepository.getUser(null, null, email, password, isUserRegistered).observeForever(userMutableLiveData::postValue);
     }
@@ -41,9 +46,12 @@ public class UserViewModel extends ViewModel{
         return userRepository.signUpWithGoogle(idToken);
     }
 
-    public MutableLiveData<Result> logout(){
-        userRepository.logout().observeForever(userMutableLiveData::postValue);
-        return userMutableLiveData;
+    public void logout(){
+        userRepository.logout();
+    }
+
+    public MutableLiveData<Boolean> getLogoutSuccess(){
+        return userRepository.getLogoutSuccess();
     }
 
 
@@ -53,5 +61,13 @@ public class UserViewModel extends ViewModel{
 
     public MutableLiveData<Result> resetPassword(String email){
         return userRepository.resetPassword(email);
+    }
+
+    public void updatePassword(String email, String oldPassword, String newPassword){
+        userRepository.updatePassword(email, oldPassword, newPassword);
+    }
+
+    public void updateProfile(String newName, String newSurname){
+        userRepository.updateProfile(newName, newSurname);
     }
 }

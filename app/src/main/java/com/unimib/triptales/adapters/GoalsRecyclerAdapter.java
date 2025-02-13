@@ -92,22 +92,16 @@ public class GoalsRecyclerAdapter extends RecyclerView.Adapter<GoalsRecyclerAdap
         }
 
 
-        card.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if(onGoalClickListener != null){
-                    onGoalClickListener.onGoalClick(goal);
-                }
-                return false;
+        card.setOnLongClickListener(view -> {
+            if(onGoalClickListener != null){
+                onGoalClickListener.onGoalClick(goal);
             }
+            return false;
         });
 
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(onGoalCheckBoxClickListener != null){
-                    onGoalCheckBoxClickListener.onGoalCheckBoxClick(goal);
-                }
+        checkBox.setOnClickListener(view -> {
+            if(onGoalCheckBoxClickListener != null){
+                onGoalCheckBoxClickListener.onGoalCheckBoxClick(goal);
             }
         });
 

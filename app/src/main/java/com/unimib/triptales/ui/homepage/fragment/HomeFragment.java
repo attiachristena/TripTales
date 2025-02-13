@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
                 String imageUriString = diary.getCoverImageUri();
                 if (imageUriString != null && !imageUriString.isEmpty()) {
                     Glide.with(requireContext())
-                            .load(imageUriString)  // Carica l'immagine dall'URI locale
+                            .load(imageUriString)
                             .into(imageViewCover);
                     homeViewModel.updateDiaryCoverImage(diary.getId(), imageUriString);
 
@@ -139,7 +139,6 @@ public class HomeFragment extends Fragment {
                                 selectedImageUri = newUri.toString();
                         }
 
-                            // Controlla quale overlay è aperto e aggiorna l'immagine corretta
                             if (overlayAddModifyDiary.getVisibility() == View.VISIBLE) {
                                 imageViewCover.setImageURI(newUri);
                                 imageViewCover.setVisibility(View.VISIBLE);
@@ -517,15 +516,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void requestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{Manifest.permission.READ_MEDIA_IMAGES},
                     100);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Android 10-12
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     100);
-        } else { // Android 9 o inferiore
+        } else {
             ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -542,7 +541,7 @@ public class HomeFragment extends Fragment {
                 String diaryCountry = diary.getCountry();
 
                 if (diaryCountry != null && countryQuery != null &&
-                        diaryCountry.toLowerCase().startsWith(countryQuery.toLowerCase())) { // <-- Usa startsWith() per corrispondenza esatta all'inizio
+                        diaryCountry.toLowerCase().startsWith(countryQuery.toLowerCase())) {
                     filteredDiaries.add(diary);
                 }
             }
@@ -555,7 +554,7 @@ public class HomeFragment extends Fragment {
     private Uri saveImageToPublicStorage(Uri sourceUri) {
         Bitmap bitmap;
         try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),
+            bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(),
                     sourceUri);
         } catch (IOException e) {
             e.printStackTrace();
@@ -569,12 +568,12 @@ public class HomeFragment extends Fragment {
         values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES +
                 "/TripTales");
 
-        Uri imageUri = getContext().getContentResolver()
+        Uri imageUri = requireContext().getContentResolver()
                 .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         try {
             if (imageUri != null) {
-                OutputStream out = getContext().getContentResolver().openOutputStream(imageUri);
+                OutputStream out = requireContext().getContentResolver().openOutputStream(imageUri);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
                 out.close();
                 return imageUri; // Restituisce l'URI pubblico
@@ -624,11 +623,10 @@ public class HomeFragment extends Fragment {
         inputYearEndDate.setText("");
         imageViewCover.setImageURI(null);
         imageViewCover.setVisibility(View.GONE);
-        // Clear country field
         AutoCompleteTextView countryAutoComplete =
                 overlayAddModifyDiary.findViewById(R.id.VisitedCountry);
         if (countryAutoComplete != null) {
-            countryAutoComplete.setText(""); // Reset country input
+            countryAutoComplete.setText("");
         }
     }
 }

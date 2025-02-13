@@ -11,7 +11,6 @@ public interface ITaskRepository {
     void updateTaskName(String taskId, String newName);
     void updateTaskIsSelected(String taskId, boolean newIsSelected);
     void updateTaskIsChecked(String taskId, boolean newIsChecked);
-    void deleteTask(Task task);
     void deleteAllTasks(List<Task> tasks);
     List<Task> getAllTasks();
     List<Task> getSelectedTasks();
