@@ -8,8 +8,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;

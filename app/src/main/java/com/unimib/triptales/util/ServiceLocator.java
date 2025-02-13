@@ -19,7 +19,6 @@ import com.unimib.triptales.repository.task.ITaskRepository;
 import com.unimib.triptales.repository.task.TaskRepository;
 import com.unimib.triptales.repository.user.IUserRepository;
 import com.unimib.triptales.repository.user.UserRepository;
-import com.unimib.triptales.source.checkpointDiary.BaseCheckpointDiaryRemoteDataSource;
 import com.unimib.triptales.source.diary.BaseDiaryLocalDataSource;
 import com.unimib.triptales.source.diary.BaseDiaryRemoteDataSource;
 import com.unimib.triptales.source.diary.DiaryLocalDataSource;

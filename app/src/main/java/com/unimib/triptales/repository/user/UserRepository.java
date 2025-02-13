@@ -63,11 +63,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
-    public User getLoggedUser() {
-        return userRemoteDataSource.getLoggedUser();
-    }
-
-    @Override
     public MutableLiveData<Result> getUser() {
         userRemoteDataSource.getLoggedUser();
         return userMutableLiveData;
@@ -120,18 +115,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     @Override
     public void onSuccessLogout() {
         logoutSuccessLiveData.postValue(true);
-    }
-
-    @Override
-    public void onSuccessFromRemoteDatabase(User user) {
-        userMutableLiveData.postValue(new Result.UserSuccess(user));
-        logoutSuccessLiveData.postValue(false);
-    }
-
-
-    @Override
-    public void onFailureFromRemoteDatabase(String message) {
-        userMutableLiveData.postValue(new Result.Error(message));
     }
 
     @Override
