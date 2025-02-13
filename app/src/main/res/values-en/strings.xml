@@ -81,6 +81,12 @@
     <string name="delete_task">Delete item</string>
     <string name="delete_goal_description">Are you sure you want to eliminate the goal?</string>
     <string name="delete_task_description">Are you sure you want to eliminate the item?</string>
+    <string name="errore_nome">Enter the name of the journal</string>
+    <string name="errore_paese">Select a country</string>
+    <string name="errore_data_partenza">Enter the departure date</string>
+    <string name="errore_data_ritorno">Enter the return date</string>
+    <string name="errore_date">Dates entered are invalid</string>
+    <string name="errore_immagine">Select an image for the journal</string>
     <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
@@ -223,8 +229,12 @@
     <string name="nome_del_diario">Diary Name</string>
     <string name="data_di_partenza_data_di_arrivo">Depaurture Date - Arrival Date</string>
     <string name="cerca_un_luogo">Search a place</string>
+    <string name="data_immagine">Image date</string>
+    <string name="titolo_immagine">Title</string>
+    <string name="sottotitolo_immagine">Subtitle</string>
     <string name="aggiungi_un_ricordo">Add a memory image</string>
     <string name="titolo_ricordo">Title</string>
+    <string name="titolo">Title</string>
     <string name="descrizione_ricordo">Description</string>
     <string name="data_ricordo">Date</string>
     <string name="modifica_la_tappa">Edit checkpoint</string>
