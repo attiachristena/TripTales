@@ -130,79 +130,96 @@ public class DiaryRemoteDataSource extends BaseDiaryRemoteDataSource {
                     .addOnFailureListener(e -> diaryCallback.onFailureFromRemote(e));
         }
 
-        @Override
-        public void deleteDiary(Diary diary) {
-            if (diary != null) {
-                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    @Override
+    public void deleteDiary(Diary diary) {
+        if (diary != null) {
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
-                DatabaseReference diaryRef = database.child("users").child(userId)
-                        .child("diaries").child(diary.getId());
-                DatabaseReference expensesRef = database.child("users").child(userId)
-                        .child("expenses");
-                DatabaseReference goalsRef = database.child("users").child(userId)
-                        .child("goals");
-                DatabaseReference tasksRef = database.child("users").child(userId)
-                        .child("tasks");
+            DatabaseReference diaryRef = database.child("users").child(userId)
+                    .child("diaries").child(diary.getId());
+            DatabaseReference expensesRef = database.child("users").child(userId)
+                    .child("expenses");
+            DatabaseReference goalsRef = database.child("users").child(userId)
+                    .child("goals");
+            DatabaseReference tasksRef = database.child("users").child(userId)
+                    .child("tasks");
+            DatabaseReference checkpointDiariesRef = database.child("users").child(userId)
+                    .child("checkpointDiaries");
 
-                expensesRef.orderByChild("diaryId").equalTo(diary.getId())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot expenseSnapshot : dataSnapshot.getChildren()) {
-                            expenseSnapshot.getRef().removeValue();
-                        }
+            expensesRef.orderByChild("diaryId").equalTo(diary.getId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot expenseSnapshot : dataSnapshot.getChildren()) {
+                                expenseSnapshot.getRef().removeValue();
+                            }
 
-                        goalsRef.orderByChild("diaryId").equalTo(diary.getId())
-                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot goalSnapshot : dataSnapshot.getChildren()) {
-                                    goalSnapshot.getRef().removeValue();
-                                }
+                            goalsRef.orderByChild("diaryId").equalTo(diary.getId())
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot goalSnapshot : dataSnapshot.getChildren()) {
+                                                goalSnapshot.getRef().removeValue();
+                                            }
 
-                                tasksRef.orderByChild("diaryId").equalTo(diary.getId())
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot taskSnapshot : dataSnapshot.getChildren()) {
-                                            taskSnapshot.getRef().removeValue();
+                                            checkpointDiariesRef.orderByChild("diaryId").equalTo(diary.getId())
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot checkpointDiarySnapshot : dataSnapshot.getChildren()) {
+                                                                checkpointDiarySnapshot.getRef().removeValue();
+                                                            }
+
+                                                            tasksRef.orderByChild("diaryId").equalTo(diary.getId())
+                                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                        @Override
+                                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                            for (DataSnapshot taskSnapshot : dataSnapshot.getChildren()) {
+                                                                                taskSnapshot.getRef().removeValue();
+                                                                            }
+
+                                                                            diaryRef.removeValue().addOnCompleteListener(task -> {
+                                                                                if (task.isSuccessful()) {
+                                                                                    diaryCallback.onSuccessDeleteFromRemote();
+                                                                                } else {
+                                                                                    diaryCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
+                                                                                }
+                                                                            });
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                                            diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
+                                                                        }
+                                                                    });
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                            diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
+                                                        }
+                                                    });
                                         }
 
-                                        diaryRef.removeValue().addOnCompleteListener(task -> {
-                                            if (task.isSuccessful()) {
-                                                diaryCallback.onSuccessDeleteFromRemote();
-                                            } else {
-                                                diaryCallback.onFailureFromRemote
-                                                        (new Exception(UNEXPECTED_ERROR));
-                                            }
-                                        });
-                                    }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
+                                        }
+                                    });
+                        }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
-                    }
-                });
-            } else {
-                diaryCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
-            }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            diaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
+                        }
+                    });
+        } else {
+            diaryCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
         }
+    }
 
-        @Override
+
+    @Override
         public void deleteAllDiaries(List<Diary> diaries) {
             if (diaries != null) {
                 for (Diary d : diaries) {

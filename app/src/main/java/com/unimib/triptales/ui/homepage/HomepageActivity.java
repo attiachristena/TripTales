@@ -126,7 +126,6 @@ public class HomepageActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        homeViewModel.loadRemoteDiaries();
     }
 
     private void switchFragment(Fragment fragment, String tag){
