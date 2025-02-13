@@ -99,9 +99,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
                 if (location != null) {
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(userLocation).title("You are here"));
+                    mMap.addMarker(new MarkerOptions().position(userLocation).title(getString(R.string.tu_sei_qui)));
                 } else {
-                    Toast.makeText(getContext(), "Unable to get location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.errore_posizione), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -113,7 +113,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 enableUserLocation();
             } else {
-                Toast.makeText(getContext(), "Location permission is required to show your location on the map", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.posizione_necessaria), Toast.LENGTH_SHORT).show();
             }
         }
     }

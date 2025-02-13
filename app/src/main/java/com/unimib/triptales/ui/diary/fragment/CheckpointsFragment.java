@@ -308,7 +308,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
 
     private void addMarkerOnMap(LatLng latLng, String title) {
         googleMap.clear();
-        googleMap.addMarker(new MarkerOptions().position(latLng).title(title).snippet("Clicca per aggiungere la tappa"));
+        googleMap.addMarker(new MarkerOptions().position(latLng).title(title).snippet(getString(R.string.click_per_tappa)));
         yesAnswer.setOnClickListener(v -> {
             showSavingCheckpointOverlay(latLng);
             hideOverlayDialogAdd();
@@ -352,7 +352,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.drawable.aereo);
 
                 if (tappeEsistenti.contains(checkpointNameSave)) {
-                    Toast.makeText(getContext(), "Tappa già esistente", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.tappa_gia_esistente), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -374,16 +374,16 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                         checkpointDate.setText("");
                         immagineTappaPreview.setImageURI(null);
 
-                        Snackbar.make(getContext(), checkpointsLayout, "La tappa è stata aggiunta con successo",
+                        Snackbar.make(getContext(), checkpointsLayout, getString(R.string.successo_tappa),
                                 Snackbar.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    Snackbar.make(getContext(), checkpointsLayout, "Errore nel salvataggio dell'immagine",
+                    Snackbar.make(getContext(), checkpointsLayout, getString(R.string.errore_salvataggio_immagine),
                             Snackbar.LENGTH_SHORT).show();
                 }
             } else {
-                Snackbar.make(getContext(), checkpointsLayout, "Compila tutti i campi",
+                Snackbar.make(getContext(), checkpointsLayout, getString(R.string.compila_campi),
                         Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -584,7 +584,7 @@ public class CheckpointsFragment extends Fragment implements OnMapReadyCallback 
                 editCheckpoint.setVisibility(View.GONE);
                 deleteCheckpoint.setVisibility(View.GONE);
 
-                Snackbar.make(getContext(), checkpointsLayout, "Tappe selezionate eliminate",
+                Snackbar.make(getContext(), checkpointsLayout, getString(R.string.tappe_selezionate_eliminate),
                         Snackbar.LENGTH_SHORT).show();
             }
         });
