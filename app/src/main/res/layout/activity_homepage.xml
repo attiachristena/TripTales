@@ -39,8 +39,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:itemIconTint="@color/background_dark"
-        app:itemTextColor="@color/background_dark"
+        app:itemIconTint="@color/text_reverse"
+        app:itemTextColor="@color/text_reverse"
+        app:itemBackground="@color/icon_bg_color"
         app:menu="@menu/bottom_navigation_menu" />
+
 
 </LinearLayout>

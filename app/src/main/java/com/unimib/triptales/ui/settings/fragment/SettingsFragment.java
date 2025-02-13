@@ -1,29 +1,22 @@
 package com.unimib.triptales.ui.settings.fragment;
 
-import static android.content.Intent.getIntent;
-import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 import com.unimib.triptales.R;
-import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
-import com.unimib.triptales.ui.settings.SettingsActivity;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class SettingsFragment extends Fragment {
@@ -43,6 +34,7 @@ public class SettingsFragment extends Fragment {
     Button ModificaProfiloButton;
     SwitchCompat switchNightMode;
     boolean nightMode;
+    boolean oldNightMode;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     private FirebaseAuth firebaseAuth;
@@ -53,8 +45,10 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        applySavedLanguage();
+        SharedPreferencesUtils.applyNightMode(requireContext());
+        SharedPreferencesUtils.applyLanguage(requireContext());
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
@@ -78,7 +72,7 @@ public class SettingsFragment extends Fragment {
         TextView nomeCognomeTextView = view.findViewById(R.id.nome_cognome);
 
         sharedPreferences = getActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        nightMode = sharedPreferences.getBoolean("nightMode", false);
+        nightMode = SharedPreferencesUtils.isNightModeEnabled(requireContext());
 
         // Recupera nome e cognome utente da Firebase
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -102,34 +96,16 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        // Imposta lo stato dello switch per la modalità notturna
-        if (nightMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
 
+        // Attiva o disattiva la modalità notturna
+        nightMode = SharedPreferencesUtils.isNightModeEnabled(requireContext());
         switchNightMode.setChecked(nightMode);
 
-        switchNightMode.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                if(nightMode){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    editor = sharedPreferences.edit();
-                    editor.putBoolean("nightMode", false);
-                    editor.apply();
-                }else{
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    editor = sharedPreferences.edit();
-                    editor.putBoolean("nightMode", true);
-                    editor.apply();
-                }
-
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                getActivity().finish();
-                startActivity(intent);
-            }
+        switchNightMode.setOnClickListener(view1 -> {
+            nightMode = !nightMode;
+            SharedPreferencesUtils.saveNightMode(requireContext(), nightMode);
+            SharedPreferencesUtils.applyNightMode(requireContext());
+            requireActivity().recreate();
         });
 
         // Cambiare lingua con popup menu
@@ -185,22 +161,11 @@ public class SettingsFragment extends Fragment {
     }
 
     // Cambio lingua
+    // Cambio lingua
     private void changeLanguage(String languageCode) {
-        SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("language", languageCode);
-        editor.apply();
-
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
-        getActivity().recreate();
-
-    }
-
-    private void applySavedLanguage() {
-        SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String languageCode = preferences.getString("language", "it");
-
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
+        SharedPreferencesUtils.saveLanguage(requireContext(), languageCode);
+        SharedPreferencesUtils.applyLanguage(requireContext());
+        requireActivity().recreate();
     }
 
 
