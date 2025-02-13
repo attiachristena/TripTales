@@ -47,7 +47,6 @@ public class SelectLanguageActivity extends AppCompatActivity {
         nextButton.setOnClickListener(view -> {
             Intent intent = new Intent(SelectLanguageActivity.this, IntroActivity.class);
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             finish();
         });
 
@@ -78,7 +77,7 @@ public class SelectLanguageActivity extends AppCompatActivity {
 
     private void applySavedLanguage() {
         SharedPreferences preferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String languageCode = preferences.getString("language", "it"); // "it" è la lingua predefinita
+        String languageCode = preferences.getString("language", "it");
 
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));
     }

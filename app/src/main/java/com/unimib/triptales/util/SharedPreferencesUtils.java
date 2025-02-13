@@ -111,7 +111,6 @@ public class SharedPreferencesUtils {
         return firebaseUser.getEmail();
     }
 
-    // Salva la modalità notte
     public static void saveNightMode(Context context, boolean isNightMode) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -119,13 +118,11 @@ public class SharedPreferencesUtils {
         editor.apply();
     }
 
-    // Ottiene la modalità notte
     public static boolean isNightModeEnabled(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getBoolean(KEY_NIGHT_MODE, false);
     }
 
-    // Applica la modalità notturna all'avvio dell'app
     public static void applyNightMode(Context context) {
         boolean isNightMode = isNightModeEnabled(context);
         if (isNightMode) {
@@ -135,7 +132,6 @@ public class SharedPreferencesUtils {
         }
     }
 
-    // Salva la lingua scelta
     public static void saveLanguage(Context context, String languageCode) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -143,13 +139,11 @@ public class SharedPreferencesUtils {
         editor.apply();
     }
 
-    // Recupera la lingua salvata
     public static String getSavedLanguage(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(KEY_LANGUAGE, "it");
     }
 
-    // Applica la lingua all'avvio dell'app
     public static void applyLanguage(Context context) {
         String languageCode = getSavedLanguage(context);
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode));

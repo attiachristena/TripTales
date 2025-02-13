@@ -115,7 +115,6 @@ public class IntroActivity extends AppCompatActivity {
             if(getItem(0) == 0) {
                 Intent intent = new Intent(IntroActivity.this, SelectLanguageActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
             }
         });
@@ -124,7 +123,6 @@ public class IntroActivity extends AppCompatActivity {
             if(getItem(0) == 2){
                 Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 finish();
 
                 SharedPreferences.Editor editor = preferences.edit();
