@@ -232,7 +232,6 @@
     <string name="s">Yes</string>
     <string name="no">No</string>
     <string name="vuoi_aggiungere_questo_luogo_alle_tappe">Would you like to add this place to your checkpoints?</string>
-    <string name="i_tuoi_ricordi">Your memories…</string>
     <string name="errorFilterCategory">No expenses found for the specified category</string>
     <string name="errorAmount">Enter an amount</string>
     <string name="errorDescription">Enter a description</string>
