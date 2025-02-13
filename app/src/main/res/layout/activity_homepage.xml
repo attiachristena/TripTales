@@ -18,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
+            android:background="@color/icon_bg_color"
             app:navigationIcon="@drawable/baseline_menu_24"
             app:title="@string/app_name_homepage"
             app:titleTextAppearance="@style/ToolbarTitleText"
