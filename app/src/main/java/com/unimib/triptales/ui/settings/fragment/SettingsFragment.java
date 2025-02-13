@@ -1,19 +1,12 @@
 package com.unimib.triptales.ui.settings.fragment;
 
-import static android.content.Intent.getIntent;
-import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -28,19 +21,13 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.*;
-
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Result;
 import com.unimib.triptales.model.User;
 import com.unimib.triptales.repository.user.IUserRepository;
-import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
-import com.unimib.triptales.ui.settings.SettingsActivity;
 import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
@@ -50,9 +37,7 @@ public class SettingsFragment extends Fragment {
     Button ModificaProfiloButton;
     SwitchCompat switchNightMode;
     boolean nightMode;
-    boolean oldNightMode;
     SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
     private NavController navController;
     private android.app.AlertDialog loadingDialog;
     private UserViewModel userViewModel;
@@ -76,7 +61,6 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
 
-        // Inizializza il NavController
         navController = NavHostFragment.findNavController(this);
 
 
@@ -196,9 +180,7 @@ public class SettingsFragment extends Fragment {
             new AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.elimina_account))
                     .setMessage(getString(R.string.dialog_elimina_account))
-                    .setPositiveButton(getString(R.string.elimina), (dialog, which) -> {
-                        userViewModel.logout();
-                    })
+                    .setPositiveButton(getString(R.string.elimina), (dialog, which) -> userViewModel.logout())
                     .setNegativeButton(getString(R.string.annulla), null)
                     .show();
         } else {

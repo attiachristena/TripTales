@@ -1,6 +1,7 @@
 
 package com.unimib.triptales.ui.homepage;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
 import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,9 @@ public class HomepageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferencesUtils.applyNightMode(this);
+
         setContentView(R.layout.activity_homepage);
 
         IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getApplicationContext());
@@ -178,5 +182,8 @@ public class HomepageActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
 
 }

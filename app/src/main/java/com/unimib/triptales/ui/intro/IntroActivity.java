@@ -87,8 +87,8 @@ public class IntroActivity extends AppCompatActivity {
         startButton = findViewById(R.id.startButton);
         backButtonToActivity = findViewById(R.id.backButtonToActivity);
 
-        slideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
-        dotIndicator = (LinearLayout) findViewById(R.id.dotIndicator);
+        slideViewPager = findViewById(R.id.slideViewPager);
+        dotIndicator = findViewById(R.id.dotIndicator);
         viewPagerAdapter = new OnBoardingAdapter(this);
         slideViewPager.setAdapter(viewPagerAdapter);
         setDotIndicator(0);
