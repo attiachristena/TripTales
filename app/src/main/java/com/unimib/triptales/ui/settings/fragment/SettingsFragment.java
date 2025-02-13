@@ -60,9 +60,7 @@ public class SettingsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-
         navController = NavHostFragment.findNavController(this);
-
 
         LinguaButton = view.findViewById(R.id.LinguaButton);
         AccountButton = view.findViewById(R.id.AccountButton);
@@ -74,8 +72,12 @@ public class SettingsFragment extends Fragment {
 
         sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
         nightMode = SharedPreferencesUtils.isNightModeEnabled(requireContext());
+        switchNightMode.setChecked(nightMode);
 
-        // imposta nome e cognome dell'utente
+        AboutUsButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_aboutUs));
+        ModificaProfiloButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_edit_profile));
+
+        // Imposta nome e cognome dell'utente
         userViewModel.getUser().observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()){
                 Result.UserSuccess userResult = (Result.UserSuccess) result;
@@ -91,11 +93,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-
-        // Attiva o disattiva la modalità notturna
-        nightMode = SharedPreferencesUtils.isNightModeEnabled(requireContext());
-        switchNightMode.setChecked(nightMode);
-
+        // Attiva o disattiva la modalità notturna con switch
         switchNightMode.setOnClickListener(view1 -> {
             nightMode = !nightMode;
             SharedPreferencesUtils.saveNightMode(requireContext(), nightMode);
@@ -127,11 +125,7 @@ public class SettingsFragment extends Fragment {
             popupMenu.show();
         });
 
-        // Navigazione con Navigation Component
-        AboutUsButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_aboutUs));
-        ModificaProfiloButton.setOnClickListener(v -> navController.navigate(R.id.action_settings_to_edit_profile));
-
-        // Menu Account con navigazione
+        // Menu Account
         AccountButton.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(getActivity(), AccountButton);
             popupMenu.getMenuInflater().inflate(R.menu.account_menu, popupMenu.getMenu());
@@ -164,18 +158,15 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-    // Cambio lingua
+
     private void changeLanguage(String languageCode) {
         SharedPreferencesUtils.saveLanguage(requireContext(), languageCode);
         SharedPreferencesUtils.applyLanguage(requireContext());
         requireActivity().recreate();
     }
 
-
-    // Eliminazione account con conferma
     private void confirmAndDeleteAccount() {
         String currentUserId = SharedPreferencesUtils.getLoggedUserId();
-        //FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUserId != null) {
             new AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.elimina_account))
@@ -188,7 +179,6 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    //Dialog per uscire dall'account
     private void showLogoutDialog() {
         new AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.conferma_logout))
