@@ -51,7 +51,7 @@ public class CalendarFragment extends Fragment {
 
         IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getContext());
         HomeViewModel homeViewModel = new ViewModelProvider(requireActivity(),
-                new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
+                new ViewModelFactory(diaryRepository, requireActivity().getApplication())).get(HomeViewModel.class);
         calendarView = view.findViewById(R.id.calendarView);
 
         calendarView.setOnCalendarDayClickListener(eventDay -> {

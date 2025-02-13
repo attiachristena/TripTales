@@ -57,7 +57,7 @@ public class HomepageActivity extends AppCompatActivity {
 
         IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getApplicationContext());
         homeViewModel = new ViewModelProvider(this,
-                new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
+                new ViewModelFactory(diaryRepository, getApplication())).get(HomeViewModel.class);
 
         homeViewModel.loadRemoteDiaries();
 

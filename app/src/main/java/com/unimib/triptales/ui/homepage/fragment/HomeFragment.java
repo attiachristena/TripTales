@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getContext());
         homeViewModel = new ViewModelProvider(requireActivity(),
-                new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
+                new ViewModelFactory(diaryRepository, requireActivity().getApplication())).get(HomeViewModel.class);
         ConstraintLayout rootLayoutHome = requireActivity().findViewById(R.id.rootLayoutHome);
         overlayAddEditDiary = new OverlayAddEditDiary(rootLayoutHome, getContext(), this);
 
