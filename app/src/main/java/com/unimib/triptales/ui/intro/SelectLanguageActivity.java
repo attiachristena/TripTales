@@ -47,7 +47,6 @@ public class SelectLanguageActivity extends AppCompatActivity {
         nextButton.setOnClickListener(view -> {
             Intent intent = new Intent(SelectLanguageActivity.this, IntroActivity.class);
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             finish();
         });
 
