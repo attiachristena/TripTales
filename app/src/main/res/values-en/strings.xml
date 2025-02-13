@@ -229,12 +229,8 @@
     <string name="nome_del_diario">Diary Name</string>
     <string name="data_di_partenza_data_di_arrivo">Depaurture Date - Arrival Date</string>
     <string name="cerca_un_luogo">Search a place</string>
-    <string name="data_immagine">Image date</string>
-    <string name="titolo_immagine">Title</string>
-    <string name="sottotitolo_immagine">Subtitle</string>
     <string name="aggiungi_un_ricordo">Add a memory image</string>
     <string name="titolo_ricordo">Title</string>
-    <string name="titolo">Title</string>
     <string name="descrizione_ricordo">Description</string>
     <string name="data_ricordo">Date</string>
     <string name="modifica_la_tappa">Edit checkpoint</string>
@@ -263,7 +259,10 @@
     <string name="password_aggiornata">"Password successfully updated"</string>
     <string name="errore_aggiornamento_password">Error updating password: </string>
     <string name="autenticazione_fallita">Old password entered incorrectly</string>
-
+    <string name="data_immagine">Image Date</string>
+    <string name="titolo_immagine">Title</string>
+    <string name="sottotitolo_immagine">Subtitle</string>
+    <string name="titolo">Title</string>
 
     <string name="profilo_aggiornato">Profile updated successfully</string>
     <string name="aggiornamento_fallito">Update failed</string>
@@ -297,5 +296,15 @@
     <string name="compila_con_il_tuo_cognome">Fill in with your surname</string>
     <string name="compila_con_la_tua_email">Fill in with your email</string>
     <string name="compila_con_la_tua_password">Fill in with your password</string>
+
+    <string name="tu_sei_qui">You are here</string>
+    <string name="errore_posizione">Unable to get location</string>
+    <string name="posizione_necessaria">Location permission is required to show your location on the map</string>
+    <string name="click_per_tappa">Click to add a checkpoint</string>
+    <string name="tappa_gia_esistente">Checkpoint already exists</string>
+    <string name="successo_tappa">The checkpoint has been successfully added</string>
+    <string name="errore_salvataggio_immagine">Error saving the image</string>
+    <string name="compila_campi">Fill in all fields</string>
+    <string name="tappe_selezionate_eliminate">Selected checkpoints deleted</string>
 
 </resources>

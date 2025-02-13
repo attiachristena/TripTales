@@ -306,4 +306,14 @@
     <string name="errore_date">Le date inserite non sono valide</string>
     <string name="errore_immagine">Seleziona un\'immagine per il diario</string>
 
+    <string name="tu_sei_qui">Tu sei qui</string>
+    <string name="errore_posizione">Impossibile ottenere la posizione</string>
+    <string name="posizione_necessaria">Per mostrare la tua posizione sulla mappa è necessario il permesso di accesso alla posizione</string>"
+    <string name="click_per_tappa">Clicca per aggiungere la tappa</string>
+    <string name="tappa_gia_esistente">Tappa già esistente</string>
+    <string name="successo_tappa">La tappa è stata aggiunta con successo</string>
+    <string name="errore_salvataggio_immagine">Errore nel salvataggio dell\'immagine</string>
+    <string name="compila_campi">Compila tutti i campi</string>
+    <string name="tappe_selezionate_eliminate">Tappe selezionate eliminate</string>
+
 </resources>

@@ -67,7 +67,9 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="43dp"
             android:layout_marginEnd="40dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:textColorHint="@color/hint"
+            app:boxStrokeColor="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editNameCheckpoint"
@@ -88,7 +90,9 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="38dp"
             android:layout_marginEnd="40dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:textColorHint="@color/hint"
+            app:boxStrokeColor="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editDateCheckpoint"
@@ -117,7 +121,8 @@
             android:backgroundTint="@color/primary"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:text="@string/inserisci_un_immagine_modifica" />
+            android:text="@string/inserisci_un_immagine_modifica"
+            android:textColor="@color/white"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/previewChangedImage"
@@ -144,7 +149,7 @@
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
             android:text="@string/anteprima_immagine_modificata"
-            android:textColor="@color/primary"
+            android:textColor="@color/upper_bar_bg"
             android:textSize="20sp"
             android:textStyle="bold" />
 

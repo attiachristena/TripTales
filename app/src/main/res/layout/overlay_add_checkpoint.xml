@@ -70,7 +70,9 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="43dp"
             android:layout_marginEnd="40dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:textColorHint="@color/hint"
+            app:boxStrokeColor="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/addCheckpointName"
@@ -79,7 +81,9 @@
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 android:hint="@string/nome_tappa_hint"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textColor="@color/black"/>
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo per la data della tappa -->
@@ -91,7 +95,9 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="48dp"
             android:layout_marginEnd="40dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:textColorHint="@color/hint"
+            app:boxStrokeColor="@color/hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/addCheckpointDate"
@@ -103,7 +109,8 @@
                 android:inputType="none"
                 android:focusable="false"
                 android:clickable="true"
-                android:cursorVisible="false" />
+                android:cursorVisible="false"
+                android:textColor="@color/black"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -120,7 +127,8 @@
             android:backgroundTint="@color/primary"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:text="@string/inserisci_un_immagine" />
+            android:text="@string/inserisci_un_immagine"
+            android:textColor="@color/white"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/previewImage"
@@ -147,7 +155,7 @@
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
             android:text="@string/anteprima_immagine"
-            android:textColor="@color/primary"
+            android:textColor="@color/upper_bar_bg"
             android:textSize="20sp"
             android:textStyle="bold" />
 
