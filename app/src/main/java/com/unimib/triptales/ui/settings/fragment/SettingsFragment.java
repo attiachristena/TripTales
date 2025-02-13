@@ -1,13 +1,21 @@
 package com.unimib.triptales.ui.settings.fragment;
 
+import static android.content.Intent.getIntent;
+import static com.unimib.triptales.util.Constants.ACTIVE_FRAGMENT_TAG;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -25,7 +33,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 import com.unimib.triptales.R;
+import com.unimib.triptales.model.Result;
+import com.unimib.triptales.model.User;
+import com.unimib.triptales.repository.user.IUserRepository;
+import com.unimib.triptales.ui.homepage.HomepageActivity;
 import com.unimib.triptales.ui.login.LoginActivity;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
+import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
+import com.unimib.triptales.ui.settings.SettingsActivity;
+import com.unimib.triptales.util.ServiceLocator;
 import com.unimib.triptales.util.SharedPreferencesUtils;
 
 public class SettingsFragment extends Fragment {
@@ -37,19 +53,20 @@ public class SettingsFragment extends Fragment {
     boolean oldNightMode;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    private FirebaseAuth firebaseAuth;
     private NavController navController;
     private android.app.AlertDialog loadingDialog;
+    private UserViewModel userViewModel;
 
     public SettingsFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         SharedPreferencesUtils.applyNightMode(requireContext());
         SharedPreferencesUtils.applyLanguage(requireContext());
-        firebaseAuth = FirebaseAuth.getInstance();
+
+        IUserRepository userRepository = ServiceLocator.getINSTANCE().getUserRepository();
+        userViewModel = new ViewModelProvider(requireActivity(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
     }
 
     @Override
@@ -71,28 +88,22 @@ public class SettingsFragment extends Fragment {
         switchNightMode = view.findViewById(R.id.switchNightMode);
         TextView nomeCognomeTextView = view.findViewById(R.id.nome_cognome);
 
-        sharedPreferences = getActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
         nightMode = SharedPreferencesUtils.isNightModeEnabled(requireContext());
 
-        // Recupera nome e cognome utente da Firebase
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference usersRef = database.getReference("users");
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String name = dataSnapshot.child("name").getValue(String.class);
-                    String surname = dataSnapshot.child("surname").getValue(String.class);
-                    nomeCognomeTextView.setText(name + " " + surname);
-                } else {
-                    nomeCognomeTextView.setText(getString(R.string.dati_non_disponibili));
+        // imposta nome e cognome dell'utente
+        userViewModel.getUser().observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()){
+                Result.UserSuccess userResult = (Result.UserSuccess) result;
+                User user = userResult.getData();
+                if(user != null){
+                    String name = user.getName();
+                    String surname = user.getSurname();
+                    String completeName = name + " " + surname;
+                    nomeCognomeTextView.setText(completeName);
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                nomeCognomeTextView.setText(getString(R.string.errore_nel_recupero_dati));
+            } else {
+                nomeCognomeTextView.setText(getString(R.string.dati_non_disponibili));
             }
         });
 
@@ -157,10 +168,18 @@ public class SettingsFragment extends Fragment {
 
         LogoutButton.setOnClickListener(v -> showLogoutDialog());
 
+        userViewModel.getLogoutSuccess().observe(getViewLifecycleOwner(), logout -> {
+            if (logout != null && logout) {
+                SharedPreferencesUtils.setLoggedIn(requireContext(), false);
+                Intent intent = new Intent(requireContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
-    // Cambio lingua
     // Cambio lingua
     private void changeLanguage(String languageCode) {
         SharedPreferencesUtils.saveLanguage(requireContext(), languageCode);
@@ -171,37 +190,20 @@ public class SettingsFragment extends Fragment {
 
     // Eliminazione account con conferma
     private void confirmAndDeleteAccount() {
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            new AlertDialog.Builder(getContext())
+        String currentUserId = SharedPreferencesUtils.getLoggedUserId();
+        //FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUserId != null) {
+            new AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.elimina_account))
                     .setMessage(getString(R.string.dialog_elimina_account))
-                    .setPositiveButton(getString(R.string.elimina), (dialog, which) -> performDelete())
+                    .setPositiveButton(getString(R.string.elimina), (dialog, which) -> {
+                        userViewModel.logout();
+                    })
                     .setNegativeButton(getString(R.string.annulla), null)
                     .show();
         } else {
             Toast.makeText(getContext(), getString(R.string.nessun_utente_trovato), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void performDelete(){
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        String userId = currentUser.getUid();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
-
-        userRef.removeValue().addOnCompleteListener(task -> {
-            currentUser.delete().addOnCompleteListener(task2 -> {
-                if (task2.isSuccessful()) {
-                    Toast.makeText(getContext(), getString(R.string.eliminazione_con_successo), Toast.LENGTH_SHORT).show();
-                    firebaseAuth.signOut();
-                    Intent intent = new Intent(getContext(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getContext(), getString(R.string.errore_eliminazione), Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
     }
 
     //Dialog per uscire dall'account

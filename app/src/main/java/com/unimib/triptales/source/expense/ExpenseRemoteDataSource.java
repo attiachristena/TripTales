@@ -36,16 +36,6 @@ public class ExpenseRemoteDataSource extends BaseExpenseRemoteDataSource{
     }
 
     @Override
-    public void updateExpense(Expense expense) {
-        if(expense != null) {
-            databaseReference.child(expense.getId()).setValue(expense)
-                    .addOnFailureListener(e -> expenseCallback.onFailureFromRemote(e));
-        } else {
-            expenseCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
-        }
-    }
-
-    @Override
     public void updateExpenseCategory(String expenseId, String newCategory) {
         if(newCategory != null) {
             Map<String, Object> updates = new HashMap<>();

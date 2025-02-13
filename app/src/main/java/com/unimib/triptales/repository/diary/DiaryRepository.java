@@ -102,13 +102,6 @@ public class DiaryRepository implements IDiaryRepository, DiaryResponseCallBack 
         diaryRemoteDataSource.updateDiaryCountry(diaryId, newCountry);
     }
 
-    // Elimina un diario
-    @Override
-    public void deleteDiary(Diary diary) {
-        diaryLocalDataSource.deleteDiary(diary);
-        diaryRemoteDataSource.deleteDiary(diary);
-    }
-
     // Elimina più diari
     @Override
     public void deleteAllDiaries(List<Diary> diaries) {

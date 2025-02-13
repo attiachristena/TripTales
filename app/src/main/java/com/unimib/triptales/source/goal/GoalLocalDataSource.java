@@ -3,7 +3,6 @@ package com.unimib.triptales.source.goal;
 import com.unimib.triptales.database.GoalDao;
 import com.unimib.triptales.model.Goal;
 
-import java.util.Collections;
 import java.util.List;
 
 public class GoalLocalDataSource extends BaseGoalLocalDataSource{
@@ -20,15 +19,6 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void insertGoal(Goal goal) {
         try{
             goalDao.insert(goal);
-        } catch (Exception e){
-            goalCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void updateGoal(Goal goal) {
-        try{
-            goalDao.update(goal);
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }
@@ -74,17 +64,6 @@ public class GoalLocalDataSource extends BaseGoalLocalDataSource{
     public void updateGoalIsChecked(String goalId, boolean newIsChecked) {
         try{
             goalDao.updateIsChecked(goalId, newIsChecked);
-        } catch (Exception e){
-            goalCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void deleteGoal(Goal goal) {
-        try{
-            goalDao.delete(goal);
-            List<Goal> goals = Collections.singletonList(goal);
-            goalCallback.onSuccessDeleteFromLocal(goals);
         } catch (Exception e){
             goalCallback.onFailureFromLocal(e);
         }

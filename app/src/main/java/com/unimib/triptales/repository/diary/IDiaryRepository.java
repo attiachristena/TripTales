@@ -17,7 +17,6 @@ public interface IDiaryRepository {
         void updateDiaryBudget(String diaryId, String newBudget);
         void updateDiaryCountry(String diaryId, String newCountry);
         void updateDiaryIsSelected(String diaryId, boolean newIsSelected);
-        void deleteDiary(Diary diary);
         void deleteAllDiaries(List<Diary> diaries);
         List<Diary> getAllDiaries();
         void getRemoteDiaries();

@@ -4,7 +4,6 @@ import static com.unimib.triptales.util.Constants.UNEXPECTED_ERROR;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.auth.zzae;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

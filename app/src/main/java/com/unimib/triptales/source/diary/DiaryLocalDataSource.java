@@ -105,17 +105,6 @@ public class DiaryLocalDataSource extends BaseDiaryLocalDataSource {
         }
     }
 
-    // Elimina un diario specifico
-    @Override
-    public void deleteDiary(Diary diary) {
-        try{
-            diaryDao.delete(diary);
-            diaryCallback.onSuccessDeleteFromLocal();
-        } catch (Exception e){
-            diaryCallback.onFailureFromLocal(e);
-        }
-    }
-
     // Elimina tutti i diari forniti
     @Override
     public void deleteAllDiaries(List<Diary> diaries) {

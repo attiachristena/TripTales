@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -111,8 +112,9 @@ public class OverlayAddEditExpense {
                 context.getString(R.string.fun_category));
 
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, categories) {
+            @NonNull
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 TextView textView = (TextView) super.getView(position, convertView, parent);
                 textView.setTextColor(ContextCompat.getColor(context, R.color.black));
                 return textView;

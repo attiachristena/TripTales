@@ -13,7 +13,6 @@ public abstract class BaseExpenseRemoteDataSource {
     }
 
     public abstract void insertExpense(Expense expense);
-    public abstract void updateExpense(Expense expense);
     public abstract void updateExpenseCategory(String expenseId, String newCategory);
     public abstract void updateExpenseDescription(String expenseId, String newDescription);
     public abstract void updateExpenseAmount(String expenseId, String newAmount);

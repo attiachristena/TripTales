@@ -2,11 +2,14 @@ package com.unimib.triptales.ui.login.fragment;
 
 import static com.unimib.triptales.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static com.unimib.triptales.util.Constants.INVALID_USER_ERROR;
+import static com.unimib.triptales.util.Constants.hideKeyboard;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -94,9 +97,10 @@ public class LoginFragment extends Fragment {
                         userViewModel.getGoogleUserMutableLiveData(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
                             if (authenticationResult.isSuccess()) {
                                 hideLoadingDialog();
-                                SharedPreferencesUtils.setLoggedIn(getContext(), true);
-                                requireActivity().finish();
-                                startActivity(new Intent(getContext(), HomepageActivity.class));
+                                SharedPreferencesUtils.setLoggedIn(requireContext(), true);
+                                Intent intent = new Intent(requireContext(), HomepageActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
                             } else {
                                 userViewModel.setAuthenticationError(true);
                                 hideLoadingDialog();
@@ -195,9 +199,11 @@ public class LoginFragment extends Fragment {
                     loginButton.setEnabled(true);
                     if (result.isSuccess()) {
                         hideLoadingDialog();
-                        SharedPreferencesUtils.setLoggedIn(getContext(), true);
-                        requireActivity().finish();
-                        startActivity(new Intent(getContext(), HomepageActivity.class));
+                        hideKeyboard(view, requireActivity());
+                        SharedPreferencesUtils.setLoggedIn(requireContext(), true);
+                        Intent intent = new Intent(requireContext(), HomepageActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                     } else {
                         userViewModel.setAuthenticationError(true);
                         hideLoadingDialog();

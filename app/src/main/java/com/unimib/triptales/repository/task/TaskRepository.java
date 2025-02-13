@@ -58,12 +58,6 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     }
 
     @Override
-    public void deleteTask(Task task) {
-        taskLocalDataSource.deleteTask(task);
-        taskRemoteDataSource.deleteTask(task);
-    }
-
-    @Override
     public void deleteAllTasks(List<Task> tasks) {
         taskLocalDataSource.deleteAllTasks(tasks);
         taskRemoteDataSource.deleteAllTasks(tasks);

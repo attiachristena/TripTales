@@ -39,6 +39,10 @@ public class Constants {
     public static final String USER_ALREADY_EXISTS = "userAlreadyExists";
     public static final String EMAIL_NOT_REGISTERED = "emailNotRegistered";
 
+    public static final String INVALID_OLD_PASSWORD_ERROR = "oldPasswordIsIncorrect";
+    public static final String PASSWORD_NOT_UPDATED_ERROR = "passwordNotUpdated";
+    public static final String INTERNET_ERROR = "internetError";
+    public static final String INVALID_UPDATE = "invalidUpdate";
 
     public static final String FIREBASE_REALTIME_DATABASE = "https://triptales-4765a-default-rtdb.europe-west1.firebasedatabase.app/";
     public static final String FIREBASE_USERS_COLLECTION = "users";

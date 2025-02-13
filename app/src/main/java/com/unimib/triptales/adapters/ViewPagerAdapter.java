@@ -43,9 +43,6 @@
 
 
             switch (position) {
-                case 0:
-                    fragment = new CheckpointsFragment();
-                    break;
                 case 1:
                     fragment = new ExpensesFragment();
                     break;

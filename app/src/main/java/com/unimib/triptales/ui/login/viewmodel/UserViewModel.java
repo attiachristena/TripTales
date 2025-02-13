@@ -4,13 +4,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.model.Result;
+import com.unimib.triptales.model.User;
 import com.unimib.triptales.repository.user.IUserRepository;
 
 
 public class UserViewModel extends ViewModel{
 
     private final IUserRepository userRepository;
-    private final MutableLiveData<Result> userMutableLiveData;
+    private MutableLiveData<Result> userMutableLiveData;
     private boolean authenticationError;
 
     public UserViewModel(IUserRepository userRepository){
@@ -22,6 +23,10 @@ public class UserViewModel extends ViewModel{
     public MutableLiveData<Result> getUserMutableLiveData(String email, String password, boolean isUserRegistered) {
         fetchUserData(email, password, isUserRegistered);
         return userMutableLiveData;
+    }
+
+    public MutableLiveData<String> getError() {
+        return userRepository.getError();
     }
 
     public void fetchUserData(String email, String password, boolean isUserRegistered){
@@ -41,9 +46,17 @@ public class UserViewModel extends ViewModel{
         return userRepository.signUpWithGoogle(idToken);
     }
 
-    public MutableLiveData<Result> logout(){
-        userRepository.logout().observeForever(userMutableLiveData::postValue);
+    public MutableLiveData<Result> getUser(){
+        userMutableLiveData = userRepository.getUser();
         return userMutableLiveData;
+    }
+
+    public void logout(){
+        userRepository.logout();
+    }
+
+    public MutableLiveData<Boolean> getLogoutSuccess(){
+        return userRepository.getLogoutSuccess();
     }
 
 
@@ -53,5 +66,13 @@ public class UserViewModel extends ViewModel{
 
     public MutableLiveData<Result> resetPassword(String email){
         return userRepository.resetPassword(email);
+    }
+
+    public void updatePassword(String email, String oldPassword, String newPassword){
+        userRepository.updatePassword(email, oldPassword, newPassword);
+    }
+
+    public void updateProfile(String newName, String newSurname){
+        userRepository.updateProfile(newName, newSurname);
     }
 }

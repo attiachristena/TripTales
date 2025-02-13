@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TripTales</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tabTappe">Checkpoints</string>
-    <string name="tabSpese">Expenses</string>
+    <string name="tabSpese">Exp</string>
     <string name="tabObiettivi">Goals</string>
     <string name="tabAttivita">List</string>
     <string name="page_title">TripTales</string>
@@ -253,7 +252,7 @@
     <string name="inserisci_nuova_password">Enter the new password</string>
     <string name="password_aggiornata">"Password successfully updated"</string>
     <string name="errore_aggiornamento_password">Error updating password: </string>
-    <string name="autenticazione_fallita">"Authentication failed: "</string>
+    <string name="autenticazione_fallita">Old password entered incorrectly</string>
 
 
     <string name="profilo_aggiornato">Profile updated successfully</string>
@@ -282,6 +281,7 @@
     \nFor anything, feel free to contact us at:\n
     \nprintine@gmail.com\n
     \nHappy travels with <i>TripTales</i>!</string>
+    <string name="errore_internet">Internet connection absent: password has not been updated</string>
 
     <string name="compila_con_il_tuo_nome">Fill in with your name</string>
     <string name="compila_con_il_tuo_cognome">Fill in with your surname</string>

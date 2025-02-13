@@ -4,8 +4,6 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.database.ExpenseDao;
 import com.unimib.triptales.model.Expense;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
@@ -22,15 +20,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void insertExpense(Expense expense) {
         try{
             expenseDao.insert(expense);
-        } catch (Exception e){
-            expenseCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void updateExpense(Expense expense) {
-        try{
-            expenseDao.update(expense);
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }
@@ -94,17 +83,6 @@ public class ExpenseLocalDataSource extends BaseExpenseLocalDataSource {
     public void updateExpenseIsSelected(String expenseId, boolean newIsSelected) {
         try{
             expenseDao.updateIsSelected(expenseId, newIsSelected);
-        } catch (Exception e){
-            expenseCallback.onFailureFromLocal(e);
-        }
-    }
-
-    @Override
-    public void deleteExpense(Expense expense) {
-        try{
-            expenseDao.delete(expense);
-            List<Expense> expenses = Collections.singletonList(expense);
-            expenseCallback.onSuccessDeleteFromLocal(expenses);
         } catch (Exception e){
             expenseCallback.onFailureFromLocal(e);
         }

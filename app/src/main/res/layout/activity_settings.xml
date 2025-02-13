@@ -14,18 +14,19 @@
         android:id="@+id/SettingsAppbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:fitsSystemWindows="true"
         app:layout_constraintTop_toTopOf="parent">
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/settingsToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/upper_bar_bg"
+            android:background="@color/white"
             android:elevation="10dp"
             app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24"
             app:title="@string/impostazioni"
-            app:titleCentered="true"
-            app:titleTextColor="@color/black"/>
+            app:titleTextAppearance="@style/ToolbarTitleText"
+            app:titleTextColor="@color/primary"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
