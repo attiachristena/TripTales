@@ -161,6 +161,8 @@ public class HomeFragment extends Fragment {
         bAdd = false;
         bEdit = false;
         homeViewModel.loadDiaries();
+        List<Diary> diariesList = homeViewModel.getDiariesLiveData().getValue();
+        diaryRecyclerAdapter.setDiaries(diariesList);
         final int maxObservations = 20;
         final AtomicInteger observationCount = new AtomicInteger(0);
 

@@ -38,12 +38,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Result;
-import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.user.IUserRepository;
-import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
-import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
-import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
@@ -102,8 +98,9 @@ public class LoginFragment extends Fragment {
                             if (authenticationResult.isSuccess()) {
                                 hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(requireContext(), true);
-                                requireActivity().finish();
-                                startActivity(new Intent(getContext(), HomepageActivity.class));
+                                Intent intent = new Intent(requireContext(), HomepageActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
                             } else {
                                 userViewModel.setAuthenticationError(true);
                                 hideLoadingDialog();
@@ -204,7 +201,6 @@ public class LoginFragment extends Fragment {
                         hideLoadingDialog();
                         hideKeyboard(view, requireActivity());
                         SharedPreferencesUtils.setLoggedIn(requireContext(), true);
-                        requireActivity().finish();
                         Intent intent = new Intent(requireContext(), HomepageActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
