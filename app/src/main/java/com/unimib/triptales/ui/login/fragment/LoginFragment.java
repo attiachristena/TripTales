@@ -92,12 +92,14 @@ public class LoginFragment extends Fragment {
                     if (idToken !=  null) {
                         showLoadingDialog();
                         userViewModel.getGoogleUserMutableLiveData(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
-                            hideLoadingDialog();
                             if (authenticationResult.isSuccess()) {
+                                hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
+                                hideLoadingDialog();
                                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) authenticationResult).getMessage()),
                                         Snackbar.LENGTH_SHORT).show();
@@ -191,12 +193,14 @@ public class LoginFragment extends Fragment {
 
                 userViewModel.getUserMutableLiveData(email, password, true).observe(getViewLifecycleOwner(), result -> {
                     loginButton.setEnabled(true);
-                    hideLoadingDialog();
                     if (result.isSuccess()) {
+                        hideLoadingDialog();
                         SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                        requireActivity().finish();
                         startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
                         userViewModel.setAuthenticationError(true);
+                        hideLoadingDialog();
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getErrorMessage(((Result.Error) result).getMessage()),
                                 Snackbar.LENGTH_SHORT).show();
@@ -210,8 +214,11 @@ public class LoginFragment extends Fragment {
         passwordDimenticata.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_passwordDimenticataFragment));
 
         Button googleLoginButton = view.findViewById(R.id.googleLoginButton);
-        googleLoginButton.setOnClickListener(v -> { oneTapClient.beginSignIn(signInRequest)
+        googleLoginButton.setOnClickListener(v -> {
+            googleLoginButton.setEnabled(false);
+            oneTapClient.beginSignIn(signInRequest)
                 .addOnSuccessListener(requireActivity(), result -> {
+                    googleLoginButton.setEnabled(true);
                     try {
                         activityResultLauncher.launch(new IntentSenderRequest.Builder(result.getPendingIntent()).build());
                     } catch (Exception e) {
@@ -224,6 +231,7 @@ public class LoginFragment extends Fragment {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                             getString(R.string.error_google_login),
                             Snackbar.LENGTH_SHORT).show();
+                    googleLoginButton.setEnabled(true);
                 });
         });
     }

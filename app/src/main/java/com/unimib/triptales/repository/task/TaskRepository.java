@@ -107,8 +107,9 @@ public class TaskRepository implements ITaskRepository, TaskResponseCallback{
     }
 
     @Override
-    public void onSuccessDeleteFromLocal() {
+    public void onSuccessDeleteFromLocal(List<Task> tasks) {
         localDelete = true;
+        taskRemoteDataSource.deleteAllTasks(tasks);
     }
 
     @Override

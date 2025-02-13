@@ -207,6 +207,7 @@ public class HomepageActivity extends AppCompatActivity {
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             return true;
         }
 

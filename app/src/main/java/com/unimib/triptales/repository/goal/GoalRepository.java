@@ -126,8 +126,9 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     }
 
     @Override
-    public void onSuccessDeleteFromLocal() {
+    public void onSuccessDeleteFromLocal(List<Goal> goals) {
         localDelete = true;
+        goalRemoteDataSource.deleteAllGoals(goals);
     }
 
     @Override

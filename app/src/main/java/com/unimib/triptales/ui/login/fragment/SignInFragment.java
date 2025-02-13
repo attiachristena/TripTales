@@ -97,9 +97,11 @@ public class SignInFragment extends Fragment {
                             hideLoadingDialog();
                             if (authenticationResult.isSuccess()) {
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
+                                hideLoadingDialog();
                                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) authenticationResult).getMessage()),
                                         Snackbar.LENGTH_SHORT).show();
@@ -169,17 +171,17 @@ public class SignInFragment extends Fragment {
 
 
             if (TextUtils.isEmpty(editTextNome.getText())) {
-                editTextNome.setError("Compila con il tuo nome");
+                editTextNome.setError(getString(R.string.compila_con_il_tuo_nome));
                 isValid = false;
             }
 
             if (TextUtils.isEmpty(editTextCognome.getText())) {
-                editTextCognome.setError("Compila con il tuo cognome");
+                editTextCognome.setError(getString(R.string.compila_con_il_tuo_cognome));
                 isValid = false;
             }
 
             if (TextUtils.isEmpty(editTextEmail.getText())) {
-                editTextEmail.setError("Compila con la tua email");
+                editTextEmail.setError(getString(R.string.compila_con_la_tua_email));
                 isValid = false;
             } else if (!isEmailOk(editTextEmail.getText().toString())) {
                 editTextEmail.setError(getString(R.string.error_email_login));
@@ -187,7 +189,7 @@ public class SignInFragment extends Fragment {
             }
 
             if (TextUtils.isEmpty(editTextPassword.getText())) {
-                editTextPassword.setError("Compila con la tua password");
+                editTextPassword.setError(getString(R.string.compila_con_la_tua_password));
                 isValid = false;
             } else if (!isPasswordOk(editTextPassword.getText().toString())) {
                 editTextPassword.setError(getString(R.string.error_password_login));
@@ -203,12 +205,14 @@ public class SignInFragment extends Fragment {
                         editTextPassword.getText().toString())
                         .observe(getViewLifecycleOwner(), result -> {
                             signInButton.setEnabled(true);
-                            hideLoadingDialog();
                             if (result.isSuccess()) {
+                                hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                hideLoadingDialog();
+                                Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getString(R.string.error_unexpected), Snackbar.LENGTH_SHORT).show();
                     }
                 });
@@ -217,8 +221,11 @@ public class SignInFragment extends Fragment {
         });
 
         Button googleSignInButton = view.findViewById(R.id.signInButtonGoogle);
-        googleSignInButton.setOnClickListener(v -> { oneTapClient.beginSignIn(signInRequest)
+        googleSignInButton.setOnClickListener(v -> {
+            googleSignInButton.setEnabled(false);
+            oneTapClient.beginSignIn(signInRequest)
                 .addOnSuccessListener(requireActivity(), result -> {
+                    googleSignInButton.setEnabled(true);
                     try {
                         activityResultLauncher.launch(new IntentSenderRequest.Builder(result.getPendingIntent()).build());
                     } catch (Exception e) {
@@ -231,6 +238,7 @@ public class SignInFragment extends Fragment {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                             getString(R.string.error_google_login),
                             Snackbar.LENGTH_SHORT).show();
+                    googleSignInButton.setEnabled(true);
                 });
         });
     }

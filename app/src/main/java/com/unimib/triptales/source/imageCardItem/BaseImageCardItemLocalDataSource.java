@@ -1,25 +1,23 @@
 package com.unimib.triptales.source.imageCardItem;
 
-import androidx.lifecycle.LiveData;
-
 import com.unimib.triptales.model.ImageCardItem;
+import com.unimib.triptales.repository.imageCardItem.ImageCardItemResponseCallBack;
 
 import java.util.List;
 
-public interface BaseImageCardItemLocalDataSource {
+public abstract class BaseImageCardItemLocalDataSource {
+    protected ImageCardItemResponseCallBack imageCardItemCallback;
 
-    List<ImageCardItem> getAllImageCardItems();
-    void insertImageCardItem(ImageCardItem imageCardItem);
-    void updateImageCardItem(ImageCardItem imageCardItem);
-    void deleteImageCardItem(ImageCardItem imageCardItem);
-    void deleteAllImageCardItems();
-    void deleteImageCardItemById(int id);
-    void updateImageCardItemTitle(int id, String title);
-    void updateImageCardItemDescription(int id, String description);
-    void updateImageCardItemDate(int id, String date);
-    void updateImageCardItemImageUri(int id, String imageUri);
-    List<ImageCardItem> getImageCardItemById(int id);
-    List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId);
-    List<ImageCardItem> getSelectedImageCardItems();
-    void updateImageCardItemIsSelected(int id, boolean isSelected);
+    public void setImageCardItemCallback(ImageCardItemResponseCallBack imageCardItemCallback){
+        this.imageCardItemCallback = imageCardItemCallback;
+    }
+
+    public abstract void getAllImageCardItems();
+    public abstract void insertImageCardItem(ImageCardItem imageCardItem);
+    public abstract void deleteImageCardItem(ImageCardItem imageCardItem);
+    public abstract void updateImageCardItemTitle(int id, String title);
+    public abstract void updateImageCardItemDescription(int id, String description);
+    public abstract void updateImageCardItemDate(int id, String date);
+    public abstract void updateImageCardItemImageUri(int id, String imageUri);
+    public abstract List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId);
 }

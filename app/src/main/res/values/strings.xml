@@ -91,11 +91,11 @@
     <string name="action_account">action_account</string>
     <string name="in_corso">In corso</string>
     <string name="fatto">Fatto</string>
-    <string name="nuovo_compito">Nuova attività</string>
-    <string name="noTasksString">Aggiungi la prima attività!</string>
+    <string name="nuovo_compito">Nuovo elemento</string>
+    <string name="noTasksString">Aggiungi il primo elemento della lista!</string>
     <string name="noGoalsString">Aggiungi il primo obiettivo del viaggio!</string>
     <string name="noSpeseString">Imposta il budget e aggiungi la prima spesa!</string>
-    <string name="checklistTitle">Lista delle attività da svolgere</string>
+    <string name="checklistTitle">Non devo dimenticarmi di:</string>
     <string name="warningCurrency">*Puoi cambiare la valuta solamente se non hai ancora inserito nessuna spesa.</string>
     //
     <string name="hintCurrency">Valuta*</string>
@@ -106,11 +106,11 @@
     <string name="intro3_title">Esplora il mondo e custodisci ogni tappa</string>
     <string name="intro3_body">Con TripTales potrai annotare ogni scoperta e rivivere ogni momento</string>
     <string name="intro4_title">Viaggia sereno: TripTales ti aiuta a ricordare ogni dettaglio</string>
-    <string name="intro4_body">Tppe,obiettivi, spese e check-list: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
+    <string name="intro4_body">Tappe, obiettivi, spese e check-list: tutto ciò che serve per un viaggio perfetto, senza dimenticanze</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">INIZIA</string>
     <string name="data_partenza">Data partenza</string>
-    <string name="data_arrivo">Data arrivo</string>
+    <string name="data_arrivo">Data ritorno</string>
     <string name="scegli_immagine">Scegli un’immagine</string>
     <string name="inserisci_nome_diario">Inserisci il nome del diario</string>
     <string name="paese_visitato">Inserisci il paese visitato</string>
@@ -168,10 +168,10 @@
     <string name="snackbarGoalUpdated">Obiettivo aggiornato</string>
     <string name="snackbarGoalDeleted">Obiettivo rimosso</string>
     <string name="snackbarGoalNotDeleted">Errore: obiettivo non rimosso</string>
-    <string name="snackbarTaskAdded">Attività aggiunta</string>
-    <string name="snackbarTaskUpdated">Attività aggiornata</string>
-    <string name="snackbarTaskDeleted">Attività rimossa</string>
-    <string name="snackbarTaskNotDeleted">Errore: attività non rimossa</string>
+    <string name="snackbarTaskAdded">Elemento aggiunto</string>
+    <string name="snackbarTaskUpdated">Elemento aggiornato</string>
+    <string name="snackbarTaskDeleted">Elemento rimosso</string>
+    <string name="snackbarTaskNotDeleted">Errore: elemento non rimosso</string>
     <string name="snackbarDiaryAdded">Diario aggiunto</string>
     <string name="snackbarDiaryUpdated">Diario aggiornato</string>
     <string name="snackbarDiaryDeleted">Diario rimosso</string>
@@ -190,7 +190,7 @@
     <string name="errorCurrency">Scegli una valuta</string>
     <string name="errorInputBudget">Inserisci un numero più basso</string>
     <string name="errorGoalName">Inserisci il nome dell\'obiettivo</string>
-    <string name="errorTaskName">Inserisci il nome dell\'attività</string>
+    <string name="errorTaskName">Inserisci il nome dell\'elemento</string>
     <string name="progressText">spesi</string>
 
     <string name="modifica_password">Modifica password</string>
@@ -244,14 +244,32 @@
     <string name="errore_nel_recupero_dati">Errore nel recupero dei dati</string>
 
     <string name="i_tuoi_ricordi">I tuoi ricordi...</string>
+    <string name="modifica_il_tuo_ricordo">Modifica il tuo ricordo</string>
+    <string name="data_tappa">Data Tappa</string>
+    <string name="nome_del_diario">Nome del Diario</string>
+    <string name="data_di_partenza_data_di_arrivo">Data di Partenza - Data di Arrivo</string>
+    <string name="cerca_un_luogo">Cerca un luogo</string>
+    <string name="data_immagine">Data Immagine</string>
+    <string name="titolo_immagine">Titolo</string>
+    <string name="sottotitolo_immagine">Sottotitolo</string>
+    <string name="aggiungi_un_ricordo">Aggiungi un ricordo</string>
+    <string name="titolo">Titolo</string>
+    <string name="descrizione_ricordo">Descrivi il momento...</string>
+    <string name="titolo_ricordo">Titolo</string>
+    <string name="data_ricordo">Data</string>
+    <string name="modifica_la_tappa">Modifica la tappa</string>
+    <string name="s">Sì</string>
+    <string name="no">No</string>
+    <string name="vuoi_aggiungere_questo_luogo_alle_tappe">Vuoi aggiungere questo luogo alle tappe?</string>
+
     <string name="cerca_diario_per_paese">Cerca diario per paese visitato</string>
     <string name="seleziona_lingua">Seleziona la lingua</string>
     <string name="delete_expense">Elimina la spesa</string>
     <string name="delete_expense_description">Sei sicuro di voler eliminare la spesa?</string>
     <string name="delete_goal">Elimina l\'obiettivo</string>
     <string name="delete_goal_description">Sei sicuro di voler eliminare l\'obiettivo?</string>
-    <string name="delete_task">Elimina l\'attività</string>
-    <string name="delete_task_description">Sei sicuro di voler eliminare l\'attività?</string>
+    <string name="delete_task">Elimina l\'elemento</string>
+    <string name="delete_task_description">Sei sicuro di voler eliminare l\'elemento?</string>
     <string name="cancel">Annulla</string>
     <string name="delete">Elimina</string>
 
@@ -273,5 +291,10 @@
     \nPer qualsiasi cosa contattaci all’email:
     \nprintine@gmail.com\n
         \nBuon viaggio con <i>TripTales</i>! </string>
+
+    <string name="compila_con_il_tuo_nome">Compila con il tuo nome</string>
+    <string name="compila_con_il_tuo_cognome">Compila con il tuo cognome</string>
+    <string name="compila_con_la_tua_email">Compila con la tua email</string>
+    <string name="compila_con_la_tua_password">Compila con la tua password</string>
 
 </resources>

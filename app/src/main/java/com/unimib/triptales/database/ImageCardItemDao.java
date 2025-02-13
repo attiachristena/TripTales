@@ -15,16 +15,8 @@ import java.util.List;
 public interface ImageCardItemDao {
 
     @Insert
-    void insertImageCardItem(ImageCardItem imageCardItem);
+    long insertImageCardItem(ImageCardItem imageCardItem);
 
-    @Query("SELECT * FROM ImageCardItem WHERE checkpoint_diary_id = :checkpointDiaryId")
-    LiveData<List<ImageCardItem>> getImageCardItemsByCheckpointDiaryId(int checkpointDiaryId);
-
-    @Query("DELETE FROM ImageCardItem WHERE checkpoint_diary_id = :checkpointDiaryId")
-    void deleteImageCardItemsByCheckpointDiaryId(int checkpointDiaryId);
-
-    @Query("DELETE FROM ImageCardItem")
-    void deleteAllImageCardItems();
 
     @Query("DELETE FROM ImageCardItem WHERE id = :id")
     void deleteImageCardItemById(int id);
@@ -47,8 +39,6 @@ public interface ImageCardItemDao {
     @Query("UPDATE ImageCardItem SET imageUri = :imageUri WHERE id = :id")
     void updateImageCardItemImageUri(int id, String imageUri);
 
-    @Query("SELECT * FROM ImageCardItem WHERE id = :id")
-    List<ImageCardItem> getImageCardItemById(int id);
 
     @Query("SELECT * FROM ImageCardItem WHERE checkpoint_diary_id = :checkpointDiaryId")
     List<ImageCardItem> getImageCardItemByCheckpointDiaryId(int checkpointDiaryId);

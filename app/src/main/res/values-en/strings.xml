@@ -2,10 +2,10 @@
 <resources>
     <string name="app_name">TripTales</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="tabTappe">Stages</string>
-    <string name="tabSpese">Exp</string>
+    <string name="tabTappe">Checkpoints</string>
+    <string name="tabSpese">Expenses</string>
     <string name="tabObiettivi">Goals</string>
-    <string name="tabAttivita">Tasks</string>
+    <string name="tabAttivita">List</string>
     <string name="page_title">TripTales</string>
     <string name="action_home">Home</string>
     <string name="action_logout">Logout</string>
@@ -44,12 +44,12 @@
     <string name="page_3">Calendar</string>
     <string name="snackbarErroreBudget">Set the budget!</string>
     <string name="firstHomePageText">You haven\'t created any diary yet, start your adventure!</string>
-    <string name="tappe">Stages</string>
+    <string name="tappe">Checkpoints</string>
     <string name="titolo_diario">Diary Title</string>
-    <string name="aggiungi_una_tappa">Stage name</string>
-    <string name="nome_tappa_hint">Stage name</string>
+    <string name="aggiungi_una_tappa">Add a checkpoint</string>
+    <string name="nome_tappa_hint">Checkpoint name</string>
     <string name="inserisci_un_immagine">Insert an image</string>
-    <string name="data_tappa_hint">Stage date</string>
+    <string name="data_tappa_hint">Checkpoint date</string>
     <string name="anteprima_immagine">Image preview</string>
     <string name="pulsante_per_tornare_indietro">Button to go back</string>
     <string name="pulsante_per_salvare_la_tappa">Button to save the stage</string>
@@ -79,9 +79,9 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="delete_goal">Delete goal</string>
-    <string name="delete_task">Delete task</string>
+    <string name="delete_task">Delete item</string>
     <string name="delete_goal_description">Are you sure you want to eliminate the goal?</string>
-    <string name="delete_task_description">Are you sure you want to eliminate the task?</string>
+    <string name="delete_task_description">Are you sure you want to eliminate the item?</string>
     <string name="freccetta" />
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
@@ -108,12 +108,12 @@
     <string name="action_account">action_account</string>
     <string name="in_corso">Ongoing</string>
     <string name="fatto">Done</string>
-    <string name="nuovo_compito">New activity</string>
-    <string name="noTasksString">Add your first activity!</string>
+    <string name="nuovo_compito">New item</string>
+    <string name="noTasksString">Add the first item of the list!</string>
     <string name="noGoalsString">Add your first travel goal!</string>
     <string name="noSpeseString">Set your budget and add your first expense</string>
-    <string name="checklistTitle">Checklist of tasks to complete</string>
-    <string name="warningCurrency">*Please note: you can only change the currency if no expenses have been entered yet.</string>
+    <string name="checklistTitle">I must not forget to take:</string>
+    <string name="warningCurrency">*You can only change the currency if you have not yet entered any expenses.</string>
     <string name="hintCurrency">Currency*</string>
     <string name="nome_diario">Diary name</string>
     <string name="google_maps_api_key">YOUR_GOOGLE_MAPS_API_KEY</string>
@@ -126,7 +126,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="inizia">START</string>
     <string name="data_partenza">Departure date</string>
-    <string name="data_arrivo">Arrival date</string>
+    <string name="data_arrivo">Return date</string>
     <string name="scegli_immagine">Choose an image</string>
     <string name="inserisci_nome_diario">Enter diary name</string>
     <string name="paese_visitato">Enter visited country</string>
@@ -189,10 +189,10 @@
     <string name="password_reset_email_sent">Email for reset password sent</string>
 
     <string name="registrati_con_google">Sign up with Google</string>
-    <string name="snackbarTaskAdded">Task added</string>
-    <string name="snackbarTaskUpdated">Task updated</string>
-    <string name="snackbarTaskDeleted">Task deleted</string>
-    <string name="snackbarTaskNotDeleted">Error: task not deleted</string>
+    <string name="snackbarTaskAdded">Item added</string>
+    <string name="snackbarTaskUpdated">Item updated</string>
+    <string name="snackbarTaskDeleted">Item deleted</string>
+    <string name="snackbarTaskNotDeleted">Error: item not deleted</string>
 
     <string name="modifica_profilo"><u>Edit profile</u></string>
     <string name="modifica_profilo2">Edit profile</string>
@@ -217,7 +217,21 @@
     <string name="snackbarDiaryUpdated">Diary updated</string>
     <string name="snackbarDiaryDeleted">Diary deleted</string>
     <string name="snackbarDiaryNotDeleted">Error: diary not deleted</string>
-    <string name="i_tuoi_ricordi">Your memories…</string>
+
+    <string name="i_tuoi_ricordi">Your travel memories…</string>
+    <string name="modifica_il_tuo_ricordo">Edit your travel memory</string>
+    <string name="data_tappa">Trip Date</string>
+    <string name="nome_del_diario">Diary Name</string>
+    <string name="data_di_partenza_data_di_arrivo">Depaurture Date - Arrival Date</string>
+    <string name="cerca_un_luogo">Search a place</string>
+    <string name="aggiungi_un_ricordo">Add a memory image</string>
+    <string name="titolo_ricordo">Title</string>
+    <string name="descrizione_ricordo">Description</string>
+    <string name="data_ricordo">Date</string>
+    <string name="modifica_la_tappa">Edit checkpoint</string>
+    <string name="s">Yes</string>
+    <string name="no">No</string>
+    <string name="vuoi_aggiungere_questo_luogo_alle_tappe">Would you like to add this place to your checkpoints?</string>
     <string name="errorFilterCategory">No expenses found for the specified category</string>
     <string name="errorAmount">Enter an amount</string>
     <string name="errorDescription">Enter a description</string>
@@ -231,7 +245,7 @@
     <string name="errorCurrency">Choose a currency</string>
     <string name="errorInputBudget">Enter a lower number</string>
     <string name="errorGoalName">Enter the goal name</string>
-    <string name="errorTaskName">Enter the task name</string>
+    <string name="errorTaskName">Enter the item name</string>
     <string name="immagineSelezionata">Selected image</string>
     <string name="cerca_diario_per_paese">Find diary by visited country</string>
 
@@ -268,5 +282,10 @@
     \nFor anything, feel free to contact us at:\n
     \nprintine@gmail.com\n
     \nHappy travels with <i>TripTales</i>!</string>
+
+    <string name="compila_con_il_tuo_nome">Fill in with your name</string>
+    <string name="compila_con_il_tuo_cognome">Fill in with your surname</string>
+    <string name="compila_con_la_tua_email">Fill in with your email</string>
+    <string name="compila_con_la_tua_password">Fill in with your password</string>
 
 </resources>

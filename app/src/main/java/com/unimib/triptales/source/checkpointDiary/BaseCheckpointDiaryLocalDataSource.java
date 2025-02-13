@@ -1,27 +1,23 @@
 package com.unimib.triptales.source.checkpointDiary;
 
 import com.unimib.triptales.model.CheckpointDiary;
+import com.unimib.triptales.repository.checkpointDiary.CheckpointDiaryResponseCallBack;
 
 import java.util.List;
 
-public interface BaseCheckpointDiaryLocalDataSource {
+public abstract class BaseCheckpointDiaryLocalDataSource {
+    protected CheckpointDiaryResponseCallBack checkpointDiaryCallback;
 
-    public interface Callback<T> {
-        void onResult(T result);
+    public void setCheckpointDiaryCallback(CheckpointDiaryResponseCallBack checkpointDiaryCallback){
+        this.checkpointDiaryCallback = checkpointDiaryCallback;
     }
 
-    List<CheckpointDiary> getCheckpointDiariesByDiaryId(String diaryId);
-    List<CheckpointDiary> getAllCheckpointDiaries();
-    long insertCheckpointDiary(CheckpointDiary checkpointDiary);
-    void updateCheckpointDiary(CheckpointDiary checkpointDiary);
-    void deleteCheckpointDiary(CheckpointDiary checkpointDiary);
-    void deleteAllCheckpointDiaries();
-    void deleteCheckpointDiaryById(List<Integer> ids);
-    void updateCheckpointDiaryName(int checkpointId, String newName);
-    void updateCheckpointDiaryDate(int checkpointId, String newDate);
-    void updateCheckpointDiaryImageUri(int checkpointId, String newImageUri);
-    void updateCheckpointDiaryLatitude(int checkpointId, double newLatitude);
-    void updateCheckpointDiaryLongitude(int checkpointId, double newLongitude);
-    void updateAllCheckpointDiaries(List<CheckpointDiary> checkpointDiaries);
+    public abstract List<CheckpointDiary> getCheckpointDiariesByDiaryId(String diaryId);
+    public abstract void getAllCheckpointDiaries();
+    public abstract long insertCheckpointDiary(CheckpointDiary checkpointDiary);
+    public abstract void deleteCheckpointDiary(CheckpointDiary checkpointDiary);
+    public abstract void updateCheckpointDiaryName(int checkpointId, String newName);
+    public abstract void updateCheckpointDiaryDate(int checkpointId, String newDate);
+    public abstract void updateCheckpointDiaryImageUri(int checkpointId, String newImageUri);
 
 }

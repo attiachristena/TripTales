@@ -9,7 +9,7 @@ public interface GoalResponseCallback {
     void onSuccessFromRemote(List<Goal> goals);
     void onFailureFromRemote(Exception exception);
 
-    void onSuccessDeleteFromLocal();
+    void onSuccessDeleteFromLocal(List<Goal> goals);
     void onSuccessFromLocal(List<Goal> goals);
     void onSuccessSelectionFromLocal(List<Goal> goals);
     void onSuccessCheckedFromLocal(List<Goal> goals);

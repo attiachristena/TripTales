@@ -17,6 +17,7 @@ import androidx.room.PrimaryKey;
         indices = {@Index(value = "diary_id")}
 )
 public class CheckpointDiary {
+
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -38,6 +39,8 @@ public class CheckpointDiary {
     @ColumnInfo(name = "longitude")
     public double longitude;
 
+    public CheckpointDiary() {}
+
     public CheckpointDiary(String diaryId, String nome, String data, String immagineUri, double latitude, double longitude) {
         this.diaryId = diaryId;
         this.nome = nome;
@@ -47,7 +50,6 @@ public class CheckpointDiary {
         this.longitude = longitude;
     }
 
-    // Getter e Setter
     public int getId() {
         return id;
     }
@@ -60,10 +62,9 @@ public class CheckpointDiary {
         return diaryId;
     }
 
-//    public int getCheckpointId() {
-//        return diaryId;
-//    }
-
+    public void setDiaryId(String diaryId) {
+        this.diaryId = diaryId;
+    }
 
     public String getNome() {
         return nome;

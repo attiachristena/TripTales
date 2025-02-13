@@ -10,6 +10,7 @@
         android:id="@+id/appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:elevation="10dp"
         android:fitsSystemWindows="true"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -17,11 +18,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="10dp"
             android:background="@color/upper_bar_bg"
             app:menu="@menu/top_app_bar"
             app:navigationIcon="@drawable/baseline_menu_24"
             app:title="@string/app_name"
+            app:titleTextAppearance="@style/ToolbarTitleText"
             app:titleTextColor="@color/black"
             app:titleCentered="true" />
 

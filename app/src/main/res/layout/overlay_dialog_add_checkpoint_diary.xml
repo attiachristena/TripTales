@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardAddCheckpoint"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="200dp"
+    android:backgroundTint="@color/background_overlays"
+    app:cardCornerRadius="20dp"
+    android:elevation="100dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+<!-- Testo centrato -->
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:text="@string/vuoi_aggiungere_questo_luogo_alle_tappe"
+    android:textColor="@color/black"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    android:paddingBottom="16dp" />
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:paddingTop="8dp">
+
+<!-- Pulsante "No" -->
+<Button
+    android:id="@+id/noAnswer"
+    android:layout_width="100dp"
+    android:layout_height="40dp"
+    android:layout_marginEnd="16dp"
+    android:background="@drawable/rounded_button"
+    android:backgroundTint="@color/secondary"
+    android:text="@string/no"
+    android:textAllCaps="false"
+    android:textColor="@color/white" />
+
+<!-- Pulsante "Sì" -->
+<Button
+    android:id="@+id/yesAnswer"
+    android:layout_width="100dp"
+    android:layout_height="40dp"
+    android:background="@drawable/rounded_button"
+    android:backgroundTint="@color/secondary"
+    android:text="@string/s"
+    android:textAllCaps="false"
+    android:textColor="@color/white" />
+</LinearLayout>
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>

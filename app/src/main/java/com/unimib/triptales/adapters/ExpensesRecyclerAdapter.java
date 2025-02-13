@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Expense;
 
@@ -46,12 +45,6 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
     }
 
     public void setExpenseList(List<Expense> expenses) {
-        /*for (int i = 0; i < expenses.size(); i++) {
-            if (i >= expenseList.size() || !expenseList.get(i).equals(expenses.get(i))) {
-                notifyItemChanged(i);
-            }
-            //aggiungere il controllo su ogni campo di una spesa?
-        }*/
         this.expenseList = expenses;
         notifyDataSetChanged();
     }
@@ -77,7 +70,26 @@ public class ExpensesRecyclerAdapter extends RecyclerView.Adapter<ExpensesRecycl
         Expense expense = expenseList.get(position);
 
         viewHolder.amountTextView.setText(expense.getAmount());
-        viewHolder.categoryTextView.setText(expense.getCategory());
+        String category = expense.getCategory();
+        if (category.equalsIgnoreCase("Shopping")){
+            viewHolder.categoryTextView.setText(context.getString(R.string.shopping_category));
+        } else if (category.equalsIgnoreCase("Cibo")
+                || category.equalsIgnoreCase("Food")){
+            viewHolder.categoryTextView.setText(context.getString(R.string.food_category));
+        } else if (category.equalsIgnoreCase("Trasporto")
+                || category.equalsIgnoreCase("Transportation")){
+            viewHolder.categoryTextView.setText(context.getString(R.string.transport_category));
+        } else if (category.equalsIgnoreCase("Alloggio")
+                || category.equalsIgnoreCase("Accommodation")){
+            viewHolder.categoryTextView.setText(context.getString(R.string.accommodation_category));
+        } else if (category.equalsIgnoreCase("Cultura")
+                || category.equalsIgnoreCase("Culture")){
+            viewHolder.categoryTextView.setText(context.getString(R.string.culture_category));
+        } else if (category.equalsIgnoreCase("Svago")
+                || category.equalsIgnoreCase("Leisure")){
+            viewHolder.categoryTextView.setText(context.getString(R.string.fun_category));
+        }
+
         viewHolder.descriptionTextView.setText(expense.getDescription());
         viewHolder.dateTextView.setText(expense.getDate());
         viewHolder.icon.setImageResource(expense.getIconId());

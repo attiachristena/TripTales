@@ -1,8 +1,6 @@
 package com.unimib.triptales.adapters;
 
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +22,16 @@ import java.util.List;
 public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdapter.CardItemViewHolder> {
     private List<ImageCardItem> imageCardItems;
     private Context context;
-    private OnImageCardItemClickListener OnImageCardItemClickListener;
+    private OnImageCardItemClickListener onImageCardItemClickListener;
+    private List<ImageCardItem> selectedItems = new ArrayList<>();
 
-    public Context getContext() { return context; }
-
-    // Costruttore
     public ImageCardItemAdapter(Context context) {
         this.imageCardItems = new ArrayList<>();
         this.context = context;
+    }
+
+    public void setOnImageCardItemClickListener(OnImageCardItemClickListener listener) {
+        this.onImageCardItemClickListener = listener;
     }
 
     public void setImageCardItems(List<ImageCardItem> imageCardItems) {
@@ -39,24 +39,34 @@ public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdap
         notifyDataSetChanged();
     }
 
-    // ViewHolder definito come classe interna
-    public static class CardItemViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
-        public ImageView postImage;
-        public TextView description;
-        public TextView date;
+    public List<ImageCardItem> getImageCardItems() {
+        return imageCardItems;
+    }
 
-        public CardItemViewHolder(@NonNull View itemView) {
-            super(itemView);
-            title = itemView.findViewById(R.id.title);
-            postImage = itemView.findViewById(R.id.postImage);
-            description = itemView.findViewById(R.id.subtitle);
-            date = itemView.findViewById(R.id.dateHeader);
+    public void toggleSelection(int position) {
+        ImageCardItem item = imageCardItems.get(position);
+        if (selectedItems.contains(item)) {
+            selectedItems.remove(item);
+        } else {
+            selectedItems.add(item);
+        }
+        notifyItemChanged(position);
+
+        if (onImageCardItemClickListener != null) {
+            onImageCardItemClickListener.onSelectionChanged(getSelectedItems());
         }
     }
 
-    public interface OnImageCardItemClickListener {
-        void onImageCardItemClick(ImageCardItem imageCardItem);
+    public List<ImageCardItem> getSelectedItems() {
+        return new ArrayList<>(selectedItems);
+    }
+
+    public void clearSelections() {
+        selectedItems.clear();
+        notifyDataSetChanged();
+        if (onImageCardItemClickListener != null) {
+            onImageCardItemClickListener.onSelectionChanged(getSelectedItems());
+        }
     }
 
     @NonNull
@@ -64,9 +74,6 @@ public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdap
     public CardItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_card_checkpoint_diary, parent, false);
-
-        if (this.context == null) this.context = parent.getContext();
-
         return new CardItemViewHolder(view);
     }
 
@@ -78,21 +85,20 @@ public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdap
         holder.description.setText(imageCardItem.getDescription());
         holder.date.setText(imageCardItem.getDate());
 
-        MaterialCardView card = (MaterialCardView) holder.itemView;
-
-        if (imageCardItem.isSelected()) {
-            card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary));
-            card.setStrokeColor(ContextCompat.getColor(context, R.color.primary));
+        // Imposta lo sfondo della card in base allo stato di selezione
+        if (selectedItems.contains(imageCardItem)) {
+            holder.card.setStrokeColor(ContextCompat.getColor(context, R.color.black));
+            holder.card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
+            holder.card.setStrokeWidth(4);
         } else {
-            card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.primary_light));
-            card.setStrokeColor(ContextCompat.getColor(context, R.color.background_dark));
+            holder.card.setStrokeColor(ContextCompat.getColor(context, R.color.white));
+            holder.card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white)); // Ripristina lo sfondo bianco
+            holder.card.setStrokeWidth(0);
         }
 
-        card.setOnLongClickListener(v -> {
-            if (OnImageCardItemClickListener != null) {
-                OnImageCardItemClickListener.onImageCardItemClick(imageCardItem);
-            }
-            return false;
+        holder.card.setOnLongClickListener(v -> {
+            toggleSelection(position);
+            return true;
         });
 
         Glide.with(context)
@@ -105,4 +111,25 @@ public class ImageCardItemAdapter extends RecyclerView.Adapter<ImageCardItemAdap
         return imageCardItems.size();
     }
 
+    public static class CardItemViewHolder extends RecyclerView.ViewHolder {
+        public TextView title;
+        public ImageView postImage;
+        public TextView description;
+        public TextView date;
+        public MaterialCardView card;
+
+        public CardItemViewHolder(@NonNull View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.title);
+            postImage = itemView.findViewById(R.id.postImage);
+            description = itemView.findViewById(R.id.subtitle);
+            date = itemView.findViewById(R.id.dateHeader);
+            card = itemView.findViewById(R.id.item_card_checkpoint_diary);
+        }
+    }
+
+    public interface OnImageCardItemClickListener {
+        void onImageCardItemLongClick(ImageCardItem imageCardItem);
+        void onSelectionChanged(List<ImageCardItem> selectedItems);
+    }
 }

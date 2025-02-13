@@ -3,6 +3,7 @@ package com.unimib.triptales.source.task;
 import com.unimib.triptales.database.TaskDao;
 import com.unimib.triptales.model.Task;
 
+import java.util.Collections;
 import java.util.List;
 
 public class TaskLocalDataSource extends BaseTaskLocalDataSource{
@@ -64,7 +65,8 @@ public class TaskLocalDataSource extends BaseTaskLocalDataSource{
     public void deleteTask(Task task) {
         try{
             taskDao.delete(task);
-            taskCallback.onSuccessDeleteFromLocal();
+            List<Task> tasks = Collections.singletonList(task);
+            taskCallback.onSuccessDeleteFromLocal(tasks);
         } catch (Exception e){
             taskCallback.onFailureFromLocal(e);
         }
@@ -74,7 +76,7 @@ public class TaskLocalDataSource extends BaseTaskLocalDataSource{
     public void deleteAllTasks(List<Task> tasks) {
         try{
             taskDao.deleteAll(tasks);
-            taskCallback.onSuccessDeleteFromLocal();
+            taskCallback.onSuccessDeleteFromLocal(tasks);
         } catch (Exception e){
             taskCallback.onFailureFromLocal(e);
         }
