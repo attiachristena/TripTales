@@ -80,9 +80,32 @@ public class CheckpointDiaryRemoteDataSource extends BaseCheckpointDiaryRemoteDa
     @Override
     public void deleteCheckpointDiary(CheckpointDiary checkpointDiary) {
         if (checkpointDiary != null) {
-            databaseReference.child(String.valueOf(checkpointDiary.getId())).removeValue()
-                    .addOnSuccessListener(aVoid -> checkpointDiaryCallback.onSuccessDeleteFromRemote())
-                    .addOnFailureListener(e -> checkpointDiaryCallback.onFailureFromRemote(e));
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+            DatabaseReference checkpointDiaryRef = databaseReference
+                    .child(String.valueOf(checkpointDiary.getId()));
+
+            DatabaseReference imageCardItemsRef = databaseReference.getParent()
+                    .child("imageCardItems");
+
+            imageCardItemsRef.orderByChild("checkpointDiaryId").equalTo(checkpointDiary.getId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot imageCardSnapshot : dataSnapshot.getChildren()) {
+                                imageCardSnapshot.getRef().removeValue();
+                            }
+
+                            checkpointDiaryRef.removeValue()
+                                    .addOnSuccessListener(aVoid -> checkpointDiaryCallback.onSuccessDeleteFromRemote())
+                                    .addOnFailureListener(e -> checkpointDiaryCallback.onFailureFromRemote(e));
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            checkpointDiaryCallback.onFailureFromRemote(new Exception(databaseError.getMessage()));
+                        }
+                    });
         } else {
             checkpointDiaryCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
         }

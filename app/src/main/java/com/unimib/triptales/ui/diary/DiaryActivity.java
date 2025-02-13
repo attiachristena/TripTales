@@ -21,6 +21,7 @@ import com.unimib.triptales.repository.expense.IExpenseRepository;
 import com.unimib.triptales.repository.goal.IGoalRepository;
 import com.unimib.triptales.repository.imageCardItem.IImageCardItemRepository;
 import com.unimib.triptales.repository.task.ITaskRepository;
+import com.unimib.triptales.ui.diary.viewmodel.CheckpointDiaryViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.ExpenseViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.GoalViewModel;
 import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;
@@ -63,9 +64,9 @@ public class DiaryActivity extends AppCompatActivity {
         taskViewModel.fetchAllTasks();
 
         ICheckpointDiaryRepository checkpointDiaryRepository = ServiceLocator.getINSTANCE().getCheckpointDiaryRepository(getApplicationContext());
-        TaskViewModel checkpointDiaryViewModel = new ViewModelProvider(this,
-                new ViewModelFactory(checkpointDiaryRepository)).get(TaskViewModel.class);
-        checkpointDiaryViewModel.fetchAllTasks();
+        CheckpointDiaryViewModel checkpointDiaryViewModel = new ViewModelProvider(this,
+                new ViewModelFactory(checkpointDiaryRepository)).get(CheckpointDiaryViewModel.class);
+        checkpointDiaryViewModel.loadCheckpoints(this);
 
 
 

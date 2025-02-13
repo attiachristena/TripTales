@@ -26,7 +26,7 @@
             app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24"
             app:title="@string/impostazioni"
             app:titleTextAppearance="@style/ToolbarTitleText"
-            app:titleTextColor="@color/primary"/>
+            app:titleTextColor="@color/upper_bar_bg"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
