@@ -87,7 +87,7 @@ public class ExpensesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_expenses, container, false);
         IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getContext());
         homeViewModel = new ViewModelProvider(requireActivity(),
-                new ViewModelFactory(diaryRepository)).get(HomeViewModel.class);
+                new ViewModelFactory(diaryRepository, requireActivity().getApplication())).get(HomeViewModel.class);
         IExpenseRepository expenseRepository = ServiceLocator.getINSTANCE().getExpenseRepository(getContext());
         expenseViewModel = new ViewModelProvider(requireActivity(),
                 new ViewModelFactory(expenseRepository, requireActivity().getApplication())).get(ExpenseViewModel.class);
