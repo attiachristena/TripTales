@@ -13,13 +13,11 @@ public abstract class BaseExpenseLocalDataSource {
     }
 
     public abstract void insertExpense(Expense expense);
-    public abstract void updateExpense(Expense expense);
     public abstract void updateExpenseCategory(String expenseId, String newCategory);
     public abstract void updateExpenseDescription(String expenseId, String newDescription);
     public abstract void updateExpenseAmount(String expenseId, String newAmount);
     public abstract void updateExpenseDate(String expenseId, String newDate);
     public abstract void updateExpenseIsSelected(String expenseId, boolean newIsSelected);
-    public abstract void deleteExpense(Expense expense);
     public abstract void deleteAllExpenses(List<Expense> expenses);
     public abstract void getAllExpenses();
     public abstract void getSelectedExpenses();

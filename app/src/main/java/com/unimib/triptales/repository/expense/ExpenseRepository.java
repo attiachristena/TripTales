@@ -28,62 +28,62 @@ public class ExpenseRepository implements IExpenseRepository, ExpenseResponseCal
         this.expenseRemoteDataSource.setExpenseCallback(this);
     }
 
+    @Override
     public void insertExpense(Expense expense) {
         expenseLocalDataSource.insertExpense(expense);
         expenseRemoteDataSource.insertExpense(expense);
     }
 
-    public void updateExpense(Expense expense) {
-        expenseLocalDataSource.updateExpense(expense);
-        expenseRemoteDataSource.updateExpense(expense);
-    }
-
+    @Override
     public void updateExpenseCategory(String expenseId, String newCategory) {
         expenseLocalDataSource.updateExpenseCategory(expenseId, newCategory);
         expenseRemoteDataSource.updateExpenseCategory(expenseId, newCategory);
     }
 
+    @Override
     public void updateExpenseDescription(String expenseId, String newDescription) {
         expenseLocalDataSource.updateExpenseDescription(expenseId, newDescription);
         expenseRemoteDataSource.updateExpenseDescription(expenseId, newDescription);
     }
 
+    @Override
     public void updateExpenseAmount(String expenseId, String newAmount) {
         expenseLocalDataSource.updateExpenseAmount(expenseId, newAmount);
         expenseRemoteDataSource.updateExpenseAmount(expenseId, newAmount);
     }
 
+    @Override
     public void updateExpenseDate(String expenseId, String newDate) {
         expenseLocalDataSource.updateExpenseDate(expenseId, newDate);
         expenseRemoteDataSource.updateExpenseDate(expenseId, newDate);
     }
 
+    @Override
     public void updateExpenseIsSelected(String expenseId, boolean newIsSelected) {
         expenseLocalDataSource.updateExpenseIsSelected(expenseId, newIsSelected);
         expenseRemoteDataSource.updateExpenseIsSelected(expenseId, newIsSelected);
     }
 
-    public void deleteExpense(Expense expense) {
-        expenseLocalDataSource.deleteExpense(expense);
-        expenseRemoteDataSource.deleteExpense(expense);
-    }
-
+    @Override
     public void deleteAllExpenses(List<Expense> expenses) {
         expenseLocalDataSource.deleteAllExpenses(expenses);
         expenseRemoteDataSource.deleteAllExpenses(expenses);
     }
 
+    @Override
     public List<Expense> getAllExpenses() {
         expenseLocalDataSource.getAllExpenses();
         expenseRemoteDataSource.getAllExpenses();
         return expensesLiveData.getValue();
     }
 
+    @Override
     public List<Expense> getSelectedExpenses() {
         expenseLocalDataSource.getSelectedExpenses();
         return selectedExpensesLiveData.getValue();
     }
 
+    @Override
     public List<Expense> getFilteredExpenses(String category) {
         expenseLocalDataSource.getFilteredExpenses(category);
         return filteredExpensesLiveData.getValue();

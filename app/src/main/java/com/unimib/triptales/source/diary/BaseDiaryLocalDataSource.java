@@ -21,7 +21,6 @@ public abstract class BaseDiaryLocalDataSource {
     public abstract void updateDiaryBudget(String diaryId, String newBudget);
     public abstract void updateDiaryCountry(String diaryId, String newCountry);
     public abstract void updateDiaryIsSelected(String diaryId, boolean newIsSelected);
-    public abstract void deleteDiary(Diary diary);
     public abstract void deleteAllDiaries(List<Diary> diaries);
     public abstract void getAllDiaries();
     public abstract void getSelectedDiaries();

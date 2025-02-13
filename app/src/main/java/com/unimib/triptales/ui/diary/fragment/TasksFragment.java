@@ -27,7 +27,6 @@ import com.unimib.triptales.R;
 import com.unimib.triptales.adapters.TasksRecyclerAdapter;
 import com.unimib.triptales.model.Task;
 import com.unimib.triptales.repository.task.ITaskRepository;
-import com.unimib.triptales.ui.diary.DiaryActivity;
 import com.unimib.triptales.ui.diary.overlay.OverlayAddEditTask;
 import com.unimib.triptales.ui.diary.overlay.OverlayDelete;
 import com.unimib.triptales.ui.diary.viewmodel.TaskViewModel;

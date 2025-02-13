@@ -11,7 +11,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Task;

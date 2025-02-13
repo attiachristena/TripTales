@@ -35,12 +35,6 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     }
 
     @Override
-    public void updateGoal(Goal goal) {
-        goalLocalDataSource.updateGoal(goal);
-        goalRemoteDataSource.updateGoal(goal);
-    }
-
-    @Override
     public void updateAllGoals(List<Goal> goals) {
         goalLocalDataSource.updateAllGoals(goals);
         goalRemoteDataSource.updateAllGoals(goals);
@@ -68,12 +62,6 @@ public class GoalRepository implements IGoalRepository, GoalResponseCallback{
     public void updateGoalIsChecked(String goalId, boolean newIsChecked) {
         goalLocalDataSource.updateGoalIsChecked(goalId, newIsChecked);
         goalRemoteDataSource.updateGoalIsChecked(goalId, newIsChecked);
-    }
-
-    @Override
-    public void deleteGoal(Goal goal) {
-        goalLocalDataSource.deleteGoal(goal);
-        goalRemoteDataSource.deleteGoal(goal);
     }
 
     @Override
