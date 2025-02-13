@@ -274,4 +274,9 @@
     \nprintine@gmail.com\n
         \nBuon viaggio con <i>TripTales</i>! </string>
 
+    <string name="compila_con_il_tuo_nome">Compila con il tuo nome</string>
+    <string name="compila_con_il_tuo_cognome">Compila con il tuo cognome</string>
+    <string name="compila_con_la_tua_email">Compila con la tua email</string>
+    <string name="compila_con_la_tua_password">Compila con la tua password</string>
+
 </resources>

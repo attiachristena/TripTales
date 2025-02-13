@@ -28,13 +28,17 @@ public class Constants {
     public static final String CURRENCY_GBP = "£";
     public static final String CURRENCY_JPY = "¥";
     public static final int MINIMUM_LENGTH_PASSWORD = 8;
-    public static final String USER_ALREADY_EXISTS = "L'user esiste già";
 
     public static final String UNEXPECTED_ERROR = "unexpected_error";
     public static final String INVALID_USER_ERROR = "invalidUserError";
     public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
     public static final String USER_COLLISION_ERROR = "userCollisionError";
     public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
+    public static final String USER_NOT_FOUND = "userNotFound";
+    public static final String NO_USER_SIGNED_IN = "noUserSignedIn";
+    public static final String USER_ALREADY_EXISTS = "userAlreadyExists";
+    public static final String EMAIL_NOT_REGISTERED = "emailNotRegistered";
+
 
     public static final String FIREBASE_REALTIME_DATABASE = "https://triptales-4765a-default-rtdb.europe-west1.firebasedatabase.app/";
     public static final String FIREBASE_USERS_COLLECTION = "users";

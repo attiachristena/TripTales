@@ -90,15 +90,4 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     public void onSuccessLogout() {
 
     }
-
-    @Override
-    public void onSuccessFromRemoteDatabase(User user) {
-        userMutableLiveData.postValue(new Result.UserSuccess(user));
-    }
-
-
-    @Override
-    public void onFailureFromRemoteDatabase(String message) {
-        userMutableLiveData.postValue(new Result.Error(message));
-    }
 }

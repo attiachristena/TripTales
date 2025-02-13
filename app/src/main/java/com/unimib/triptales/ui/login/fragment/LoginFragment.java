@@ -95,6 +95,7 @@ public class LoginFragment extends Fragment {
                             if (authenticationResult.isSuccess()) {
                                 hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
@@ -195,6 +196,7 @@ public class LoginFragment extends Fragment {
                     if (result.isSuccess()) {
                         hideLoadingDialog();
                         SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                        requireActivity().finish();
                         startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
                         userViewModel.setAuthenticationError(true);

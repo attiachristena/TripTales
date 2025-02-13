@@ -97,6 +97,7 @@ public class SignInFragment extends Fragment {
                             hideLoadingDialog();
                             if (authenticationResult.isSuccess()) {
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
                                 userViewModel.setAuthenticationError(true);
@@ -170,17 +171,17 @@ public class SignInFragment extends Fragment {
 
 
             if (TextUtils.isEmpty(editTextNome.getText())) {
-                editTextNome.setError("Compila con il tuo nome");
+                editTextNome.setError(getString(R.string.compila_con_il_tuo_nome));
                 isValid = false;
             }
 
             if (TextUtils.isEmpty(editTextCognome.getText())) {
-                editTextCognome.setError("Compila con il tuo cognome");
+                editTextCognome.setError(getString(R.string.compila_con_il_tuo_cognome));
                 isValid = false;
             }
 
             if (TextUtils.isEmpty(editTextEmail.getText())) {
-                editTextEmail.setError("Compila con la tua email");
+                editTextEmail.setError(getString(R.string.compila_con_la_tua_email));
                 isValid = false;
             } else if (!isEmailOk(editTextEmail.getText().toString())) {
                 editTextEmail.setError(getString(R.string.error_email_login));
@@ -188,7 +189,7 @@ public class SignInFragment extends Fragment {
             }
 
             if (TextUtils.isEmpty(editTextPassword.getText())) {
-                editTextPassword.setError("Compila con la tua password");
+                editTextPassword.setError(getString(R.string.compila_con_la_tua_password));
                 isValid = false;
             } else if (!isPasswordOk(editTextPassword.getText().toString())) {
                 editTextPassword.setError(getString(R.string.error_password_login));
@@ -207,6 +208,7 @@ public class SignInFragment extends Fragment {
                             if (result.isSuccess()) {
                                 hideLoadingDialog();
                                 SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                     } else {
                                 hideLoadingDialog();
