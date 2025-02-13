@@ -4,17 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.os.LocaleListCompat;
-
 import com.unimib.triptales.R;
 import com.unimib.triptales.ui.login.LoginActivity;
 
@@ -37,27 +33,22 @@ public class SelectLanguageActivity extends AppCompatActivity {
         String firstTimeLanguage = preferences.getString("FirstTimeLanguage", "");
 
         setupLanguageDropdown();
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedItem = adapterView.getItemAtPosition(i).toString();
-                Toast.makeText(SelectLanguageActivity.this, selectedItem, Toast.LENGTH_SHORT).show();
+        autoCompleteTextView.setOnItemClickListener((adapterView, view, i, l) -> {
+            String selectedItem = adapterView.getItemAtPosition(i).toString();
+            Toast.makeText(SelectLanguageActivity.this, selectedItem, Toast.LENGTH_SHORT).show();
 
-                if (selectedItem.equals(getString(R.string.italiano))) {
-                    changeLanguage("it");
-                } else if (selectedItem.equals(getString(R.string.inglese))) {
-                    changeLanguage("en");
-                }
+            if (selectedItem.equals(getString(R.string.italiano))) {
+                changeLanguage("it");
+            } else if (selectedItem.equals(getString(R.string.inglese))) {
+                changeLanguage("en");
             }
         });
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SelectLanguageActivity.this, IntroActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        nextButton.setOnClickListener(view -> {
+            Intent intent = new Intent(SelectLanguageActivity.this, IntroActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            finish();
         });
 
         if (firstTimeLanguage.equals("Yes")) {

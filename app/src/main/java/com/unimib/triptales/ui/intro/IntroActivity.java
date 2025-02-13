@@ -99,48 +99,38 @@ public class IntroActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("PREFERENCES", MODE_PRIVATE);
         String FirstTime = preferences.getString("FirstTimeInstall","");
 
-        backButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                if (getItem(0) > 0) {
-                    slideViewPager.setCurrentItem(getItem(-1), true);
-                }
+        backButton.setOnClickListener(view -> {
+            if (getItem(0) > 0) {
+                slideViewPager.setCurrentItem(getItem(-1), true);
             }
         });
 
-        nextButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                if(getItem(0)<2){
-                    slideViewPager.setCurrentItem(getItem(1), true);
-                }
+        nextButton.setOnClickListener(view -> {
+            if(getItem(0)<2){
+                slideViewPager.setCurrentItem(getItem(1), true);
             }
         });
 
-        backButtonToActivity.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                if(getItem(0) == 0) {
-                    Intent intent = new Intent(IntroActivity.this, SelectLanguageActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+        backButtonToActivity.setOnClickListener(view -> {
+            if(getItem(0) == 0) {
+                Intent intent = new Intent(IntroActivity.this, SelectLanguageActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                finish();
             }
         });
 
-        startButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                if(getItem(0) == 2){
-                    Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
+        startButton.setOnClickListener(view -> {
+            if(getItem(0) == 2){
+                Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                finish();
 
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("FirstTimeInstall", "Yes");
-                    editor.putString("FirstTimeLanguage", "Yes");
-                    editor.apply();
-                }
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("FirstTimeInstall", "Yes");
+                editor.putString("FirstTimeLanguage", "Yes");
+                editor.apply();
             }
         });
 

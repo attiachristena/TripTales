@@ -61,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
                 intent.putExtra(ACTIVE_FRAGMENT_TAG, fragmentTag);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
             } else {
                 navController.navigateUp();
