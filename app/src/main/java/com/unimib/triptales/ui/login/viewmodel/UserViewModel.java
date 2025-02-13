@@ -11,7 +11,7 @@ import com.unimib.triptales.repository.user.IUserRepository;
 public class UserViewModel extends ViewModel{
 
     private final IUserRepository userRepository;
-    private final MutableLiveData<Result> userMutableLiveData;
+    private MutableLiveData<Result> userMutableLiveData;
     private boolean authenticationError;
 
     public UserViewModel(IUserRepository userRepository){
@@ -44,6 +44,11 @@ public class UserViewModel extends ViewModel{
 
     public MutableLiveData<Result> signUpWithGoogle(String idToken) {
         return userRepository.signUpWithGoogle(idToken);
+    }
+
+    public MutableLiveData<Result> getUser(){
+        userMutableLiveData = userRepository.getUser();
+        return userMutableLiveData;
     }
 
     public void logout(){

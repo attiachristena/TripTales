@@ -20,7 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
             app:navigationIcon="@drawable/baseline_menu_24"
-            app:title="@string/app_name"
+            app:title="@string/app_name_homepage"
             app:titleTextAppearance="@style/ToolbarTitleText"
             app:titleTextColor="@color/primary"
             app:titleCentered="true" />

@@ -161,7 +161,7 @@ public class HomeFragment extends Fragment {
         bAdd = false;
         bEdit = false;
         homeViewModel.loadDiaries();
-        final int maxObservations = 10;
+        final int maxObservations = 20;
         final AtomicInteger observationCount = new AtomicInteger(0);
 
         homeViewModel.getLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {

@@ -64,7 +64,7 @@ public class SettingsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         SharedPreferencesUtils.applyNightMode(requireContext());
         SharedPreferencesUtils.applyLanguage(requireContext());
-        applySavedLanguage();
+
         IUserRepository userRepository = ServiceLocator.getINSTANCE().getUserRepository();
         userViewModel = new ViewModelProvider(requireActivity(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
     }
@@ -170,11 +170,10 @@ public class SettingsFragment extends Fragment {
 
         userViewModel.getLogoutSuccess().observe(getViewLifecycleOwner(), logout -> {
             if (logout != null && logout) {
+                SharedPreferencesUtils.setLoggedIn(requireContext(), false);
                 Intent intent = new Intent(requireContext(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                SharedPreferencesUtils.setLoggedIn(requireContext(), false);
-                requireActivity().finish();
             }
         });
 

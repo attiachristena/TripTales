@@ -2,11 +2,14 @@ package com.unimib.triptales.ui.login.fragment;
 
 import static com.unimib.triptales.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static com.unimib.triptales.util.Constants.INVALID_USER_ERROR;
+import static com.unimib.triptales.util.Constants.hideKeyboard;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,8 +38,12 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.unimib.triptales.R;
 import com.unimib.triptales.model.Result;
+import com.unimib.triptales.repository.diary.IDiaryRepository;
 import com.unimib.triptales.repository.user.IUserRepository;
+import com.unimib.triptales.ui.diary.viewmodel.ViewModelFactory;
 import com.unimib.triptales.ui.homepage.HomepageActivity;
+import com.unimib.triptales.ui.homepage.viewmodel.HomeViewModel;
+import com.unimib.triptales.ui.login.LoginActivity;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModel;
 import com.unimib.triptales.ui.login.viewmodel.UserViewModelFactory;
 import com.unimib.triptales.util.ServiceLocator;
@@ -94,7 +101,7 @@ public class LoginFragment extends Fragment {
                         userViewModel.getGoogleUserMutableLiveData(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
                             if (authenticationResult.isSuccess()) {
                                 hideLoadingDialog();
-                                SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                                SharedPreferencesUtils.setLoggedIn(requireContext(), true);
                                 requireActivity().finish();
                                 startActivity(new Intent(getContext(), HomepageActivity.class));
                             } else {
@@ -195,9 +202,12 @@ public class LoginFragment extends Fragment {
                     loginButton.setEnabled(true);
                     if (result.isSuccess()) {
                         hideLoadingDialog();
-                        SharedPreferencesUtils.setLoggedIn(getContext(), true);
+                        hideKeyboard(view, requireActivity());
+                        SharedPreferencesUtils.setLoggedIn(requireContext(), true);
                         requireActivity().finish();
-                        startActivity(new Intent(getContext(), HomepageActivity.class));
+                        Intent intent = new Intent(requireContext(), HomepageActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                     } else {
                         userViewModel.setAuthenticationError(true);
                         hideLoadingDialog();
