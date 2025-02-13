@@ -58,7 +58,6 @@ public class HomepageActivity extends AppCompatActivity {
         IDiaryRepository diaryRepository = ServiceLocator.getINSTANCE().getDiaryRepository(getApplicationContext());
         homeViewModel = new ViewModelProvider(this,
                 new ViewModelFactory(diaryRepository, getApplication())).get(HomeViewModel.class);
-
         homeViewModel.loadRemoteDiaries();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
