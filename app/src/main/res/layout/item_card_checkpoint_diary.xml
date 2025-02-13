@@ -32,7 +32,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="26 gennaio" />
+            tools:text="@string/data_immagine" />
 
         <!-- Title -->
         <TextView
@@ -47,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dateHeader"
-            tools:text="Titolo" />
+            tools:text="@string/titolo_immagine" />
 
         <!-- Subtitle -->
         <TextView
@@ -62,7 +62,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
-            tools:text="Sottotitolo" />
+            tools:text="@string/sottotitolo_immagine" />
 
         <!-- Image Container -->
         <com.google.android.material.imageview.ShapeableImageView

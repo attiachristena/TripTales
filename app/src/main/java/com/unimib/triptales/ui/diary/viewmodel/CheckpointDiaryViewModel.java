@@ -1,4 +1,4 @@
-package com.unimib.triptales.ui.diary.viewmodel.checkpoint;
+package com.unimib.triptales.ui.diary.viewmodel;
 
 import android.content.Context;
 import android.location.Address;
@@ -102,20 +102,15 @@ public class CheckpointDiaryViewModel extends ViewModel {
         });
     }
 
-    public void insertCheckpoint(String nome, String data, Uri imageUri, LatLng latLng, Context context) {
-        if (isPosizioneGiàSalvata(latLng)) {
-            // Posizione già salvata, quindi non procedere
-            return;
-        }
 
-        // Recupera l'ID del diario dai SharedPreferences
+    public void insertCheckpoint(String nome, String data, Uri imageUri, LatLng latLng, Context context) {
+
         String diaryIdStr = SharedPreferencesUtils.getDiaryId(context);
         if (diaryIdStr == null) {
             operationStatus.postValue(false);
             return;
         }
 
-        // Creazione del nuovo checkpoint con l'ID del diario
         CheckpointDiary nuovaCheckpoint = new CheckpointDiary(diaryIdStr, nome, data, imageUri.toString(), latLng.latitude, latLng.longitude);
 
         try {
@@ -128,16 +123,6 @@ public class CheckpointDiaryViewModel extends ViewModel {
         } catch (Exception e) {
             operationStatus.postValue(false);
         }
-    }
-
-    public boolean isPosizioneGiàSalvata(LatLng latLng) {
-        List<CheckpointDiary> tappeSalvate = checkpointDiaryRepository.getAllCheckpointDiaries();
-        for (CheckpointDiary checkpointDiary : tappeSalvate) {
-            if (checkpointDiary.getLatitude() == latLng.latitude && checkpointDiary.getLongitude() == latLng.longitude) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void updateCheckpointDiary(int checkpointId, String newName, String newDate, Uri newImageUri, Context context) {
@@ -160,24 +145,19 @@ public class CheckpointDiaryViewModel extends ViewModel {
         });
     }
 
+
     public void deleteSelectedCheckpoints(List<CheckpointDiary> selectedCheckpoints, Context context) {
         executorService.execute(() -> {
             try {
                 for (CheckpointDiary checkpointDiary : selectedCheckpoints) {
-                    checkpointDiaryRepository.deleteCheckpointDiary(checkpointDiary);  // Passa ogni checkpoint singolarmente
+                    checkpointDiaryRepository.deleteCheckpointDiary(checkpointDiary);
                 }
-                loadCheckpoints(context);  // Ricarica i checkpoint dopo la cancellazione
+                loadCheckpoints(context);
                 operationStatus.postValue(true);
             } catch (Exception e) {
                 operationStatus.postValue(false);
             }
         });
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        executorService.shutdown();
     }
 
     public void loadMapCheckpoints() {
@@ -215,5 +195,6 @@ public class CheckpointDiaryViewModel extends ViewModel {
             }
         });
     }
+
 
 }
