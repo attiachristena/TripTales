@@ -26,6 +26,9 @@ misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 
+# Firebase
+app/google-services.json
+
 # Keystore files
 *.jks
 *.keystore
