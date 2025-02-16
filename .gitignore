@@ -27,7 +27,7 @@ deploymentTargetDropDown.xml
 render.experimental.xml
 
 # Firebase
-app/google-services.json
+google-services.json
 
 # Keystore files
 *.jks
